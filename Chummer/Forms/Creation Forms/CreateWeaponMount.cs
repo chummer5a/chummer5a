@@ -440,8 +440,8 @@ namespace Chummer
                     List<VehicleMod> lstOldRemovedVehicleMods
                         = await _objMount.Mods
                             .ToListAsync(
-                                async x => !x.IncludedInVehicle &&
-                                           !await _lstMods.ContainsAsync(x, _objGenericToken).ConfigureAwait(false),
+                                async (x, t) => !x.IncludedInVehicle &&
+                                           !await _lstMods.ContainsAsync(x, t).ConfigureAwait(false),
                                 _objGenericToken).ConfigureAwait(false);
                     await _objMount.Mods.RemoveAllAsync(x => lstOldRemovedVehicleMods.Contains(x), _objGenericToken).ConfigureAwait(false);
                     List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(await _lstMods.GetCountAsync(_objGenericToken).ConfigureAwait(false));

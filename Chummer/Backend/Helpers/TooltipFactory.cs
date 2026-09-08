@@ -138,11 +138,11 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objControl is IControlWithToolTip objCast)
                 return objCast.SetToolTipTextAsync(strCaption, token);
-            return Inner();
-            async Task Inner()
+            return Inner(token);
+            async Task Inner(CancellationToken innerToken)
             {
-                Form frmParent = await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token).ConfigureAwait(false);
-                await SetToolTipAsync(objControl, frmParent, strCaption, token).ConfigureAwait(false);
+                Form frmParent = await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), innerToken).ConfigureAwait(false);
+                await SetToolTipAsync(objControl, frmParent, strCaption, innerToken).ConfigureAwait(false);
             }
         }
 

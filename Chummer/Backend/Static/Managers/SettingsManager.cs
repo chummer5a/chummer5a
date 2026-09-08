@@ -207,22 +207,22 @@ namespace Chummer
                 return;
             }
 
-            Utils.RunWithoutThreadLock(() =>
+            Utils.RunWithoutThreadLock(t =>
             {
                 IEnumerable<XPathNavigator> xmlSettingsIterator
-                    = XmlManager.LoadXPath("settings.xml", token: token).SelectAndCacheExpression("/chummer/settings/setting", token)
+                    = XmlManager.LoadXPath("settings.xml", token: t).SelectAndCacheExpression("/chummer/settings/setting", t)
                     .Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator,
                     (xmlBuiltInSetting, state) =>
                     {
-                        if (token.IsCancellationRequested)
+                        if (t.IsCancellationRequested)
                             state.Stop();
                         if (!state.ShouldExitCurrentIteration)
                         {
                             CharacterSettings objNewCharacterSettings = new CharacterSettings();
                             try
                             {
-                                if (!objNewCharacterSettings.Load(xmlBuiltInSetting, token)
+                                if (!objNewCharacterSettings.Load(xmlBuiltInSetting, t)
                                     || (objNewCharacterSettings.BuildMethodIsLifeModule
                                         && !GlobalSettings.LifeModuleEnabled)
                                     || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
@@ -252,12 +252,12 @@ namespace Chummer
             string strSettingsPath = Utils.GetSettingsFolderPath;
             if (Directory.Exists(strSettingsPath))
             {
-                Utils.RunWithoutThreadLock(() =>
+                Utils.RunWithoutThreadLock(t =>
                 {
                     Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"),
                         (strSettingsFilePath, state) =>
                         {
-                            if (token.IsCancellationRequested)
+                            if (t.IsCancellationRequested)
                                 state.Stop();
                             if (!state.ShouldExitCurrentIteration)
                             {
@@ -265,7 +265,7 @@ namespace Chummer
                                 try
                                 {
                                     string strSettingName = Path.GetFileName(strSettingsFilePath);
-                                    if (!objNewCharacterSettings.Load(strSettingName, false, false, token)
+                                    if (!objNewCharacterSettings.Load(strSettingName, false, false, t)
                                         || (objNewCharacterSettings.BuildMethodIsLifeModule
                                             && !GlobalSettings.LifeModuleEnabled)
                                         || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
@@ -332,7 +332,7 @@ namespace Chummer
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
                 try
                 {
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, innerToken)
                                                       .ConfigureAwait(false)
                         || (!GlobalSettings.LifeModuleEnabled

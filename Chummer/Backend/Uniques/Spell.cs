@@ -2642,7 +2642,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 List<Improvement> lstReturn = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
-                await _objCharacter.Improvements.ForEachWithBreakAsync(async objImprovement =>
+                await _objCharacter.Improvements.ForEachWithBreakAsync(async (objImprovement, t) =>
                 {
                     if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
                         return true;
@@ -2695,7 +2695,7 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, token).ConfigureAwait(false);
+                                    Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, t).ConfigureAwait(false);
                                     if (objCompensatedImprovement != null)
                                     {
                                         lstReturn.Add(objCompensatedImprovement);

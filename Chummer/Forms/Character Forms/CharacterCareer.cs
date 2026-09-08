@@ -8721,10 +8721,10 @@ namespace Chummer
                         {
                             string strQuality = frmPickQuality.MyForm.SelectedQuality;
                             intRatingToAdd -= await (await CharacterObject.GetQualitiesAsync(GenericToken).ConfigureAwait(false))
-                                .CountAsync(async x =>
-                                    (await x.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                                .CountAsync(async (x, t) =>
+                                    (await x.GetSourceIDStringAsync(t).ConfigureAwait(false))
                                         .Equals(strQuality, StringComparison.OrdinalIgnoreCase)
-                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
+                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(t).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
                         }
                     }
 
@@ -9014,10 +9014,10 @@ namespace Chummer
                     {
                         string strQuality = frmPickQuality.MyForm.SelectedQuality;
                         intRatingToAdd -= await (await CharacterObject.GetQualitiesAsync(GenericToken).ConfigureAwait(false))
-                                .CountAsync(async x =>
-                                    (await x.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                                .CountAsync(async (x, t) =>
+                                    (await x.GetSourceIDStringAsync(t).ConfigureAwait(false))
                                         .Equals(strQuality, StringComparison.OrdinalIgnoreCase)
-                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
+                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(t).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
                     }
                 }
 
@@ -16219,10 +16219,10 @@ namespace Chummer
                     return;
 
                 List<Vehicle> lstVehicles = await CharacterObject.Vehicles.ToListAsync(
-                    async x => await x.WeaponMounts.GetCountAsync(GenericToken).ConfigureAwait(false) > 0 || await x
+                    async (x, t) => await x.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0 || await x
                         .Mods.AnyAsync(
                             y => y.Name.Contains("Drone Arm") ||
-                                 y.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), GenericToken)
+                                 y.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), t)
                         .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                 // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.

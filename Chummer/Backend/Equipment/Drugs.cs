@@ -419,8 +419,9 @@ namespace Chummer.Backend.Equipment
                 XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities", token).ConfigureAwait(false);
                 try
                 {
-                    foreach (string strQualityText in (await GetQualitiesAsync(token).ConfigureAwait(false)).Select(x => x.InnerTextViaPool(token)))
+                    foreach (XmlNode xmlNode in await GetQualitiesAsync(token).ConfigureAwait(false))
                     {
+                        string strQualityText = xmlNode.InnerTextViaPool(token);
                         // <quality>
                         XmlElementWriteHelper objQualityElement = await objWriter.StartElementAsync("quality", token).ConfigureAwait(false);
                         try
@@ -716,13 +717,13 @@ namespace Chummer.Backend.Equipment
             IDictionary<string, string> dicDrugCategoryByInternalId, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            await lstWare.ForEachAsync(async objWare =>
+            await lstWare.ForEachAsync(async (objWare, t) =>
             {
-                await (await objWare.GetDrugChildrenAsync(token).ConfigureAwait(false))
-                    .ForEachAsync(x => dicDrugCategoryByInternalId[x.InternalId] = x.Category ?? string.Empty, token).ConfigureAwait(false);
+                await (await objWare.GetDrugChildrenAsync(t).ConfigureAwait(false))
+                    .ForEachAsync(x => dicDrugCategoryByInternalId[x.InternalId] = x.Category ?? string.Empty, t).ConfigureAwait(false);
                 await AddNestedDrugCategoriesToLookupAsync(
-                    await objWare.GetChildrenAsync(token).ConfigureAwait(false),
-                    dicDrugCategoryByInternalId, token).ConfigureAwait(false);
+                    await objWare.GetChildrenAsync(t).ConfigureAwait(false),
+                    dicDrugCategoryByInternalId, t).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
         }
 
@@ -948,15 +949,15 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the Accessories and add in their availability.
-                intAvail += await Components.SumAsync(async objComponent =>
+                intAvail += await Components.SumAsync(async (objComponent, t) =>
                 {
                     AvailabilityValue objLoopAvail
-                        = await objComponent.GetTotalAvailTupleAsync(token).ConfigureAwait(false);
+                        = await objComponent.GetTotalAvailTupleAsync(t).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(t).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
 

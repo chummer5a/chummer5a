@@ -898,20 +898,20 @@ namespace Chummer
             await lblQuickStats.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
-                                                               x => x.GetQuickTextAsync(token), token: token).ConfigureAwait(false);
+                                                               (x, t) => x.GetQuickTextAsync(t), token: token).ConfigureAwait(false);
             await txtContactName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
                 _objContact,
                 nameof(Contact.Name),
                 (x, y) => x.TextChanged += y,
-                x => x.GetNameAsync(token),
-                (x, y) => x.SetNameAsync(y, token),
+                (x, t) => x.GetNameAsync(t),
+                (x, y, t) => x.SetNameAsync(y, t),
                 1000, token, token).ConfigureAwait(false);
             await txtContactLocation.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
                 _objContact,
                 nameof(Contact.Location),
                 (x, y) => x.TextChanged += y,
-                x => x.GetLocationAsync(token),
-                (x, y) => x.SetLocationAsync(y, token),
+                (x, t) => x.GetLocationAsync(t),
+                (x, y, t) => x.SetLocationAsync(y, t),
                 1000, token, token).ConfigureAwait(false);
             await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
                 nameof(Contact.ReadOnly), x => x.GetReadOnlyAsync(_objMyToken), token).ConfigureAwait(false);
@@ -1048,22 +1048,22 @@ namespace Chummer
                     await chkGroup.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
                         nameof(Contact.IsGroup),
                         (x, y) => x.CheckedChanged += y,
-                        x => x.GetIsGroupAsync(_objMyToken),
-                        (x, y) => x.SetIsGroupAsync(y, _objMyToken),
+                        (x, t) => x.GetIsGroupAsync(t),
+                        (x, y, t) => x.SetIsGroupAsync(y, t),
                         _objMyToken,
                         token).ConfigureAwait(false);
                     await chkFree.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
                         nameof(Contact.IsGroup),
                         (x, y) => x.CheckedChanged += y,
-                        x => x.GetFreeAsync(_objMyToken),
-                        (x, y) => x.SetFreeAsync(y, _objMyToken),
+                        (x, t) => x.GetFreeAsync(t),
+                        (x, y, t) => x.SetFreeAsync(y, t),
                         _objMyToken,
                         token).ConfigureAwait(false);
                     await chkFamily.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
                         nameof(Contact.Family),
                         (x, y) => x.CheckedChanged += y,
-                        x => x.GetFamilyAsync(_objMyToken),
-                        (x, y) => x.SetFamilyAsync(y, _objMyToken),
+                        (x, t) => x.GetFamilyAsync(t),
+                        (x, y, t) => x.SetFamilyAsync(y, t),
                         _objMyToken,
                         token).ConfigureAwait(false);
                     await chkFamily.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
@@ -1073,8 +1073,8 @@ namespace Chummer
                         _objContact,
                         nameof(Contact.Blackmail),
                         (x, y) => x.CheckedChanged += y,
-                        x => x.GetBlackmailAsync(_objMyToken),
-                        (x, y) => x.SetBlackmailAsync(y, _objMyToken),
+                        (x, t) => x.GetBlackmailAsync(t),
+                        (x, y, t) => x.SetBlackmailAsync(y, t),
                         _objMyToken,
                         token).ConfigureAwait(false);
                     await chkBlackmail.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
@@ -1084,8 +1084,8 @@ namespace Chummer
                         _objContact,
                         nameof(Contact.Loyalty),
                         (x, y) => x.ValueChanged += y,
-                        x => x.GetLoyaltyAsync(_objMyToken),
-                        (x, y) => x.SetLoyaltyAsync(y, _objMyToken),
+                        (x, t) => x.GetLoyaltyAsync(t),
+                        (x, y, t) => x.SetLoyaltyAsync(y, t),
                         250,
                         _objMyToken,
                         token).ConfigureAwait(false);
@@ -1093,8 +1093,8 @@ namespace Chummer
                         _objContact,
                         nameof(Contact.Connection),
                         (x, y) => x.ValueChanged += y,
-                        x => x.GetConnectionAsync(_objMyToken),
-                        (x, y) => x.SetConnectionAsync(y, _objMyToken),
+                        (x, t) => x.GetConnectionAsync(t),
+                        (x, y, t) => x.SetConnectionAsync(y, t),
                         250,
                         _objMyToken,
                         token).ConfigureAwait(false);
@@ -1104,22 +1104,22 @@ namespace Chummer
                     await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                        nameof(Contact.GroupEnabled),
                                                                        // ReSharper disable once MethodSupportsCancellation
-                                                                       x => x.GetGroupEnabledAsync(token),
+                                                                       (x, t) => x.GetGroupEnabledAsync(t),
                                                                        token: token).ConfigureAwait(false);
                     await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                       nameof(Contact.FreeEnabled),
                                                                       // ReSharper disable once MethodSupportsCancellation
-                                                                      x => x.GetFreeEnabledAsync(token),
+                                                                      (x, t) => x.GetFreeEnabledAsync(t),
                                                                       token: token).ConfigureAwait(false);
                     await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                          nameof(Contact.LoyaltyEnabled),
                                                                          // ReSharper disable once MethodSupportsCancellation
-                                                                         x => x.GetLoyaltyEnabledAsync(token),
+                                                                         (x, t) => x.GetLoyaltyEnabledAsync(t),
                                                                          token: token).ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
                                                                             nameof(Contact.ConnectionMaximum),
                                                                             // ReSharper disable once MethodSupportsCancellation
-                                                                            x => x.GetConnectionMaximumAsync(token),
+                                                                            (x, t) => x.GetConnectionMaximumAsync(t),
                                                                             token: token).ConfigureAwait(false);
                     string strToolTipText;
                     if (await _objContact.GetIsEnemyAsync(token).ConfigureAwait(false))
@@ -1248,7 +1248,7 @@ namespace Chummer
                         nameof(Contact.NoLinkedCharacter), x => x.GetNoLinkedCharacterAsync(_objMyToken), token: token);
                 }
 
-                this.DoThreadSafe(x =>
+                this.DoThreadSafe((x, t) =>
                 {
                     x.lblType = new Label
                     {
@@ -1353,8 +1353,8 @@ namespace Chummer
                     x.tlpStatBlock.Controls.Add(x.lblHobbiesVice, 2, 2);
                     x.tlpStatBlock.Controls.Add(x.cboHobbiesVice, 3, 2);
 
-                    x.tlpStatBlock.TranslateWinForm(token: token);
-                    x.tlpStatBlock.UpdateLightDarkMode(token: token);
+                    x.tlpStatBlock.TranslateWinForm(token: t);
+                    x.tlpStatBlock.UpdateLightDarkMode(token: t);
 
                     x.SuspendLayout();
                     try

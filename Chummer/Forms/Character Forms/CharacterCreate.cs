@@ -6275,10 +6275,10 @@ namespace Chummer
                                                           "limit", ref intDummy))
                             {
                                 intRatingToAdd -= await (await CharacterObject.GetQualitiesAsync(GenericToken).ConfigureAwait(false))
-                                    .CountAsync(async x =>
-                                        (await x.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                                    .CountAsync(async (x, t) =>
+                                        (await x.GetSourceIDStringAsync(t).ConfigureAwait(false))
                                             .Equals(strSelectedQuality, StringComparison.OrdinalIgnoreCase)
-                                        && string.IsNullOrEmpty(await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
+                                        && string.IsNullOrEmpty(await x.GetSourceNameAsync(t).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
                             }
 
                             // Helps to capture a write lock here for performance purposes
@@ -13452,14 +13452,14 @@ namespace Chummer
                             intLimitMod += intSkillValue;
                         //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
                         spells -= await skill.Specializations.CountAsync(
-                                async spec =>
-                                    await (await CharacterObject.GetSpellsAsync(token)
+                                async (spec, t1) =>
+                                    await (await CharacterObject.GetSpellsAsync(t1)
                                             .ConfigureAwait(false)).AnyAsync(
-                                            async (spell, t) =>
+                                            async (spell, t2) =>
                                                 spell.Category ==
-                                                await spec.GetNameAsync(t).ConfigureAwait(false) &&
+                                                await spec.GetNameAsync(t2).ConfigureAwait(false) &&
                                                 !spell.FreeBonus,
-                                            token)
+                                            t1)
                                         .ConfigureAwait(false),
                                 token)
                             .ConfigureAwait(false);
@@ -20176,9 +20176,9 @@ namespace Chummer
                     {
                         int intCountAttributesAtMax
                             = await lstAttributes.CountAsync(
-                                                     async x => x.MetatypeCategory
+                                                     async (x, t) => x.MetatypeCategory
                                                                 == AttributeCategory.Standard
-                                                                && await x.GetAtMetatypeMaximumAsync(token)
+                                                                && await x.GetAtMetatypeMaximumAsync(t)
                                                                           .ConfigureAwait(false), token)
                                                  .ConfigureAwait(false);
                         if (intCountAttributesAtMax > intMaxNumberMaxAttributesCreate)
@@ -20405,7 +20405,7 @@ namespace Chummer
                     int intLanguages
                         = await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
                                 .CountAsync(
-                                    objSkill => objSkill.GetIsNativeLanguageAsync(token), token)
+                                    (objSkill, t) => objSkill.GetIsNativeLanguageAsync(t), token)
                                 .ConfigureAwait(false);
 
                     int intLanguageLimit = 1 + (await ImprovementManager
@@ -21150,13 +21150,13 @@ namespace Chummer
                             //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
                             intUsedPoints -= await (await skill.GetSpecializationsAsync(token).ConfigureAwait(false))
                                 .CountAsync(
-                                    async spec =>
+                                    async (spec, t) =>
                                     {
-                                        string strNameInner = await spec.GetNameAsync(token).ConfigureAwait(false);
-                                        return await (await CharacterObject.GetSpellsAsync(token)
+                                        string strNameInner = await spec.GetNameAsync(t).ConfigureAwait(false);
+                                        return await (await CharacterObject.GetSpellsAsync(t)
                                                 .ConfigureAwait(false)).AnyAsync(
                                                 spell => spell.Category == strNameInner && !spell.FreeBonus,
-                                                token)
+                                                t)
                                             .ConfigureAwait(false);
                                     },
                                     token)

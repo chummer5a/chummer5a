@@ -1301,7 +1301,7 @@ namespace Chummer
                                     dicDeduplicatedByGuid.Add(strGuid, kvpKeyAndEnabled);
                                 }
                             }
-                        }, token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
 
                         List<TreeNode> lstNodes = new List<TreeNode>(dicDeduplicatedByGuid.Count);
                         foreach (KeyValuePair<string, KeyValuePair<string, bool>> kvpDeduplicated in dicDeduplicatedByGuid)
@@ -2082,12 +2082,12 @@ namespace Chummer
         {
             await cmdRename.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                                 nameof(CharacterSettings.BuiltInOption),
-                                                                x => x.GetBuiltInOptionAsync(token),
+                                                                (x, t) => x.GetBuiltInOptionAsync(t),
                                                                 token: token)
                            .ConfigureAwait(false);
             await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                                 nameof(CharacterSettings.BuiltInOption),
-                                                                x => x.GetBuiltInOptionAsync(token),
+                                                                (x, t) => x.GetBuiltInOptionAsync(t),
                                                                 token: token)
                            .ConfigureAwait(false);
 
@@ -2096,150 +2096,150 @@ namespace Chummer
                 (x, y) => x.SelectedValue = y, _objCharacterSettings,
                 nameof(CharacterSettings.BuildMethod),
                 (x, y) => x.SelectedValueChanged += y,
-                x => x.GetBuildMethodAsync(token),
-                (x, y) => x.SetBuildMethodAsync(y, token),
+                (x, t) => x.GetBuildMethodAsync(t),
+                (x, y, t) => x.SetBuildMethodAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
             await lblPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                        nameof(CharacterSettings
                                                                                   .BuildMethodUsesPriorityTables),
-                                                                       x => x
+                                                                       (x, t) => x
                                                                             .GetBuildMethodUsesPriorityTablesAsync(
-                                                                                token)
+                                                                                t)
                                                                             , token: token)
                                   .ConfigureAwait(false);
             await cboPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                        nameof(CharacterSettings
                                                                                   .BuildMethodUsesPriorityTables),
-                                                                       x => x
+                                                                       (x, t) => x
                                                                             .GetBuildMethodUsesPriorityTablesAsync(
-                                                                                token)
+                                                                                t)
                                                                             , token: token)
                                   .ConfigureAwait(false);
             await lblPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                     nameof(CharacterSettings.BuildMethodIsPriority),
-                                                                    x => x.GetBuildMethodIsPriorityAsync(token)
+                                                                    (x, t) => x.GetBuildMethodIsPriorityAsync(t)
                                                                           ,
                                                                     token: token).ConfigureAwait(false);
             await txtPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                     nameof(CharacterSettings.BuildMethodIsPriority),
-                                                                    x => x.GetBuildMethodIsPriorityAsync(token)
+                                                                    (x, t) => x.GetBuildMethodIsPriorityAsync(t)
                                                                           ,
                                                                     token: token).ConfigureAwait(false);
             await txtPriorities.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.PriorityArray),
                 (x, y) => x.TextChanged += y,
-                x => x.GetPriorityArrayAsync(token),
-                (x, y) => x.SetPriorityArrayAsync(y, token),
+                (x, t) => x.GetPriorityArrayAsync(t),
+                (x, y, t) => x.SetPriorityArrayAsync(y, t),
                 1000, token, token).ConfigureAwait(false);
             await lblSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings.BuildMethodIsSumtoTen),
-                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token),
+                                                                  (x, t) => x.GetBuildMethodIsSumtoTenAsync(t),
                                                                   token: token).ConfigureAwait(false);
             await nudSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings.BuildMethodIsSumtoTen),
-                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token),
+                                                                  (x, t) => x.GetBuildMethodIsSumtoTenAsync(t),
                                                                   token: token).ConfigureAwait(false);
             await nudSumToTen.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.SumtoTen),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetSumtoTenAsync(token),
-                (x, y) => x.SetSumtoTenAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetSumtoTenAsync(t),
+                (x, y, t) => x.SetSumtoTenAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudStartingKarma.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.BuildKarma),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetBuildKarmaAsync(token),
-                (x, y) => x.SetBuildKarmaAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetBuildKarmaAsync(t),
+                (x, y, t) => x.SetBuildKarmaAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxNuyenKarma.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.Value = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.NuyenMaximumBP),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetNuyenMaximumBPAsync(token),
-                (x, y) => x.SetNuyenMaximumBPAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetNuyenMaximumBPAsync(t),
+                (x, y, t) => x.SetNuyenMaximumBPAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxAvail.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaximumAvailability),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaximumAvailabilityAsync(token),
-                (x, y) => x.SetMaximumAvailabilityAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaximumAvailabilityAsync(t),
+                (x, y, t) => x.SetMaximumAvailabilityAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudQualityKarmaLimit.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.QualityKarmaLimit),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetQualityKarmaLimitAsync(token),
-                (x, y) => x.SetQualityKarmaLimitAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetQualityKarmaLimitAsync(t),
+                (x, y, t) => x.SetQualityKarmaLimitAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudNuyenCarryover.RegisterAsyncDataBindingWithDelayAsync(x => x.Value,
                 (x, y) => x.Value = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.NuyenCarryover),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetNuyenCarryoverAsync(token),
-                (x, y) => x.SetNuyenCarryoverAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetNuyenCarryoverAsync(t),
+                (x, y, t) => x.SetNuyenCarryoverAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudNuyenCarryover
                 .RegisterOneWayAsyncDataBindingAsync((x, y) => x.DecimalPlaces = y, _objCharacterSettings,
-                    nameof(CharacterSettings.MaxNuyenDecimals), x => x.GetMaxNuyenDecimalsAsync(token), token)
+                    nameof(CharacterSettings.MaxNuyenDecimals), (x, t) => x.GetMaxNuyenDecimalsAsync(t), token)
                 .ConfigureAwait(false);
             await nudKarmaCarryover.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaCarryover),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaCarryoverAsync(token),
-                (x, y) => x.SetKarmaCarryoverAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaCarryoverAsync(t),
+                (x, y, t) => x.SetKarmaCarryoverAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxNumberMaxAttributes.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxNumberMaxAttributesCreate),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxNumberMaxAttributesCreateAsync(token),
-                (x, y) => x.SetMaxNumberMaxAttributesCreateAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxNumberMaxAttributesCreateAsync(t),
+                (x, y, t) => x.SetMaxNumberMaxAttributesCreateAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxSkillRatingCreate.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxSkillRatingCreate),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxSkillRatingCreateAsync(token),
-                (x, y) => x.SetMaxSkillRatingCreateAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxSkillRatingCreateAsync(t),
+                (x, y, t) => x.SetMaxSkillRatingCreateAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxKnowledgeSkillRatingCreate.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxKnowledgeSkillRatingCreateAsync(token),
-                (x, y) => x.SetMaxKnowledgeSkillRatingCreateAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxKnowledgeSkillRatingCreateAsync(t),
+                (x, y, t) => x.SetMaxKnowledgeSkillRatingCreateAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxMartialArts.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaximumMartialArts),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaximumMartialArtsAsync(token),
-                (x, y) => x.SetMaximumMartialArtsAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaximumMartialArtsAsync(t),
+                (x, y, t) => x.SetMaximumMartialArtsAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxMartialTechniques.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaximumMartialTechniques),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaximumMartialTechniquesAsync(token),
-                (x, y) => x.SetMaximumMartialTechniquesAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaximumMartialTechniquesAsync(t),
+                (x, y, t) => x.SetMaximumMartialTechniquesAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxSkillRatingCreate
                 .RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objCharacterSettings,
-                    nameof(CharacterSettings.MaxSkillRating), x => x.GetMaxSkillRatingAsync(token), token)
+                    nameof(CharacterSettings.MaxSkillRating), (x, t) => x.GetMaxSkillRatingAsync(t), token)
                 .ConfigureAwait(false);
             await nudMaxKnowledgeSkillRatingCreate
                 .RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objCharacterSettings,
-                    nameof(CharacterSettings.MaxKnowledgeSkillRating), x => x.GetMaxKnowledgeSkillRatingAsync(token), token)
+                    nameof(CharacterSettings.MaxKnowledgeSkillRating), (x, t) => x.GetMaxKnowledgeSkillRatingAsync(t), token)
                 .ConfigureAwait(false);
             await txtContactPoints.RegisterAsyncDataBindingWithDelayAsync(
                 x => x.Text,
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.ContactPointsExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetContactPointsExpressionAsync(token),
-                (x, y) => x.SetContactPointsExpressionAsync(y, token),
+                (x, t) => x.GetContactPointsExpressionAsync(t),
+                (x, y, t) => x.SetContactPointsExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2248,8 +2248,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.GameplayOptionName),
                 (x, y) => x.TextChanged += y,
-                x => x.GetGameplayOptionNameAsync(token),
-                (x, y) => x.SetGameplayOptionNameAsync(y, token),
+                (x, t) => x.GetGameplayOptionNameAsync(t),
+                (x, y, t) => x.SetGameplayOptionNameAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2258,8 +2258,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.KnowledgePointsExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetKnowledgePointsExpressionAsync(token),
-                (x, y) => x.SetKnowledgePointsExpressionAsync(y, token),
+                (x, t) => x.GetKnowledgePointsExpressionAsync(t),
+                (x, y, t) => x.SetKnowledgePointsExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2268,8 +2268,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.RegisteredSpriteExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetRegisteredSpriteExpressionAsync(token),
-                (x, y) => x.SetRegisteredSpriteExpressionAsync(y, token),
+                (x, t) => x.GetRegisteredSpriteExpressionAsync(t),
+                (x, y, t) => x.SetRegisteredSpriteExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2278,8 +2278,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.BoundSpiritExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetBoundSpiritExpressionAsync(token),
-                (x, y) => x.SetBoundSpiritExpressionAsync(y, token),
+                (x, t) => x.GetBoundSpiritExpressionAsync(t),
+                (x, y, t) => x.SetBoundSpiritExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2288,8 +2288,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.EssenceModifierPostExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetEssenceModifierPostExpressionAsync(token),
-                (x, y) => x.SetEssenceModifierPostExpressionAsync(y, token),
+                (x, t) => x.GetEssenceModifierPostExpressionAsync(t),
+                (x, y, t) => x.SetEssenceModifierPostExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2298,8 +2298,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.LiftLimitExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetLiftLimitExpressionAsync(token),
-                (x, y) => x.SetLiftLimitExpressionAsync(y, token),
+                (x, t) => x.GetLiftLimitExpressionAsync(t),
+                (x, y, t) => x.SetLiftLimitExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2308,8 +2308,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.CarryLimitExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetCarryLimitExpressionAsync(token),
-                (x, y) => x.SetCarryLimitExpressionAsync(y, token),
+                (x, t) => x.GetCarryLimitExpressionAsync(t),
+                (x, y, t) => x.SetCarryLimitExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2318,8 +2318,8 @@ namespace Chummer
                 (x, y) => x.Text = y, _objCharacterSettings,
                 nameof(CharacterSettings.EncumbranceIntervalExpression),
                 (x, y) => x.TextChanged += y,
-                x => x.GetEncumbranceIntervalExpressionAsync(token),
-                (x, y) => x.SetEncumbranceIntervalExpressionAsync(y, token),
+                (x, t) => x.GetEncumbranceIntervalExpressionAsync(t),
+                (x, y, t) => x.SetEncumbranceIntervalExpressionAsync(y, t),
                 1000,
                 token,
                 token).ConfigureAwait(false);
@@ -2328,581 +2328,581 @@ namespace Chummer
                 _objCharacterSettings,
                 nameof(CharacterSettings.WeightDecimals),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetWeightDecimalsAsync(token),
-                (x, y) => x.SetWeightDecimalsAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetWeightDecimalsAsync(t),
+                (x, y, t) => x.SetWeightDecimalsAsync(y, t), 250, token, token).ConfigureAwait(false);
 
             await chkEncumbrancePenaltyPhysicalLimit.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDoEncumbrancePenaltyPhysicalLimitAsync(token),
-                (x, y) => x.SetDoEncumbrancePenaltyPhysicalLimitAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDoEncumbrancePenaltyPhysicalLimitAsync(t),
+                (x, y, t) => x.SetDoEncumbrancePenaltyPhysicalLimitAsync(y, t), token).ConfigureAwait(false);
             await chkEncumbrancePenaltyMovementSpeed.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDoEncumbrancePenaltyMovementSpeedAsync(token),
-                (x, y) => x.SetDoEncumbrancePenaltyMovementSpeedAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDoEncumbrancePenaltyMovementSpeedAsync(t),
+                (x, y, t) => x.SetDoEncumbrancePenaltyMovementSpeedAsync(y, t), token).ConfigureAwait(false);
             await chkEncumbrancePenaltyAgility.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DoEncumbrancePenaltyAgility),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDoEncumbrancePenaltyAgilityAsync(token),
-                (x, y) => x.SetDoEncumbrancePenaltyAgilityAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDoEncumbrancePenaltyAgilityAsync(t),
+                (x, y, t) => x.SetDoEncumbrancePenaltyAgilityAsync(y, t), token).ConfigureAwait(false);
             await chkEncumbrancePenaltyReaction.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DoEncumbrancePenaltyReaction),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDoEncumbrancePenaltyReactionAsync(token),
-                (x, y) => x.SetDoEncumbrancePenaltyReactionAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDoEncumbrancePenaltyReactionAsync(t),
+                (x, y, t) => x.SetDoEncumbrancePenaltyReactionAsync(y, t), token).ConfigureAwait(false);
             await chkEncumbrancePenaltyReaction.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDoEncumbrancePenaltyWoundModifierAsync(token),
-                (x, y) => x.SetDoEncumbrancePenaltyWoundModifierAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDoEncumbrancePenaltyWoundModifierAsync(t),
+                (x, y, t) => x.SetDoEncumbrancePenaltyWoundModifierAsync(y, t), token).ConfigureAwait(false);
 
             await nudEncumbrancePenaltyPhysicalLimit.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetEncumbrancePenaltyPhysicalLimitAsync(token),
-                (x, y) => x.SetEncumbrancePenaltyPhysicalLimitAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetEncumbrancePenaltyPhysicalLimitAsync(t),
+                (x, y, t) => x.SetEncumbrancePenaltyPhysicalLimitAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudEncumbrancePenaltyMovementSpeed.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetEncumbrancePenaltyMovementSpeedAsync(token),
-                (x, y) => x.SetEncumbrancePenaltyMovementSpeedAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetEncumbrancePenaltyMovementSpeedAsync(t),
+                (x, y, t) => x.SetEncumbrancePenaltyMovementSpeedAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudEncumbrancePenaltyAgility.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EncumbrancePenaltyAgility),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetEncumbrancePenaltyAgilityAsync(token),
-                (x, y) => x.SetEncumbrancePenaltyAgilityAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetEncumbrancePenaltyAgilityAsync(t),
+                (x, y, t) => x.SetEncumbrancePenaltyAgilityAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudEncumbrancePenaltyReaction.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EncumbrancePenaltyReaction),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetEncumbrancePenaltyReactionAsync(token),
-                (x, y) => x.SetEncumbrancePenaltyReactionAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetEncumbrancePenaltyReactionAsync(t),
+                (x, y, t) => x.SetEncumbrancePenaltyReactionAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudEncumbrancePenaltyWoundModifier.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EncumbrancePenaltyWoundModifier),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetEncumbrancePenaltyWoundModifierAsync(token),
-                (x, y) => x.SetEncumbrancePenaltyWoundModifierAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetEncumbrancePenaltyWoundModifierAsync(t),
+                (x, y, t) => x.SetEncumbrancePenaltyWoundModifierAsync(y, t), 250, token, token).ConfigureAwait(false);
 
             await chkEnforceCapacity.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EnforceCapacity),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetEnforceCapacityAsync(token),
-                (x, y) => x.SetEnforceCapacityAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetEnforceCapacityAsync(t),
+                (x, y, t) => x.SetEnforceCapacityAsync(y, t), token).ConfigureAwait(false);
             await chkLicenseEachRestrictedItem.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.LicenseRestricted),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetLicenseRestrictedAsync(token),
-                (x, y) => x.SetLicenseRestrictedAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetLicenseRestrictedAsync(t),
+                (x, y, t) => x.SetLicenseRestrictedAsync(y, t), token).ConfigureAwait(false);
             await chkReverseAttributePriorityOrder.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ReverseAttributePriorityOrder),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetReverseAttributePriorityOrderAsync(token),
-                (x, y) => x.SetReverseAttributePriorityOrderAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetReverseAttributePriorityOrderAsync(t),
+                (x, y, t) => x.SetReverseAttributePriorityOrderAsync(y, t), token).ConfigureAwait(false);
             await chkDronemods.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DroneMods),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDroneModsAsync(token),
-                (x, y) => x.SetDroneModsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDroneModsAsync(t),
+                (x, y, t) => x.SetDroneModsAsync(y, t), token).ConfigureAwait(false);
             await chkDronemodsMaximumPilot.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DroneModsMaximumPilot),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDroneModsMaximumPilotAsync(token),
-                (x, y) => x.SetDroneModsMaximumPilotAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDroneModsMaximumPilotAsync(t),
+                (x, y, t) => x.SetDroneModsMaximumPilotAsync(y, t), token).ConfigureAwait(false);
             await chkRestrictRecoil.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.RestrictRecoil),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetRestrictRecoilAsync(token),
-                (x, y) => x.SetRestrictRecoilAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetRestrictRecoilAsync(t),
+                (x, y, t) => x.SetRestrictRecoilAsync(y, t), token).ConfigureAwait(false);
             await chkStrictSkillGroups.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.StrictSkillGroupsInCreateMode),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetStrictSkillGroupsInCreateModeAsync(token),
-                (x, y) => x.SetStrictSkillGroupsInCreateModeAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetStrictSkillGroupsInCreateModeAsync(t),
+                (x, y, t) => x.SetStrictSkillGroupsInCreateModeAsync(y, t), token).ConfigureAwait(false);
             await chkAllowPointBuySpecializationsOnKarmaSkills.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowPointBuySpecializationsOnKarmaSkills),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token),
-                (x, y) => x.SetAllowPointBuySpecializationsOnKarmaSkillsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(t),
+                (x, y, t) => x.SetAllowPointBuySpecializationsOnKarmaSkillsAsync(y, t), token).ConfigureAwait(false);
             await chkAllowFreeGrids.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowFreeGrids),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowFreeGridsAsync(token),
-                (x, y) => x.SetAllowFreeGridsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAllowFreeGridsAsync(t),
+                (x, y, t) => x.SetAllowFreeGridsAsync(y, t), token).ConfigureAwait(false);
 
             await chkDontUseCyberlimbCalculation.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DontUseCyberlimbCalculation),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDontUseCyberlimbCalculationAsync(token),
-                (x, y) => x.SetDontUseCyberlimbCalculationAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDontUseCyberlimbCalculationAsync(t),
+                (x, y, t) => x.SetDontUseCyberlimbCalculationAsync(y, t), token).ConfigureAwait(false);
             await chkCyberlegMovement.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.CyberlegMovement),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetCyberlegMovementAsync(token),
-                (x, y) => x.SetCyberlegMovementAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetCyberlegMovementAsync(t),
+                (x, y, t) => x.SetCyberlegMovementAsync(y, t), token).ConfigureAwait(false);
             await chkCyberlimbAttributeBonusCap.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token),
-                (x, y) => x.SetCyberlimbAttributeBonusCapOverrideAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetCyberlimbAttributeBonusCapOverrideAsync(t),
+                (x, y, t) => x.SetCyberlimbAttributeBonusCapOverrideAsync(y, t), token).ConfigureAwait(false);
             await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
-                x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetCyberlimbAttributeBonusCapOverrideAsync(t), token: token).ConfigureAwait(false);
             await nudCyberlimbAttributeBonusCap.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCap),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetCyberlimbAttributeBonusCapAsync(token),
-                (x, y) => x.SetCyberlimbAttributeBonusCapAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetCyberlimbAttributeBonusCapAsync(t),
+                (x, y, t) => x.SetCyberlimbAttributeBonusCapAsync(y, t), 250, token, token).ConfigureAwait(false);
             await chkRedlinerLimbsSkull.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.RedlinerExcludesSkull),
                 (x, y) => x.CheckedChanged += y,
-                async x => !await x.GetRedlinerExcludesSkullAsync(token).ConfigureAwait(false),
-                (x, y) => x.SetRedlinerExcludesSkullAsync(!y, token), token, token).ConfigureAwait(false);
+                async (x, t) => !await x.GetRedlinerExcludesSkullAsync(t).ConfigureAwait(false),
+                (x, y, t) => x.SetRedlinerExcludesSkullAsync(!y, t), token, token).ConfigureAwait(false);
             await chkRedlinerLimbsTorso.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.RedlinerExcludesTorso),
                 (x, y) => x.CheckedChanged += y,
-                async x => !await x.GetRedlinerExcludesTorsoAsync(token).ConfigureAwait(false),
-                (x, y) => x.SetRedlinerExcludesTorsoAsync(!y, token), token, token).ConfigureAwait(false);
+                async (x, t) => !await x.GetRedlinerExcludesTorsoAsync(t).ConfigureAwait(false),
+                (x, y, t) => x.SetRedlinerExcludesTorsoAsync(!y, t), token, token).ConfigureAwait(false);
             await chkRedlinerLimbsArms.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.RedlinerExcludesArms),
                 (x, y) => x.CheckedChanged += y,
-                async x => !await x.GetRedlinerExcludesArmsAsync(token).ConfigureAwait(false),
-                (x, y) => x.SetRedlinerExcludesArmsAsync(!y, token), token, token).ConfigureAwait(false);
+                async (x, t) => !await x.GetRedlinerExcludesArmsAsync(t).ConfigureAwait(false),
+                (x, y, t) => x.SetRedlinerExcludesArmsAsync(!y, t), token, token).ConfigureAwait(false);
             await chkRedlinerLimbsLegs.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.RedlinerExcludesLegs),
                 (x, y) => x.CheckedChanged += y,
-                async x => !await x.GetRedlinerExcludesLegsAsync(token).ConfigureAwait(false),
-                (x, y) => x.SetRedlinerExcludesLegsAsync(!y, token), token, token).ConfigureAwait(false);
+                async (x, t) => !await x.GetRedlinerExcludesLegsAsync(t).ConfigureAwait(false),
+                (x, y, t) => x.SetRedlinerExcludesLegsAsync(!y, t), token, token).ConfigureAwait(false);
 
             await nudNuyenDecimalsMaximum.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxNuyenDecimals),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxNuyenDecimalsAsync(token),
-                (x, y) => x.SetMaxNuyenDecimalsAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxNuyenDecimalsAsync(t),
+                (x, y, t) => x.SetMaxNuyenDecimalsAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudNuyenDecimalsMinimum.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MinNuyenDecimals),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMinNuyenDecimalsAsync(token),
-                (x, y) => x.SetMinNuyenDecimalsAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMinNuyenDecimalsAsync(t),
+                (x, y, t) => x.SetMinNuyenDecimalsAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudEssenceDecimals.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EssenceDecimals),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetEssenceDecimalsAsync(token),
-                (x, y) => x.SetEssenceDecimalsAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetEssenceDecimalsAsync(t),
+                (x, y, t) => x.SetEssenceDecimalsAsync(y, t), 250, token, token).ConfigureAwait(false);
             await chkDontRoundEssenceInternally.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DontRoundEssenceInternally),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDontRoundEssenceInternallyAsync(token),
-                (x, y) => x.SetDontRoundEssenceInternallyAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDontRoundEssenceInternallyAsync(t),
+                (x, y, t) => x.SetDontRoundEssenceInternallyAsync(y, t), token).ConfigureAwait(false);
 
             await nudMinInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MinInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMinInitiativeDiceAsync(token),
-                (x, y) => x.SetMinInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMinInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMinInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxInitiativeDice.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Minimum = y, _objCharacterSettings,
                 nameof(CharacterSettings.MinInitiativeDice),
-                x => x.GetMinInitiativeDiceAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMinInitiativeDiceAsync(t), token: token).ConfigureAwait(false);
             await nudMaxInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxInitiativeDiceAsync(token),
-                (x, y) => x.SetMaxInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMaxInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMinAstralInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MinAstralInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMinAstralInitiativeDiceAsync(token),
-                (x, y) => x.SetMinAstralInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMinAstralInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMinAstralInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxAstralInitiativeDice.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Minimum = y, _objCharacterSettings,
                 nameof(CharacterSettings.MinAstralInitiativeDice),
-                x => x.GetMinAstralInitiativeDiceAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMinAstralInitiativeDiceAsync(t), token: token).ConfigureAwait(false);
             await nudMaxAstralInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxAstralInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxAstralInitiativeDiceAsync(token),
-                (x, y) => x.SetMaxAstralInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxAstralInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMaxAstralInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMinColdSimInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MinColdSimInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMinColdSimInitiativeDiceAsync(token),
-                (x, y) => x.SetMinColdSimInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMinColdSimInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMinColdSimInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxColdSimInitiativeDice.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Minimum = y, _objCharacterSettings,
                 nameof(CharacterSettings.MinColdSimInitiativeDice),
-                x => x.GetMinColdSimInitiativeDiceAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMinColdSimInitiativeDiceAsync(t), token: token).ConfigureAwait(false);
             await nudMaxColdSimInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxColdSimInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxColdSimInitiativeDiceAsync(token),
-                (x, y) => x.SetMaxColdSimInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxColdSimInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMaxColdSimInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMinHotSimInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MinHotSimInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMinHotSimInitiativeDiceAsync(token),
-                (x, y) => x.SetMinHotSimInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMinHotSimInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMinHotSimInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxHotSimInitiativeDice.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Minimum = y, _objCharacterSettings,
                 nameof(CharacterSettings.MinHotSimInitiativeDice),
-                x => x.GetMinHotSimInitiativeDiceAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMinHotSimInitiativeDiceAsync(t), token: token).ConfigureAwait(false);
             await nudMaxHotSimInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxHotSimInitiativeDice),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxHotSimInitiativeDiceAsync(token),
-                (x, y) => x.SetMaxHotSimInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxHotSimInitiativeDiceAsync(t),
+                (x, y, t) => x.SetMaxHotSimInitiativeDiceAsync(y, t), 250, token, token).ConfigureAwait(false);
 
             await chkEnable4eStyleEnemyTracking.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetEnableEnemyTrackingAsync(token),
-                (x, y) => x.SetEnableEnemyTrackingAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetEnableEnemyTrackingAsync(t),
+                (x, y, t) => x.SetEnableEnemyTrackingAsync(y, t), token).ConfigureAwait(false);
             await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
-                x => x.GetEnableEnemyTrackingAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetEnableEnemyTrackingAsync(t), token: token).ConfigureAwait(false);
             await nudKarmaGainedFromEnemies.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaEnemy),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaEnemyAsync(token),
-                (x, y) => x.SetKarmaEnemyAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaEnemyAsync(t),
+                (x, y, t) => x.SetKarmaEnemyAsync(y, t), 250, token, token).ConfigureAwait(false);
             await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
-                x => x.GetEnableEnemyTrackingAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetEnableEnemyTrackingAsync(t), token: token).ConfigureAwait(false);
             await chkEnemyKarmaQualityLimit.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.EnemyKarmaQualityLimit),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetEnemyKarmaQualityLimitAsync(token),
-                (x, y) => x.SetEnemyKarmaQualityLimitAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetEnemyKarmaQualityLimitAsync(t),
+                (x, y, t) => x.SetEnemyKarmaQualityLimitAsync(y, t), token).ConfigureAwait(false);
             await chkMoreLethalGameplay.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MoreLethalGameplay),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetMoreLethalGameplayAsync(token),
-                (x, y) => x.SetMoreLethalGameplayAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetMoreLethalGameplayAsync(t),
+                (x, y, t) => x.SetMoreLethalGameplayAsync(y, t), token).ConfigureAwait(false);
 
             await chkNoArmorEncumbrance.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.NoArmorEncumbrance),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetNoArmorEncumbranceAsync(token),
-                (x, y) => x.SetNoArmorEncumbranceAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetNoArmorEncumbranceAsync(t),
+                (x, y, t) => x.SetNoArmorEncumbranceAsync(y, t), token).ConfigureAwait(false);
             await chkUncappedArmorAccessoryBonuses.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.UncappedArmorAccessoryBonuses),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetUncappedArmorAccessoryBonusesAsync(token),
-                (x, y) => x.SetUncappedArmorAccessoryBonusesAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetUncappedArmorAccessoryBonusesAsync(t),
+                (x, y, t) => x.SetUncappedArmorAccessoryBonusesAsync(y, t), token).ConfigureAwait(false);
             await chkIgnoreArt.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.IgnoreArt),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetIgnoreArtAsync(token),
-                (x, y) => x.SetIgnoreArtAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetIgnoreArtAsync(t),
+                (x, y, t) => x.SetIgnoreArtAsync(y, t), token).ConfigureAwait(false);
             await chkIgnoreComplexFormLimit.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.IgnoreComplexFormLimit),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetIgnoreComplexFormLimitAsync(token),
-                (x, y) => x.SetIgnoreComplexFormLimitAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetIgnoreComplexFormLimitAsync(t),
+                (x, y, t) => x.SetIgnoreComplexFormLimitAsync(y, t), token).ConfigureAwait(false);
             await chkUnarmedSkillImprovements.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.UnarmedImprovementsApplyToWeapons),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetUnarmedImprovementsApplyToWeaponsAsync(token),
-                (x, y) => x.SetUnarmedImprovementsApplyToWeaponsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetUnarmedImprovementsApplyToWeaponsAsync(t),
+                (x, y, t) => x.SetUnarmedImprovementsApplyToWeaponsAsync(y, t), token).ConfigureAwait(false);
             await chkMysAdPp.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptAllowPpCareer),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetMysAdeptAllowPpCareerAsync(token),
-                (x, y) => x.SetMysAdeptAllowPpCareerAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetMysAdeptAllowPpCareerAsync(t),
+                (x, y, t) => x.SetMysAdeptAllowPpCareerAsync(y, t), token).ConfigureAwait(false);
             await chkMysAdPp.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
-                x => x.GetMysAdeptSecondMAGAttributeAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMysAdeptSecondMAGAttributeAsync(t), token: token).ConfigureAwait(false);
             await chkPrioritySpellsAsAdeptPowers.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.PrioritySpellsAsAdeptPowers),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetPrioritySpellsAsAdeptPowersAsync(token),
-                (x, y) => x.SetPrioritySpellsAsAdeptPowersAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetPrioritySpellsAsAdeptPowersAsync(t),
+                (x, y, t) => x.SetPrioritySpellsAsAdeptPowersAsync(y, t), token).ConfigureAwait(false);
             await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
-                x => x.GetMysAdeptSecondMAGAttributeAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMysAdeptSecondMAGAttributeAsync(t), token: token).ConfigureAwait(false);
             await chkMysAdeptSecondMAGAttribute.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetMysAdeptSecondMAGAttributeAsync(token),
-                (x, y) => x.SetMysAdeptSecondMAGAttributeAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetMysAdeptSecondMAGAttributeAsync(t),
+                (x, y, t) => x.SetMysAdeptSecondMAGAttributeAsync(y, t), token).ConfigureAwait(false);
             await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled),
-                x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetMysAdeptSecondMAGAttributeEnabledAsync(t), token: token).ConfigureAwait(false);
             await chkUsePointsOnBrokenGroups.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.UsePointsOnBrokenGroups),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetUsePointsOnBrokenGroupsAsync(token),
-                (x, y) => x.SetUsePointsOnBrokenGroupsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetUsePointsOnBrokenGroupsAsync(t),
+                (x, y, t) => x.SetUsePointsOnBrokenGroupsAsync(y, t), token).ConfigureAwait(false);
             await chkSpecialKarmaCost.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetSpecialKarmaCostBasedOnShownValueAsync(token),
-                (x, y) => x.SetSpecialKarmaCostBasedOnShownValueAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetSpecialKarmaCostBasedOnShownValueAsync(t),
+                (x, y, t) => x.SetSpecialKarmaCostBasedOnShownValueAsync(y, t), token).ConfigureAwait(false);
             await chkUseCalculatedPublicAwareness.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.UseCalculatedPublicAwareness),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetUseCalculatedPublicAwarenessAsync(token),
-                (x, y) => x.SetUseCalculatedPublicAwarenessAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetUseCalculatedPublicAwarenessAsync(t),
+                (x, y, t) => x.SetUseCalculatedPublicAwarenessAsync(y, t), token).ConfigureAwait(false);
             await chkAlternateMetatypeAttributeKarma.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AlternateMetatypeAttributeKarma),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAlternateMetatypeAttributeKarmaAsync(token),
-                (x, y) => x.SetAlternateMetatypeAttributeKarmaAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAlternateMetatypeAttributeKarmaAsync(t),
+                (x, y, t) => x.SetAlternateMetatypeAttributeKarmaAsync(y, t), token).ConfigureAwait(false);
             await chkCompensateSkillGroupKarmaDifference.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.CompensateSkillGroupKarmaDifference),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetCompensateSkillGroupKarmaDifferenceAsync(token),
-                (x, y) => x.SetCompensateSkillGroupKarmaDifferenceAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetCompensateSkillGroupKarmaDifferenceAsync(t),
+                (x, y, t) => x.SetCompensateSkillGroupKarmaDifferenceAsync(y, t), token).ConfigureAwait(false);
             await chkFreeMartialArtSpecialization.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.FreeMartialArtSpecialization),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetFreeMartialArtSpecializationAsync(token),
-                (x, y) => x.SetFreeMartialArtSpecializationAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetFreeMartialArtSpecializationAsync(t),
+                (x, y, t) => x.SetFreeMartialArtSpecializationAsync(y, t), token).ConfigureAwait(false);
             await chkIncreasedImprovedAbilityModifier.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetIncreasedImprovedAbilityMultiplierAsync(token),
-                (x, y) => x.SetIncreasedImprovedAbilityMultiplierAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetIncreasedImprovedAbilityMultiplierAsync(t),
+                (x, y, t) => x.SetIncreasedImprovedAbilityMultiplierAsync(y, t), token).ConfigureAwait(false);
             await chkAllowTechnomancerSchooling.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowTechnomancerSchooling),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowTechnomancerSchoolingAsync(token),
-                (x, y) => x.SetAllowTechnomancerSchoolingAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAllowTechnomancerSchoolingAsync(t),
+                (x, y, t) => x.SetAllowTechnomancerSchoolingAsync(y, t), token).ConfigureAwait(false);
             await chkAllowSkillRegrouping.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowSkillRegrouping),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowSkillRegroupingAsync(token),
-                (x, y) => x.SetAllowSkillRegroupingAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAllowSkillRegroupingAsync(t),
+                (x, y, t) => x.SetAllowSkillRegroupingAsync(y, t), token).ConfigureAwait(false);
             await chkSpecializationsBreakSkillGroups.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.SpecializationsBreakSkillGroups),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetSpecializationsBreakSkillGroupsAsync(token),
-                (x, y) => x.SetSpecializationsBreakSkillGroupsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetSpecializationsBreakSkillGroupsAsync(t),
+                (x, y, t) => x.SetSpecializationsBreakSkillGroupsAsync(y, t), token).ConfigureAwait(false);
             await chkDontDoubleQualityPurchases.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DontDoubleQualityPurchases),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDontDoubleQualityPurchasesAsync(token),
-                (x, y) => x.SetDontDoubleQualityPurchasesAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDontDoubleQualityPurchasesAsync(t),
+                (x, y, t) => x.SetDontDoubleQualityPurchasesAsync(y, t), token).ConfigureAwait(false);
             await chkDontDoubleQualityRefunds.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DontDoubleQualityRefunds),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDontDoubleQualityRefundsAsync(token),
-                (x, y) => x.SetDontDoubleQualityRefundsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDontDoubleQualityRefundsAsync(t),
+                (x, y, t) => x.SetDontDoubleQualityRefundsAsync(y, t), token).ConfigureAwait(false);
             await chkDroneArmorMultiplier.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplierEnabled),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetDroneArmorMultiplierEnabledAsync(token),
-                (x, y) => x.SetDroneArmorMultiplierEnabledAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetDroneArmorMultiplierEnabledAsync(t),
+                (x, y, t) => x.SetDroneArmorMultiplierEnabledAsync(y, t), token).ConfigureAwait(false);
             await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplierEnabled),
-                x => x.GetDroneArmorMultiplierEnabledAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetDroneArmorMultiplierEnabledAsync(t), token: token).ConfigureAwait(false);
             await nudDroneArmorMultiplier.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplier),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetDroneArmorMultiplierAsync(token),
-                (x, y) => x.SetDroneArmorMultiplierAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetDroneArmorMultiplierAsync(t),
+                (x, y, t) => x.SetDroneArmorMultiplierAsync(y, t), 250, token, token).ConfigureAwait(false);
             await chkESSLossReducesMaximumOnly.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ESSLossReducesMaximumOnly),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetESSLossReducesMaximumOnlyAsync(token),
-                (x, y) => x.SetESSLossReducesMaximumOnlyAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetESSLossReducesMaximumOnlyAsync(t),
+                (x, y, t) => x.SetESSLossReducesMaximumOnlyAsync(y, t), token).ConfigureAwait(false);
             await chkExceedNegativeQualities.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualities),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetExceedNegativeQualitiesAsync(token),
-                (x, y) => x.SetExceedNegativeQualitiesAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetExceedNegativeQualitiesAsync(t),
+                (x, y, t) => x.SetExceedNegativeQualitiesAsync(y, t), token).ConfigureAwait(false);
             await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualities),
-                x => x.GetExceedNegativeQualitiesAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetExceedNegativeQualitiesAsync(t), token: token).ConfigureAwait(false);
             await chkExceedNegativeQualitiesNoBonus.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetExceedNegativeQualitiesNoBonusAsync(token),
-                (x, y) => x.SetExceedNegativeQualitiesNoBonusAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetExceedNegativeQualitiesNoBonusAsync(t),
+                (x, y, t) => x.SetExceedNegativeQualitiesNoBonusAsync(y, t), token).ConfigureAwait(false);
             await chkExceedPositiveQualities.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualities),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetExceedPositiveQualitiesAsync(token),
-                (x, y) => x.SetExceedPositiveQualitiesAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetExceedPositiveQualitiesAsync(t),
+                (x, y, t) => x.SetExceedPositiveQualitiesAsync(y, t), token).ConfigureAwait(false);
             await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualities),
-                x => x.GetExceedPositiveQualitiesAsync(token), token: token).ConfigureAwait(false);
+                (x, t) => x.GetExceedPositiveQualitiesAsync(t), token: token).ConfigureAwait(false);
             await chkExceedPositiveQualitiesCostDoubled.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetExceedPositiveQualitiesCostDoubledAsync(token),
-                (x, y) => x.SetExceedPositiveQualitiesCostDoubledAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetExceedPositiveQualitiesCostDoubledAsync(t),
+                (x, y, t) => x.SetExceedPositiveQualitiesCostDoubledAsync(y, t), token).ConfigureAwait(false);
             await chkExtendAnyDetectionSpell.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.ExtendAnyDetectionSpell),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetExtendAnyDetectionSpellAsync(token),
-                (x, y) => x.SetExtendAnyDetectionSpellAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetExtendAnyDetectionSpellAsync(t),
+                (x, y, t) => x.SetExtendAnyDetectionSpellAsync(y, t), token).ConfigureAwait(false);
             await chkAllowLimitedSpellsForBareHandedAdept.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowLimitedSpellsForBareHandedAdept),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowLimitedSpellsForBareHandedAdeptAsync(token),
-                (x, y) => x.SetAllowLimitedSpellsForBareHandedAdeptAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAllowLimitedSpellsForBareHandedAdeptAsync(t),
+                (x, y, t) => x.SetAllowLimitedSpellsForBareHandedAdeptAsync(y, t), token).ConfigureAwait(false);
             await chkAllowCyberwareESSDiscounts.RegisterAsyncDataBindingAsync(x => x.Checked,
                 (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowCyberwareESSDiscounts),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowCyberwareESSDiscountsAsync(token),
-                (x, y) => x.SetAllowCyberwareESSDiscountsAsync(y, token), token).ConfigureAwait(false);
+                (x, t) => x.GetAllowCyberwareESSDiscountsAsync(t),
+                (x, y, t) => x.SetAllowCyberwareESSDiscountsAsync(y, t), token).ConfigureAwait(false);
             await chkAllowInitiation.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowInitiationInCreateMode),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetAllowInitiationInCreateModeAsync(token),
-                (x, y) => x.SetAllowInitiationInCreateModeAsync(y, token),
+                (x, t) => x.GetAllowInitiationInCreateModeAsync(t),
+                (x, y, t) => x.SetAllowInitiationInCreateModeAsync(y, t),
                 token,
                 token).ConfigureAwait(false);
             await nudMaxSkillRating.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
@@ -2910,15 +2910,15 @@ namespace Chummer
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxSkillRating),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxSkillRatingAsync(token),
-                (x, y) => x.SetMaxKnowledgeSkillRatingAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxSkillRatingAsync(t),
+                (x, y, t) => x.SetMaxKnowledgeSkillRatingAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudMaxKnowledgeSkillRating.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.MaxKnowledgeSkillRating),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMaxKnowledgeSkillRatingAsync(token),
-                (x, y) => x.SetMaxKnowledgeSkillRatingAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMaxKnowledgeSkillRatingAsync(t),
+                (x, y, t) => x.SetMaxKnowledgeSkillRatingAsync(y, t), 250, token, token).ConfigureAwait(false);
 
             // Karma options.
             await nudMetatypeCostsKarmaMultiplier.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
@@ -2926,190 +2926,190 @@ namespace Chummer
                 _objCharacterSettings,
                 nameof(CharacterSettings.MetatypeCostsKarmaMultiplier),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetMetatypeCostsKarmaMultiplierAsync(token),
-                (x, y) => x.SetMetatypeCostsKarmaMultiplierAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetMetatypeCostsKarmaMultiplierAsync(t),
+                (x, y, t) => x.SetMetatypeCostsKarmaMultiplierAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNuyenPerWftM.RegisterAsyncDataBindingWithDelayAsync(x => x.Value,
                 (x, y) => x.Value = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.NuyenPerBPWftM),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetNuyenPerBPWftMAsync(token),
-                (x, y) => x.SetNuyenPerBPWftMAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetNuyenPerBPWftMAsync(t),
+                (x, y, t) => x.SetNuyenPerBPWftMAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNuyenPerWftP.RegisterAsyncDataBindingWithDelayAsync(x => x.Value,
                 (x, y) => x.Value = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.NuyenPerBPWftP),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetNuyenPerBPWftPAsync(token),
-                (x, y) => x.SetNuyenPerBPWftPAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetNuyenPerBPWftPAsync(t),
+                (x, y, t) => x.SetNuyenPerBPWftPAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaAttribute.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaAttribute),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaAttributeAsync(token),
-                (x, y) => x.SetKarmaAttributeAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaAttributeAsync(t),
+                (x, y, t) => x.SetKarmaAttributeAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaQuality.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaQuality),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaQualityAsync(token),
-                (x, y) => x.SetKarmaQualityAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaQualityAsync(t),
+                (x, y, t) => x.SetKarmaQualityAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSpecialization.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSpecialization),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSpecializationAsync(token),
-                (x, y) => x.SetKarmaSpecializationAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSpecializationAsync(t),
+                (x, y, t) => x.SetKarmaSpecializationAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaKnowledgeSpecialization.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaKnowledgeSpecialization),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaKnowledgeSpecializationAsync(token),
-                (x, y) => x.SetKarmaKnowledgeSpecializationAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaKnowledgeSpecializationAsync(t),
+                (x, y, t) => x.SetKarmaKnowledgeSpecializationAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNewKnowledgeSkill.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaNewKnowledgeSkill),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaNewKnowledgeSkillAsync(token),
-                (x, y) => x.SetKarmaNewKnowledgeSkillAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaNewKnowledgeSkillAsync(t),
+                (x, y, t) => x.SetKarmaNewKnowledgeSkillAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNewActiveSkill.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaNewActiveSkill),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaNewActiveSkillAsync(token),
-                (x, y) => x.SetKarmaNewActiveSkillAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaNewActiveSkillAsync(t),
+                (x, y, t) => x.SetKarmaNewActiveSkillAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNewSkillGroup.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaNewSkillGroup),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaNewSkillGroupAsync(token),
-                (x, y) => x.SetKarmaNewSkillGroupAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaNewSkillGroupAsync(t),
+                (x, y, t) => x.SetKarmaNewSkillGroupAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaImproveKnowledgeSkill.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaImproveKnowledgeSkill),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaImproveKnowledgeSkillAsync(token),
-                (x, y) => x.SetKarmaImproveKnowledgeSkillAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaImproveKnowledgeSkillAsync(t),
+                (x, y, t) => x.SetKarmaImproveKnowledgeSkillAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaImproveActiveSkill.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaImproveActiveSkill),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaImproveActiveSkillAsync(token),
-                (x, y) => x.SetKarmaImproveActiveSkillAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaImproveActiveSkillAsync(t),
+                (x, y, t) => x.SetKarmaImproveActiveSkillAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaImproveSkillGroup.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaImproveSkillGroup),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaImproveSkillGroupAsync(token),
-                (x, y) => x.SetKarmaImproveSkillGroupAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaImproveSkillGroupAsync(t),
+                (x, y, t) => x.SetKarmaImproveSkillGroupAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSpell.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSpell),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSpellAsync(token),
-                (x, y) => x.SetKarmaSpellAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSpellAsync(t),
+                (x, y, t) => x.SetKarmaSpellAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNewComplexForm.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaNewComplexForm),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaNewComplexFormAsync(token),
-                (x, y) => x.SetKarmaNewComplexFormAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaNewComplexFormAsync(t),
+                (x, y, t) => x.SetKarmaNewComplexFormAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNewAIProgram.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaNewAIProgram),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaNewAIProgramAsync(token),
-                (x, y) => x.SetKarmaNewAIProgramAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaNewAIProgramAsync(t),
+                (x, y, t) => x.SetKarmaNewAIProgramAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaNewAIAdvancedProgram.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaNewAIAdvancedProgram),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaNewAIAdvancedProgramAsync(token),
-                (x, y) => x.SetKarmaNewAIAdvancedProgramAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaNewAIAdvancedProgramAsync(t),
+                (x, y, t) => x.SetKarmaNewAIAdvancedProgramAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaMetamagic.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaMetamagic),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaMetamagicAsync(token),
-                (x, y) => x.SetKarmaMetamagicAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaMetamagicAsync(t),
+                (x, y, t) => x.SetKarmaMetamagicAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaContact.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaContact),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaContactAsync(token),
-                (x, y) => x.SetKarmaContactAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaContactAsync(t),
+                (x, y, t) => x.SetKarmaContactAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSpirit.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSpirit),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSpiritAsync(token),
-                (x, y) => x.SetKarmaSpiritAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSpiritAsync(t),
+                (x, y, t) => x.SetKarmaSpiritAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSpiritFettering.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSpiritFettering),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSpiritFetteringAsync(token),
-                (x, y) => x.SetKarmaSpiritFetteringAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSpiritFetteringAsync(t),
+                (x, y, t) => x.SetKarmaSpiritFetteringAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaTechnique.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaTechnique),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaTechniqueAsync(token),
-                (x, y) => x.SetKarmaTechniqueAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaTechniqueAsync(t),
+                (x, y, t) => x.SetKarmaTechniqueAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaInitiation.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaInitiation),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaInitiationAsync(token),
-                (x, y) => x.SetKarmaInitiationAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaInitiationAsync(t),
+                (x, y, t) => x.SetKarmaInitiationAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaInitiationFlat.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaInitiationFlat),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaInitiationFlatAsync(token),
-                (x, y) => x.SetKarmaInitiationFlatAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaInitiationFlatAsync(t),
+                (x, y, t) => x.SetKarmaInitiationFlatAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaJoinGroup.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaJoinGroup),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaJoinGroupAsync(token),
-                (x, y) => x.SetKarmaJoinGroupAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaJoinGroupAsync(t),
+                (x, y, t) => x.SetKarmaJoinGroupAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaLeaveGroup.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaLeaveGroup),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaLeaveGroupAsync(token),
-                (x, y) => x.SetKarmaLeaveGroupAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaLeaveGroupAsync(t),
+                (x, y, t) => x.SetKarmaLeaveGroupAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaMysticAdeptPowerPoint.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaMysticAdeptPowerPoint),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaMysticAdeptPowerPointAsync(token),
-                (x, y) => x.SetKarmaMysticAdeptPowerPointAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaMysticAdeptPowerPointAsync(t),
+                (x, y, t) => x.SetKarmaMysticAdeptPowerPointAsync(y, t), 250, token, token).ConfigureAwait(false);
 
             // Focus costs
             await nudKarmaAlchemicalFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
@@ -3117,113 +3117,113 @@ namespace Chummer
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaAlchemicalFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaAlchemicalFocusAsync(token),
-                (x, y) => x.SetKarmaAlchemicalFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaAlchemicalFocusAsync(t),
+                (x, y, t) => x.SetKarmaAlchemicalFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaBanishingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaBanishingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaBanishingFocusAsync(token),
-                (x, y) => x.SetKarmaBanishingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaBanishingFocusAsync(t),
+                (x, y, t) => x.SetKarmaBanishingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaBindingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaBindingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaBindingFocusAsync(token),
-                (x, y) => x.SetKarmaBindingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaBindingFocusAsync(t),
+                (x, y, t) => x.SetKarmaBindingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaCenteringFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaCenteringFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaCenteringFocusAsync(token),
-                (x, y) => x.SetKarmaCenteringFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaCenteringFocusAsync(t),
+                (x, y, t) => x.SetKarmaCenteringFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaCounterspellingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaCounterspellingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaCounterspellingFocusAsync(token),
-                (x, y) => x.SetKarmaCounterspellingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaCounterspellingFocusAsync(t),
+                (x, y, t) => x.SetKarmaCounterspellingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaDisenchantingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaDisenchantingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaDisenchantingFocusAsync(token),
-                (x, y) => x.SetKarmaDisenchantingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaDisenchantingFocusAsync(t),
+                (x, y, t) => x.SetKarmaDisenchantingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaFlexibleSignatureFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaFlexibleSignatureFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaFlexibleSignatureFocusAsync(token),
-                (x, y) => x.SetKarmaFlexibleSignatureFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaFlexibleSignatureFocusAsync(t),
+                (x, y, t) => x.SetKarmaFlexibleSignatureFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaMaskingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaMaskingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaMaskingFocusAsync(token),
-                (x, y) => x.SetKarmaMaskingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaMaskingFocusAsync(t),
+                (x, y, t) => x.SetKarmaMaskingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaPowerFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaPowerFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaPowerFocusAsync(token),
-                (x, y) => x.SetKarmaPowerFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaPowerFocusAsync(t),
+                (x, y, t) => x.SetKarmaPowerFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaQiFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaQiFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaQiFocusAsync(token),
-                (x, y) => x.SetKarmaQiFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaQiFocusAsync(t),
+                (x, y, t) => x.SetKarmaQiFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaRitualSpellcastingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaRitualSpellcastingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaRitualSpellcastingFocusAsync(token),
-                (x, y) => x.SetKarmaRitualSpellcastingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaRitualSpellcastingFocusAsync(t),
+                (x, y, t) => x.SetKarmaRitualSpellcastingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSpellcastingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSpellcastingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSpellcastingFocusAsync(token),
-                (x, y) => x.SetKarmaSpellcastingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSpellcastingFocusAsync(t),
+                (x, y, t) => x.SetKarmaSpellcastingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSpellShapingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSpellShapingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSpellShapingFocusAsync(token),
-                (x, y) => x.SetKarmaSpellShapingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSpellShapingFocusAsync(t),
+                (x, y, t) => x.SetKarmaSpellShapingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSummoningFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSummoningFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSummoningFocusAsync(token),
-                (x, y) => x.SetKarmaSummoningFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSummoningFocusAsync(t),
+                (x, y, t) => x.SetKarmaSummoningFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaSustainingFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaSustainingFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaSustainingFocusAsync(token),
-                (x, y) => x.SetKarmaSustainingFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaSustainingFocusAsync(t),
+                (x, y, t) => x.SetKarmaSustainingFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
             await nudKarmaWeaponFocus.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.KarmaWeaponFocus),
                 (x, y) => x.ValueChanged += y,
-                x => x.GetKarmaWeaponFocusAsync(token),
-                (x, y) => x.SetKarmaWeaponFocusAsync(y, token), 250, token, token).ConfigureAwait(false);
+                (x, t) => x.GetKarmaWeaponFocusAsync(t),
+                (x, y, t) => x.SetKarmaWeaponFocusAsync(y, t), 250, token, token).ConfigureAwait(false);
         }
 
         private async Task PopulateSettingsList(CancellationToken token = default)

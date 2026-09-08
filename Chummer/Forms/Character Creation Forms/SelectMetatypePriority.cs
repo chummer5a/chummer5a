@@ -1609,9 +1609,9 @@ namespace Chummer
                         // Remove qualities that require the old metatype
                         List<Quality> lstQualitiesToCheck =
                             new List<Quality>(await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false));
-                        await _objCharacter.Qualities.ForEachAsync(async objQuality =>
+                        await _objCharacter.Qualities.ForEachAsync(async (objQuality, t) =>
                         {
-                            QualitySource eSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
+                            QualitySource eSource = await objQuality.GetOriginSourceAsync(t).ConfigureAwait(false);
                             if (eSource == QualitySource.Improvement
                                 || eSource == QualitySource.QualityLevelImprovement
                                 || eSource == QualitySource.Heritage
@@ -1620,12 +1620,12 @@ namespace Chummer
                                 || eSource == QualitySource.MetatypeRemovedAtChargen)
                                 return;
                             XPathNavigator xmlBaseNode
-                                = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                = await objQuality.GetNodeXPathAsync(token: t).ConfigureAwait(false);
                             XPathNavigator xmlRestrictionNode
-                                = xmlBaseNode?.SelectSingleNodeAndCacheExpression("required", token);
+                                = xmlBaseNode?.SelectSingleNodeAndCacheExpression("required", t);
                             if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", token) != null
-                                 || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", token) !=
+                                (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
+                                 || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", t) !=
                                  null))
                             {
                                 lstQualitiesToCheck.Add(objQuality);
@@ -1633,11 +1633,11 @@ namespace Chummer
                             else
                             {
                                 xmlRestrictionNode
-                                    = xmlBaseNode?.SelectSingleNodeAndCacheExpression("forbidden", token);
+                                    = xmlBaseNode?.SelectSingleNodeAndCacheExpression("forbidden", t);
                                 if (xmlRestrictionNode != null &&
-                                    (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", token) != null
+                                    (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
                                      || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant",
-                                         token) != null))
+                                         t) != null))
                                 {
                                     lstQualitiesToCheck.Add(objQuality);
                                 }
@@ -2187,15 +2187,15 @@ namespace Chummer
 
                     // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
                     bool blnDoSwitch = false;
-                    await _objCharacter.AttributeSection.AttributeList.ForEachWithBreakAsync(async objAttribute =>
+                    await _objCharacter.AttributeSection.AttributeList.ForEachWithBreakAsync(async (objAttribute, t) =>
                     {
-                        if (await objAttribute.GetBaseAsync(token).ConfigureAwait(false) > 0)
+                        if (await objAttribute.GetBaseAsync(t).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0)
+                        if (await objAttribute.GetKarmaAsync(t).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2207,11 +2207,11 @@ namespace Chummer
                         while (intPointsSpent < intTotalAttributes)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            await _objCharacter.AttributeSection.AttributeList.ForEachWithSideEffectsAsync(async objAttribute =>
+                            await _objCharacter.AttributeSection.AttributeList.ForEachWithSideEffectsAsync(async (objAttribute, t) =>
                             {
-                                if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                if (await objAttribute.GetKarmaAsync(t).ConfigureAwait(false) > 0
                                     && (objAttributeToShift == null
-                                        || await objAttributeToShift.GetValueAsync(token).ConfigureAwait(false) < await objAttribute.GetValueAsync(token).ConfigureAwait(false)))
+                                        || await objAttributeToShift.GetValueAsync(t).ConfigureAwait(false) < await objAttribute.GetValueAsync(t).ConfigureAwait(false)))
                                 {
                                     objAttributeToShift = objAttribute;
                                 }
@@ -2228,15 +2228,15 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithBreakAsync(async objAttribute =>
+                    await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithBreakAsync(async (objAttribute, t) =>
                     {
-                        if (await objAttribute.GetBaseAsync(token).ConfigureAwait(false) > 0)
+                        if (await objAttribute.GetBaseAsync(t).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0)
+                        if (await objAttribute.GetKarmaAsync(t).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2248,11 +2248,11 @@ namespace Chummer
                         while (intPointsSpent < intTotalSpecial)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithSideEffectsAsync(async objAttribute =>
+                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithSideEffectsAsync(async (objAttribute, t) =>
                             {
-                                if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                if (await objAttribute.GetKarmaAsync(t).ConfigureAwait(false) > 0
                                     && (objAttributeToShift == null
-                                        || await objAttributeToShift.GetValueAsync(token).ConfigureAwait(false) < await objAttribute.GetValueAsync(token).ConfigureAwait(false)))
+                                        || await objAttributeToShift.GetValueAsync(t).ConfigureAwait(false) < await objAttribute.GetValueAsync(t).ConfigureAwait(false)))
                                 {
                                     objAttributeToShift = objAttribute;
                                 }
@@ -2269,15 +2269,15 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async objGroup =>
+                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async (objGroup, t) =>
                     {
-                        if (await objGroup.GetBaseAsync(token).ConfigureAwait(false) > 0)
+                        if (await objGroup.GetBaseAsync(t).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (await objGroup.GetKarmaAsync(token).ConfigureAwait(false) > 0)
+                        if (await objGroup.GetKarmaAsync(t).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2288,10 +2288,10 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
                         {
                             SkillGroup objGroupToShift = null;
-                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objGroup =>
+                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objGroup, t) =>
                             {
-                                if (await objGroup.GetKarmaAsync(token).ConfigureAwait(false) > 0
-                                    && (objGroupToShift == null || await objGroupToShift.GetRatingAsync(token).ConfigureAwait(false) < await objGroup.GetRatingAsync(token).ConfigureAwait(false)))
+                                if (await objGroup.GetKarmaAsync(t).ConfigureAwait(false) > 0
+                                    && (objGroupToShift == null || await objGroupToShift.GetRatingAsync(t).ConfigureAwait(false) < await objGroup.GetRatingAsync(t).ConfigureAwait(false)))
                                 {
                                     objGroupToShift = objGroup;
                                 }
@@ -2309,15 +2309,15 @@ namespace Chummer
                     }
 
                     blnDoSwitch = false;
-                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async objSkill =>
+                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async (objSkill, t) =>
                     {
-                        if (await objSkill.GetBaseAsync(token).ConfigureAwait(false) > 0)
+                        if (await objSkill.GetBaseAsync(t).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (await objSkill.GetKarmaAsync(token).ConfigureAwait(false) > 0)
+                        if (await objSkill.GetKarmaAsync(t).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2331,13 +2331,13 @@ namespace Chummer
                         {
                             Skill objSkillToShift = null;
                             int intSkillToShiftKarma = 0;
-                            await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objSkill =>
+                            await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkill, t) =>
                             {
-                                int intLoopKarma = await objSkill.GetKarmaAsync(token).ConfigureAwait(false);
+                                int intLoopKarma = await objSkill.GetKarmaAsync(t).ConfigureAwait(false);
                                 if (intLoopKarma > 0 && (objSkillToShift == null
-                                                         || await objSkillToShift.GetRatingAsync(token)
+                                                         || await objSkillToShift.GetRatingAsync(t)
                                                              .ConfigureAwait(false)
-                                                         < await objSkill.GetRatingAsync(token)
+                                                         < await objSkill.GetRatingAsync(t)
                                                              .ConfigureAwait(false)))
                                 {
                                     objSkillToShift = objSkill;
@@ -2396,7 +2396,7 @@ namespace Chummer
                         else
                         {
                             blnCommit = true;
-                            await AddExoticSkillIfNecessary(strSkill1).ConfigureAwait(false);
+                            await AddExoticSkillIfNecessary(strSkill1, token).ConfigureAwait(false);
                             await ImprovementManager.CreateImprovementAsync(
                                 _objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
                                 type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
@@ -2413,7 +2413,7 @@ namespace Chummer
                         else
                         {
                             blnCommit = true;
-                            await AddExoticSkillIfNecessary(strSkill2).ConfigureAwait(false);
+                            await AddExoticSkillIfNecessary(strSkill2, token).ConfigureAwait(false);
                             await ImprovementManager.CreateImprovementAsync(
                                 _objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
                                 type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
@@ -2430,7 +2430,7 @@ namespace Chummer
                         else
                         {
                             blnCommit = true;
-                            await AddExoticSkillIfNecessary(strSkill3).ConfigureAwait(false);
+                            await AddExoticSkillIfNecessary(strSkill3, token).ConfigureAwait(false);
                             await ImprovementManager.CreateImprovementAsync(
                                 _objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
                                 type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
@@ -2452,11 +2452,11 @@ namespace Chummer
                 if (blnCommit)
                     await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
 
-                async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
+                async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey, CancellationToken innerToken)
                 {
                     // Add exotic skills if we are increasing their base level
-                    if (!await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strDictionaryKey, token).ConfigureAwait(false) ||
-                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey, token).ConfigureAwait(false) != null)
+                    if (!await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strDictionaryKey, innerToken).ConfigureAwait(false) ||
+                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey, innerToken).ConfigureAwait(false) != null)
                         return;
                     string strSkillName = strDictionaryKey;
                     string strSkillSpecific = string.Empty;
@@ -2466,7 +2466,7 @@ namespace Chummer
                         strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
                         strSkillName = strSkillName.Substring(0, intParenthesesIndex);
                     }
-                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific, token).ConfigureAwait(false);
+                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific, innerToken).ConfigureAwait(false);
                 }
             }
             else

@@ -3080,15 +3080,15 @@ namespace Chummer
                 }).ToList();
             }
 
-            return await objCharacter.Qualities.ToListAsync(async o =>
+            return await objCharacter.Qualities.ToListAsync(async (o, t) =>
             {
-                if (await o.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.Improvement)
+                if (await o.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.Improvement)
                     return false;
                 if (!string.IsNullOrEmpty(strSourceFriendlyName)
-                    && await o.GetSourceNameAsync(token).ConfigureAwait(false) != strSourceFriendlyName)
+                    && await o.GetSourceNameAsync(t).ConfigureAwait(false) != strSourceFriendlyName)
                     return false;
                 if (!string.IsNullOrEmpty(strQualityName)
-                    && await o.GetNameAsync(token).ConfigureAwait(false) == strQualityName)
+                    && await o.GetNameAsync(t).ConfigureAwait(false) == strQualityName)
                     return true;
                 string strImprovedName = objImprovement.ImprovedName;
                 return strImprovedName.IsGuid() && o.InternalId == strImprovedName;

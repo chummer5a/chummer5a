@@ -169,6 +169,101 @@ namespace Chummer
             return await ToListAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            List<T> lstReturn;
+            switch (objEnumerable)
+            {
+                case IAsyncReadOnlyCollection<T> lstAsyncReadOnlyEnumerable:
+                    lstReturn = new List<T>(await lstAsyncReadOnlyEnumerable.GetCountAsync(token).ConfigureAwait(false));
+                    break;
+
+                case ICollection<T> lstEnumerable:
+                    lstReturn = new List<T>(lstEnumerable.Count);
+                    break;
+
+                case IReadOnlyCollection<T> lstReadOnlyEnumerable:
+                    lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
+                    break;
+
+                default:
+                    lstReturn = new List<T>();
+                    break;
+            }
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current, token))
+                        lstReturn.Add(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lstReturn;
+        }
+
+        public static async Task<List<T>> ToListAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            List<T> lstReturn;
+            switch (objEnumerable)
+            {
+                case IAsyncReadOnlyCollection<T> lstAsyncReadOnlyEnumerable:
+                    lstReturn = new List<T>(await lstAsyncReadOnlyEnumerable.GetCountAsync(token).ConfigureAwait(false));
+                    break;
+
+                case ICollection<T> lstEnumerable:
+                    lstReturn = new List<T>(lstEnumerable.Count);
+                    break;
+
+                case IReadOnlyCollection<T> lstReadOnlyEnumerable:
+                    lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
+                    break;
+
+                default:
+                    lstReturn = new List<T>();
+                    break;
+            }
+
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
+                        lstReturn.Add(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lstReturn;
+        }
+
+        public static async Task<List<T>> ToListAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await ToListAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
+        public static async Task<List<T>> ToListAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await ToListAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Async version of <see cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IAsyncReadOnlyList{T}"/>.
         /// </summary>
@@ -1965,6 +2060,526 @@ namespace Chummer
         }
 
         public static async Task<decimal> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent, token), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(funcSelector.Invoke(objCurrent, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent, token), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(funcSelector.Invoke(objCurrent, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent, token), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(funcSelector.Invoke(objCurrent, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent, token), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(funcSelector.Invoke(objCurrent, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent, token), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(funcSelector.Invoke(objCurrent, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumParallelAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
@@ -11140,6 +11755,42 @@ namespace Chummer
         /// <summary>
         /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IAsyncEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (predicate(objLoopChild))
+                        return objLoopChild;
+                    T objReturn;
+                    T2 lstChildren = funcGetChildrenMethod(objLoopChild, token);
+                    if (lstChildren is IAsyncEnumerable<T> lstChildrenAsync)
+                        objReturn = await lstChildrenAsync.DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    else
+                        objReturn = lstChildren.DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
         public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
@@ -11156,6 +11807,105 @@ namespace Chummer
                     if (await predicate(objLoopChild).ConfigureAwait(false))
                         return objLoopChild;
                     T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (await predicate(objLoopChild).ConfigureAwait(false))
+                        return objLoopChild;
+                    T objReturn = await funcGetChildrenMethod(objLoopChild, token).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (await predicate(objLoopChild, token).ConfigureAwait(false))
+                        return objLoopChild;
+                    T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (await predicate(objLoopChild, token).ConfigureAwait(false))
+                        return objLoopChild;
+                    T objReturn = await funcGetChildrenMethod(objLoopChild, token).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                     if (objReturn?.Equals(default(T)) == false)
                         return objReturn;
                 }
@@ -11206,6 +11956,105 @@ namespace Chummer
         /// <summary>
         /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<T2>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (predicate(objLoopChild))
+                        return objLoopChild;
+                    T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (predicate(objLoopChild, token))
+                        return objLoopChild;
+                    T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<T2>> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (predicate(objLoopChild, token))
+                        return objLoopChild;
+                    T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
         public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
@@ -11222,6 +12071,105 @@ namespace Chummer
                     if (await predicate(objLoopChild).ConfigureAwait(false))
                         return objLoopChild;
                     T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<T2>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (await predicate(objLoopChild).ConfigureAwait(false))
+                        return objLoopChild;
+                    T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (await predicate(objLoopChild, token).ConfigureAwait(false))
+                        return objLoopChild;
+                    T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    if (objReturn?.Equals(default(T)) == false)
+                        return objReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefaultAsync<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<T2>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            IEnumerator<T> objEnumerator = objParentList is IAsyncEnumerable<T> objParentListCast
+                ? await objParentListCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objParentList.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (await predicate(objLoopChild, token).ConfigureAwait(false))
+                        return objLoopChild;
+                    T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                     if (objReturn?.Equals(default(T)) == false)
                         return objReturn;
                 }
@@ -11799,14 +12747,14 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await objParentList.ForEachAsync(async (objLoopChild, t) =>
             {
                 if (predicate(objLoopChild))
                     lstReturn.Add(objLoopChild);
-                token.ThrowIfCancellationRequested();
+                t.ThrowIfCancellationRequested();
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
+                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false));
                 else
                     lstReturn.AddRange(lstChildren.DeepWhere(funcGetChildrenMethod, predicate));
             }, token).ConfigureAwait(false);
@@ -11820,17 +12768,17 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await objParentList.ForEachAsync(async (objLoopChild, t) =>
             {
                 if (predicate(objLoopChild))
                     lstReturn.Add(objLoopChild);
-                token.ThrowIfCancellationRequested();
+                t.ThrowIfCancellationRequested();
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, t)
                         .ConfigureAwait(false));
                 else
-                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, t)
                         .ConfigureAwait(false));
             }, token).ConfigureAwait(false);
             return lstReturn;
@@ -11843,17 +12791,17 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await objParentList.ForEachAsync(async (objLoopChild, t) =>
             {
                 if (await predicate(objLoopChild).ConfigureAwait(false))
                     lstReturn.Add(objLoopChild);
-                token.ThrowIfCancellationRequested();
+                t.ThrowIfCancellationRequested();
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, t)
                         .ConfigureAwait(false));
                 else
-                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, t)
                         .ConfigureAwait(false));
             }, token).ConfigureAwait(false);
             return lstReturn;
@@ -11866,17 +12814,17 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await objParentList.ForEachAsync(async (objLoopChild, t) =>
             {
                 if (await predicate(objLoopChild).ConfigureAwait(false))
                     lstReturn.Add(objLoopChild);
-                token.ThrowIfCancellationRequested();
+                t.ThrowIfCancellationRequested();
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, t)
                         .ConfigureAwait(false));
                 else
-                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
+                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, t)
                         .ConfigureAwait(false));
             }, token).ConfigureAwait(false);
             return lstReturn;

@@ -212,18 +212,22 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
-                    await sbdTitle
-                        .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
-                            .ConfigureAwait(false), ':', strSpace)
-                        .AppendJoinAsync(
-                            "," + strSpace,
-                            _lstCharacters.Select(async x =>
-                                await x.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
-                                + (await x.GetCreatedAsync(token).ConfigureAwait(false)
+                    sbdTitle.Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token).ConfigureAwait(false), ':', strSpace);
+                    string strConjunction = "," + strSpace;
+                    bool blnAddConjunction = false;
+                    await _lstCharacters.ForEachAsync(async (x, t) =>
+                    {
+                        if (blnAddConjunction)
+                            sbdTitle.Append(strConjunction);
+                        else
+                            blnAddConjunction = true;
+                        sbdTitle.Append(await x.GetCharacterNameAsync(t).ConfigureAwait(false))
+                            .Append(strSpace, '-', strSpace)
+                            .Append(await x.GetCreatedAsync(t).ConfigureAwait(false)
                                     ? strCareer
-                                    : strCreate) + strSpace + "("
-                                + (await x.GetSettingsAsync(token).ConfigureAwait(false))
-                                .Name + ")"), token: token).ConfigureAwait(false);
+                                    : strCreate, strSpace, '(')
+                            .Append(await (await x.GetSettingsAsync(t).ConfigureAwait(false)).GetNameAsync(t).ConfigureAwait(false), ')');
+                    }, token).ConfigureAwait(false);
                     strTitle = sbdTitle.ToString();
                 }
             }

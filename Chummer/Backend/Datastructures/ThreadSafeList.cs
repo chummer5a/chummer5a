@@ -898,11 +898,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ForEach(x =>
+                _lstData.ForEach((x, t) =>
                 {
-                    token.ThrowIfCancellationRequested();
+                    t.ThrowIfCancellationRequested();
                     action.Invoke(x);
-                });
+                }, token);
             }
             finally
             {
@@ -917,11 +917,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ForEach(x =>
+                _lstData.ForEach((x, t) =>
                 {
-                    token.ThrowIfCancellationRequested();
-                    action.Invoke(x, token);
-                });
+                    t.ThrowIfCancellationRequested();
+                    action.Invoke(x, t);
+                }, token);
             }
             finally
             {

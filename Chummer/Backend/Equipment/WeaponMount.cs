@@ -278,16 +278,17 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     if (blnSync)
                     {
+                        string strDescription = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                       CurrentDisplayNameShort);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                       CurrentDisplayNameShort),
+                                   Description = strDescription,
                                    AllowCancel = false
                                }))
                         {
@@ -741,12 +742,12 @@ namespace Chummer.Backend.Equipment
                 IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await objWriter.WriteStartElementAsync("weapons", token: token).ConfigureAwait(false);
             await Weapons
-                .ForEachAsync(objWeapon => objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token), token)
+                .ForEachAsync((objWeapon, t) => objWeapon.Print(objWriter, objCulture, strLanguageToPrint, t), token)
                 .ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             await objWriter.WriteStartElementAsync("mods", token: token).ConfigureAwait(false);
             await Mods.ForEachAsync(
-                    objVehicleMod => objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, token), token)
+                    (objVehicleMod, t) => objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, t), token)
                 .ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
@@ -953,8 +954,8 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> GetIsWeaponsFullAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await Weapons.CountAsync(async x =>
-                       string.IsNullOrEmpty(x.ParentID) || await Weapons.DeepFindByIdAsync(x.ParentID, token: token).ConfigureAwait(false) == null, token: token).ConfigureAwait(false) >=
+            return await Weapons.CountAsync(async (x, t) =>
+                       string.IsNullOrEmpty(x.ParentID) || await Weapons.DeepFindByIdAsync(x.ParentID, token: t).ConfigureAwait(false) == null, token: token).ConfigureAwait(false) >=
                    _intWeaponCapacity;
         }
 
@@ -1475,15 +1476,15 @@ namespace Chummer.Backend.Equipment
             }
 
             // Run through the Accessories and add in their availability.
-            intAvail += await WeaponMountOptions.SumAsync(async objLoopOption =>
+            intAvail += await WeaponMountOptions.SumAsync(async (objLoopOption, t) =>
             {
                 AvailabilityValue objLoopAvailTuple
-                    = await objLoopOption.GetTotalAvailTupleAsync(token).ConfigureAwait(false);
+                    = await objLoopOption.GetTotalAvailTupleAsync(t).ConfigureAwait(false);
                 if (objLoopAvailTuple.Suffix == 'F')
                     chrLastAvailChar = 'F';
                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                     chrLastAvailChar = 'R';
-                return await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false);
+                return await objLoopAvailTuple.GetValueAsync(t).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
 
             if (blnCheckChildren)
@@ -1533,8 +1534,8 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             if (IncludedInVehicle || FreeCost)
-                return await Weapons.SumAsync(w => w.GetTotalCostAsync(token), token).ConfigureAwait(false)
-                       + await Mods.SumAsync(m => m.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                return await Weapons.SumAsync((w, t) => w.GetTotalCostAsync(t), token).ConfigureAwait(false)
+                       + await Mods.SumAsync((m, t) => m.GetTotalCostAsync(t), token).ConfigureAwait(false);
 
             decimal decOptionCost = await WeaponMountOptions.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
             if (DiscountCost)
@@ -1542,8 +1543,8 @@ namespace Chummer.Backend.Equipment
 
             return await GetOwnCostAsync(token).ConfigureAwait(false)
                    + decOptionCost
-                   + await Weapons.SumAsync(w => w.GetTotalCostAsync(token), token).ConfigureAwait(false)
-                   + await Mods.SumAsync(m => m.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                   + await Weapons.SumAsync((w, t) => w.GetTotalCostAsync(t), token).ConfigureAwait(false)
+                   + await Mods.SumAsync((m, t) => m.GetTotalCostAsync(t), token).ConfigureAwait(false);
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -1580,9 +1581,9 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             if (Stolen != blnStolen || IncludedInVehicle || FreeCost)
-                return await Weapons.SumAsync(w => w.CalculatedStolenTotalCostAsync(blnStolen, token),
+                return await Weapons.SumAsync((w, t) => w.CalculatedStolenTotalCostAsync(blnStolen, t),
                                               token).ConfigureAwait(false)
-                       + await Mods.SumAsync(m => m.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
+                       + await Mods.SumAsync((m, t) => m.CalculatedStolenTotalCostAsync(blnStolen, t), token).ConfigureAwait(false);
 
             decimal decOptionCost = await WeaponMountOptions.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
             if (DiscountCost)
@@ -1590,9 +1591,9 @@ namespace Chummer.Backend.Equipment
 
             return await GetOwnCostAsync(token).ConfigureAwait(false) + decOptionCost
                                                                       + await Weapons.SumAsync(
-                                                                          w => w.CalculatedStolenTotalCostAsync(blnStolen, token),
+                                                                          (w, t) => w.CalculatedStolenTotalCostAsync(blnStolen, t),
                                                                           token).ConfigureAwait(false) + await Mods.SumAsync(
-                                                                          m => m.CalculatedStolenTotalCostAsync(blnStolen, token),
+                                                                          (m, t) => m.CalculatedStolenTotalCostAsync(blnStolen, t),
                                                                           token).ConfigureAwait(false);
         }
 
@@ -1756,12 +1757,12 @@ namespace Chummer.Backend.Equipment
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
                     sbdReturn.Append(strReturn, strSpace, '(');
                     bool blnCloseParantheses = false;
-                    await WeaponMountOptions.ForEachAsync(async objOption =>
+                    await WeaponMountOptions.ForEachAsync(async (objOption, t) =>
                     {
                         if (objOption.Name != "None")
                         {
                             blnCloseParantheses = true;
-                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, token).ConfigureAwait(false), ',', strSpace);
+                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, t).ConfigureAwait(false), ',', strSpace);
                         }
                     }, token).ConfigureAwait(false);
 
@@ -1889,9 +1890,9 @@ namespace Chummer.Backend.Equipment
             if (blnDoRemoval && Parent != null)
                 await Parent.WeaponMounts.RemoveAsync(this, token).ConfigureAwait(false);
 
-            decimal decReturn = await Weapons.SumWithSideEffectsAsync(x => x.DeleteWeaponAsync(false, token), token)
+            decimal decReturn = await Weapons.SumWithSideEffectsAsync((x, t) => x.DeleteWeaponAsync(false, t), token)
                                              .ConfigureAwait(false)
-                                + await Mods.SumWithSideEffectsAsync(x => x.DeleteVehicleModAsync(false, token), token)
+                                + await Mods.SumWithSideEffectsAsync((x, t) => x.DeleteVehicleModAsync(false, t), token)
                                             .ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);
@@ -1945,10 +1946,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            intRestrictedCount += await Weapons.SumAsync(objChild =>
+            intRestrictedCount += await Weapons.SumAsync((objChild, t) =>
                                                              objChild.CheckRestrictedGear(
                                                                  dicRestrictedGearLimits, sbdAvailItems,
-                                                                 sbdRestrictedItems, token), token)
+                                                                 sbdRestrictedItems, t), token)
                                                .ConfigureAwait(false);
 
             intRestrictedCount += await WeaponMountOptions.SumAsync((x, t) =>
@@ -1990,10 +1991,10 @@ namespace Chummer.Backend.Equipment
             // VehicleMods.
             await VehicleMod.AddModsToTreeNodeCollection(Mods, lstChildNodes, cmsVehicleMod, cmsCyberware, cmsCyberwareGear,
                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
-            await Weapons.ForEachAsync(async objWeapon =>
+            await Weapons.ForEachAsync(async (objWeapon, t) =>
             {
                 TreeNode objLoopNode = await objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                    cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                    cmsVehicleWeaponAccessoryGear, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);
@@ -2307,16 +2308,17 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     if (blnSync)
                     {
+                        string strDescription = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                       CurrentDisplayNameShort);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                {
                                    Minimum = decMin,
                                    Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                       CurrentDisplayNameShort),
+                                   Description = strDescription,
                                    AllowCancel = false
                                }))
                         {

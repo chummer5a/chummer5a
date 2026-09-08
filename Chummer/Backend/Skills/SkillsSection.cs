@@ -218,7 +218,7 @@ namespace Chummer.Backend.Skills
             {
                 case ListChangedType.Reset:
                     await KnowledgeSkills
-                        .ForEachAsync(x => x.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged, token: token)
+                        .ForEachAsync(x => x.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged, token)
                         .ConfigureAwait(false);
 
                     await this.OnMultiplePropertyChangedAsync(token, nameof(KnowledgeSkillRanksSum),
@@ -790,7 +790,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
 
-                            Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills, token);
                         }
                     }
                 }
@@ -838,8 +838,8 @@ namespace Chummer.Backend.Skills
                             }
 
                             await Skills
-                                .AddWithSortAsync(objSkill, (x, y) => CompareSkillsAsync(x, y, token),
-                                    (x, y) => MergeSkillsAsync(x, y, token), token)
+                                .AddWithSortAsync(objSkill, CompareSkillsAsync,
+                                    MergeSkillsAsync, token)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -881,7 +881,7 @@ namespace Chummer.Backend.Skills
                     try
                     {
                         objExoticSkill.Specific = strSpecific;
-                        Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                        Skills.AddWithSort(objExoticSkill, CompareSkills, MergeSkills, token);
                         return objExoticSkill;
                     }
                     catch
@@ -915,8 +915,8 @@ namespace Chummer.Backend.Skills
                     try
                     {
                         await objExoticSkill.SetSpecificAsync(strSpecific, token).ConfigureAwait(false);
-                        await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token),
-                            (x, y) => MergeSkillsAsync(x, y, token),
+                        await Skills.AddWithSortAsync(objExoticSkill, CompareSkillsAsync,
+                            MergeSkillsAsync,
                             token: token).ConfigureAwait(false);
                         return objExoticSkill;
                     }
@@ -1013,7 +1013,7 @@ namespace Chummer.Backend.Skills
                                         default:
                                             return 1;
                                     }
-                                }, (x, y) => MergeSkills(x, y, token), token: token);
+                                }, MergeSkills, token: token);
                             }
                             catch
                             {
@@ -1119,13 +1119,13 @@ namespace Chummer.Backend.Skills
                                 await objNewKnowledgeSkill.Specializations
                                     .AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
                                 await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(
-                                    objNewKnowledgeSkill, async (x, y) =>
+                                    objNewKnowledgeSkill, async (x, y, t) =>
                                     {
-                                        switch (string.CompareOrdinal(await x.GetTypeAsync(token).ConfigureAwait(false),
-                                                    await y.GetTypeAsync(token).ConfigureAwait(false)))
+                                        switch (string.CompareOrdinal(await x.GetTypeAsync(t).ConfigureAwait(false),
+                                                    await y.GetTypeAsync(t).ConfigureAwait(false)))
                                         {
                                             case 0:
-                                                return await CompareSkillsAsync(x, y, token).ConfigureAwait(false);
+                                                return await CompareSkillsAsync(x, y, t).ConfigureAwait(false);
 
                                             case -1:
                                                 return -1;
@@ -1133,7 +1133,7 @@ namespace Chummer.Backend.Skills
                                             default:
                                                 return 1;
                                         }
-                                    }, (x, y) => MergeSkillsAsync(x, y, token), token: token).ConfigureAwait(false);
+                                    }, MergeSkillsAsync, token: token).ConfigureAwait(false);
                             }
                             catch
                             {
@@ -2213,18 +2213,18 @@ namespace Chummer.Backend.Skills
                                             return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
                                         }
 
-                                        async Task<bool> OldSkillFilterAsync(Skill skill)
+                                        async Task<bool> OldSkillFilterAsync(Skill skill, CancellationToken innerToken)
                                         {
-                                            if (await skill.GetRatingAsync(token).ConfigureAwait(false) > 0)
+                                            if (await skill.GetRatingAsync(innerToken).ConfigureAwait(false) > 0)
                                                 return true;
 
                                             if (skill.SkillCategory == "Resonance Active"
-                                                && !await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                                                && !await _objCharacter.GetRESEnabledAsync(innerToken).ConfigureAwait(false))
                                                 return false;
 
                                             //This could be more fine grained, but frankly i don't care
                                             return skill.SkillCategory != "Magical Active"
-                                                   || await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false);
+                                                   || await _objCharacter.GetMAGEnabledAsync(innerToken).ConfigureAwait(false);
                                         }
 
                                         foreach (Skill objSkill in lstTempSkillList)
@@ -2243,7 +2243,7 @@ namespace Chummer.Backend.Skills
                                                 if (OldSkillFilter(objSkill))
                                                     lstUnsortedSkills.Add(objSkill);
                                             }
-                                            else if (await OldSkillFilterAsync(objSkill).ConfigureAwait(false))
+                                            else if (await OldSkillFilterAsync(objSkill, token).ConfigureAwait(false))
                                             {
                                                 lstUnsortedSkills.Add(objSkill);
                                             }
@@ -2497,7 +2497,7 @@ namespace Chummer.Backend.Skills
                                     }
                                 }, token).ConfigureAwait(false);
                             }
-                            else if (_objCharacterSettings.AllowSkillRegrouping)
+                            else if (await _objCharacterSettings.GetAllowSkillRegroupingAsync(token).ConfigureAwait(false))
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
                                 await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((objSkillGroup, t) =>
@@ -2706,7 +2706,7 @@ namespace Chummer.Backend.Skills
                                 }
                             }
 
-                            Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills, token);
                         }
 
                         //This might give subtle bugs in the future,
@@ -2976,7 +2976,7 @@ namespace Chummer.Backend.Skills
                 using (TemporaryArray<KarmaExpenseType> eYielded = new TemporaryArray<KarmaExpenseType>(KarmaExpenseType.AddSkill,
                         KarmaExpenseType.ImproveSkill))
                 {
-                    UpdateUndoSpecific(dicToProcess, eYielded);
+                    UpdateUndoSpecific(dicToProcess, eYielded, token);
                 }
                 dicToProcess.Clear();
                 await ParallelExtensions.ForEachAsync(SkillGroups, async (x, t) =>
@@ -2986,10 +2986,10 @@ namespace Chummer.Backend.Skills
                         dicToProcess.TryAdd(x.Name, x.Id);
                 }, token).ConfigureAwait(false);
                 using (TemporaryArray<KarmaExpenseType> eYielded = KarmaExpenseType.ImproveSkillGroup.YieldAsPooled())
-                    UpdateUndoSpecific(dicToProcess, eYielded);
+                    UpdateUndoSpecific(dicToProcess, eYielded, token);
 
                 void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
-                    TemporaryArray<KarmaExpenseType> typesRequiringConverting)
+                    TemporaryArray<KarmaExpenseType> typesRequiringConverting, CancellationToken innerToken)
                 {
                     //Build a crazy xpath to get everything we want to convert
 
@@ -3006,11 +3006,12 @@ namespace Chummer.Backend.Skills
                     {
                         for (int i = 0; i < lstNodesToChange.Count; i++)
                         {
+                            innerToken.ThrowIfCancellationRequested();
                             XmlNode xmlLoop = lstNodesToChange[i];
                             if (xmlLoop == null)
                                 continue;
                             xmlLoop.InnerText
-                                = map.TryGetValue(xmlLoop.InnerTextViaPool(token), out Guid guidLoop)
+                                = map.TryGetValue(xmlLoop.InnerTextViaPool(innerToken), out Guid guidLoop)
                                     ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
                                     : Utils.GuidEmptyString;
                         }
@@ -3571,7 +3572,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
-                           .CountAsync(x => x.GetIsNativeLanguageAsync(token), token).ConfigureAwait(false)
+                           .CountAsync((x, t) => x.GetIsNativeLanguageAsync(t), token).ConfigureAwait(false)
                        < 1 + await ImprovementManager
                            .ValueOfAsync(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit,
                                token: token)
@@ -4130,8 +4131,7 @@ namespace Chummer.Backend.Skills
                 await objExistingSkill.SetNotesColorAsync(await objNewSkill.GetNotesColorAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await (await objExistingSkill.GetSpecializationsAsync(token).ConfigureAwait(false))
                     .AddAsyncRangeWithSortAsync(await objNewSkill.GetSpecializationsAsync(token).ConfigureAwait(false),
-                        (x, y) => CompareSpecializationsAsync(x, y, token)
-                        ,
+                        CompareSpecializationsAsync,
                         token: token).ConfigureAwait(false);
             }
             finally
@@ -4558,10 +4558,10 @@ namespace Chummer.Backend.Skills
                     token.ThrowIfCancellationRequested();
                     if (blnShowValues)
                         strReturn = strReturn.CheapReplace("{" + strSkillKey + "}",
-                                                           () =>
+                                                           t =>
                                                            {
-                                                               Skill objLoopSkill = GetActiveSkill(strSkillKey, token);
-                                                               return objLoopSkill.DisplayName(strLanguage, token)
+                                                               Skill objLoopSkill = GetActiveSkill(strSkillKey, t);
+                                                               return objLoopSkill.DisplayName(strLanguage, t)
                                                                       + string.Format(
                                                                           objCultureInfo, strFormat,
                                                                           dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
@@ -4569,15 +4569,14 @@ namespace Chummer.Backend.Skills
                                                                               : objLoopSkill.PoolOtherAttribute(
                                                                                   objLoopSkill.Attribute,
                                                                                   intAttributeOverrideValue:
-                                                                                  0, token: token)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
-                                                           });
+                                                                                  0, token: t)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                                           }, token: token);
                     else
                         strReturn = strReturn.CheapReplace("{" + strSkillKey + "}",
-                                                           () => GetActiveSkill(strSkillKey, token).DisplayName(strLanguage, token));
+                                                           t => GetActiveSkill(strSkillKey, t).DisplayName(strLanguage, t), token: token);
                 }
+                return strReturn;
             }
-
-            return strReturn;
         }
 
         /// <summary>
@@ -4609,10 +4608,10 @@ namespace Chummer.Backend.Skills
                     token.ThrowIfCancellationRequested();
                     if (blnShowValues)
                         sbdInput.CheapReplace(strOriginal, "{" + strSkillKey + "}",
-                                              () =>
+                                              t =>
                                               {
-                                                  Skill objLoopSkill = GetActiveSkill(strSkillKey, token);
-                                                  return objLoopSkill.DisplayName(strLanguage, token)
+                                                  Skill objLoopSkill = GetActiveSkill(strSkillKey, t);
+                                                  return objLoopSkill.DisplayName(strLanguage, t)
                                                          + string.Format(
                                                              objCultureInfo, strFormat,
                                                              dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
@@ -4620,12 +4619,149 @@ namespace Chummer.Backend.Skills
                                                                  : objLoopSkill.PoolOtherAttribute(
                                                                      objLoopSkill.Attribute,
                                                                      intAttributeOverrideValue:
-                                                                     0, token: token)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
-                                              });
+                                                                     0, token: t)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                              }, token: token);
                     else
                         sbdInput.CheapReplace(strOriginal, "{" + strSkillKey + "}",
-                                              () => GetActiveSkill(strSkillKey, token).DisplayName(strLanguage, token));
+                                              t => GetActiveSkill(strSkillKey, t).DisplayName(strLanguage, t), token: token);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
+        /// </summary>
+        /// <param name="strInput">Stringbuilder object that contains the input.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public Task<string> ProcessSkillsInXPathAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return string.IsNullOrEmpty(strInput)
+                ? Task.FromResult(strInput)
+                : ProcessSkillsInXPathForTooltipAsync(strInput, blnShowValues: false, dicValueOverrides: dicValueOverrides, token: token);
+        }
+
+        /// <summary>
+        /// Replaces stringbuilder content in the form of {Skill} with the total dicepool of the skill.
+        /// </summary>
+        /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
+        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public Task ProcessSkillsInXPathAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return Task.CompletedTask;
+            return ProcessSkillsInXPathForTooltipAsync(sbdInput, strOriginal, blnShowValues: false,
+                dicValueOverrides: dicValueOverrides, token: token);
+        }
+
+        /// <summary>
+        /// Replaces substring in the form of {Skill} with 'Skill (Pool)'. Intended to be used by tooltips and similar.
+        /// </summary>
+        /// <param name="strInput">Stringbuilder object that contains the input.</param>
+        /// <param name="objCultureInfo">Culture type used by the language. Defaults to null, which is then system defaults.</param>
+        /// <param name="strLanguage">Language to use for displayname translation.</param>
+        /// <param name="blnShowValues">Whether to include the dicepool value in the return string.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public async Task<string> ProcessSkillsInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strReturn = strInput;
+            string strFormat = blnShowValues ? await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "({0})" : string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await (await GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objSkill, t1) =>
+                {
+                    string strSkillKey = await objSkill.GetDictionaryKeyAsync(t1).ConfigureAwait(false);
+                    if (blnShowValues)
+                        strReturn = await strReturn.CheapReplaceAsync("{" + strSkillKey + "}",
+                                                           async t2 =>
+                                                           {
+                                                               Skill objLoopSkill = await GetActiveSkillAsync(strSkillKey, t2).ConfigureAwait(false);
+                                                               return await objLoopSkill.DisplayNameAsync(strLanguage, t2).ConfigureAwait(false)
+                                                                      + string.Format(
+                                                                          objCultureInfo, strFormat,
+                                                                          dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
+                                                                              ? intOverride
+                                                                              : await objLoopSkill.PoolOtherAttributeAsync(
+                                                                                  await objLoopSkill.GetAttributeAsync(t2).ConfigureAwait(false),
+                                                                                  intAttributeOverrideValue:
+                                                                                  0, token: t2).ConfigureAwait(false)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                                           }, token: t1).ConfigureAwait(false);
+                    else
+                        strReturn = await strReturn.CheapReplaceAsync("{" + strSkillKey + "}",
+                                                           async t2 => await (await GetActiveSkillAsync(strSkillKey, t2).ConfigureAwait(false)).DisplayNameAsync(strLanguage, t2).ConfigureAwait(false), token: t1).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Replaces Stringbuilder content in the form of {Active Skill Name} with 'Active Skill Name (Pool)', ie {Athletics} becomes 'Athletics (1)'. Intended to be used by tooltips and similar.
+        /// </summary>
+        /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
+        /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
+        /// <param name="objCultureInfo">Culture type used by the language. Defaults to null, which is then system defaults.</param>
+        /// <param name="strLanguage">Language to use for displayname translation.</param>
+        /// <param name="blnShowValues">Whether to include the dicepool value in the return string.</param>
+        /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
+        public async Task ProcessSkillsInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strFormat = blnShowValues ? await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "({0})" : string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await (await GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objSkill, t1) =>
+                {
+                    string strSkillKey = await objSkill.GetDictionaryKeyAsync(t1).ConfigureAwait(false);
+                    if (blnShowValues)
+                        await sbdInput.CheapReplaceAsync(strOriginal, "{" + strSkillKey + "}",
+                                              async t2 =>
+                                              {
+                                                  Skill objLoopSkill = await GetActiveSkillAsync(strSkillKey, t2).ConfigureAwait(false);
+                                                  return await objLoopSkill.DisplayNameAsync(strLanguage, t2).ConfigureAwait(false)
+                                                         + string.Format(
+                                                             objCultureInfo, strFormat,
+                                                             dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
+                                                                 ? intOverride
+                                                                 : await objLoopSkill.PoolOtherAttributeAsync(
+                                                                     await objLoopSkill.GetAttributeAsync(t2).ConfigureAwait(false),
+                                                                     intAttributeOverrideValue:
+                                                                     0, token: t2).ConfigureAwait(false)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                              }, token: t1).ConfigureAwait(false);
+                    else
+                        await sbdInput.CheapReplaceAsync(strOriginal, "{" + strSkillKey + "}",
+                                              async t2 => await (await GetActiveSkillAsync(strSkillKey, t2).ConfigureAwait(false)).DisplayNameAsync(strLanguage, t2).ConfigureAwait(false), token: t1).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

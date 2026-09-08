@@ -347,8 +347,8 @@ namespace Chummer.UI.Table
                     objJoinedToken.ThrowIfCancellationRequested();
                     _lstPermutation.Sort((i1, i2) => Utils.SafelyRunSynchronously(
                                              async t => await comparison(
-                                                     await Items.GetValueAtAsync(i1, objJoinedToken).ConfigureAwait(false),
-                                                     await Items.GetValueAtAsync(i2, objJoinedToken).ConfigureAwait(false), t)
+                                                     await Items.GetValueAtAsync(i1, t).ConfigureAwait(false),
+                                                     await Items.GetValueAtAsync(i2, t).ConfigureAwait(false), t)
                                                  .ConfigureAwait(false), objJoinedToken));
                     objJoinedToken.ThrowIfCancellationRequested();
                     if (_eSortType == SortOrder.Descending)
@@ -382,9 +382,9 @@ namespace Chummer.UI.Table
                 {
                     Func<T, T, CancellationToken, Task<int>> comparison = _sortColumn.CreateSorter();
                     objJoinedToken.ThrowIfCancellationRequested();
-                    await _lstPermutation.SortAsync(async (i1, i2) => await comparison(
-                            await Items.GetValueAtAsync(i1, objJoinedToken).ConfigureAwait(false),
-                            await Items.GetValueAtAsync(i2, objJoinedToken).ConfigureAwait(false), objJoinedToken)
+                    await _lstPermutation.SortAsync(async (i1, i2, t) => await comparison(
+                            await Items.GetValueAtAsync(i1, t).ConfigureAwait(false),
+                            await Items.GetValueAtAsync(i2, t).ConfigureAwait(false), t)
                         .ConfigureAwait(false), token: objJoinedToken).ConfigureAwait(false);
                     objJoinedToken.ThrowIfCancellationRequested();
                     if (_eSortType == SortOrder.Descending)
@@ -458,9 +458,9 @@ namespace Chummer.UI.Table
                         {
                             cells = new List<TableCell>(await Items.GetCountAsync(token).ConfigureAwait(false));
                             int i = 0;
-                            await Items.ForEachAsync(async item =>
+                            await Items.ForEachAsync(async (item, t) =>
                             {
-                                TableCell cell = await CreateCell(item, column, token).ConfigureAwait(false);
+                                TableCell cell = await CreateCell(item, column, t).ConfigureAwait(false);
                                 try
                                 {
                                     cells.Add(cell);
@@ -470,7 +470,7 @@ namespace Chummer.UI.Table
                                     cell.Dispose();
                                     throw;
                                 }
-                                if (await Filter(item, token).ConfigureAwait(false))
+                                if (await Filter(item, t).ConfigureAwait(false))
                                 {
                                     TableRow row = _lstRowCells[i++];
                                     await row.DoThreadSafeAsync(x =>
@@ -484,7 +484,7 @@ namespace Chummer.UI.Table
                                         {
                                             x.ResumeLayout(false);
                                         }
-                                    }, token).ConfigureAwait(false);
+                                    }, t).ConfigureAwait(false);
                                 }
                             }, token: token).ConfigureAwait(false);
                         }
@@ -648,29 +648,29 @@ namespace Chummer.UI.Table
                 try
                 {
                     int i = 0;
-                    await Items.ForEachAsync(async objItem =>
+                    await Items.ForEachAsync(async (objItem, t) =>
                     {
                         TableRow row = _lstRowCells[i++];
-                        await row.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        await row.DoThreadSafeAsync(x => x.SuspendLayout(), t).ConfigureAwait(false);
                         try
                         {
-                            if (await Filter(objItem, token).ConfigureAwait(false))
+                            if (await Filter(objItem, t).ConfigureAwait(false))
                             {
-                                if (await row.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false)
+                                if (await row.DoThreadSafeFuncAsync(x => x.Parent, token: t).ConfigureAwait(false)
                                     == null)
                                 {
-                                    await this.DoThreadSafeAsync(x => x.Controls.Add(row), token).ConfigureAwait(false);
+                                    await this.DoThreadSafeAsync(x => x.Controls.Add(row), t).ConfigureAwait(false);
                                 }
                             }
-                            else if (await row.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false)
+                            else if (await row.DoThreadSafeFuncAsync(x => x.Parent, token: t).ConfigureAwait(false)
                                      != null)
                             {
-                                await this.DoThreadSafeAsync(x => x.Controls.Remove(row), token).ConfigureAwait(false);
+                                await this.DoThreadSafeAsync(x => x.Controls.Remove(row), t).ConfigureAwait(false);
                             }
                         }
                         finally
                         {
-                            await row.DoThreadSafeAsync(x => x.ResumeLayout(false), token).ConfigureAwait(false);
+                            await row.DoThreadSafeAsync(x => x.ResumeLayout(false), t).ConfigureAwait(false);
                         }
                     }, token: token).ConfigureAwait(false);
                 }

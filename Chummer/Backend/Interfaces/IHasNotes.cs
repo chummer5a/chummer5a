@@ -51,7 +51,7 @@ namespace Chummer
                 : Program.MainForm;
             string strNotes = await objNotes.GetNotesAsync(token).ConfigureAwait(false);
             Color objColor = await objNotes.GetNotesColorAsync(token).ConfigureAwait(false);
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(strNotes, objColor, token), token).ConfigureAwait(false))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(t => new EditNotes(strNotes, objColor, t), token).ConfigureAwait(false))
             {
                 if (await frmItemNotes.ShowDialogSafeAsync(frmToUse, token).ConfigureAwait(false) != DialogResult.OK)
                     return false;
@@ -68,7 +68,7 @@ namespace Chummer
                 {
                     treNode.ForeColor = objColor;
                     treNode.ToolTipText = strNotes;
-                }, token: token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
             }
             else
             {

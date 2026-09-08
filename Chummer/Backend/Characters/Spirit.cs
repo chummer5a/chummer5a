@@ -1487,12 +1487,12 @@ namespace Chummer
                     && eType == SpiritType.Spirit
                     && await GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false)
                     && !await GetFetteredAsync(token).ConfigureAwait(false)
-                    && await CharacterObject.Spirits.CountAsync(async x =>
+                    && await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false)).CountAsync(async (x, t) =>
                                                                    !ReferenceEquals(x, this)
-                                                                   && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit
-                                                                   && await x.GetBoundAsync(token).ConfigureAwait(false)
-                                                                   && !await x.GetFetteredAsync(token).ConfigureAwait(false)
-                                                                   && await x.GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                                   && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Spirit
+                                                                   && await x.GetBoundAsync(t).ConfigureAwait(false)
+                                                                   && !await x.GetFetteredAsync(t).ConfigureAwait(false)
+                                                                   && await x.GetCountsAgainstBoundSpiritLimitAsync(t).ConfigureAwait(false), token).ConfigureAwait(false)
                     >= await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false))
                 {
                     string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(

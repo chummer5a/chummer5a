@@ -273,9 +273,9 @@ namespace Chummer.Controls.Shared
             }
 
             if (_comparisonAsync != null)
-                await objTTypeList.SortAsync((x, y) => _comparisonAsync.CompareAsync(x.Item1, y.Item1, token), token).ConfigureAwait(false);
+                await objTTypeList.SortAsync((x, y, t) => _comparisonAsync.CompareAsync(x.Item1, y.Item1, t), token).ConfigureAwait(false);
             else
-                await objTTypeList.SortAsync((x, y) => DefaultCompareAsync(_comparison, x.Item1, y.Item1, token), token).ConfigureAwait(false);
+                await objTTypeList.SortAsync((x, y, t) => DefaultCompareAsync(_comparison, x.Item1, y.Item1, t), token).ConfigureAwait(false);
 
             // Can't use stackalloc in async methods, so always use array pool instead
             using (new FetchSafelyFromArrayPool<int>(ArrayPool<int>.Shared, _lstDisplayIndex.Count, out int[] aintOldDisplayIndex))
@@ -702,13 +702,13 @@ namespace Chummer.Controls.Shared
 
                             List<Control> lstControls = new List<Control>(_lstContentList.Count);
                             _lstContentList.Clear();
-                            await Contents.ForEachWithSideEffectsAsync(async objLoopTType =>
+                            await Contents.ForEachWithSideEffectsAsync(async (objLoopTType, t) =>
                             {
                                 ControlWithMetaData objControlWithMetadata =
-                                    await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token)
+                                    await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, t)
                                         .ConfigureAwait(false);
                                 _lstContentList.Add(objControlWithMetadata);
-                                lstControls.Add(await objControlWithMetadata.GetControlAsync(token)
+                                lstControls.Add(await objControlWithMetadata.GetControlAsync(t)
                                     .ConfigureAwait(false));
                             }, token: token).ConfigureAwait(false);
 

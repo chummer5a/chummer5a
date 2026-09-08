@@ -6482,6 +6482,99 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
         /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        public static string ProcessFixedValuesString(this string strInput, Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, funcRating(token), intIndexInner, token);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating(token);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    token.ThrowIfCancellationRequested();
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = funcRating(token);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating(token);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = funcRating(token);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<Task<int>> funcRating, CancellationToken token = default)
         {

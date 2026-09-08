@@ -492,7 +492,7 @@ namespace Chummer.Backend.Skills
                             ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
                                 = await skill.GetSpecializationsAsync(token).ConfigureAwait(false);
                             foreach (SkillSpecialization objSpecialization in await lstSpecs.ToListAsync(
-                                             async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token)
+                                             async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token)
                                          .ConfigureAwait(false))
                             {
                                 await lstSpecs.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
@@ -565,7 +565,7 @@ namespace Chummer.Backend.Skills
                             ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
                                 = await skill.GetSpecializationsAsync(token).ConfigureAwait(false);
                             foreach (SkillSpecialization objSpecialization in await lstSpecs.ToListAsync(
-                                             async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token)
+                                             async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token)
                                          .ConfigureAwait(false))
                             {
                                 await lstSpecs.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
@@ -1746,13 +1746,13 @@ namespace Chummer.Backend.Skills
                         {
                             await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
                             await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
-                                (x, y) => SkillsSection.CompareSkillGroupsAsync(x, y, token),
-                                async (objExistingSkillGroup, objNewSkillGroup) =>
+                                (x, y, t) => SkillsSection.CompareSkillGroupsAsync(x, y, t),
+                                async (objExistingSkillGroup, objNewSkillGroup, t) =>
                                 {
                                     foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
                                                  !objExistingSkillGroup.SkillList.Contains(x)))
                                     {
-                                        await objExistingSkillGroup.AddAsync(x, token).ConfigureAwait(false);
+                                        await objExistingSkillGroup.AddAsync(x, t).ConfigureAwait(false);
                                     }
 
                                     await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
@@ -2419,12 +2419,18 @@ namespace Chummer.Backend.Skills
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                             .ConfigureAwait(false);
-                        (await sbdTooltip
-                            .Append(await LanguageManager.GetStringAsync("Tip_SkillGroup_Skills", token: token)
-                                .ConfigureAwait(false)).Append(strSpace)
-                            .AppendJoinAsync("," + strSpace,
-                                SkillList.Select(x => x.GetCurrentDisplayNameAsync(token)),
-                                token).ConfigureAwait(false)).AppendLine();
+                        string strConjunction = "," + strSpace;
+                        sbdTooltip.Append(await LanguageManager.GetStringAsync("Tip_SkillGroup_Skills", token: token).ConfigureAwait(false), strSpace);
+                        bool blnAddConjunction = false;
+                        foreach (Skill objSkill in SkillList)
+                        {
+                            if (blnAddConjunction)
+                                sbdTooltip.Append(strConjunction);
+                            else
+                                blnAddConjunction = true;
+                            sbdTooltip.Append(await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                        }
+                        sbdTooltip.AppendLine();
 
                         if (await GetIsDisabledAsync(token).ConfigureAwait(false))
                         {
@@ -2996,19 +3002,19 @@ namespace Chummer.Backend.Skills
                                     token.ThrowIfCancellationRequested();
                                     if (await GetKarmaAsync(token).ConfigureAwait(false) > 0)
                                     {
-                                        await SkillList.ForEachAsync(async skill =>
+                                        await SkillList.ForEachAsync(async (skill, t) =>
                                         {
-                                            IAsyncDisposable objLocker2 = await skill.LockObject.EnterWriteLockAsync(token)
+                                            IAsyncDisposable objLocker2 = await skill.LockObject.EnterWriteLockAsync(t)
                                                 .ConfigureAwait(false);
                                             try
                                             {
-                                                token.ThrowIfCancellationRequested();
-                                                await skill.SetKarmaPointsAsync(0, token).ConfigureAwait(false);
-                                                await skill.SetBasePointsAsync(0, token).ConfigureAwait(false);
+                                                t.ThrowIfCancellationRequested();
+                                                await skill.SetKarmaPointsAsync(0, t).ConfigureAwait(false);
+                                                await skill.SetBasePointsAsync(0, t).ConfigureAwait(false);
                                                 await skill.Specializations
                                                     .RemoveAllAsync(
-                                                        async x => !await x.GetFreeAsync(token).ConfigureAwait(false),
-                                                        token: token).ConfigureAwait(false);
+                                                        async (x, t2) => !await x.GetFreeAsync(t2).ConfigureAwait(false),
+                                                        token: t).ConfigureAwait(false);
                                             }
                                             finally
                                             {
@@ -3018,13 +3024,13 @@ namespace Chummer.Backend.Skills
                                     }
                                     else
                                     {
-                                        await SkillList.ForEachAsync(async skill =>
+                                        await SkillList.ForEachAsync(async (skill, t) =>
                                         {
-                                            IAsyncDisposable objLocker2 = await skill.LockObject.EnterWriteLockAsync(token)
+                                            IAsyncDisposable objLocker2 = await skill.LockObject.EnterWriteLockAsync(t)
                                                 .ConfigureAwait(false);
                                             try
                                             {
-                                                await skill.SetBasePointsAsync(0, token).ConfigureAwait(false);
+                                                await skill.SetBasePointsAsync(0, t).ConfigureAwait(false);
                                             }
                                             finally
                                             {
@@ -3046,13 +3052,13 @@ namespace Chummer.Backend.Skills
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    await SkillList.ForEachAsync(async skill =>
+                                    await SkillList.ForEachAsync(async (skill, t) =>
                                     {
                                         IAsyncDisposable objLocker2 =
-                                            await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            await skill.LockObject.EnterWriteLockAsync(t).ConfigureAwait(false);
                                         try
                                         {
-                                            await skill.SetBasePointsAsync(0, token).ConfigureAwait(false);
+                                            await skill.SetBasePointsAsync(0, t).ConfigureAwait(false);
                                         }
                                         finally
                                         {
@@ -3077,13 +3083,13 @@ namespace Chummer.Backend.Skills
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    await SkillList.ForEachAsync(async skill =>
+                                    await SkillList.ForEachAsync(async (skill, t) =>
                                     {
                                         IAsyncDisposable objLocker2 =
-                                            await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            await skill.LockObject.EnterWriteLockAsync(t).ConfigureAwait(false);
                                         try
                                         {
-                                            await skill.SetBasePointsAsync(0, token).ConfigureAwait(false);
+                                            await skill.SetBasePointsAsync(0, t).ConfigureAwait(false);
                                         }
                                         finally
                                         {
@@ -3272,7 +3278,7 @@ namespace Chummer.Backend.Skills
                                         break;
                                 }
                             }
-                        }, token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                 }
 
                 if (decMultiplier != 1.0m)
@@ -3460,7 +3466,7 @@ namespace Chummer.Backend.Skills
                                     break;
                             }
                         }
-                    }, token: token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
                 }
 
                 if (decMultiplier != 1.0m)
@@ -3639,7 +3645,7 @@ namespace Chummer.Backend.Skills
                                     break;
                             }
                         }
-                    }, token: token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
                 }
 
                 if (decMultiplier != 1.0m)

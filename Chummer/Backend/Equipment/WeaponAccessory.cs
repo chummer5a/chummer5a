@@ -1519,36 +1519,36 @@ namespace Chummer.Backend.Equipment
                         {
                             Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => objParent.GetRatingAsync(token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Rating}",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Rating",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => objParent.GetOwnCostAsync(token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Cost}",
-                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Cost",
-                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentTotalCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => objParent.MultipliableCostAsync(this, token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Total Cost}",
-                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentTotalCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Total Cost",
-                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentTotalCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParent.OwnWeight);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Weight}", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
@@ -2028,7 +2028,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             return await GetOwnCostAsync(token).ConfigureAwait(false)
-                   + await GearChildren.SumAsync(g => g.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                   + await GearChildren.SumAsync((g, t) => g.GetTotalCostAsync(t), token).ConfigureAwait(false);
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -2052,7 +2052,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             decimal decPlugin = await GearChildren
-                                      .SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token), token)
+                                      .SumAsync((g, t) => g.CalculatedStolenTotalCostAsync(blnStolen, t), token)
                                       .ConfigureAwait(false);
             if (Stolen != blnStolen)
                 return decPlugin;
@@ -2516,7 +2516,7 @@ namespace Chummer.Backend.Equipment
             if (blnDoRemoval && Parent != null)
                 await Parent.WeaponAccessories.RemoveAsync(this, token).ConfigureAwait(false);
             // Remove any children the Gear may have.
-            decimal decReturn = await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token).ConfigureAwait(false);
+            decimal decReturn = await GearChildren.SumWithSideEffectsAsync((x, t) => x.DeleteGearAsync(false, t), token).ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);
 

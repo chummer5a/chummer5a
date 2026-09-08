@@ -452,9 +452,9 @@ namespace Chummer
                 _objContact,
                 nameof(Contact.Name),
                 (x, y) => x.TextChanged += y,
-                x => x.GetNameAsync(token),
-                (x, y) => x.SetNameAsync(y, token),
-                1000, token, token).ConfigureAwait(false);
+                (x, t) => x.GetNameAsync(t),
+                (x, y, t) => x.SetNameAsync(y, t),
+                1000, _objMyToken, token).ConfigureAwait(false);
             await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.BackColor = y, _objContact,
                     nameof(Contact.PreferredColor), x => x.GetPreferredColorAsync(_objMyToken), token)
                 .ConfigureAwait(false);

@@ -635,21 +635,21 @@ namespace Chummer
                         if (_objArmor != null)
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Rating}",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentRating.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Rating",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentRating.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentRating.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                                () => _strCachedParentRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentRating.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Cost}",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                                () => _strCachedParentOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}",
                                 () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight",
@@ -659,42 +659,43 @@ namespace Chummer
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight",
                                 () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Capacity",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Capacity}",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Capacity",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Capacity}",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Capacity",
-                                () => _strCachedParentCapacity.GetValueAsync(token), token: token).ConfigureAwait(false);
+                                t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                         }
                         else
                         {
-                            sbdValue.Replace("{Armor Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Rating}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Rating", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Armor Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Cost}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Cost", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Armor Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Weight}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Weight", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Armor Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Armor Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Parent Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Parent Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("{Capacity}", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                            sbdValue.Replace("Capacity", int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                            string strMaxValue = int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            sbdValue.Replace("{Armor Rating}", strMaxValue);
+                            sbdValue.Replace("Armor Rating", strMaxValue);
+                            sbdValue.Replace("{Parent Rating}", strMaxValue);
+                            sbdValue.Replace("Parent Rating", strMaxValue);
+                            sbdValue.Replace("{Armor Cost}", strMaxValue);
+                            sbdValue.Replace("Armor Cost", strMaxValue);
+                            sbdValue.Replace("{Parent Cost}", strMaxValue);
+                            sbdValue.Replace("Parent Cost", strMaxValue);
+                            sbdValue.Replace("{Armor Weight}", strMaxValue);
+                            sbdValue.Replace("Armor Weight", strMaxValue);
+                            sbdValue.Replace("{Parent Weight}", strMaxValue);
+                            sbdValue.Replace("Parent Weight", strMaxValue);
+                            sbdValue.Replace("{Armor Capacity}", strMaxValue);
+                            sbdValue.Replace("Armor Capacity", strMaxValue);
+                            sbdValue.Replace("{Parent Capacity}", strMaxValue);
+                            sbdValue.Replace("Parent Capacity", strMaxValue);
+                            sbdValue.Replace("{Capacity}", strMaxValue);
+                            sbdValue.Replace("Capacity", strMaxValue);
                         }
 
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdValue.Replace("{Rating}", strRating).Replace("Rating", strRating);
                         await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();

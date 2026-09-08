@@ -321,6 +321,66 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to <see cref="Enumerable.First{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild, token).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.First{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.First{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild, token).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
         /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepFirstOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
@@ -343,6 +403,72 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirstOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild, token).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirstOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirstOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild, token).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
         /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
@@ -354,11 +480,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
         /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, token);
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
             throw new InvalidOperationException();
@@ -384,6 +554,63 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                if (predicate(objLoopChild))
+                    objReturn = objLoopChild;
+                T objTemp = funcGetChildrenMethod(objLoopChild, token).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                if (predicate(objLoopChild, token))
+                    objReturn = objLoopChild;
+                T objTemp = funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                if (predicate(objLoopChild, token))
+                    objReturn = objLoopChild;
+                T objTemp = funcGetChildrenMethod(objLoopChild, token).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
         /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
@@ -397,6 +624,27 @@ namespace Chummer
                 if (lstChildren.Count > 0)
                 {
                     T objTemp = lstChildren.DeepLastOrDefault(funcGetChildrenMethod);
+                    if (objTemp?.Equals(default(T)) == false)
+                        return objTemp;
+                }
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            if (objParentList == null)
+                return default;
+            T objReturn = objParentList.LastOrDefault();
+            if (funcGetChildrenMethod != null)
+            {
+                List<T> lstChildren = funcGetChildrenMethod(objReturn, token).ToList();
+                if (lstChildren.Count > 0)
+                {
+                    T objTemp = lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token);
                     if (objTemp?.Equals(default(T)) == false)
                         return objTemp;
                 }

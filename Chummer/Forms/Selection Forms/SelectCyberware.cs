@@ -2576,23 +2576,18 @@ namespace Chummer
                     {
                         sbdValue.Append(strExpression);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                            () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                            () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent Gear Cost}",
-                            () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentGearCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Parent Gear Cost",
-                            () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentGearCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         // Deliberately don't replace "Gear Cost" and "Children Cost" so that they get properly displayed in the UI
-
-                        await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}",
-                            () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "MinRating",
-                            () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}",
-                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Rating",
-                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        string strMinRating = intMinRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdValue.Replace("{MinRating}", strMinRating).Replace("MinRating", strMinRating);
+                        string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdValue.Replace("{Rating}", strRating).Replace("Rating", strRating);
 
                         Dictionary<string, int> dicVehicleValues = null;
                         if (strExpression.Contains("{STR") || strExpression.Contains("{AGI"))

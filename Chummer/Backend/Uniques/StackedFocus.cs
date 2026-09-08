@@ -399,7 +399,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                decCost += await Gear.SumAsync(async objFocus =>
+                decCost += await Gear.SumAsync(async (objFocus, t) =>
                 {
                     // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
                     string strFocusName = objFocus.Name;
@@ -423,84 +423,84 @@ namespace Chummer
                     }
 
                     decimal decKarmaMultiplier;
-                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(t).ConfigureAwait(false);
                     switch (strFocusName)
                     {
                         case "Qi Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaQiFocusAsync(token).ConfigureAwait(false);
+                            decKarmaMultiplier = await objSettings.GetKarmaQiFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Sustaining Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaSustainingFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaSustainingFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Counterspelling Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token)
+                            decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(t)
                                 .ConfigureAwait(false);
                             break;
 
                         case "Banishing Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaBanishingFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaBanishingFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Binding Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaBindingFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaBindingFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Weapon Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaWeaponFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaWeaponFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Spellcasting Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token)
+                            decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(t)
                                 .ConfigureAwait(false);
                             break;
 
                         case "Summoning Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaSummoningFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaSummoningFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Alchemical Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaAlchemicalFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaAlchemicalFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Centering Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaCenteringFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaCenteringFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Masking Focus":
                             decKarmaMultiplier
-                                = await objSettings.GetKarmaMaskingFocusAsync(token).ConfigureAwait(false);
+                                = await objSettings.GetKarmaMaskingFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Disenchanting Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token)
+                            decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(t)
                                 .ConfigureAwait(false);
                             break;
 
                         case "Power Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaPowerFocusAsync(token).ConfigureAwait(false);
+                            decKarmaMultiplier = await objSettings.GetKarmaPowerFocusAsync(t).ConfigureAwait(false);
                             break;
 
                         case "Flexible Signature Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token)
+                            decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(t)
                                 .ConfigureAwait(false);
                             break;
 
                         case "Ritual Spellcasting Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token)
+                            decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(t)
                                 .ConfigureAwait(false);
                             break;
 
                         case "Spell Shaping Focus":
-                            decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token)
+                            decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(t)
                                 .ConfigureAwait(false);
                             break;
 
@@ -509,7 +509,7 @@ namespace Chummer
                             break;
                     }
 
-                    await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    await (await _objCharacter.GetImprovementsAsync(t).ConfigureAwait(false)).ForEachAsync(
                         objLoopImprovement =>
                         {
                             if (objLoopImprovement.ImprovedName != strFocusName
@@ -528,9 +528,9 @@ namespace Chummer
                                     decKarmaMultiplier += objLoopImprovement.Value;
                                     break;
                             }
-                        }, token: token).ConfigureAwait(false);
+                        }, token: t).ConfigureAwait(false);
 
-                    return await objFocus.GetRatingAsync(token).ConfigureAwait(false) * decKarmaMultiplier + decExtraKarmaCost;
+                    return await objFocus.GetRatingAsync(t).ConfigureAwait(false) * decKarmaMultiplier + decExtraKarmaCost;
                 }, token).ConfigureAwait(false);
             }
             finally

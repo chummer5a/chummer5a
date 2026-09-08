@@ -341,7 +341,7 @@ namespace Chummer
             objCyberwareLabelString.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
             ++intDepth;
             await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(
-                objPlugin => WriteList(objCyberwareLabelString, objPlugin, intDepth, token), token).ConfigureAwait(false);
+                (objPlugin, t) => WriteList(objCyberwareLabelString, objPlugin, intDepth, t), token).ConfigureAwait(false);
         }
 
         #endregion Methods

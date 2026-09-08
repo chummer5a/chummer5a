@@ -1039,7 +1039,7 @@ namespace Chummer.Backend.Skills
                         decMultiplier *= objImprovement.Value / 100.0m;
                 }
                 int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
-                    ? await Specializations.CountAsync(async objSpec => !await objSpec.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    ? await Specializations.CountAsync(async (objSpec, t) => !await objSpec.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     : 0;
                 decimal decSpecCost = intSpecCount *
                                       await CharacterObjectSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
@@ -1318,7 +1318,7 @@ namespace Chummer.Backend.Skills
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
-                    cost += await Specializations.CountAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    cost += await Specializations.CountAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                 string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 decimal decExtra = 0;
@@ -1480,7 +1480,7 @@ namespace Chummer.Backend.Skills
                     xmlNode.TryGetInt32FieldQuickly("base", ref intBase);
                     if (intKarma == 0 && intBase == 0 &&
                         await (await (await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
-                            .CountAsync(x => x.GetIsNativeLanguageAsync(token), token).ConfigureAwait(false) < 1 +
+                            .CountAsync((x, t) => x.GetIsNativeLanguageAsync(t), token).ConfigureAwait(false) < 1 +
                         await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit, token: token).ConfigureAwait(false))
                         blnTemp = true;
                 }

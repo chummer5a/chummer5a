@@ -3400,9 +3400,9 @@ namespace Chummer
                             }, t1).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
-                        decReturn += await lstWeapons.SumAsync(async objDeleteWeapon =>
-                                await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false), token)
+                        decReturn += await lstWeapons.SumAsync(async (objDeleteWeapon, t) =>
+                                await objDeleteWeapon.GetTotalCostAsync(t).ConfigureAwait(false)
+                                + await objDeleteWeapon.DeleteWeaponAsync(token: t).ConfigureAwait(false), token)
                             .ConfigureAwait(false);
                     }
 

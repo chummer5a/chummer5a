@@ -148,11 +148,11 @@ namespace Chummer
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
-                        await _objCharacter.Lifestyles.ForEachAsync(async objLifestyle =>
+                        await _objCharacter.Lifestyles.ForEachAsync(async (objLifestyle, t) =>
                         {
                             ListItem objLifestyleItem = new ListItem(objLifestyle,
                                                                      await objLifestyle
-                                                                           .GetCurrentDisplayNameAsync(token)
+                                                                           .GetCurrentDisplayNameAsync(t)
                                                                            .ConfigureAwait(false));
                             lstLifestyleItems.Add(objLifestyleItem);
                             // We already selected a lifestyle, so keep the selection if possible despite the refresh
@@ -163,7 +163,7 @@ namespace Chummer
                             }
                             else
                             {
-                                decimal decLoopExpectedValue = await objLifestyle.GetExpectedValueAsync(token).ConfigureAwait(false);
+                                decimal decLoopExpectedValue = await objLifestyle.GetExpectedValueAsync(t).ConfigureAwait(false);
                                 if (objPreferredLifestyle == null ||
                                      decLoopExpectedValue > decPreferredExpectedValue)
                                 {

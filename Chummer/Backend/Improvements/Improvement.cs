@@ -4055,9 +4055,9 @@ namespace Chummer
                         SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         // Keeping two enumerations separate helps avoid extra heap allocations
                         await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
-                            nameof(Skill.PoolModifiers), skill => skill.GetAttributeAsync(token), lstReturn, token).ConfigureAwait(false);
+                            nameof(Skill.PoolModifiers), (skill, t) => skill.GetAttributeAsync(t), lstReturn, token).ConfigureAwait(false);
                         await ProcessSkillsByPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, 
-                            nameof(Skill.PoolModifiers), skill => skill.GetAttributeAsync(token), lstReturn, token).ConfigureAwait(false);
+                            nameof(Skill.PoolModifiers), (skill, t) => skill.GetAttributeAsync(t), lstReturn, token).ConfigureAwait(false);
                     }
                     break;
 
@@ -4875,9 +4875,9 @@ namespace Chummer
                     {
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objTargetGroup, t) =>
                             {
-                                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                string strName = await objTargetGroup.GetNameAsync(t).ConfigureAwait(false);
                                 if (strName == ImprovedName ||
                                     lstExtraImprovedName.Contains(strName))
                                 {
@@ -5515,6 +5515,45 @@ namespace Chummer
             return skills.ForEachAsync(async objTargetSkill =>
             {
                 string strPropertyValue = await propertySelector(objTargetSkill).ConfigureAwait(false);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<T, CancellationToken, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        {
+            return skills.ForEachAsync(async (objTargetSkill, t) =>
+            {
+                string strPropertyValue = await propertySelector(objTargetSkill, t).ConfigureAwait(false);
 
                 // Check against ImprovedName
                 if (strPropertyValue == strImprovedName)

@@ -246,7 +246,7 @@ namespace Chummer.Backend.Equipment
                                         }
                                     }
                                 }
-                            }, token: token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                     }
 
@@ -439,16 +439,17 @@ namespace Chummer.Backend.Equipment
 
                         if (blnSync)
                         {
+                            string strDescription = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                           CurrentDisplayNameShort);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                    = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,
-                                       Description = string.Format(
-                                           GlobalSettings.CultureInfo,
-                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                           CurrentDisplayNameShort),
+                                       Description = strDescription,
                                        AllowCancel = false
                                    }))
                             {
@@ -534,18 +535,19 @@ namespace Chummer.Backend.Equipment
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlCategoryNode in xmlSelectModesFromCategory)
                     {
+                        string strAllowedCategories = objXmlCategoryNode.InnerTextViaPool(token);
                         using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod = blnSync
                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                    ? ThreadSafeForm<SelectArmorMod>.Get(
                                        () => new SelectArmorMod(_objCharacter, this)
                                        {
-                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(token),
+                                           AllowedCategories = strAllowedCategories,
                                            ExcludeGeneralCategory = true
                                        })
                                    : await ThreadSafeForm<SelectArmorMod>.GetAsync(
                                        () => new SelectArmorMod(_objCharacter, this)
                                        {
-                                           AllowedCategories = objXmlCategoryNode.InnerTextViaPool(token),
+                                           AllowedCategories = strAllowedCategories,
                                            ExcludeGeneralCategory = true
                                        }, token).ConfigureAwait(false))
                         {
@@ -839,7 +841,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intAddWeaponRating = blnSync
                             ? ProcessRatingString(strLoopRating, () => Rating, token)
-                            : await ProcessRatingStringAsync(strLoopRating, () => GetRatingAsync(token), token);
+                            : await ProcessRatingStringAsync(strLoopRating, GetRatingAsync, token);
                     }
 
                     Weapon objGearWeapon = new Weapon(_objCharacter);
@@ -1685,6 +1687,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private int ProcessRatingString(string strExpression, Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token).StandardRound();
+        }
+
+        /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
         private decimal ProcessRatingStringAsDec(string strExpression, int intRating, CancellationToken token = default)
@@ -1696,6 +1706,14 @@ namespace Chummer.Backend.Equipment
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
         private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token);
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<CancellationToken, int> funcRating, CancellationToken token = default)
         {
             return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token);
         }
@@ -1732,6 +1750,37 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<CancellationToken, int> funcRating, out bool blnIsSuccess, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            blnIsSuccess = true;
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStartNoAlloc('+');
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnIsSuccess = false;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdValue.Append(strExpression);
+                    Lazy<string> strRating = new Lazy<string>(() => funcRating(token).ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace("{Rating}", () => strRating.Value);
+                    sbdValue.CheapReplace("Rating", () => strRating.Value);
+                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
+                    object objProcess;
+                    (blnIsSuccess, objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), token);
+                    return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                }
+            }
+
+            return decValue;
+        }
+
+        /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
         private Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
@@ -1743,6 +1792,15 @@ namespace Chummer.Backend.Equipment
         /// Processes a string into an int based on logical processing.
         /// </summary>
         private async Task<int> ProcessRatingStringAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ProcessRatingStringAsDecAsync(strExpression, funcRating, token).ConfigureAwait(false)).Item1.StandardRound();
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private async Task<int> ProcessRatingStringAsync(string strExpression, Func<CancellationToken, Task<int>> funcRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return (await ProcessRatingStringAsDecAsync(strExpression, funcRating, token).ConfigureAwait(false)).Item1.StandardRound();
@@ -1774,8 +1832,43 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdValue.Append(strExpression);
                         Microsoft.VisualStudio.Threading.AsyncLazy<string> strRating = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
-                        await sbdValue.CheapReplaceAsync("{Rating}", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync("Rating", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync("{Rating}", t => strRating.GetValueAsync(t), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync("Rating", t => strRating.GetValueAsync(t), token: token).ConfigureAwait(false);
+                        await _objCharacter
+                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        strExpression = sbdValue.ToString();
+                    }
+                }
+                object objProcess;
+                (blnIsSuccess, objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+
+            return new ValueTuple<decimal, bool>(decValue, blnIsSuccess);
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private async Task<ValueTuple<decimal, bool>> ProcessRatingStringAsDecAsync(string strExpression, Func<CancellationToken, Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return new ValueTuple<decimal, bool>(0, true);
+            bool blnIsSuccess = true;
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartNoAlloc('+');
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        Microsoft.VisualStudio.Threading.AsyncLazy<string> strRating = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await funcRating(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                        await sbdValue.CheapReplaceAsync("{Rating}", t => strRating.GetValueAsync(t), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync("Rating", t => strRating.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await _objCharacter
                             .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();
@@ -1848,7 +1941,7 @@ namespace Chummer.Backend.Equipment
             string strArmorCapacity = ArmorCapacity;
             if (string.IsNullOrEmpty(strArmorCapacity))
                 return 0.0m.ToString("#,0.##", objCultureInfo);
-            strArmorCapacity = await strArmorCapacity.ProcessFixedValuesStringAsync(t => GetRatingAsync(t), token).ConfigureAwait(false);
+            strArmorCapacity = await strArmorCapacity.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
             if (strArmorCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 // If the Capacity is determined by the Rating, evaluate the expression.
@@ -1857,7 +1950,7 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = strArmorCapacity;
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                (decimal decCapacity, bool blnIsSuccess) = await ProcessRatingStringAsDecAsync(strCapacity, () => GetRatingAsync(token), token).ConfigureAwait(false);
+                (decimal decCapacity, bool blnIsSuccess) = await ProcessRatingStringAsDecAsync(strCapacity, GetRatingAsync, token).ConfigureAwait(false);
                 string strReturn = blnIsSuccess
                     ? decCapacity.ToString("#,0.##", objCultureInfo)
                     : strCapacity;
@@ -1942,7 +2035,7 @@ namespace Chummer.Backend.Equipment
 
             if (blnUseRating)
             {
-                decimal decTotalCost = (await ProcessRatingStringAsDecAsync(strReturn, () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
+                decimal decTotalCost = (await ProcessRatingStringAsDecAsync(strReturn, GetRatingAsync, token).ConfigureAwait(false)).Item1;
 
                 decTotalCost *= 1.0m + decMarkup;
 
@@ -2131,26 +2224,26 @@ namespace Chummer.Backend.Equipment
                 // Add the Armor's Improvements to the character.
                 await ImprovementManager.EnableImprovementsAsync(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId), token).ConfigureAwait(false);
                 // Add the Improvements from any Armor Mods in the Armor.
-                await ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
+                await ArmorMods.ForEachWithSideEffectsAsync(async (objMod, t1) =>
                 {
                     if (objMod.Equipped)
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
                                 x.ImproveSource == Improvement.ImprovementSource.ArmorMod &&
-                                x.SourceName == InternalId), token).ConfigureAwait(false);
+                                x.SourceName == InternalId), t1).ConfigureAwait(false);
                         // Add the Improvements from any Gear in the Armor.
-                        await objMod.GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                        await objMod.GearChildren.ForEachWithSideEffectsAsync(async (objGear, t2) =>
                         {
                             if (objGear.Equipped)
                             {
-                                await objGear.ChangeEquippedStatusAsync(true, true, token).ConfigureAwait(false);
+                                await objGear.ChangeEquippedStatusAsync(true, true, t2).ConfigureAwait(false);
                             }
-                        }, token).ConfigureAwait(false);
+                        }, t1).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
                 // Add the Improvements from any Gear in the Armor.
-                await GearChildren.ForEachWithSideEffectsAsync(objGear => objGear.ChangeEquippedStatusAsync(true, true, token), token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync((objGear, t) => objGear.ChangeEquippedStatusAsync(true, true, t), token).ConfigureAwait(false);
             }
             else
             {
@@ -2161,19 +2254,19 @@ namespace Chummer.Backend.Equipment
                              == Improvement.ImprovementSource.Armor
                              && x.SourceName == InternalId), token).ConfigureAwait(false);
                 // Add the Improvements from any Armor Mods in the Armor.
-                await ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
+                await ArmorMods.ForEachWithSideEffectsAsync(async (objMod, t1) =>
                 {
                     await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                         _objCharacter.Improvements.Where(
                             x => x.ImproveSource
                                  == Improvement.ImprovementSource.ArmorMod
-                                 && x.SourceName == InternalId), token).ConfigureAwait(false);
+                                 && x.SourceName == InternalId), t1).ConfigureAwait(false);
                     // Add the Improvements from any Gear in the Armor.
                     await objMod.GearChildren.ForEachWithSideEffectsAsync(
-                        objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token).ConfigureAwait(false);
+                        (objGear, t2) => objGear.ChangeEquippedStatusAsync(false, true, t2), t1).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
                 // Add the Improvements from any Gear in the Armor.
-                await GearChildren.ForEachWithSideEffectsAsync(objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync((objGear, t) => objGear.ChangeEquippedStatusAsync(false, true, t), token).ConfigureAwait(false);
             }
 
             if (_objCharacter?.IsLoading == false)
@@ -2210,7 +2303,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private Task<int> GetOwnArmorValueAsync(bool blnUseOverrideValue = false, CancellationToken token = default)
         {
-            return ProcessRatingStringAsync(blnUseOverrideValue ? ArmorOverrideValue : ArmorValue, () => GetRatingAsync(token), token);
+            return ProcessRatingStringAsync(blnUseOverrideValue ? ArmorOverrideValue : ArmorValue, GetRatingAsync, token);
         }
 
         /// <summary>
@@ -2367,11 +2460,22 @@ namespace Chummer.Backend.Equipment
             if (Stolen == blnStolen)
                 decTotalCost += await GetOwnCostAsync(token).ConfigureAwait(false);
 
-            // Go through all of the Mods for this piece of Armor and add the Cost value.
-            decTotalCost += await ArmorMods.SumAsync(mod => mod.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
+            if (blnStolen) // This setup might look weird, but it helps avoid heap allocations in the closures below
+            {
+                // Go through all of the Mods for this piece of Armor and add the Cost value.
+                decTotalCost += await ArmorMods.SumAsync((mod, t) => mod.CalculatedStolenTotalCostAsync(true, t), token).ConfigureAwait(false);
 
-            // Go through all of the Gear for this piece of Armor and add the Cost value.
-            decTotalCost += await GearChildren.SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
+                // Go through all of the Gear for this piece of Armor and add the Cost value.
+                decTotalCost += await GearChildren.SumAsync((g, t) => g.CalculatedStolenTotalCostAsync(true, t), token).ConfigureAwait(false);
+            }
+            else
+            {
+                // Go through all of the Mods for this piece of Armor and add the Cost value.
+                decTotalCost += await ArmorMods.SumAsync((mod, t) => mod.CalculatedStolenTotalCostAsync(false, t), token).ConfigureAwait(false);
+
+                // Go through all of the Gear for this piece of Armor and add the Cost value.
+                decTotalCost += await GearChildren.SumAsync((g, t) => g.CalculatedStolenTotalCostAsync(false, t), token).ConfigureAwait(false);
+            }
 
             return decTotalCost;
         }
@@ -2417,7 +2521,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token)).Item1;
+            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, GetRatingAsync, token)).Item1;
             if (DiscountCost)
                 decReturn *= 0.9m;
             return decReturn;
@@ -2860,7 +2964,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                intAvail = await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token).ConfigureAwait(false);
+                intAvail = await ProcessRatingStringAsync(strAvail, GetRatingAsync, token).ConfigureAwait(false);
             }
 
             if (blnCheckChildren)
@@ -2959,12 +3063,12 @@ namespace Chummer.Backend.Equipment
                     else
                         sbdReturn.Append('(', strCapacity, ')');
 
-                    await ArmorMods.ForEachAsync(async objMod =>
+                    await ArmorMods.ForEachAsync(async (objMod, t) =>
                     {
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             return;
-                        sbdReturn.Append("-(", (await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).TrimNoAlloc('[', ']'), ')');
+                        sbdReturn.Append("-(", (await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, t).ConfigureAwait(false)).TrimNoAlloc('[', ']'), ')');
                     }, token).ConfigureAwait(false);
 
                     strReturn = sbdReturn.ToString();
@@ -3349,11 +3453,8 @@ namespace Chummer.Backend.Equipment
                         sbdValue.Append(strExpression);
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
-                            await sbdValue
-                                .CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + "}", () => "0",
-                                    token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + "}",
-                                () => "0", token: token).ConfigureAwait(false);
+                            sbdValue.Replace("{Gear " + strMatrixAttribute + "}", "0");
+                            sbdValue.Replace("{Parent " + strMatrixAttribute + "}", "0");
                             if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 &&
                                 strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                             {
@@ -3465,9 +3566,9 @@ namespace Chummer.Backend.Equipment
             await _objCharacter.Armor.RemoveAsync(this, token).ConfigureAwait(false);
 
             // Remove any Improvements created by the Armor and its children.
-            decimal decReturn = await ArmorMods.SumWithSideEffectsAsync(x => x.DeleteArmorModAsync(false, token), token)
+            decimal decReturn = await ArmorMods.SumWithSideEffectsAsync((x, t) => x.DeleteArmorModAsync(false, t), token)
                                                .ConfigureAwait(false)
-                                + await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token)
+                                + await GearChildren.SumWithSideEffectsAsync((x, t) => x.DeleteGearAsync(false, t), token)
                                                     .ConfigureAwait(false);
 
             decReturn += await ImprovementManager
@@ -3479,35 +3580,35 @@ namespace Chummer.Backend.Equipment
             {
                 List<Weapon> lstWeapons = await _objCharacter.Weapons
                     .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
-                await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
+                await _objCharacter.Vehicles.ForEachAsync(async (objVehicle, t1) =>
                 {
                     lstWeapons.AddRange(await objVehicle.Weapons
-                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t1)
                         .ConfigureAwait(false));
-                    await objVehicle.Mods.ForEachAsync(async objMod =>
+                    await objVehicle.Mods.ForEachAsync(async (objMod, t2) =>
                     {
                         lstWeapons.AddRange(await objMod.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                             .ConfigureAwait(false));
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
 
-                    await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                    await objVehicle.WeaponMounts.ForEachAsync(async (objMount, t2) =>
                     {
                         lstWeapons.AddRange(await objMount.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                             .ConfigureAwait(false));
-                        await objMount.Mods.ForEachAsync(async objMod =>
+                        await objMount.Mods.ForEachAsync(async (objMod, t3) =>
                         {
                             lstWeapons.AddRange(await objMod.Weapons
-                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t3)
                                 .ConfigureAwait(false));
-                        }, token).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
+                        }, t2).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
 
-                decReturn += await lstWeapons.SumAsync(async objDeleteWeapon =>
-                        await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                        + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false), token)
+                decReturn += await lstWeapons.SumAsync(async (objDeleteWeapon, t) =>
+                        await objDeleteWeapon.GetTotalCostAsync(t).ConfigureAwait(false)
+                        + await objDeleteWeapon.DeleteWeaponAsync(token: t).ConfigureAwait(false), token)
                     .ConfigureAwait(false);
             }
 
@@ -3614,8 +3715,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            await ArmorMods.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
-            await GearChildren.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
+            await ArmorMods.ForEachWithSideEffectsAsync((x, t) => x.RefreshWirelessBonusesAsync(t), token: token).ConfigureAwait(false);
+            await GearChildren.ForEachWithSideEffectsAsync((x, t) => x.RefreshWirelessBonusesAsync(t), token: token).ConfigureAwait(false);
         }
 
         #region UI Methods
@@ -3640,15 +3741,15 @@ namespace Chummer.Backend.Equipment
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
-            await ArmorMods.ForEachAsync(async objMod =>
+            await ArmorMods.ForEachAsync(async (objMod, t) =>
             {
-                TreeNode objLoopNode = await objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear, token).ConfigureAwait(false);
+                TreeNode objLoopNode = await objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);
-            await GearChildren.ForEachAsync(async objGear =>
+            await GearChildren.ForEachAsync(async (objGear, t) =>
             {
-                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsArmorGear, null, token).ConfigureAwait(false);
+                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsArmorGear, null, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);
@@ -3794,18 +3895,18 @@ namespace Chummer.Backend.Equipment
             }
 
             intRestrictedCount += await Children
-                                        .SumAsync(objChild =>
+                                        .SumAsync((objChild, t) =>
                                                 objChild
                                                     .CheckRestrictedGear(
                                                         dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                        token), token: token)
+                                                        t), token: token)
                                         .ConfigureAwait(false)
                                   + await ArmorMods
-                                          .SumAsync(objChild =>
+                                          .SumAsync((objChild, t) =>
                                                   objChild
                                                       .CheckRestrictedGear(
                                                           dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                          token), token: token)
+                                                          t), token: token)
                                           .ConfigureAwait(false);
             return intRestrictedCount;
         }

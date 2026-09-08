@@ -135,28 +135,28 @@ namespace Chummer
             if (control == null)
                 throw new ArgumentNullException(nameof(control));
             _lstControls.Add(control);
-            return control.DoThreadSafeAsync(x =>
+            return control.DoThreadSafeAsync((x, t) =>
             {
                 x.MouseLeave += control_MouseLeave;
                 if (x.HasChildren)
                 {
                     foreach (Control child in x.Controls)
                     {
-                        token.ThrowIfCancellationRequested();
-                        AddControlRecursiveInner(child);
+                        t.ThrowIfCancellationRequested();
+                        AddControlRecursiveInner(child, t);
                     }
                 }
             }, token);
 
-            void AddControlRecursiveInner(Control innerControl)
+            void AddControlRecursiveInner(Control innerControl, CancellationToken innerToken)
             {
                 innerControl.MouseLeave += control_MouseLeave;
                 if (innerControl.HasChildren)
                 {
                     foreach (Control child in innerControl.Controls)
                     {
-                        token.ThrowIfCancellationRequested();
-                        AddControlRecursiveInner(child);
+                        innerToken.ThrowIfCancellationRequested();
+                        AddControlRecursiveInner(child, innerToken);
                     }
                 }
             }

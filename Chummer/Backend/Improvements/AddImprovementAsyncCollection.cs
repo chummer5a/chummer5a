@@ -5506,8 +5506,12 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
                     await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
-                    frmPickItem.MyForm.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
-                        new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? objNode.Value)));
+                    List<ListItem> lstItems = new List<ListItem>();
+                    foreach (XPathNavigator xmlLoopNode in nodeList)
+                    {
+                        lstItems.Add(new ListItem(xmlLoopNode.Value, xmlLoopNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? xmlLoopNode.Value));
+                    }
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
@@ -7556,8 +7560,17 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
-                    frmPickItem.MyForm.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
-                        .Where(x => objSkill.Specializations.All(y => y.Name != x, token)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml", token: token))));
+                {
+                    List<ListItem> lstItems = new List<ListItem>();
+                    foreach (string strSpec in strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()))
+                    {
+                        if (!await objSkill.HasSpecializationAsync(strSpec, token).ConfigureAwait(false))
+                        {
+                            lstItems.Add(new ListItem(strSpec, _objCharacter.TranslateExtra(strSpec, GlobalSettings.Language, "skills.xml", token: token)));
+                        }
+                    }
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
+                }
                 else
                     frmPickItem.MyForm.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))

@@ -7100,7 +7100,7 @@ namespace Chummer
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
                     frmPickItem.MyForm.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
-                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml"))));
+                        .Where(x => !objSkill.HasSpecialization(x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml"))));
                 else
                     frmPickItem.MyForm.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))

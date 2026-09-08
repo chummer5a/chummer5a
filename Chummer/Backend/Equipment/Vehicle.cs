@@ -423,16 +423,17 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         if (blnSync)
                         {
+                            string strDescription = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                           CurrentDisplayNameShort);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                    = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
                                    {
                                        Minimum = decMin,
                                        Maximum = decMax,
-                                       Description = string.Format(
-                                           GlobalSettings.CultureInfo,
-                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                           CurrentDisplayNameShort),
+                                       Description = strDescription,
                                        AllowCancel = false
                                    }))
                             {
@@ -1677,7 +1678,7 @@ namespace Chummer.Backend.Equipment
                                                     objWeapon.Cost = "0";
 
                                                     // Find the first free Weapon Mount in the Vehicle.
-                                                    await WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
+                                                    await WeaponMounts.ForEachWithBreakAsync(async (objWeaponMount, t) =>
                                                     {
                                                         if (objWeaponMount.IsWeaponsFull)
                                                             return true;
@@ -1687,16 +1688,16 @@ namespace Chummer.Backend.Equipment
                                                             !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
                                                             return true;
                                                         blnAttached = true;
-                                                        await objWeaponMount.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                                        await objWeaponMount.Weapons.AddAsync(objWeapon, t).ConfigureAwait(false);
                                                         foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                            await objWeaponMount.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
+                                                            await objWeaponMount.Weapons.AddAsync(objSubWeapon, t).ConfigureAwait(false);
                                                         return false;
                                                     }, token).ConfigureAwait(false);
 
                                                     // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
                                                     if (!blnAttached)
                                                     {
-                                                        await _lstVehicleMods.ForEachWithBreakAsync(async objMod =>
+                                                        await _lstVehicleMods.ForEachWithBreakAsync(async (objMod, t) =>
                                                         {
                                                             if (objMod.Name.Contains("Weapon Mount") ||
                                                                 !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
@@ -1704,9 +1705,9 @@ namespace Chummer.Backend.Equipment
                                                                 objMod.Weapons.Count == 0)
                                                             {
                                                                 blnAttached = true;
-                                                                await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                                                await objMod.Weapons.AddAsync(objWeapon, t).ConfigureAwait(false);
                                                                 foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                                    await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
+                                                                    await objMod.Weapons.AddAsync(objSubWeapon, t).ConfigureAwait(false);
                                                                 return false;
                                                             }
 
@@ -1714,16 +1715,16 @@ namespace Chummer.Backend.Equipment
                                                         }, token).ConfigureAwait(false);
                                                         if (!blnAttached)
                                                         {
-                                                            await _lstVehicleMods.ForEachWithBreakAsync(async objMod =>
+                                                            await _lstVehicleMods.ForEachWithBreakAsync(async (objMod, t) =>
                                                             {
                                                                 if (objMod.Name.Contains("Weapon Mount") ||
                                                                     !string.IsNullOrEmpty(objMod.WeaponMountCategories) &&
                                                                     objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
                                                                 {
                                                                     blnAttached = true;
-                                                                    await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                                                    await objMod.Weapons.AddAsync(objWeapon, t).ConfigureAwait(false);
                                                                     foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                                        await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
+                                                                        await objMod.Weapons.AddAsync(objSubWeapon, t).ConfigureAwait(false);
                                                                     return false;
                                                                 }
 
@@ -2782,14 +2783,14 @@ namespace Chummer.Backend.Equipment
                     // If the bonus is determined by the existing number, evaluate the expression.
                     string strReplaceValue = intTotalRating.ToString(GlobalSettings.InvariantCultureInfo);
                     return await objMod.ProcessRatingStringAsync(strBonus.Replace("{" + strReplaceRating + "}", strReplaceValue).Replace(strReplaceRating, strReplaceValue),
-                        () => objMod.GetRatingAsync(token), token).ConfigureAwait(false);
+                        t => objMod.GetRatingAsync(t), token).ConfigureAwait(false);
                 }
                 if (chrFirstCharacter != '+' && chrFirstCharacter != '-' && !blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
                     string strReplaceValue = intTotalRating.ToString(GlobalSettings.InvariantCultureInfo);
                     return await objMod.ProcessRatingStringAsync(strBonus.Replace("{" + strReplaceRating + "}", strReplaceValue).Replace(strReplaceRating, strReplaceValue),
-                        () => objMod.GetRatingAsync(token), token).ConfigureAwait(false);
+                        t => objMod.GetRatingAsync(t), token).ConfigureAwait(false);
                 }
             }
             return decValue.StandardRound();
@@ -3281,10 +3282,10 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 return await GetOwnCostAsync(token).ConfigureAwait(false) +
-                       await Mods.SumAsync(objMod => objMod.GetTotalCostAsync(token), token).ConfigureAwait(false) +
+                       await Mods.SumAsync((objMod, t) => objMod.GetTotalCostAsync(t), token).ConfigureAwait(false) +
                        await WeaponMounts
-                           .SumAsync(wm => wm.GetTotalCostAsync(token), token).ConfigureAwait(false)
-                       + await GearChildren.SumAsync(objGear => objGear.GetTotalCostAsync(token), token)
+                           .SumAsync((wm, t) => wm.GetTotalCostAsync(t), token).ConfigureAwait(false)
+                       + await GearChildren.SumAsync((objGear, t) => objGear.GetTotalCostAsync(t), token)
                            .ConfigureAwait(false);
             }
             finally
@@ -3312,13 +3313,13 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> CalculatedStolenCostAsync(bool blnStolen, CancellationToken token = default)
         {
             decimal decCost = Stolen == blnStolen ? await GetOwnCostAsync(token).ConfigureAwait(false) : 0;
-            return decCost + await Mods.SumAsync(objMod =>
-                               objMod.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false)
+            return decCost + await Mods.SumAsync((objMod, t) =>
+                               objMod.CalculatedStolenTotalCostAsync(blnStolen, t), token).ConfigureAwait(false)
                            + await WeaponMounts
-                               .SumAsync(wm => wm.CalculatedStolenTotalCostAsync(blnStolen, token), token)
+                               .SumAsync((wm, t) => wm.CalculatedStolenTotalCostAsync(blnStolen, t), token)
                                .ConfigureAwait(false)
                            + await GearChildren
-                               .SumAsync(objGear => objGear.CalculatedStolenTotalCostAsync(blnStolen, token),
+                               .SumAsync((objGear, t) => objGear.CalculatedStolenTotalCostAsync(blnStolen, t),
                                    token).ConfigureAwait(false);
         }
 
@@ -5163,14 +5164,14 @@ namespace Chummer.Backend.Equipment
         {
             await _objCharacter.Vehicles.RemoveAsync(this, token).ConfigureAwait(false);
 
-            decimal decReturn = await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token)
+            decimal decReturn = await GearChildren.SumWithSideEffectsAsync((x, t) => x.DeleteGearAsync(false, t), token)
                                                   .ConfigureAwait(false)
-                                + await Weapons.SumWithSideEffectsAsync(x => x.DeleteWeaponAsync(false, token), token)
+                                + await Weapons.SumWithSideEffectsAsync((x, t) => x.DeleteWeaponAsync(false, t), token)
                                                .ConfigureAwait(false)
-                                + await Mods.SumWithSideEffectsAsync(x => x.DeleteVehicleModAsync(false, token), token)
+                                + await Mods.SumWithSideEffectsAsync((x, t) => x.DeleteVehicleModAsync(false, t), token)
                                             .ConfigureAwait(false)
                                 + await WeaponMounts
-                                        .SumWithSideEffectsAsync(x => x.DeleteWeaponMountAsync(false, token), token)
+                                        .SumWithSideEffectsAsync((x, t) => x.DeleteWeaponMountAsync(false, t), token)
                                         .ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);
@@ -5626,9 +5627,9 @@ namespace Chummer.Backend.Equipment
                 return new ValueTuple<VehicleMod, WeaponMount>(objMod, null);
 
             WeaponMount objReturnMount = null;
-            await WeaponMounts.ForEachWithBreakAsync(async objMount =>
+            await WeaponMounts.ForEachWithBreakAsync(async (objMount, t) =>
             {
-                objMod = await objMount.Mods.FirstOrDefaultAsync(funcPredicate, token).ConfigureAwait(false);
+                objMod = await objMount.Mods.FirstOrDefaultAsync(funcPredicate, t).ConfigureAwait(false);
                 if (objMod == null)
                     return true;
                 objReturnMount = objMount;
@@ -5715,16 +5716,16 @@ namespace Chummer.Backend.Equipment
             WeaponAccessory objReturnAccessory = null;
             Cyberware objReturnCyberware = null;
             // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
-            await Mods.ForEachWithBreakAsync(async objMod =>
+            await Mods.ForEachWithBreakAsync(async (objMod, t) =>
             {
                 // Weapon Accessories.
-                (objReturn, objReturnAccessory) = await objMod.Weapons.FindWeaponGearAsync(strGuid, token).ConfigureAwait(false);
+                (objReturn, objReturnAccessory) = await objMod.Weapons.FindWeaponGearAsync(strGuid, t).ConfigureAwait(false);
 
                 if (objReturn != null)
                     return false;
 
                 // Cyberware.
-                (objReturn, objReturnCyberware) = await objMod.Cyberware.FindCyberwareGearAsync(strGuid, token).ConfigureAwait(false);
+                (objReturn, objReturnCyberware) = await objMod.Cyberware.FindCyberwareGearAsync(strGuid, t).ConfigureAwait(false);
 
                 return objReturn == null;
             }, token).ConfigureAwait(false);
@@ -5834,12 +5835,12 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                                 {
-                                    int intTotalChildrenValue = await ChildrenWithMatrixAttributes.SumAsync(async objChild =>
+                                    int intTotalChildrenValue = await ChildrenWithMatrixAttributes.SumAsync(async (objChild, t) =>
                                     {
                                         if (objChild is Gear objGear && objGear.Equipped ||
                                             objChild is Weapon objWeapon && objWeapon.Equipped)
                                         {
-                                            return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, token).ConfigureAwait(false);
+                                            return await objChild.GetBaseMatrixAttributeAsync(strMatrixAttribute, t).ConfigureAwait(false);
                                         }
 
                                         return 0;
@@ -6603,121 +6604,121 @@ namespace Chummer.Backend.Equipment
             Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalPilot = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetPilotAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
             Microsoft.VisualStudio.Threading.AsyncLazy<string> strTotalSeats = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetTotalSeatsAsync(objExcludeMod, token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
             await sbdInput.CheapReplaceAsync(strOriginal, "{BodyTotal}",
-                () => strTotalBody.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalBody.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{HandlingTotal}",
-                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strHandlingValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadHandlingTotal}",
-                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strHandlingValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{SpeedTotal}",
-                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strSpeedValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadSpeedTotal}",
-                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strSpeedValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{AccelerationTotal}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccelerationTotal}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{SensorTotal}",
-                () => strTotalSensor.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalSensor.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{ArmorTotal}",
-                () => strTotalArmor.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalArmor.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{PilotTotal}",
-                () => strTotalPilot.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalPilot.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{SeatsTotal}",
-                () => strTotalSeats.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalSeats.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{HandlingMax}",
-                async () => (await GetMaxHandlingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                async t => (await GetMaxHandlingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{SpeedMax}",
-                async () => (await GetMaxSpeedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                async t => (await GetMaxSpeedAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{AccelerationMax}",
-                async () => (await GetMaxAccelerationAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                async t => (await GetMaxAccelerationAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{SensorMax}",
-                async () => (await GetMaxSensorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                async t => (await GetMaxSensorAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{ArmorMax}",
-                async () => (await GetMaxArmorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                async t => (await GetMaxArmorAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{PilotMax}",
-                async () => (await GetMaxPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                async t => (await GetMaxPilotAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Body}",
-                () => strTotalBody.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalBody.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Handling}",
-                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadHandling}",
-                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strHandlingValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Speed}",
-                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strSpeedValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadSpeed}",
-                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strSpeedValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{AccelTotal}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccelTotal}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Acceleration}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAcceleration}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Accel}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadAccel}",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Sensor}",
-                () => strTotalSensor.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalSensor.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Armor}",
-                () => strTotalArmor.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalArmor.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Pilot}",
-                () => strTotalPilot.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalPilot.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Seats}",
-                () => strTotalSeats.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalSeats.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Body",
-                () => strTotalBody.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalBody.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "OffroadHandling",
-                async () => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strHandlingValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Handling",
                 () => Handling.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false); // For legacy reasons
             await sbdInput.CheapReplaceAsync(strOriginal, "OffroadSpeed",
-                async () => (await strSpeedValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strSpeedValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Speed",
                 () => Speed.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);  // For legacy reasons
             await sbdInput.CheapReplaceAsync(strOriginal, "OffroadAcceleration",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Acceleration",
                 () => Accel.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);  // For legacy reasons
             await sbdInput.CheapReplaceAsync(strOriginal, "OffroadAccel",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Accel",
-                async () => (await strAccelerationValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strAccelerationValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Sensor",
                 () => BaseSensor.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false); // For legacy reasons
             await sbdInput.CheapReplaceAsync(strOriginal, "Armor",
                 () => Armor.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false); // For legacy reasons
             await sbdInput.CheapReplaceAsync(strOriginal, "Pilot",
-                () => strTotalPilot.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalPilot.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Seats",
-                () => strTotalSeats.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strTotalSeats.GetValueAsync(t), token: token).ConfigureAwait(false);
             Microsoft.VisualStudio.Threading.AsyncLazy<string> strOwnCost = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Parent Cost}",
-                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Parent Cost",
-                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Vehicle Cost}",
-                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Vehicle Cost",
-                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Cost}",
-                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Cost",
-                () => strOwnCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
             Microsoft.VisualStudio.Threading.AsyncLazy<string> strOwnSlots = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(async () => (await GetSlotsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Parent Slots}",
-                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnSlots.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Parent Slots",
-                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnSlots.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Vehicle Slots}",
-                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnSlots.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Vehicle Slots",
-                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnSlots.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Slots}",
-                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnSlots.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "Slots",
-                () => strOwnSlots.GetValueAsync(token), token: token).ConfigureAwait(false);
+                t => strOwnSlots.GetValueAsync(t), token: token).ConfigureAwait(false);
             await _objCharacter
                 .ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides, token).ConfigureAwait(false);
         }

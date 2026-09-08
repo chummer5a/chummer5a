@@ -1633,19 +1633,19 @@ namespace Chummer.Backend.Attributes
                 {
                     int intLimbTotal;
                     if (blnSync)
-                        (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware);
+                        (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware, token);
                     else
                         (intLimbCount, intLimbTotal) =
                             await ProcessCyberlimbsAsync(await _objCharacter.GetCyberwareAsync(token)
-                                .ConfigureAwait(false)).ConfigureAwait(false);
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
 
-                    ValueTuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
+                    ValueTuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck, CancellationToken innerToken)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
-                            token.ThrowIfCancellationRequested();
+                            innerToken.ThrowIfCancellationRequested();
                             if (!objCyberware.IsModularCurrentlyEquipped)
                                 continue;
                             if (objCyberware.IsLimb)
@@ -1655,12 +1655,12 @@ namespace Chummer.Backend.Attributes
 
                                 int intLoop = objCyberware.LimbSlotCount;
                                 intLimbCountReturn += intLoop;
-                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev, token) *
+                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev, innerToken) *
                                                       intLoop;
                             }
                             else
                             {
-                                (int intLoop1, int intLoop2) = ProcessCyberlimbs(objCyberware.Children);
+                                (int intLoop1, int intLoop2) = ProcessCyberlimbs(objCyberware.Children, innerToken);
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
                             }
@@ -1669,7 +1669,7 @@ namespace Chummer.Backend.Attributes
                         return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
+                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck, CancellationToken innerToken)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
@@ -1691,12 +1691,12 @@ namespace Chummer.Backend.Attributes
                             }
                             else
                             {
-                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(t).ConfigureAwait(false))
+                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(t).ConfigureAwait(false), t)
                                     .ConfigureAwait(false);
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
                             }
-                        }, token).ConfigureAwait(false);
+                        }, innerToken).ConfigureAwait(false);
 
                         return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }

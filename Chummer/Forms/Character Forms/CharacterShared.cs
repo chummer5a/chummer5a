@@ -6714,7 +6714,7 @@ namespace Chummer
                                     objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
-                                        async () => await objVehicle.Mods.GetCountAsync(innerToken).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(innerToken).ConfigureAwait(false) > 0).ToInt32(),
+                                        async t => await objVehicle.Mods.GetCountAsync(t).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0).ToInt32(),
                                         y, MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                 objVehicle.Mods.AddTaggedCollectionChanged(
@@ -6759,7 +6759,7 @@ namespace Chummer
                                         CancellationToken innerToken = default) =>
                                         objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                            cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                            cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                             MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objMod.Cyberware.AddTaggedCollectionChanged(
@@ -6819,7 +6819,7 @@ namespace Chummer
                                         CancellationToken innerToken = default) =>
                                         objMount.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                            cmsVehicleWeaponAccessoryGear, () => objMount.Mods.GetCountAsync(innerToken), y,
+                                            cmsVehicleWeaponAccessoryGear, t => objMount.Mods.GetCountAsync(t), y,
                                             MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objMount.Mods.AddTaggedCollectionChanged(
@@ -6868,7 +6868,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7014,7 +7014,7 @@ namespace Chummer
                                         objVehicle.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear,
-                                            async () => await objVehicle.Mods.GetCountAsync(innerToken).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(innerToken).ConfigureAwait(false) > 0).ToInt32(),
+                                            async t => await objVehicle.Mods.GetCountAsync(t).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0).ToInt32(),
                                             y, MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objVehicle.Mods.AddTaggedCollectionChanged(
@@ -7059,7 +7059,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7119,7 +7119,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMount.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMount.Mods.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMount.Mods.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMount.Mods.AddTaggedCollectionChanged(
@@ -7169,7 +7169,7 @@ namespace Chummer
                                                 CancellationToken innerToken = default) =>
                                                 objMod.RefreshChildrenWeapons(
                                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                    cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                    cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                     MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                             objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7528,7 +7528,7 @@ namespace Chummer
                                         objVehicle.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear,
-                                            async () => await objVehicle.Mods.GetCountAsync(innerToken).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(innerToken).ConfigureAwait(false) > 0).ToInt32(),
+                                            async t => await objVehicle.Mods.GetCountAsync(t).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0).ToInt32(),
                                             y, MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objVehicle.Mods.AddTaggedCollectionChanged(
@@ -7573,7 +7573,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7633,7 +7633,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMount.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMount.Mods.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMount.Mods.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMount.Mods.AddTaggedCollectionChanged(
@@ -7683,7 +7683,7 @@ namespace Chummer
                                                 CancellationToken innerToken = default) =>
                                                 objMod.RefreshChildrenWeapons(
                                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                    cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                    cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                     MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                             objMod.Cyberware.AddTaggedCollectionChanged(
@@ -11542,9 +11542,9 @@ namespace Chummer
             {
                 int intBoundCount = await CharacterObject.Spirits
                     .CountAsync(
-                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit &&
-                                   await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false) &&
-                                   await x.GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        async (x, t) => await x.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Spirit &&
+                                   await x.GetBoundAsync(t).ConfigureAwait(false) && !await x.GetFetteredAsync(t).ConfigureAwait(false) &&
+                                   await x.GetCountsAgainstBoundSpiritLimitAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                 blnAtBoundLimit = intBoundCount >= await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false);
             }
 
@@ -11582,8 +11582,8 @@ namespace Chummer
             if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
                 await CharacterObject.Spirits
                     .CountAsync(
-                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
-                                   await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
+                        async (x, t) => await x.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Sprite &&
+                                   await x.GetBoundAsync(t).ConfigureAwait(false) && !await x.GetFetteredAsync(t).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false))
             {
                 string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(

@@ -774,30 +774,30 @@ namespace Chummer
                         {
                             Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => _objParentWeapon.GetRatingAsync(token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Rating}",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Rating",
-                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await intParentRating.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => _objParentWeapon.GetOwnCostAsync(token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Cost}",
-                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Cost",
-                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentTotalCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => _objParentWeapon.MultipliableCostAsync(null, token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Total Cost}",
-                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentTotalCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Cost",
-                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                async t => (await decParentTotalCost.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await _objParentWeapon.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
