@@ -3999,7 +3999,7 @@ namespace Chummer
                 if (intLoopLength != 0)
                     astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                 else if (eSplitOptions == StringSplitOptions.None)
-                    ++intIndex;
+                    astrReturn[intIndex++] = string.Empty;
                 if (intIndex >= intSize)
                     break;
             }
@@ -4044,7 +4044,7 @@ namespace Chummer
                 if (intLoopLength != 0)
                     astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                 else if (eSplitOptions == StringSplitOptions.None)
-                    ++intIndex;
+                    astrReturn[intIndex++] = string.Empty;
                 if (intIndex >= intSize)
                     break;
             }
@@ -4129,7 +4129,7 @@ namespace Chummer
                     if (intLoopLength != 0)
                         astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                     else if (eSplitOptions == StringSplitOptions.None)
-                        ++intIndex;
+                        astrReturn[intIndex++] = string.Empty;
                     if (intIndex >= intSize)
                         break;
                 }
@@ -4185,7 +4185,7 @@ namespace Chummer
                     if (intLoopLength != 0)
                         astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                     else if (eSplitOptions == StringSplitOptions.None)
-                        ++intIndex;
+                        astrReturn[intIndex++] = string.Empty;
                     if (intIndex >= intSize)
                         break;
                 }
@@ -4236,7 +4236,7 @@ namespace Chummer
                     if (intLoopLength != 0)
                         astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
                     else if (eSplitOptions == StringSplitOptions.None)
-                        ++intIndex;
+                        astrReturn[intIndex++] = string.Empty;
                     if (intIndex >= intSize)
                         break;
                 }
