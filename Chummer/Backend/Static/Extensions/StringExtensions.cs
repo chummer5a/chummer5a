@@ -4234,7 +4234,7 @@ namespace Chummer
                         intLoopLength = strInput.Length;
                     intLoopLength -= intStart;
                     if (intLoopLength != 0)
-                        astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                     else if (eSplitOptions == StringSplitOptions.None)
                         astrReturn[intIndex++] = string.Empty;
                     if (intIndex >= intSize)
