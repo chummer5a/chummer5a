@@ -4955,7 +4955,70 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                char chrFirstChar = strInput[0];
+                if (chrFirstChar == chrToTrim1 || chrFirstChar == chrToTrim2)
+                    return strInput.Substring(1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                char chrFirstChar = strInput[0];
+                if (chrFirstChar == chrToTrim1 || chrFirstChar == chrToTrim2 || chrFirstChar == chrToTrim3)
+                    return strInput.Substring(1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <param name="chrToTrim4">Fourth char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3, char chrToTrim4)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                char chrFirstChar = strInput[0];
+                if (chrFirstChar == chrToTrim1 || chrFirstChar == chrToTrim2 || chrFirstChar == chrToTrim3 || chrFirstChar == chrToTrim4)
+                    return strInput.Substring(1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="achrToTrim">Chars to trim</param>
@@ -5042,10 +5105,76 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If a string ends with any chars, the one with which it begins is trimmed out of the string once.
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
-        /// <param name="achrToTrim">Chars to trim</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                int intLength = strInput.Length;
+                char chrLastChar = strInput[intLength - 1];
+                if (chrLastChar == chrToTrim1 || chrLastChar == chrToTrim2)
+                    return strInput.Substring(0, intLength - 1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                int intLength = strInput.Length;
+                char chrLastChar = strInput[intLength - 1];
+                if (chrLastChar == chrToTrim1 || chrLastChar == chrToTrim2 || chrLastChar == chrToTrim3)
+                    return strInput.Substring(0, intLength - 1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <param name="chrToTrim4">Fourth char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3, char chrToTrim4)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                int intLength = strInput.Length;
+                char chrLastChar = strInput[intLength - 1];
+                if (chrLastChar == chrToTrim1 || chrLastChar == chrToTrim2 || chrLastChar == chrToTrim3 || chrLastChar == chrToTrim4)
+                    return strInput.Substring(0, intLength - 1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to consider for trim</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, params char[] achrToTrim)

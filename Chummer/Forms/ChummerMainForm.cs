@@ -3711,7 +3711,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Open print forms for a list of characters.
+        /// Open print forms for a list of characters (each one gets its own form).
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
