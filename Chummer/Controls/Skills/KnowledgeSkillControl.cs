@@ -787,8 +787,10 @@ namespace Chummer.UI.Skills
                     {
                         await this.DoThreadSafeAsync(x =>
                         {
-                            x.btnAddSpec.Visible = blnCanHaveSpecs;
-                            x.lblSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
+                            if (x.btnAddSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                                x.btnAddSpec.Visible = blnCanHaveSpecs;
+                            if (x.lblSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                                x.lblSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
                         }, token).ConfigureAwait(false);
                     }
                     else

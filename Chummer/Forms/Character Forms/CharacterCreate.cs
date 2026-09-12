@@ -16924,8 +16924,6 @@ namespace Chummer
                         objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
                         objNuyen.Undo = objNuyenUndo;
 
-                        await CharacterObject.SetCreatedAsync(true, false, token: token).ConfigureAwait(false);
-
                         // Save all essence modifiers for all Cyberware.
                         await (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false))
                                 .GetAllDescendantsAsync(x => x.Children, token)
@@ -16944,6 +16942,8 @@ namespace Chummer
                                 .ForEachAsync((x, t2) => x.SaveNonRetroactiveEssenceModifiersAsync(t2), t1)
                                 .ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
+
+                        await CharacterObject.SetCreatedAsync(true, false, token: token).ConfigureAwait(false);
 
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
