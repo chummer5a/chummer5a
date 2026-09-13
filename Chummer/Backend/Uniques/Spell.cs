@@ -2340,14 +2340,13 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = Skill;
                     CharacterAttrib objAttrib
                         = _objCharacter.GetAttribute(BarehandedAdept ? "MAG" : objSkill?.Attribute ?? "MAG");
                     if (objAttrib != null)
                     {
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                        sbdReturn.Append(strSpace, objAttrib.DisplayNameFormatted, strSpace)
+                                .Append('(').Append(objAttrib.DisplayValue).Append(')');
                     }
 
                     if (objSkill != null)
@@ -2367,8 +2366,8 @@ namespace Chummer
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace, '+', strSpace);
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                        sbdReturn.Append(strSpace, _objCharacter.GetObjectName(objImprovement), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();
@@ -2390,7 +2389,6 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
-                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                     CharacterAttrib objAttrib
                         = await _objCharacter.GetAttributeAsync(
@@ -2398,8 +2396,8 @@ namespace Chummer
                             objSkill != null ? await objSkill.GetAttributeAsync(token).ConfigureAwait(false) : "MAG", token: token).ConfigureAwait(false);
                     if (objAttrib != null)
                     {
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                            objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                        sbdReturn.Append(strSpace, await objAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(await objAttrib.GetDisplayValueAsync(token).ConfigureAwait(false)).Append(')');
                     }
 
                     if (objSkill != null)
@@ -2421,8 +2419,8 @@ namespace Chummer
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace, '+', strSpace);
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                            await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                        sbdReturn.Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();

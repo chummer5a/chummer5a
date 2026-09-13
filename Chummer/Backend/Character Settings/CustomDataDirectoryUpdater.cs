@@ -573,8 +573,7 @@ namespace Chummer
             if (astrPathParts.Length < 2)
                 return false;
 
-            uriApiUrl = new Uri(
-                "https://api.github.com/repos/" + astrPathParts[0] + "/" + astrPathParts[1] + "/releases/latest");
+            uriApiUrl = new Uri("https://api.github.com/repos/".ConcatFast(astrPathParts[0], "/", astrPathParts[1], "/releases/latest"));
             return true;
         }
 

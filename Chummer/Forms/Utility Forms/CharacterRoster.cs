@@ -1109,7 +1109,7 @@ namespace Chummer
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
                         if (!string.IsNullOrEmpty(strFilePath))
-                            strTooltip += Environment.NewLine + Environment.NewLine;
+                            strTooltip += Utils.DoubleNewLine;
                         strTooltip += strErrorPrefix + strErrorText;
                     }
                     else
@@ -1742,7 +1742,7 @@ namespace Chummer
             {
                 objNode.ForeColor = ColorManager.ErrorColor;
                 if (!string.IsNullOrEmpty(objNode.ToolTipText))
-                    objNode.ToolTipText += Environment.NewLine + Environment.NewLine;
+                    objNode.ToolTipText += Utils.DoubleNewLine;
                 objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) +
                                        await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + Environment.NewLine +
                                        strErrorText;

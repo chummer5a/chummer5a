@@ -2220,9 +2220,11 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return "(" + Connection.ToString(GlobalSettings.CultureInfo)
-                        + "/" + Loyalty.ToString(GlobalSettings.CultureInfo)
-                        + (IsGroup ? LanguageManager.GetString("String_GroupContactAbbrev") + ")" : ")");
+                    return IsGroup
+                        ? "(".ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
+                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_GroupContactAbbrev"), ")")
+                        : "(".ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
+                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), ")");
                 }
             }
         }
@@ -2233,9 +2235,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return "(" + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
-                        + "/" + (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
-                        + (IsGroup ? await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false) + ")" : ")");
+                return IsGroup
+                        ? "(".ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false), ")")
+                        : "(".ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")");
             }
             finally
             {

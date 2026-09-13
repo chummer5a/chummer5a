@@ -127,9 +127,9 @@ namespace Chummer
         private void UpdateText(CancellationToken token = default)
         {
             string strText = BubbleDie
-                ? LanguageManager.GetString("String_BubbleDie", token: token)
-                  + LanguageManager.GetString("String_Space", token: token) + "("
-                  + Result.ToString(GlobalSettings.CultureInfo) + ")"
+                ? LanguageManager.GetString("String_BubbleDie", token: token).ConcatFast(
+                  LanguageManager.GetString("String_Space", token: token), "(",
+                  Result.ToString(GlobalSettings.CultureInfo), ")")
                 : Result.ToString(GlobalSettings.CultureInfo);
             Utils.RunOnMainThread(() => Text = strText, token: token);
         }
@@ -137,9 +137,9 @@ namespace Chummer
         private async Task UpdateTextAsync(CancellationToken token = default)
         {
             string strText = BubbleDie
-                ? await LanguageManager.GetStringAsync("String_BubbleDie", token: token).ConfigureAwait(false)
-                  + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
-                  + Result.ToString(GlobalSettings.CultureInfo) + ")"
+                ? (await LanguageManager.GetStringAsync("String_BubbleDie", token: token).ConfigureAwait(false)).ConcatFast(
+                  await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), "(",
+                  Result.ToString(GlobalSettings.CultureInfo), ")")
                 : Result.ToString(GlobalSettings.CultureInfo);
             await Utils.RunOnMainThreadAsync(() => Text = strText, token).ConfigureAwait(false);
         }

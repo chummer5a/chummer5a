@@ -6929,9 +6929,8 @@ namespace Chummer
                         else
                         {
                             strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
-                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
-                                         + LanguageManager.GetString("String_Space", strLanguage) + "("
-                                         + strToAppend + ")");
+                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage).ConcatFast(
+                                         LanguageManager.GetString("String_Space", strLanguage), "(", strToAppend, ")"));
                         }
                     }
                 }
@@ -6986,13 +6985,13 @@ namespace Chummer
                         else
                         {
                             strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode", token)?.Value ?? strBook;
-                            lstBooks.Add(await LanguageManager
+                            lstBooks.Add((await LanguageManager
                                                .GetStringAsync("String_Unknown", strLanguage, token: token)
-                                               .ConfigureAwait(false)
-                                         + await LanguageManager
+                                               .ConfigureAwait(false)).ConcatFast(
+                                         await LanguageManager
                                                  .GetStringAsync("String_Space", strLanguage, token: token)
-                                                 .ConfigureAwait(false) + "("
-                                         + strToAppend + ")");
+                                                 .ConfigureAwait(false), "(",
+                                         strToAppend, ")"));
                         }
                     }
                 }

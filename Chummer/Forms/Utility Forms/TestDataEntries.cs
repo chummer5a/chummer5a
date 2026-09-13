@@ -45,8 +45,8 @@ namespace Chummer
             cmdTest.Enabled = false;
             _blnAddExceptionInfoToErrors = chkAddExceptionInfoToErrors.Checked;
             txtOutput.Text = _blnAddExceptionInfoToErrors
-                ? "Testing " + cboTest.Text + " with exception info printed." + Environment.NewLine + Environment.NewLine + "Please wait..."
-                : "Testing " + cboTest.Text + "." + Environment.NewLine + Environment.NewLine + "Please wait...";
+                ? "Testing " + cboTest.Text + " with exception info printed." + Utils.DoubleNewLine + "Please wait..."
+                : "Testing " + cboTest.Text + "." + Utils.DoubleNewLine + "Please wait...";
             _sbdOutputBuilder.Clear();
             switch (cboTest.Text)
             {

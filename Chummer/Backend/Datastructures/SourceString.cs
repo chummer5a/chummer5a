@@ -162,12 +162,12 @@ namespace Chummer
             _objTooltipInitializer = new Lazy<string>(() =>
             {
                 (string strSpace, string strPage) = GetSpaceAndPageStrings(strLanguage);
-                return strBookCodeLong + strSpace + strPage + strSpace + intPage.ToString(objCultureInfo);
+                return strBookCodeLong.ConcatFast(strSpace, strPage, strSpace, intPage.ToString(objCultureInfo));
             });
             _objAsyncTooltipInitializer = new AsyncLazy<string>(async () =>
             {
                 (string strSpace, string strPage) = await GetSpaceAndPageStringsAsync(strLanguage).ConfigureAwait(false);
-                return strBookCodeLong + strSpace + strPage + strSpace + intPage.ToString(objCultureInfo);
+                return strBookCodeLong.ConcatFast(strSpace, strPage, strSpace, intPage.ToString(objCultureInfo));
             }, Utils.JoinableTaskFactory);
         }
 

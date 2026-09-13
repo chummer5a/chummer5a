@@ -45,7 +45,7 @@ namespace Chummer.Backend
             // In theory shouldn't mask any existing issues?
             if (frame == null)
                 return;
-            string heat = string.Format(GlobalSettings.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
+            string heat = string.Concat(frame.GetFileName(), ":", frame.GetFileLineNumber().ToString(GlobalSettings.InvariantCultureInfo));
             _dicMap.Value.AddOrUpdate(heat, 1, (a, b) => b + 1);
         }
 

@@ -13119,10 +13119,9 @@ namespace Chummer
                             intLifeModuleQualities += intLoopCost;
                             if (blnDoUIUpdate)
                             {
-                                sbdPositiveQualityTooltip.AppendFormat(
-                                    GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                    await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                    strSpace, intLoopCost).AppendLine();
+                                sbdPositiveQualityTooltip.Append(
+                                        await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
+                                        strSpace, '(').Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(')');
                             }
                         }
                         else if (blnDoUIUpdate)
@@ -13130,17 +13129,15 @@ namespace Chummer
                             switch (eType)
                             {
                                 case QualityType.Positive:
-                                    sbdPositiveQualityTooltip.AppendFormat(
-                                        GlobalSettings.CultureInfo, "{0}{1}({2})",
+                                    sbdPositiveQualityTooltip.Append(
                                         await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                        strSpace, intLoopCost).AppendLine();
+                                        strSpace, '(').Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(')');
                                     break;
 
                                 case QualityType.Negative:
-                                    sbdNegativeQualityTooltip.AppendFormat(
-                                        GlobalSettings.CultureInfo, "{0}{1}({2})",
+                                    sbdNegativeQualityTooltip.Append(
                                         await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                        strSpace, intLoopCost).AppendLine();
+                                        strSpace, '(').Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(')');
                                     break;
                             }
                         }
@@ -13173,15 +13170,15 @@ namespace Chummer
                                         strNameToUse = await LanguageManager
                                             .GetStringAsync("String_Unknown", token: t)
                                             .ConfigureAwait(false);
+                                    sbdPositiveQualityTooltip.Append(strNameToUse);
                                 }
                                 else if (!string.IsNullOrWhiteSpace(strName))
-                                    strNameToUse += "/" + strName;
+                                    sbdPositiveQualityTooltip.Append(strNameToUse, '/', strName);
 
-                                sbdPositiveQualityTooltip.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                    strNameToUse,
-                                    strSpace,
+                                sbdPositiveQualityTooltip.Append(strSpace, '(',
                                     await objGroupContact.GetContactPointsAsync(t).ConfigureAwait(false)
-                                    * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false)).AppendLine();
+                                    * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false))
+                                    .AppendLine(')');
                             }, token).ConfigureAwait(false);
                         }
 
@@ -13555,53 +13552,53 @@ namespace Chummer
                                         intPrepPointsUsed), token).ConfigureAwait(false);
                         if (intFreeSpells + intLimitMod > 0)
                         {
-                            if (lblBuildPrepsBP != null)
+                            if (lblBuildPrepsBP != null || lblSpellsBP != null || lblBuildRitualsBP != null)
                             {
-                                string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
-                                    prepPoints + spellPoints + ritualPoints
-                                    - 2 * (intFreeSpells + intLimitMod), strOf,
-                                    spellPoints + ritualPoints - (intFreeSpells + intLimitMod));
-                                if (intPrepPointsUsed > 0)
-                                    strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
-                                        strSpace, intPrepPointsUsed, strPoints);
-                                await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText, token)
-                                    .ConfigureAwait(false);
-                            }
+                                string strCommonPreamble =
+                                    string.Concat((prepPoints + spellPoints + ritualPoints - 2 * (intFreeSpells + intLimitMod)).ToString(GlobalSettings.CultureInfo),
+                                        strOf, (spellPoints + ritualPoints - (intFreeSpells + intLimitMod)).ToString(GlobalSettings.CultureInfo));
+                                if (lblBuildPrepsBP != null)
+                                {
+                                    string strText;
+                                    if (intPrepPointsUsed > 0)
+                                        strText = strCommonPreamble + strColon + strSpace + intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                                    else
+                                        strText = strCommonPreamble;
+                                    await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText, token)
+                                        .ConfigureAwait(false);
+                                }
 
-                            if (lblSpellsBP != null)
-                            {
-                                string strText;
-                                if (intQualityKarmaToSpellPoints != 0)
-                                    strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}({3})",
-                                        prepPoints + spellPoints + ritualPoints
-                                        - 2 * (intFreeSpells + intLimitMod), strOf,
-                                        prepPoints + ritualPoints - (intFreeSpells + intLimitMod),
-                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager
-                                            .GetStringAsync(
-                                                "String_MasteryPointsAcronym", token: token)
-                                            .ConfigureAwait(false), intQualityKarmaToSpellPoints));
-                                else
-                                    strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
-                                        prepPoints + spellPoints + ritualPoints
-                                        - 2 * (intFreeSpells + intLimitMod), strOf,
-                                        prepPoints + ritualPoints - (intFreeSpells + intLimitMod));
-                                if (intSpellPointsUsed > 0)
-                                    strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
-                                        strSpace, intSpellPointsUsed, strPoints);
-                                await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                            }
+                                if (lblSpellsBP != null)
+                                {
+                                    string strText;
+                                    if (intQualityKarmaToSpellPoints != 0)
+                                    {
+                                        string strMasteryPointsFormat = await LanguageManager
+                                                .GetStringAsync(
+                                                    "String_MasteryPointsAcronym", token: token)
+                                                .ConfigureAwait(false);
+                                        if (intSpellPointsUsed > 0)
+                                            strText = strCommonPreamble.ConcatFast("(", string.Format(GlobalSettings.CultureInfo, strMasteryPointsFormat, intQualityKarmaToSpellPoints), ")", strColon, strSpace, intSpellPointsUsed.ToString(GlobalSettings.CultureInfo), strSpace, strPoints);
+                                        else
+                                            strText = string.Concat(strCommonPreamble, "(", string.Format(GlobalSettings.CultureInfo, strMasteryPointsFormat, intQualityKarmaToSpellPoints), ")");
+                                    }
+                                    else if (intSpellPointsUsed > 0)
+                                        strText = strCommonPreamble + strColon + strSpace + intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                                    else
+                                        strText = strCommonPreamble;
+                                    await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                                }
 
-                            if (lblBuildRitualsBP != null)
-                            {
-                                string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
-                                    prepPoints + spellPoints + ritualPoints
-                                    - 2 * (intFreeSpells + intLimitMod), strOf,
-                                    prepPoints + spellPoints - (intFreeSpells + intLimitMod));
-                                if (intRitualPointsUsed > 0)
-                                    strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
-                                        strSpace, intRitualPointsUsed, strPoints);
-                                await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText, token)
-                                    .ConfigureAwait(false);
+                                if (lblBuildRitualsBP != null)
+                                {
+                                    string strText;
+                                    if (intRitualPointsUsed > 0)
+                                        strText = strCommonPreamble + strColon + strSpace + intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                                    else
+                                        strText = strCommonPreamble;
+                                    await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText, token)
+                                        .ConfigureAwait(false);
+                                }
                             }
                         }
                         else if (intLimitMod == 0)
@@ -13636,36 +13633,36 @@ namespace Chummer
                             strFormat = "{0}" + strOf + "{1}" + strColon + strSpace + "{2}" + strSpace + strPoints;
                             if (lblBuildPrepsBP != null)
                             {
-                                await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text =
-                                        string.Format(
+                                string strText = string.Format(
                                             GlobalSettings.CultureInfo, strFormat,
                                             prepPoints + spellPoints + ritualPoints
                                             - 2 * intLimitMod,
                                             spellPoints + ritualPoints - intLimitMod,
-                                            intPrepPointsUsed), token)
+                                            intPrepPointsUsed);
+                                await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText, token)
                                     .ConfigureAwait(false);
                             }
 
                             if (lblSpellsBP != null)
                             {
-                                await lblSpellsBP.DoThreadSafeAsync(x => x.Text =
-                                        string.Format(GlobalSettings.CultureInfo, strFormat,
+                                string strText = string.Format(GlobalSettings.CultureInfo, strFormat,
                                             prepPoints + spellPoints + ritualPoints
                                             - 2 * intLimitMod,
                                             prepPoints + ritualPoints - intLimitMod,
-                                            intSpellPointsUsed), token)
+                                            intSpellPointsUsed);
+                                await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token)
                                     .ConfigureAwait(false);
                             }
 
                             if (lblBuildRitualsBP != null)
                             {
-                                await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text =
-                                        string.Format(
+                                string strText = string.Format(
                                             GlobalSettings.CultureInfo, strFormat,
                                             prepPoints + spellPoints + ritualPoints
                                             - 2 * intLimitMod,
                                             prepPoints + spellPoints - intLimitMod,
-                                            intRitualPointsUsed), token)
+                                            intRitualPointsUsed);
+                                await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText, token)
                                     .ConfigureAwait(false);
                             }
                         }
@@ -17723,7 +17720,7 @@ namespace Chummer
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             string.Empty,
                             objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped,
-                            objParent: objSelectedGear ?? (object)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
+                            objParent: objSelectedGear ?? (IHasName)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;
@@ -23240,7 +23237,7 @@ namespace Chummer
         /// <param name="objParentObject">Object to associate the newly-created items with.</param>
         /// <param name="blnCreateChildren">Whether the default plugins for the Gear should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async Task<Gear> AddPACKSGearAsync(XmlDocument objXmlGearDocument, XmlNode objXmlGear, object objParentObject,
+        private async Task<Gear> AddPACKSGearAsync(XmlDocument objXmlGearDocument, XmlNode objXmlGear, IHasName objParentObject,
                                   bool blnCreateChildren, CancellationToken token = default)
         {
             XmlNode objXmlGearNode = null;

@@ -1317,13 +1317,11 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                     {
-                        string strFormat = strSpace + "{0}" + strSpace + "({1})";
                         CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
                         if (objResonanceAttrib != null)
                         {
-                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                                   objResonanceAttrib.DisplayNameFormatted,
-                                                   objResonanceAttrib.DisplayValue);
+                            sbdReturn.Append(strSpace, objResonanceAttrib.DisplayNameFormatted, strSpace)
+                                .Append('(').Append(objResonanceAttrib.DisplayValue).Append(')');
                         }
 
                         Skill objSkill = Skill;
@@ -1342,8 +1340,8 @@ namespace Chummer
                         {
                             if (sbdReturn.Length > 0)
                                 sbdReturn.Append(strSpace, '+', strSpace);
-                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                                   _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                            sbdReturn.Append(strSpace, _objCharacter.GetObjectName(objImprovement), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
 
                         return sbdReturn.ToString();
@@ -1366,13 +1364,11 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     CharacterAttrib objResonanceAttrib = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
                     if (objResonanceAttrib != null)
                     {
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               await objResonanceAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false),
-                                               await objResonanceAttrib.GetDisplayValueAsync(token).ConfigureAwait(false));
+                        sbdReturn.Append(strSpace, await objResonanceAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(await objResonanceAttrib.GetDisplayValueAsync(token).ConfigureAwait(false)).Append(')');
                     }
 
                     Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
@@ -1392,8 +1388,8 @@ namespace Chummer
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace, '+', strSpace);
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                        sbdReturn.Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();

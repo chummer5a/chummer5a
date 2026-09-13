@@ -619,10 +619,9 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                        _objCharacterSettings.BookXPath(token: token)
-                                        + ")"
-                                        + SkillFilter(eFilterOption, strName) + "]"))
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (".ConcatFast(
+                                        _objCharacterSettings.BookXPath(token: token), ")",
+                                        SkillFilter(eFilterOption, strName), "]")))
                 {
                     if (xmlSkillList?.Count > 0)
                     {
@@ -1190,10 +1189,9 @@ namespace Chummer.Backend.Skills
                 }
                 XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                        _objCharacterSettings.BookXPath(token: token)
-                                        + ")"
-                                        + SkillFilter(eFilterOption, strName) + "]"))
+                            .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (".ConcatFast(
+                                        _objCharacterSettings.BookXPath(token: token),
+                                        ")", SkillFilter(eFilterOption, strName), "]")))
                 {
                     if (xmlSkillList?.Count > 0)
                     {
@@ -3192,9 +3190,9 @@ namespace Chummer.Backend.Skills
                         {
                             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
                             using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                       .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
-                                                    + _objCharacterSettings.BookXPath() + ")"
-                                                    + SkillFilter(FilterOption.NonSpecial) + "]"))
+                                       .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (".ConcatFast(
+                                                    _objCharacterSettings.BookXPath(), ")",
+                                                    SkillFilter(FilterOption.NonSpecial), "]")))
                             {
                                 if (xmlSkillList?.Count > 0)
                                 {

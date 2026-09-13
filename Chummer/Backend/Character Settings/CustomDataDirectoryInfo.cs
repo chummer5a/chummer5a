@@ -642,23 +642,25 @@ namespace Chummer
                                                                   string presentIncompatibilities = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strReturn = string.Empty;
-
-            if (!string.IsNullOrEmpty(missingDependency))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing", token: token) + Environment.NewLine
-                    + missingDependency;
-            }
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(missingDependency))
+                {
+                    sbdReturn.AppendLine(LanguageManager.GetString("Tooltip_Dependency_Missing", token: token))
+                        .AppendLine(missingDependency);
+                }
 
-            if (!string.IsNullOrEmpty(presentIncompatibilities))
-            {
-                if (!string.IsNullOrEmpty(strReturn))
-                    strReturn += Environment.NewLine;
-                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present", token: token) + Environment.NewLine
-                    + presentIncompatibilities;
-            }
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(presentIncompatibilities))
+                {
+                    sbdReturn.AppendLine(LanguageManager.GetString("Tooltip_Incompatibility_Present", token: token))
+                        .AppendLine(presentIncompatibilities);
+                }
 
-            return strReturn;
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToTrimmedString();
+            }
         }
 
         /// <summary>
@@ -671,24 +673,28 @@ namespace Chummer
         public static async Task<string> BuildIncompatibilityDependencyStringAsync(
             string missingDependency = "", string presentIncompatibilities = "", CancellationToken token = default)
         {
-            string strReturn = string.Empty;
-
-            if (!string.IsNullOrEmpty(missingDependency))
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token)
-                                                 .ConfigureAwait(false) + Environment.NewLine + missingDependency;
-            }
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(missingDependency))
+                {
+                    sbdReturn.AppendLine(await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token)
+                                                 .ConfigureAwait(false))
+                        .AppendLine(missingDependency);
+                }
 
-            if (!string.IsNullOrEmpty(presentIncompatibilities))
-            {
-                if (!string.IsNullOrEmpty(strReturn))
-                    strReturn += Environment.NewLine;
-                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token)
-                                                  .ConfigureAwait(false) + Environment.NewLine
-                                                                         + presentIncompatibilities;
-            }
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(presentIncompatibilities))
+                {
+                    sbdReturn.AppendLine(await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token)
+                                                  .ConfigureAwait(false))
+                        .AppendLine(presentIncompatibilities);
+                }
 
-            return strReturn;
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToTrimmedString();
+            }
         }
 
         #region Properties
@@ -793,7 +799,7 @@ namespace Chummer
 
             return LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
                                              strLanguage, token: token) +
-                   Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
+                   Utils.DoubleNewLine + description.NormalizeLineEndings(true);
         }
 
         public async Task<string> DisplayDescriptionAsync(string strLanguage, CancellationToken token = default)
@@ -814,7 +820,7 @@ namespace Chummer
 
             return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
                                                         strLanguage, token: token).ConfigureAwait(false) +
-                   Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
+                   Utils.DoubleNewLine + description.NormalizeLineEndings(true);
         }
 
         /// <summary>
@@ -922,29 +928,27 @@ namespace Chummer
             _guid = other._guid;
         }
 
-        public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string DisplayName(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public string DisplayName(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return MyVersion == new ValueVersion(1)
                 ? Name
-                : string.Format(objCulture, "{0}{1}({2})", Name,
-                                LanguageManager.GetString("String_Space", strLanguage, token: token), MyVersion);
+                : Name.ConcatFast(LanguageManager.GetString("String_Space", strLanguage, token: token), "(", MyVersion.ToString(), ")");
         }
 
-        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             return MyVersion == new ValueVersion(1)
                 ? Name
-                : string.Format(objCulture, "{0}{1}({2})", Name,
-                                await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                     .ConfigureAwait(false), MyVersion);
+                : Name.ConcatFast(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                    "(", MyVersion.ToString(), ")");
         }
 
         public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -1094,47 +1098,44 @@ namespace Chummer
 
         public ValueVersion MaximumVersion { get; }
 
-        public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
-        public string DisplayName(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public string DisplayName(string strLanguage, CancellationToken token = default)
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
 
             if (MinimumVersion != default(ValueVersion))
             {
                 return MaximumVersion != default(ValueVersion)
-                    ? string.Format(objCulture, "{0}{1}({2}{1}-{1}{3})", Name, strSpace,
-                                    MinimumVersion, MaximumVersion)
+                    ? Name.ConcatFast(strSpace, "(", MinimumVersion.ToString(), strSpace, "-", strSpace, MaximumVersion.ToString(), ")")
                     // If maxversion is not given, don't display decimal.max display > instead
-                    : string.Format(objCulture, "{0}{1}({1}>{1}{2})", Name, strSpace,
-                                    MinimumVersion);
+                    : Name.ConcatFast(strSpace, "(", strSpace, ">", strSpace, MinimumVersion.ToString(), ")");
             }
 
             return MaximumVersion != default(ValueVersion)
                 // If minversion is not given, don't display decimal.min display < instead
-                ? string.Format(objCulture, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
+                ? Name.ConcatFast(strSpace, "(", strSpace, "<", strSpace, MaximumVersion.ToString(), ")")
                 // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                 : Name;
         }
 
-        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
 
             if (MinimumVersion != default(ValueVersion))
             {
                 return MaximumVersion != default(ValueVersion)
-                    ? string.Format(objCulture, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion,
-                                    MaximumVersion)
+                    ? Name.ConcatFast(strSpace, "(", MinimumVersion.ToString(), strSpace, "-", strSpace, MaximumVersion.ToString(), ")")
                     // If maxversion is not given, don't display decimal.max display > instead
-                    : string.Format(objCulture, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
+                    : Name.ConcatFast(strSpace, "(", strSpace, ">", strSpace, MinimumVersion.ToString(), ")");
             }
 
             return MaximumVersion != default(ValueVersion)
                 // If minversion is not given, don't display decimal.min display < instead
-                ? string.Format(objCulture, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
+                ? Name.ConcatFast(strSpace, "(", strSpace, "<", strSpace, MaximumVersion.ToString(), ")")
                 // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                 : Name;
         }

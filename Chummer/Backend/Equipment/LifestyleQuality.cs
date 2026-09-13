@@ -1342,9 +1342,9 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterReadLock())
             {
-                return DisplayName(strLanguage)
-                    + LanguageManager.GetString("String_Space", strLanguage)
-                    + "[" + DisplayCost(objCulture, strLanguage) + "]";
+                return DisplayName(strLanguage).ConcatFast(
+                    LanguageManager.GetString("String_Space", strLanguage),
+                    "[", DisplayCost(objCulture, strLanguage), "]");
             }
         }
 
@@ -1354,9 +1354,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await DisplayNameAsync(strLanguage, token).ConfigureAwait(false)
-                       + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                       + "[" + await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false) + "]";
+                return (await DisplayNameAsync(strLanguage, token).ConfigureAwait(false)).ConcatFast(
+                       await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                       "[", await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false), "]");
             }
             finally
             {

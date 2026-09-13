@@ -457,7 +457,7 @@ namespace Chummer
         public string DisplayReason(string strLanguage)
         {
             if (Refund)
-                return Reason + LanguageManager.GetString("String_Space", strLanguage) + "(" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ")";
+                return Reason.ConcatFast(LanguageManager.GetString("String_Space", strLanguage), "(", LanguageManager.GetString("String_Expense_Refund", strLanguage), ")");
             return Reason;
         }
 
@@ -467,7 +467,7 @@ namespace Chummer
         public async Task<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
         {
             if (Refund)
-                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ")";
+                return Reason.ConcatFast(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false), "(", await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false), ")");
             return Reason;
         }
 

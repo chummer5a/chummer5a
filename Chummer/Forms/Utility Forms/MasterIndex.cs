@@ -593,11 +593,9 @@ namespace Chummer
                                                             else
                                                             {
                                                                 ListItem objItemToAdd = new ListItem(
-                                                                    objItem.Value, string.Format(
-                                                                        GlobalSettings.CultureInfo,
-                                                                        strFormat, objItem.Name,
-                                                                        StringExtensions.JoinFast(
-                                                                            "," + strSpace, objEntry.FileNames)));
+                                                                    objItem.Value,
+                                                                    objItem.Name.ConcatFast(strSpace, "[",
+                                                                        StringExtensions.JoinFast("," + strSpace, objEntry.FileNames), "]"));
                                                                 _lstItems.Add(
                                                                     objItemToAdd); // Not using AddRange because of potential memory issues
                                                                 lstExistingItems.Add(objItemToAdd);
@@ -613,12 +611,9 @@ namespace Chummer
                                                                             objExistingEntry))
                                                                         continue;
                                                                     objItemToAdd = new ListItem(
-                                                                        objToRename.Value, string.Format(
-                                                                            GlobalSettings.CultureInfo,
-                                                                            strFormat, objExistingEntry.DisplayName,
-                                                                            StringExtensions.JoinFast(
-                                                                                "," + strSpace,
-                                                                                objExistingEntry.FileNames)));
+                                                                        objToRename.Value,
+                                                                        objExistingEntry.DisplayName.ConcatFast(strSpace, "[",
+                                                                            StringExtensions.JoinFast("," + strSpace, objExistingEntry.FileNames), "]"));
                                                                     _lstItems.Add(
                                                                         objItemToAdd); // Not using AddRange because of potential memory issues
                                                                     lstExistingItems.Add(objItemToAdd);

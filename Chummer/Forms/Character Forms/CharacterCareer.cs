@@ -23604,7 +23604,7 @@ namespace Chummer
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             string.Empty,
                             objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped,
-                            objParent: objSelectedGear ?? (object)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
+                            objParent: objSelectedGear ?? (IHasName)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;

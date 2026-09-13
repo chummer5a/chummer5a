@@ -5558,9 +5558,9 @@ namespace Chummer.Backend.Skills
                                 sbdReturn.Append(strConjunction);
                             else
                                 blnAddConjunction = true;
-                            sbdReturn.Append(CharacterObject.GetObjectName(objImprovement, token: token) + strSpace + "("
-                                     + objImprovement.Value.ToString(GlobalSettings.CultureInfo) + "," + strSpace
-                                     + objImprovement.CurrentDisplayCondition + ")");
+                            sbdReturn.Append(CharacterObject.GetObjectName(objImprovement, token: token), strSpace, '(')
+                                     .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo), ',', strSpace)
+                                     .Append(objImprovement.CurrentDisplayCondition, ')');
                         }
                         sbdReturn.Append(')');
                     }
@@ -5617,13 +5617,12 @@ namespace Chummer.Backend.Skills
                                 || objCyberware.Location == CharacterObject.PrimaryArm
                                 || objCyberware.LimbSlotCount > 1)
                             {
-                                sb.Append(strSpace).Append(pool.ToString(GlobalSettings.CultureInfo));
+                                sb.Append(strSpace, pool.ToString(GlobalSettings.CultureInfo));
                             }
                             else
                             {
-                                sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2,
-                                    strSpace, -2,
-                                    LanguageManager.GetString("Tip_Skill_OffHand", token: innerToken));
+                                sb.Append(strSpace, (pool - 2).ToString(GlobalSettings.CultureInfo), strSpace, "(")
+                                    .Append((-2).ToString(GlobalSettings.CultureInfo), strSpace, LanguageManager.GetString("Tip_Skill_OffHand", token: innerToken), ")");
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
@@ -5720,9 +5719,8 @@ namespace Chummer.Backend.Skills
                             }
                             else
                             {
-                                sbdLoop.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
-                                    intLoopPool - 2, strSpace, -2,
-                                    LanguageManager.GetString("Tip_Skill_OffHand", token: innerToken));
+                                sbdLoop.Append(strSpace, (intLoopPool - 2).ToString(GlobalSettings.CultureInfo), strSpace, "(")
+                                    .Append((-2).ToString(GlobalSettings.CultureInfo), strSpace, LanguageManager.GetString("Tip_Skill_OffHand", token: innerToken), ")");
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
@@ -6001,10 +5999,9 @@ namespace Chummer.Backend.Skills
                             }
                             else
                             {
-                                sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", intPool - 2,
-                                    strSpace, -2,
-                                    await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: innerToken)
-                                        .ConfigureAwait(false));
+                                sb.Append(strSpace, (intPool - 2).ToString(GlobalSettings.CultureInfo), strSpace, "(")
+                                    .Append((-2).ToString(GlobalSettings.CultureInfo), strSpace,
+                                    await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: innerToken).ConfigureAwait(false), ")");
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
@@ -6128,10 +6125,9 @@ namespace Chummer.Backend.Skills
                             }
                             else
                             {
-                                sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", intPool - 2,
-                                    strSpace, -2,
-                                    await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: innerToken)
-                                        .ConfigureAwait(false));
+                                sb.Append(strSpace, (intPool - 2).ToString(GlobalSettings.CultureInfo), strSpace, "(")
+                                    .Append((-2).ToString(GlobalSettings.CultureInfo), strSpace,
+                                    await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: innerToken).ConfigureAwait(false), ")");
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
@@ -6265,8 +6261,7 @@ namespace Chummer.Backend.Skills
                     string strSpace = LanguageManager.GetString("String_Space");
                     string strNotes = Notes;
                     string strReturn = !string.IsNullOrEmpty(strNotes)
-                        ? LanguageManager.GetString("Label_Notes") + strSpace + strNotes + Environment.NewLine +
-                          Environment.NewLine
+                        ? LanguageManager.GetString("Label_Notes") + strSpace + strNotes + Utils.DoubleNewLine
                         : string.Empty;
                     string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
                         ? SkillGroupObject.CurrentDisplayName + strSpace +
@@ -6290,8 +6285,7 @@ namespace Chummer.Backend.Skills
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strNotes = await GetNotesAsync(token).ConfigureAwait(false);
                 string strReturn = !string.IsNullOrEmpty(strNotes)
-                    ? await LanguageManager.GetStringAsync("Label_Notes", token: token).ConfigureAwait(false) + strSpace + strNotes + Environment.NewLine +
-                      Environment.NewLine
+                    ? await LanguageManager.GetStringAsync("Label_Notes", token: token).ConfigureAwait(false) + strSpace + strNotes + Utils.DoubleNewLine
                     : string.Empty;
                 string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
                     ? await SkillGroupObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace +
@@ -6681,10 +6675,9 @@ namespace Chummer.Backend.Skills
                 else
                     intSpecBonus = GetSpecializationBonus(token: token);
 
-                return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                     intPool, LanguageManager.GetString("String_Space", token: token),
-                                     Math.Max(intPool + intSpecBonus,
-                                              intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
+                return intPool.ToString(GlobalSettings.CultureInfo).ConcatFast(LanguageManager.GetString("String_Space", token: token),
+                    // Have to do it this way because some conditional bonuses apply specifically to specializations
+                    "(", Math.Max(intPool + intSpecBonus, intConditionalBonus).ToString(GlobalSettings.CultureInfo), ")");
             }
         }
 
@@ -6719,10 +6712,9 @@ namespace Chummer.Backend.Skills
                 else
                     intSpecBonus = await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
 
-                return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                    intPool, await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    Math.Max(intPool + intSpecBonus,
-                        intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
+                return intPool.ToString(GlobalSettings.CultureInfo).ConcatFast(await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
+                    // Have to do it this way because some conditional bonuses apply specifically to specializations
+                    "(", Math.Max(intPool + intSpecBonus, intConditionalBonus).ToString(GlobalSettings.CultureInfo), ")");
             }
             finally
             {
@@ -8620,21 +8612,19 @@ namespace Chummer.Backend.Skills
 
                     int price = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
                     int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
-                    //If data file contains {4} this crashes but...
-                    string upgradetext =
-                        string.Format(GlobalSettings.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
-                            await LanguageManager.GetStringAsync(IsKnowledgeSkill
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                           .ConfigureAwait(false);
+                    string strUpgrade =
+                        (await LanguageManager.GetStringAsync(IsKnowledgeSkill
                                     ? "String_ExpenseKnowledgeSkill"
-                                    : "String_ExpenseActiveSkill",
-                                token: token).ConfigureAwait(false),
-                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                            intTotalBaseRating,
-                            intTotalBaseRating + 1,
-                            await LanguageManager.GetStringAsync("String_Space", token: token)
-                                .ConfigureAwait(false));
+                                    : "String_ExpenseActiveSkill", token: token)
+                                                           .ConfigureAwait(false)).ConcatFast(
+                            strSpace, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace,
+                            intTotalBaseRating.ToString(GlobalSettings.CultureInfo), strSpace, "->", strSpace,
+                            (intTotalBaseRating + 1).ToString(GlobalSettings.CultureInfo));
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(price * -1, strUpgrade, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo = new ExpenseUndo().CreateKarma(
                         intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill,
                         InternalId);
@@ -8798,11 +8788,11 @@ namespace Chummer.Backend.Skills
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                             .ConfigureAwait(false);
                         string strUpgradeText
-                            = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token)
-                                .ConfigureAwait(false) + strSpace
-                                                       + await GetCurrentDisplayNameAsync(token)
-                                                           .ConfigureAwait(false) + strSpace + "("
-                                                       + strName + ")";
+                            = (await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token)
+                                .ConfigureAwait(false)).ConcatFast(strSpace,
+                                                       await GetCurrentDisplayNameAsync(token)
+                                                           .ConfigureAwait(false), strSpace, "(",
+                                                       strName, ")");
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
                         objExpense.Undo =
@@ -9096,17 +9086,16 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterReadLock())
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strReturn = string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", CurrentDisplayName,
-                    strSpace, intPool);
+                string strReturn = CurrentDisplayName.ConcatFast(strSpace, "(", intPool.ToString(GlobalSettings.CultureInfo), ")");
                 // Add any Specialization bonus if applicable.
                 if (!string.IsNullOrWhiteSpace(strValidSpec))
                 {
                     int intSpecBonus = GetSpecializationBonus(strValidSpec);
                     if (intSpecBonus != 0)
-                        strReturn +=
-                            string.Format(GlobalSettings.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+',
-                                LanguageManager.GetString("String_ExpenseSpecialization"),
-                                LanguageManager.GetString("String_Colon"), strValidSpec, intSpecBonus);
+                        strReturn += strSpace + "+" + strSpace
+                            + LanguageManager.GetString("String_ExpenseSpecialization")
+                            + LanguageManager.GetString("String_Colon")
+                            + strSpace + strValidSpec + strSpace + "(" + intSpecBonus.ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 return strReturn;
@@ -9126,17 +9115,16 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                string strReturn = string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                                 strSpace, intPool);
+                string strReturn = (await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).ConcatFast(strSpace, "(", intPool.ToString(GlobalSettings.CultureInfo), ")");
                 // Add any Specialization bonus if applicable.
                 if (!string.IsNullOrWhiteSpace(strValidSpec))
                 {
                     int intSpecBonus = await GetSpecializationBonusAsync(strValidSpec, token).ConfigureAwait(false);
                     if (intSpecBonus != 0)
-                        strReturn +=
-                            string.Format(GlobalSettings.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+',
-                                          await LanguageManager.GetStringAsync("String_ExpenseSpecialization", token: token).ConfigureAwait(false),
-                                          await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false), strValidSpec, intSpecBonus);
+                        strReturn += strSpace + "+" + strSpace
+                            + await LanguageManager.GetStringAsync("String_ExpenseSpecialization", token: token).ConfigureAwait(false)
+                            + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
+                            + strSpace + strValidSpec + strSpace + "(" + intSpecBonus.ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
                 return strReturn;

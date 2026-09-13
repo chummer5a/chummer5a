@@ -133,6 +133,11 @@ namespace Chummer
         public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
         /// <summary>
+        /// Two concatenated <see cref="Environment.NewLine"/>s, cached because it's used so frequently.
+        /// </summary>
+        public static string DoubleNewLine { get; } = string.Concat(Environment.NewLine, Environment.NewLine);
+
+        /// <summary>
         /// Cached latest version of Chummer from its GitHub page.
         /// </summary>
         public static Version CachedGitVersion { get; set; }

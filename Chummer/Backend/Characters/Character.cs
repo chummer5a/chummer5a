@@ -40170,13 +40170,13 @@ namespace Chummer
                     if (string.IsNullOrWhiteSpace(strDisadvantage))
                         strDisadvantage = LanguageManager.GetString("String_None");
                     string strReturn = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace +
-                                       strAdvantage + Environment.NewLine + Environment.NewLine +
+                                       strAdvantage + Utils.DoubleNewLine +
                                        LanguageManager.GetString("Label_SelectMentorSpirit_Disadvantage") + strSpace +
                                        strDisadvantage;
                     string strExtraReturn = objMentorSpirit.DisplayExtras(GlobalSettings.Language);
                     if (!string.IsNullOrEmpty(strExtraReturn))
                     {
-                        strReturn += Environment.NewLine + Environment.NewLine +
+                        strReturn += Utils.DoubleNewLine +
                                      LanguageManager.GetString("Label_SelectMentorSpirit_Choices") +
                                      Environment.NewLine +
                                      strExtraReturn;
@@ -40205,13 +40205,13 @@ namespace Chummer
                     strDisadvantage = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
                 string strReturn =
                     await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Advantage", token: token).ConfigureAwait(false) +
-                    strSpace + strAdvantage + Environment.NewLine + Environment.NewLine +
+                    strSpace + strAdvantage + Utils.DoubleNewLine +
                     await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Disadvantage", token: token).ConfigureAwait(false) +
                     strSpace + strDisadvantage;
                 string strExtraReturn = await objMentorSpirit.DisplayExtrasAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strExtraReturn))
                 {
-                    strReturn += Environment.NewLine + Environment.NewLine +
+                    strReturn += Utils.DoubleNewLine +
                                  await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Choices",
                                      token: token).ConfigureAwait(false) + Environment.NewLine + strExtraReturn;
                 }
@@ -55538,37 +55538,41 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 bool blnEssence = true;
-                string strMessage = await LanguageManager
-                    .GetStringAsync("Message_CyberzombieRequirements", token: token).ConfigureAwait(false);
-
-                // Make sure the character has an Essence lower than 0.
-                decimal decEssence = await EssenceAsync(token: token).ConfigureAwait(false);
-                if (decEssence >= 0)
+                decimal decEssence = 0;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMessage))
                 {
-                    strMessage += Environment.NewLine + "\t" +
-                                  await LanguageManager
-                                      .GetStringAsync("Message_CyberzombieRequirementsEssence", token: token)
-                                      .ConfigureAwait(false);
-                    blnEssence = false;
-                }
+                    sbdMessage.AppendLine(await LanguageManager
+                        .GetStringAsync("Message_CyberzombieRequirements", token: token).ConfigureAwait(false));
 
-                bool blnEnabled = (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.EnableCyberzombie,
-                        token: token).ConfigureAwait(false)).Count > 0;
+                    // Make sure the character has an Essence lower than 0.
+                    decEssence = await EssenceAsync(token: token).ConfigureAwait(false);
+                    if (decEssence >= 0)
+                    {
+                        sbdMessage.Append('\t',
+                                      await LanguageManager
+                                          .GetStringAsync("Message_CyberzombieRequirementsEssence", token: token)
+                                          .ConfigureAwait(false)).AppendLine();
+                        blnEssence = false;
+                    }
 
-                if (!blnEnabled)
-                    strMessage += Environment.NewLine + "\t" +
-                                  await LanguageManager
-                                      .GetStringAsync("Message_CyberzombieRequirementsImprovement", token: token)
-                                      .ConfigureAwait(false);
+                    bool blnEnabled = (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.EnableCyberzombie,
+                            token: token).ConfigureAwait(false)).Count > 0;
 
-                if (!blnEssence || !blnEnabled)
-                {
-                    await Program.ShowScrollableMessageBoxAsync(strMessage,
-                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements", token: token)
-                            .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
-                    return false;
+                    if (!blnEnabled)
+                        sbdMessage.Append('\t',
+                                      await LanguageManager
+                                          .GetStringAsync("Message_CyberzombieRequirementsImprovement", token: token)
+                                          .ConfigureAwait(false)).AppendLine();
+
+                    if (!blnEssence || !blnEnabled)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(sbdMessage.ToTrimmedString(),
+                            await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements", token: token)
+                                .ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        return false;
+                    }
                 }
 
                 if (await Program.ShowScrollableMessageBoxAsync(
@@ -55601,7 +55605,7 @@ namespace Chummer
                 }
 
                 // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.
-                int intThreshold = 3 + (decEssence - await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false))
+                int intThreshold = 3 + (decEssence - await (await GetAttributeAsync("ESS", token: token).ConfigureAwait(false)).GetMetatypeMaximumAsync(token).ConfigureAwait(false))
                     .ToInt32();
                 int intResult = 10;
                 if (intWILResult < intThreshold)

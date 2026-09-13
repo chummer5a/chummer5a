@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1060,109 +1061,94 @@ namespace Chummer
         private async Task AcceptForm(CancellationToken token = default)
         {
             string strMessage = string.Empty;
-            // Make sure a name has been provided.
-            if (string.IsNullOrWhiteSpace(await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMessage))
             {
-                if (!string.IsNullOrEmpty(strMessage))
-                    strMessage += Environment.NewLine;
-                strMessage += await LanguageManager.GetStringAsync("Message_SpellName", token: token).ConfigureAwait(false);
-            }
+                // Make sure a name has been provided.
+                if (string.IsNullOrWhiteSpace(await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
+                {
+                    sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_SpellName", token: token).ConfigureAwait(false));
+                }
 
-            // Make sure a Restricted value if the field is enabled.
-            if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
-            {
-                if (!string.IsNullOrEmpty(strMessage))
-                    strMessage += Environment.NewLine;
-                strMessage += await LanguageManager.GetStringAsync("Message_SpellRestricted", token: token).ConfigureAwait(false);
-            }
+                // Make sure a Restricted value if the field is enabled.
+                if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
+                {
+                    sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_SpellRestricted", token: token).ConfigureAwait(false));
+                }
 
-            switch (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false))
-            {
-                // Make sure the Spell has met all of its requirements.
-                case "Combat":
-                    {
-                        // Either Direct or Indirect must be selected.
-                        if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                switch (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false))
+                {
+                    // Make sure the Spell has met all of its requirements.
+                    case "Combat":
                         {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_CombatSpellRequirement1", token: token).ConfigureAwait(false);
-                        }
+                            // Either Direct or Indirect must be selected.
+                            if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_CombatSpellRequirement1", token: token).ConfigureAwait(false));
+                            }
 
-                        // Either Physical damage or Stun damage must be selected.
-                        if (!await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            // Either Physical damage or Stun damage must be selected.
+                            if (!await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_CombatSpellRequirement2", token: token).ConfigureAwait(false));
+                            }
+
+                            break;
+                        }
+                    case "Detection":
                         {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_CombatSpellRequirement2", token: token).ConfigureAwait(false);
-                        }
+                            // Either Directional, Area, or Psychic must be selected.
+                            if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_DetectionSpellRequirement1", token: token).ConfigureAwait(false));
+                            }
 
+                            // Either Active or Passive must be selected.
+                            if (!await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_DetectionSpellRequirement2", token: token).ConfigureAwait(false));
+                            }
+
+                            break;
+                        }
+                    case "Health":
+                        // Nothing special.
                         break;
-                    }
-                case "Detection":
-                    {
-                        // Either Directional, Area, or Psychic must be selected.
-                        if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+
+                    case "Illusion":
                         {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_DetectionSpellRequirement1", token: token).ConfigureAwait(false);
-                        }
+                            // Either Obvious or Realistic must be selected.
+                            if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_IllusionSpellRequirement1", token: token).ConfigureAwait(false));
+                            }
 
-                        // Either Active or Passive must be selected.
-                        if (!await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            // Either Single-Sense or Multi-Sense must be selected.
+                            if (!await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_IllusionSpellRequirement2", token: token).ConfigureAwait(false));
+                            }
+
+                            break;
+                        }
+                    case "Manipulation":
                         {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_DetectionSpellRequirement2", token: token).ConfigureAwait(false);
+                            // Either Environmental, Mental, or Physical must be selected.
+                            if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_ManipulationSpellRequirement1", token: token).ConfigureAwait(false));
+                            }
+
+                            // Either Minor Change or Major Change must be selected.
+                            if (!await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                            {
+                                sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_ManipulationSpellRequirement2", token: token).ConfigureAwait(false));
+                            }
+
+                            break;
                         }
-
-                        break;
-                    }
-                case "Health":
-                    // Nothing special.
-                    break;
-
-                case "Illusion":
-                    {
-                        // Either Obvious or Realistic must be selected.
-                        if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                        {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_IllusionSpellRequirement1", token: token).ConfigureAwait(false);
-                        }
-
-                        // Either Single-Sense or Multi-Sense must be selected.
-                        if (!await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                        {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_IllusionSpellRequirement2", token: token).ConfigureAwait(false);
-                        }
-
-                        break;
-                    }
-                case "Manipulation":
-                    {
-                        // Either Environmental, Mental, or Physical must be selected.
-                        if (!await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                        {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_ManipulationSpellRequirement1", token: token).ConfigureAwait(false);
-                        }
-
-                        // Either Minor Change or Major Change must be selected.
-                        if (!await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                        {
-                            if (!string.IsNullOrEmpty(strMessage))
-                                strMessage += Environment.NewLine;
-                            strMessage += await LanguageManager.GetStringAsync("Message_ManipulationSpellRequirement2", token: token).ConfigureAwait(false);
-                        }
-
-                        break;
-                    }
+                }
+                if (sbdMessage.Length > 0)
+                    strMessage = sbdMessage.ToTrimmedString();
             }
 
             // Show the message if necessary.

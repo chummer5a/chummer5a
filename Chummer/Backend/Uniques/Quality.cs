@@ -2069,7 +2069,7 @@ namespace Chummer
                                  .GetCachedImprovementListForValueOf(_objCharacter,
                                                                      Improvement.ImprovementType.DisableQuality, Name)
                                  .FirstOrDefault();
-                        strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                        strCachedNotes = string.Format(GlobalSettings.CultureInfo,
                                                         LanguageManager.GetString("String_SuppressedBy"),
                                                         _objCharacter.GetObjectName(objDisablingImprovement)
                                                         ?? LanguageManager.GetString("String_Unknown"))
@@ -2116,7 +2116,7 @@ namespace Chummer
                               .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                   Improvement.ImprovementType.DisableQuality, Name, token: token).ConfigureAwait(false))
                           .FirstOrDefault();
-                    strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                    strCachedNotes = string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync("String_SuppressedBy", token: token)
                                               .ConfigureAwait(false),
                                           await _objCharacter.GetObjectNameAsync(objDisablingImprovement, token: token)
@@ -2714,8 +2714,7 @@ namespace Chummer
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
             XmlNode node = xmlDoc.TryGetNodeByNameOrId(".//*", id)
-                           ?? throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name
-                                                          + ".");
+                           ?? throw new ArgumentException("Could not find node ".ConcatFast(id, " in xmlDoc ", xmlDoc.Name, "."));
             return GetNodeOverrideable(node);
         }
 

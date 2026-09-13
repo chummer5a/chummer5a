@@ -77,26 +77,26 @@ namespace Chummer
                     {
                         ManagerErrorMessage = "Language strings for the default language ("
                                               + GlobalSettings.DefaultLanguage + ") could not be loaded:"
-                                              + Environment.NewLine + Environment.NewLine + "No strings found in file.";
+                                              + Utils.DoubleNewLine + "No strings found in file.";
                     }
                 }
                 catch (IOException ex)
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
+                        + Utils.DoubleNewLine + ex.Demystify().ToString();
                 }
                 catch (XmlException ex)
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
+                        + Utils.DoubleNewLine + ex.Demystify().ToString();
                 }
             }
             else
                 ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                     + ") could not be loaded:"
-                    + Environment.NewLine + Environment.NewLine + "File " + strFilePath
+                    + Utils.DoubleNewLine + "File " + strFilePath
                     + " does not exist or cannot be found.";
         }
 
@@ -259,7 +259,7 @@ namespace Chummer
                 {
                     string strMessage = "Language with code " + strLanguage +
                                         " could not be loaded for the following reasons:" +
-                                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage;
+                                        Utils.DoubleNewLine + objNewLanguage.ErrorMessage;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         Program.ShowScrollableMessageBox(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1235,7 +1235,7 @@ namespace Chummer
                             }
                         }, token)).ConfigureAwait(false);
 
-                    strMessage = sbdMissingMessage.Append(sbdUnusedMessage).ToString().TrimEndOnce(Environment.NewLine);
+                    strMessage = sbdMissingMessage.Append(sbdUnusedMessage).ToTrimmedString();
                 }
             }
 
@@ -1408,8 +1408,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                             token: token) + GetString("String_Space", strLanguage, token: token)
-                                           + "(" + GetString("String_DescAdept", strLanguage, token: token) + ")";
+                             token: token).ConcatFast(GetString("String_Space", strLanguage, token: token),
+                                           "(", GetString("String_DescAdept", strLanguage, token: token), ")");
         }
 
         public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false,
@@ -1417,11 +1417,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                                        token: token).ConfigureAwait(false)
-                   + await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                   + "(" + await GetStringAsync(
-                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
+            return (await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
+                                        token: token).ConfigureAwait(false)).ConcatFast(
+                   await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                   "(", await GetStringAsync(
+                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
         }
 
         /// <summary>

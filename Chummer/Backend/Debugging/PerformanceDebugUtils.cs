@@ -28,7 +28,7 @@ namespace Chummer
 #if DEBUG
             sw.Stop();
             long lngMilliseconds = sw.ElapsedMilliseconds;
-            Trace.WriteLine(string.Format(GlobalSettings.InvariantCultureInfo, "{0} finished in {1} ms", task, lngMilliseconds));
+            Trace.WriteLine(string.Concat(task, " finished in ", lngMilliseconds.ToString(GlobalSettings.InvariantCultureInfo), " ms"));
             sw.Restart();
 #endif
         }

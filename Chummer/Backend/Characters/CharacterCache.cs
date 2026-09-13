@@ -24,6 +24,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -970,54 +971,59 @@ namespace Chummer
         public string CalculatedName(bool blnAddMarkerIfOpen = true)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            string strReturn;
-            using (LockObject.EnterReadLock())
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                if (!string.IsNullOrEmpty(ErrorText))
+                using (LockObject.EnterReadLock())
                 {
-                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + "(" +
-                                LanguageManager.GetString("String_Error") + ")";
-                }
-                else
-                {
-                    strReturn = CharacterAlias;
-                    if (string.IsNullOrEmpty(strReturn))
+                    if (!string.IsNullOrEmpty(ErrorText))
                     {
-                        strReturn = CharacterName;
-                        if (string.IsNullOrEmpty(strReturn))
-                            strReturn = LanguageManager.GetString("String_UnnamedCharacter");
+                        sbdReturn.Append(Path.GetFileNameWithoutExtension(FileName), strSpace, '(')
+                            .Append(LanguageManager.GetString("String_Error"), ')');
+                    }
+                    else
+                    {
+                        sbdReturn.Append(CharacterAlias);
+                        if (sbdReturn.Length == 0)
+                        {
+                            sbdReturn.Append(CharacterName);
+                            if (sbdReturn.Length == 0)
+                                sbdReturn.Append(LanguageManager.GetString("String_UnnamedCharacter"));
+                        }
+
+                        string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
+                        if (string.IsNullOrEmpty(strBuildMethod))
+                            strBuildMethod = LanguageManager.GetString("String_Unknown");
+                        sbdReturn.Append(strSpace, '(', strBuildMethod)
+                            .Append(strSpace, '-', strSpace)
+                            .Append(LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"), ')');
                     }
 
-                    string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
-                    if (string.IsNullOrEmpty(strBuildMethod))
-                        strBuildMethod = LanguageManager.GetString("String_Unknown");
-                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
-                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ")";
+                    if (blnAddMarkerIfOpen && Program.MainForm != null)
+                    {
+                        string strFilePath = FilePath;
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMarker))
+                        {
+                            if (Program.MainForm.OpenCharacterEditorForms?.Any(
+                                x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
+                                    StringComparison.Ordinal)) == true)
+                                sbdMarker.Append('*');
+                            if (Program.MainForm.OpenCharacterSheetViewers?.Any(
+                                    x => x.CharacterObjects.Any(y =>
+                                        !y.IsDisposed && string.Equals(y.FileName, strFilePath,
+                                            StringComparison.Ordinal))) == true)
+                                sbdMarker.Append('^');
+                            if (Program.MainForm.OpenCharacterExportForms?.Any(
+                                    x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
+                                        StringComparison.Ordinal)) == true)
+                                sbdMarker.Append('\'');
+                            if (sbdMarker.Length > 0)
+                                sbdReturn.Insert(0, sbdMarker.Append(strSpace).ToString());
+                        }
+                    }
                 }
 
-                if (blnAddMarkerIfOpen && Program.MainForm != null)
-                {
-                    string strMarker = string.Empty;
-                    string strFilePath = FilePath;
-                    if (Program.MainForm.OpenCharacterEditorForms?.Any(
-                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
-                                StringComparison.Ordinal)) == true)
-                        strMarker += "*";
-                    if (Program.MainForm.OpenCharacterSheetViewers?.Any(
-                            x => x.CharacterObjects.Any(y =>
-                                !y.IsDisposed && string.Equals(y.FileName, strFilePath,
-                                    StringComparison.Ordinal))) == true)
-                        strMarker += "^";
-                    if (Program.MainForm.OpenCharacterExportForms?.Any(
-                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
-                                StringComparison.Ordinal)) == true)
-                        strMarker += "\'";
-                    if (!string.IsNullOrEmpty(strMarker))
-                        strReturn = strMarker + strSpace + strReturn;
-                }
+                return sbdReturn.ToTrimmedString();
             }
-
-            return strReturn;
         }
 
         /// <summary>
@@ -1030,84 +1036,88 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strReturn;
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                token.ThrowIfCancellationRequested();
-                string strErrorText = await GetErrorTextAsync(token).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(strErrorText))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    strReturn = Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false))
-                        + strSpace + "(" + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ")";
-                }
-                else
-                {
-                    strReturn = await GetCharacterAliasAsync(token).ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(strReturn))
+                    token.ThrowIfCancellationRequested();
+                    string strErrorText = await GetErrorTextAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strErrorText))
                     {
-                        strReturn = await GetCharacterNameAsync(token).ConfigureAwait(false);
-                        if (string.IsNullOrEmpty(strReturn))
-                            strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                        sbdReturn.Append(Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false)),
+                            strSpace, '(').Append(await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false), ')');
+                    }
+                    else
+                    {
+                        sbdReturn.Append(await GetCharacterAliasAsync(token).ConfigureAwait(false));
+                        if (sbdReturn.Length == 0)
+                        {
+                            sbdReturn.Append(await GetCharacterNameAsync(token).ConfigureAwait(false));
+                            if (sbdReturn.Length == 0)
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                                    .ConfigureAwait(false));
+                        }
+
+                        string strBuildMethod = await LanguageManager.GetStringAsync("String_" + await GetBuildMethodAsync(token).ConfigureAwait(false), false, token)
+                            .ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strBuildMethod))
+                            strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                 .ConfigureAwait(false);
+                        sbdReturn.Append(strSpace, '(', strBuildMethod).Append(strSpace, '-', strSpace)
+                                     .Append(await LanguageManager
+                                         .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
+                                            ? "Title_CareerMode"
+                                            : "Title_CreateMode", token: token)
+                                         .ConfigureAwait(false), ')');
                     }
 
-                    string strBuildMethod = await LanguageManager.GetStringAsync("String_" + await GetBuildMethodAsync(token).ConfigureAwait(false), false, token)
-                        .ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(strBuildMethod))
-                        strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
-                            .ConfigureAwait(false);
-                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
-                                 + await LanguageManager
-                                     .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
-                                        ? "Title_CareerMode"
-                                        : "Title_CreateMode", token: token)
-                                     .ConfigureAwait(false) + ")";
+                    if (blnAddMarkerIfOpen && Program.MainForm != null)
+                    {
+                        string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMarker))
+                        {
+                            ThreadSafeObservableCollection<CharacterShared> lstToProcess1
+                            = Program.MainForm.OpenCharacterEditorForms;
+                            if (lstToProcess1 != null && await lstToProcess1
+                                    .AnyAsync(
+                                        async (x, t) => !x.CharacterObject.IsDisposed &&
+                                                   string.Equals(
+                                                       await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
+                                                       strFilePath, StringComparison.Ordinal), token)
+                                    .ConfigureAwait(false))
+                                sbdMarker.Append('*');
+                            ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
+                                = Program.MainForm.OpenCharacterSheetViewers;
+                            if (lstToProcess2 != null && await lstToProcess2
+                                    .AnyAsync(
+                                        (x, t1) => x.CharacterObjects.AnyAsync(
+                                            async (y, t2) => !y.IsDisposed && string.Equals(
+                                                await y.GetFileNameAsync(t2).ConfigureAwait(false), strFilePath,
+                                                StringComparison.Ordinal), t1), token).ConfigureAwait(false))
+                                sbdMarker.Append('^');
+                            ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
+                                = Program.MainForm.OpenCharacterExportForms;
+                            if (lstToProcess3 != null && await lstToProcess3
+                                    .AnyAsync(
+                                        async (x, t) => !x.CharacterObject.IsDisposed &&
+                                                   string.Equals(
+                                                       await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
+                                                       strFilePath, StringComparison.Ordinal), token)
+                                    .ConfigureAwait(false))
+                                sbdMarker.Append('\'');
+                            if (sbdMarker.Length > 0)
+                                sbdReturn.Insert(0, sbdMarker.Append(strSpace).ToString());
+                        }
+                    }
                 }
-
-                if (blnAddMarkerIfOpen && Program.MainForm != null)
+                finally
                 {
-                    string strMarker = string.Empty;
-                    string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
-                    ThreadSafeObservableCollection<CharacterShared> lstToProcess1
-                        = Program.MainForm.OpenCharacterEditorForms;
-                    if (lstToProcess1 != null && await lstToProcess1
-                            .AnyAsync(
-                                async (x, t) => !x.CharacterObject.IsDisposed &&
-                                           string.Equals(
-                                               await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
-                                               strFilePath, StringComparison.Ordinal), token)
-                            .ConfigureAwait(false))
-                        strMarker += "*";
-                    ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
-                        = Program.MainForm.OpenCharacterSheetViewers;
-                    if (lstToProcess2 != null && await lstToProcess2
-                            .AnyAsync(
-                                (x, t1) => x.CharacterObjects.AnyAsync(
-                                    async (y, t2) => !y.IsDisposed && string.Equals(
-                                        await y.GetFileNameAsync(t2).ConfigureAwait(false), strFilePath,
-                                        StringComparison.Ordinal), t1), token).ConfigureAwait(false))
-                        strMarker += "^";
-                    ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
-                        = Program.MainForm.OpenCharacterExportForms;
-                    if (lstToProcess3 != null && await lstToProcess3
-                            .AnyAsync(
-                                async (x, t) => !x.CharacterObject.IsDisposed &&
-                                           string.Equals(
-                                               await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
-                                               strFilePath, StringComparison.Ordinal), token)
-                            .ConfigureAwait(false))
-                        strMarker += "\'";
-                    if (!string.IsNullOrEmpty(strMarker))
-                        strReturn = strMarker + strSpace + strReturn;
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            return strReturn;
+                return sbdReturn.ToTrimmedString();
+            }
         }
 
         public async Task OnDefaultKeyDown(object sender, ValueTuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)

@@ -2389,13 +2389,13 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                strReturn += string.Concat(strSpace, "(", _objCharacter.TranslateExtra(Extra, strLanguage), ")");
             int intRating = Rating;
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + intRating.ToString(objCulture) + ")";
+                strReturn += strSpace.ConcatFast("(", LanguageManager.GetString(RatingLabel, strLanguage), strSpace, intRating.ToString(objCulture), ")");
             }
             return strReturn;
         }
@@ -2414,7 +2414,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
+                strReturn += strSpace.ConcatFast("(", await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false), strSpace, intRating.ToString(objCulture), ")");
             }
             return strReturn;
         }

@@ -1570,16 +1570,15 @@ namespace Chummer.Backend.Skills
 
                     int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
 
-                    //If data file contains {4} this crashes but...
                     int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                           .ConfigureAwait(false);
                     string strUpgrade =
-                        string.Format(GlobalSettings.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
-                                      await LanguageManager.GetStringAsync("String_ExpenseSkillGroup", token: token)
-                                                           .ConfigureAwait(false),
-                                      await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                      intRating, intRating + 1,
-                                      await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                           .ConfigureAwait(false));
+                        (await LanguageManager.GetStringAsync("String_ExpenseSkillGroup", token: token)
+                                                           .ConfigureAwait(false)).ConcatFast(
+                            strSpace, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace,
+                            intRating.ToString(GlobalSettings.CultureInfo), strSpace, "->", strSpace,
+                            (intRating + 1).ToString(GlobalSettings.CultureInfo));
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intPrice * -1, strUpgrade, ExpenseType.Karma, DateTime.Now);

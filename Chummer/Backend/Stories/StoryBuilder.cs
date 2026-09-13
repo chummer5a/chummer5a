@@ -109,7 +109,7 @@ namespace Chummer
                         }
                     }, token).ConfigureAwait(false);
 
-                    return StringExtensions.JoinFast(Environment.NewLine + Environment.NewLine, story, 0, modules.Count);
+                    return StringExtensions.JoinFast(Utils.DoubleNewLine, story, 0, modules.Count);
                 }
                 finally
                 {
@@ -342,7 +342,7 @@ namespace Chummer
                             return strDefault;
                         }
 
-                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
+                        return "(Unknown key ".ConcatFast(macroPool, " in $DOLLAR", macroName, ")");
                     }
 
                     return xmlUserMacroNode.Value;

@@ -2866,25 +2866,27 @@ namespace Chummer
                             await ScanFilesForPDFTexts(astrFiles, dicPatternsToMatch, dicBackupPatternsToMatch, frmLoadingBar.MyForm)
                                 .ConfigureAwait(false);
                         sw.Stop();
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdFeedback))
+                        if (Log.IsInfoEnabled)
                         {
-                            sbdFeedback.AppendLine().AppendLine()
-                                .AppendLine("-------------------------------------------------------------")
-                                .AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                    "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
-                                    strSelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
-                                    list.Count).AppendLine().AppendLine();
-                            foreach (SourcebookInfo sourcebook in list)
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                       out StringBuilder sbdFeedback))
                             {
-                                sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                    "{0} with Offset {1} path: {2}", sourcebook.Code,
-                                    sourcebook.Offset, sourcebook.Path).AppendLine();
-                            }
+                                sbdFeedback.AppendLine().AppendLine()
+                                    .AppendLine("-------------------------------------------------------------")
+                                    .Append("Scan for PDFs in Folder ", strSelectedPath, " completed in ")
+                                    .AppendLine(sw.ElapsedMilliseconds.ToString(GlobalSettings.InvariantCultureInfo), "ms.")
+                                    .AppendLine(list.Count.ToString(GlobalSettings.InvariantCultureInfo), " sourcebook(s) was/were found:")
+                                    .AppendLine();
+                                foreach (SourcebookInfo sourcebook in list)
+                                {
+                                    sbdFeedback.Append(sourcebook.Code, " with Offset ", sourcebook.Offset.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .AppendLine(" path: ", sourcebook.Path);
+                                }
 
-                            sbdFeedback.AppendLine()
-                                .AppendLine("-------------------------------------------------------------");
-                            Log.Info(sbdFeedback.ToString());
+                                sbdFeedback.AppendLine()
+                                    .AppendLine("-------------------------------------------------------------");
+                                Log.Info(sbdFeedback.ToString());
+                            }
                         }
 
                         string message = string.Format(_objSelectedCultureInfo,

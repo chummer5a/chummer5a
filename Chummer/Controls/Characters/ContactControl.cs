@@ -123,7 +123,7 @@ namespace Chummer
                         .ConfigureAwait(false);
                     string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strNotes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                        strTooltip += Utils.DoubleNewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
                 else
@@ -142,7 +142,7 @@ namespace Chummer
                         .GetStringAsync("Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
                     string strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strNotes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                        strTooltip += Utils.DoubleNewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
             }
@@ -735,7 +735,7 @@ namespace Chummer
                         : "Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
                 strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strNotes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                    strTooltip += Utils.DoubleNewLine + strNotes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

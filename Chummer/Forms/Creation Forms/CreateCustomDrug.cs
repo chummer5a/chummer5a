@@ -214,7 +214,7 @@ namespace Chummer
                             decBlockAttrValue > 0)
                         {
                             string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel", token: token).ConfigureAwait(false) +
-                                                Environment.NewLine + Environment.NewLine +
+                                                Utils.DoubleNewLine +
                                                 await objFoundationComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strColonString +
                                                 strSpaceString + objItem.Key +
                                                 objItem.Value.ToString("+#;-#;", GlobalSettings.CultureInfo) +

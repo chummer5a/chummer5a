@@ -1178,8 +1178,8 @@ namespace Chummer.Backend.Attributes
                 using (LockObject.EnterReadLock())
                 {
                     return HasModifiers()
-                        ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Value,
-                            LanguageManager.GetString("String_Space"), TotalValue)
+                        ? Value.ToString(GlobalSettings.CultureInfo).ConcatFast(LanguageManager.GetString("String_Space"),
+                            "(", TotalValue.ToString(GlobalSettings.CultureInfo), ")")
                         : Value.ToString(GlobalSettings.CultureInfo);
                 }
             }
@@ -1196,9 +1196,9 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 int intValue = await GetValueAsync(token).ConfigureAwait(false);
                 return await HasModifiersAsync(token).ConfigureAwait(false)
-                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue,
+                    ? intValue.ToString(GlobalSettings.CultureInfo).ConcatFast(
                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        await GetTotalValueAsync(token).ConfigureAwait(false))
+                        "(", (await GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")")
                     : intValue.ToString(GlobalSettings.CultureInfo);
             }
             finally
@@ -2109,9 +2109,9 @@ namespace Chummer.Backend.Attributes
             {
                 string strSpacePlusParen = LanguageManager.GetString("String_Space", strLanguage) + "(";
                 if (Abbrev == "MAGAdept")
-                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpacePlusParen +
-                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ")"
-                           + strSpacePlusParen + LanguageManager.GetString("String_DescAdept", strLanguage) + ")";
+                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage).ConcatFast(strSpacePlusParen,
+                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage), ")",
+                           strSpacePlusParen, LanguageManager.GetString("String_DescAdept", strLanguage), ")");
 
                 return DisplayNameLong(strLanguage) + strSpacePlusParen + DisplayNameShort(strLanguage) + ")";
             }
@@ -2126,12 +2126,11 @@ namespace Chummer.Backend.Attributes
                 string strSpacePlusParen = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                     .ConfigureAwait(false) + "(";
                 if (Abbrev == "MAGAdept")
-                    return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
-                               .ConfigureAwait(false) + strSpacePlusParen + await LanguageManager
+                    return (await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
+                               .ConfigureAwait(false)).ConcatFast(strSpacePlusParen, await LanguageManager
                                .GetStringAsync("String_AttributeMAGShort", strLanguage, token: token)
-                               .ConfigureAwait(false) + ")"
-                           + strSpacePlusParen + await LanguageManager
-                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
+                               .ConfigureAwait(false), ")", strSpacePlusParen, await LanguageManager
+                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
 
                 return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpacePlusParen +
                        await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ")";
@@ -2161,8 +2160,12 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
-                        LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
+                {
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    return TotalMinimum.ToString(GlobalSettings.CultureInfo).ConcatFast(
+                        strSpace, "/", strSpace, TotalMaximum.ToString(GlobalSettings.CultureInfo),
+                        strSpace, "(", TotalAugmentedMaximum.ToString(GlobalSettings.CultureInfo), ")");
+                }
             }
         }
 
@@ -2175,11 +2178,10 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    await GetTotalMinimumAsync(token).ConfigureAwait(false),
-                    await GetTotalMaximumAsync(token).ConfigureAwait(false),
-                    await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false));
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                return (await GetTotalMinimumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo).ConcatFast(
+                    strSpace, "/", strSpace, (await GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                    strSpace, "(", (await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")");
             }
             finally
             {
@@ -3930,13 +3932,13 @@ namespace Chummer.Backend.Attributes
                         int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
                         int intValue = await GetValueAsync(token).ConfigureAwait(false);
 
-                        string strUpgradeText = string.Format(GlobalSettings.CultureInfo,
-                            "{1}{0}{2}{0}{3}{0}->{0}{4}",
-                            await LanguageManager.GetStringAsync(
-                                "String_Space", token: token).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync(
-                                "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
-                            intValue, intValue + 1);
+                        string strSpace = await LanguageManager.GetStringAsync(
+                                "String_Space", token: token).ConfigureAwait(false);
+                        string strUpgradeText =
+                            (await LanguageManager.GetStringAsync(
+                                "String_ExpenseAttribute", token: token).ConfigureAwait(false)).ConcatFast(
+                                strSpace, Abbrev, strSpace, intValue.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "->", strSpace, (intValue + 1).ToString(GlobalSettings.CultureInfo));
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);

@@ -4616,7 +4616,9 @@ namespace Chummer.Backend.Equipment
         public string PowertrainModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = Body + _intAddPowertrainModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Powertrain") + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - CalcCategoryAvail("Powertrain") + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4625,7 +4627,9 @@ namespace Chummer.Backend.Equipment
         public string ProtectionModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = Body + _intAddProtectionModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Protection") + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - CalcCategoryAvail("Protection") + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4634,7 +4638,9 @@ namespace Chummer.Backend.Equipment
         public string WeaponModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = Body + _intAddWeaponModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Weapons") + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - CalcCategoryAvail("Weapons") + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4643,7 +4649,9 @@ namespace Chummer.Backend.Equipment
         public string BodyModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = Body + _intAddBodyModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Body") + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - CalcCategoryAvail("Body") + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4652,7 +4660,9 @@ namespace Chummer.Backend.Equipment
         public string ElectromagneticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = Body + _intAddElectromagneticModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Electromagnetic") + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - CalcCategoryAvail("Electromagnetic") + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4661,7 +4671,9 @@ namespace Chummer.Backend.Equipment
         public string CosmeticModSlotsUsed(int intModSlots = 0)
         {
             int intTotal = Body + _intAddCosmeticModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Cosmetic") + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - CalcCategoryAvail("Cosmetic") + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4671,7 +4683,9 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intTotal = Body + _intAddPowertrainModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - await CalcCategoryAvailAsync("Powertrain", token).ConfigureAwait(false) + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - await CalcCategoryAvailAsync("Powertrain", token).ConfigureAwait(false) + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4681,7 +4695,9 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intTotal = Body + _intAddProtectionModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - await CalcCategoryAvailAsync("Protection", token).ConfigureAwait(false) + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - await CalcCategoryAvailAsync("Protection", token).ConfigureAwait(false) + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4691,7 +4707,9 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intTotal = Body + _intAddWeaponModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - await CalcCategoryAvailAsync("Weapons", token).ConfigureAwait(false) + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - await CalcCategoryAvailAsync("Weapons", token).ConfigureAwait(false) + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4701,7 +4719,9 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intTotal = Body + _intAddBodyModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - await CalcCategoryAvailAsync("Body", token).ConfigureAwait(false) + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - await CalcCategoryAvailAsync("Body", token).ConfigureAwait(false) + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4711,7 +4731,9 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intTotal = Body + _intAddElectromagneticModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - await CalcCategoryAvailAsync("Electromagnetic", token).ConfigureAwait(false) + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - await CalcCategoryAvailAsync("Electromagnetic", token).ConfigureAwait(false) + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -4721,7 +4743,9 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intTotal = Body + _intAddCosmeticModSlots;
-            return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - await CalcCategoryAvailAsync("Cosmetic", token).ConfigureAwait(false) + intModSlots, intTotal);
+            return string.Concat(
+                (intTotal - await CalcCategoryAvailAsync("Cosmetic", token).ConfigureAwait(false) + intModSlots).ToString(GlobalSettings.CultureInfo),
+                "/", intTotal.ToString(GlobalSettings.CultureInfo));
         }
 
         /// <summary>

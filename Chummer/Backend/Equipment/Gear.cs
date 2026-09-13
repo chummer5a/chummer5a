@@ -177,7 +177,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParent">Parent object to set before rating is clamped (needed for parent-dependent max/min ratings).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
-            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, object objParent = null, CancellationToken token = default)
+            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, IHasName objParent = null, CancellationToken token = default)
         {
             Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlGear, intRating, lstWeapons, strForceValue,
                 blnAddImprovements,
@@ -197,14 +197,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParent">Parent object to set before rating is clamped (needed for parent-dependent max/min ratings).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
-            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, object objParent = null, CancellationToken token = default)
+            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, IHasName objParent = null, CancellationToken token = default)
         {
             return CreateCoreAsync(false, objXmlGear, intRating, lstWeapons, strForceValue, blnAddImprovements,
                 blnCreateChildren, blnSkipSelectForms, objParent, token);
         }
 
         public async Task CreateCoreAsync(bool blnSync, XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
-            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, object objParent = null, CancellationToken token = default)
+            bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, IHasName objParent = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objXmlGear == null)
@@ -1155,7 +1155,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         /// <param name="objParent">Parent object to set before rating is clamped (needed for parent-dependent max/min ratings).</param>
         public bool CreateFromNode(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, ICollection<Weapon> lstWeapons,
-            bool blnAddImprovements = true, bool blnSkipSelectForms = false, object objParent = null)
+            bool blnAddImprovements = true, bool blnSkipSelectForms = false, IHasName objParent = null)
         {
             if (xmlGearsDocument == null)
                 throw new ArgumentNullException(nameof(xmlGearsDocument));
@@ -1266,7 +1266,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParent">Parent object to set before rating is clamped (needed for parent-dependent max/min ratings).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task<bool> CreateFromNodeAsync(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, ICollection<Weapon> lstWeapons,
-            bool blnAddImprovements = true, bool blnSkipSelectForms = false, object objParent = null, CancellationToken token = default)
+            bool blnAddImprovements = true, bool blnSkipSelectForms = false, IHasName objParent = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (xmlGearsDocument == null)
@@ -4200,12 +4200,12 @@ namespace Chummer.Backend.Equipment
             set => _intChildAvailModifier = value;
         }
 
-        private object _objParent;
+        private IHasName _objParent;
 
         /// <summary>
         /// Parent Gear.
         /// </summary>
-        public object Parent
+        public IHasName Parent
         {
             get => _objParent;
             set
@@ -4219,7 +4219,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task SetParentAsync(object value, CancellationToken token = default)
+        public async Task SetParentAsync(IHasName value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnParentChanged = Interlocked.Exchange(ref _objParent, value) != value;
@@ -6498,11 +6498,10 @@ namespace Chummer.Backend.Equipment
                             string strNameToUse = Parent == null
                                 ? await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
                                                          intRestrictedGearQuantityUsed, token).ConfigureAwait(false)
-                                : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                                await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                                                       intRestrictedGearQuantityUsed, token).ConfigureAwait(false),
+                                : (await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
+                                                                       intRestrictedGearQuantityUsed, token).ConfigureAwait(false)).ConcatFast(
                                                 await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                                                Parent);
+                                                "(", await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), ")");
                             sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }
@@ -6766,7 +6765,7 @@ namespace Chummer.Backend.Equipment
         #region Hero Lab Importing Methods
 
         public bool ImportHeroLabGear(XPathNavigator xmlGearImportNode, XmlNode xmlParentGearNode,
-            IList<Weapon> lstWeapons, object objParent = null, CancellationToken token = default)
+            IList<Weapon> lstWeapons, IHasName objParent = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (xmlGearImportNode == null)
@@ -6986,7 +6985,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public async Task<bool> ImportHeroLabGearAsync(XPathNavigator xmlGearImportNode, XmlNode xmlParentGearNode,
-                                                       IList<Weapon> lstWeapons, object objParent = null, CancellationToken token = default)
+                                                       IList<Weapon> lstWeapons, IHasName objParent = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (xmlGearImportNode == null)

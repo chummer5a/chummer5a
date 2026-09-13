@@ -346,9 +346,9 @@ namespace Chummer.Plugins
                                 string msg
                                     = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
                                       + Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Exception: "
-                                      + Environment.NewLine + Environment.NewLine + e.ToString() + Environment.NewLine
-                                      + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
-                                      + sbdLoaderExceptions.ToString() + Environment.NewLine + Environment.NewLine;
+                                      + Utils.DoubleNewLine + e.ToString() + Utils.DoubleNewLine
+                                      + "The LoaderExceptions are: " + Environment.NewLine
+                                      + sbdLoaderExceptions.ToString() + Utils.DoubleNewLine;
 
                                 Log.Info(e, msg);
                             }
@@ -398,7 +398,7 @@ namespace Chummer.Plugins
                     e = e.Demystify();
                     string msg
                         = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
-                          + Environment.NewLine + Environment.NewLine + e.ToString();
+                          + Utils.DoubleNewLine + e.ToString();
                     Log.Warn(e, msg);
                 }
                 catch (Exception e) when (!(e is ApplicationException))
@@ -506,8 +506,7 @@ namespace Chummer.Plugins
                 {
                     string msg =
                         "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on."
-                        +
-                        Environment.NewLine + Environment.NewLine;
+                        + Utils.DoubleNewLine;
                     Log.Warn(e, msg);
                 }
                 catch (ReflectionTypeLoadException e)
@@ -548,7 +547,7 @@ namespace Chummer.Plugins
                 catch (Exception e)
                 {
                     e = e.Demystify();
-                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e.ToString();
+                    string msg = "Exception loading plugins: " + Utils.DoubleNewLine + e.ToString();
                     Log.Error(e, msg);
                 }
             }

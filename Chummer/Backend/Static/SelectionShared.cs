@@ -883,9 +883,9 @@ namespace Chummer
                         int intTargetValue =
                             xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                objAttribute?.CurrentDisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token),
-                                strSpace, intTargetValue);
+                            strName = Environment.NewLine + "\t"
+                                + (objAttribute?.CurrentDisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token))
+                                + strSpace + intTargetValue.ToString(GlobalSettings.CultureInfo);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
@@ -903,12 +903,12 @@ namespace Chummer
                         int intTargetValue
                             = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                objAttribute != null
+                            strName = Environment.NewLine + "\t"
+                                + (objAttribute != null
                                     ? await objAttribute.GetCurrentDisplayAbbrevAsync(token)
                                         .ConfigureAwait(false)
                                     : await objCharacter.TranslateExtraAsync(strNodeName, token: token)
-                                        .ConfigureAwait(false), strSpace, intTargetValue);
+                                        .ConfigureAwait(false)) + strSpace + intTargetValue.ToString(GlobalSettings.CultureInfo);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
@@ -940,23 +940,22 @@ namespace Chummer
                             {
                                 strValue = objCharacter.ProcessAttributesInXPath(strValue, token: token);
                                 if (blnShowMessage)
-                                    strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                        strSpace,
+                                    strName = Environment.NewLine.ConcatFast("\t",
                                         objCharacter.ProcessAttributesInXPathForTooltip(
-                                            strNodeAttributes,
-                                            blnShowValues: false, token: token), intNodeVal);
+                                            strNodeAttributes, blnShowValues: false, token: token),
+                                        strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             }
                             else if(blnShowMessage)
-                                strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                    strSpace, strValue, intNodeVal);
+                                strName = Environment.NewLine.ConcatFast("\t",
+                                    strValue, strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(strValue, token);
                             return new ValueTuple<bool, string>(
                                 (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal, strName);
                         }
                         else if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                strSpace, decValue, intNodeVal);
+                            strName = Environment.NewLine.ConcatFast("\t",
+                                decValue.ToString(GlobalSettings.CultureInfo), strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                         return new ValueTuple<bool, string>(decValue >= intNodeVal, strName);
                         // ReSharper restore MethodHasAsyncOverload
                     }
@@ -975,17 +974,15 @@ namespace Chummer
                                     = await objCharacter.ProcessAttributesInXPathAsync(strNodeAttributes, token: token)
                                         .ConfigureAwait(false);
                                 if (blnShowMessage)
-                                    strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                        strSpace,
+                                    strName = Environment.NewLine.ConcatFast("\t",
                                         await objCharacter.ProcessAttributesInXPathForTooltipAsync(
-                                            strNodeAttributes,
-                                            blnShowValues: false, token: token).ConfigureAwait(false), intNodeVal);
+                                            strNodeAttributes, blnShowValues: false, token: token),
+                                        strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             }
                             else if (blnShowMessage)
                             {
-                                strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                    strSpace,
-                                    strValue, intNodeVal);
+                                strName = Environment.NewLine.ConcatFast("\t",
+                                    strValue, strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             }
                             (bool blnIsSuccess, object objProcess)
                                     = await CommonFunctions.EvaluateInvariantXPathAsync(strValue, token).ConfigureAwait(false);
@@ -993,8 +990,8 @@ namespace Chummer
                                 (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal, strName);
                         }
                         else if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                strSpace, decValue, intNodeVal);
+                            strName = Environment.NewLine.ConcatFast("\t",
+                                decValue.ToString(GlobalSettings.CultureInfo), strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                         return new ValueTuple<bool, string>(decValue >= intNodeVal, strName);
                     }
                 }

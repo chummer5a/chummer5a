@@ -8389,8 +8389,9 @@ namespace Chummer.Backend.Equipment
         {
             int intTotalAccuracy = GetTotalAccuracy(blnIncludeAmmo);
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
-                return string.Format(objCulture, "{0}{1}({2})",
-                    intAccuracy, LanguageManager.GetString("String_Space", strLanguage), intTotalAccuracy);
+                return intAccuracy.ToString(objCulture).ConcatFast(
+                    LanguageManager.GetString("String_Space", strLanguage),
+                    "(", intTotalAccuracy.ToString(objCulture), ")");
             return intTotalAccuracy.ToString(objCulture);
         }
 
@@ -8402,10 +8403,9 @@ namespace Chummer.Backend.Equipment
         {
             int intTotalAccuracy = await GetTotalAccuracyAsync(blnIncludeAmmo, token).ConfigureAwait(false);
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
-                return string.Format(objCulture, "{0}{1}({2})",
-                    intAccuracy,
-                    await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                        .ConfigureAwait(false), intTotalAccuracy);
+                return intAccuracy.ToString(objCulture).ConcatFast(
+                    await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                    "(", intTotalAccuracy.ToString(objCulture), ")");
             return intTotalAccuracy.ToString(objCulture);
         }
 
@@ -10939,8 +10939,8 @@ namespace Chummer.Backend.Equipment
                 {
                     case FiringMode.DogBrain:
                     {
-                        strReturn = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2})",
-                            strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle?.Pilot ?? 0);
+                        strReturn = LanguageManager.GetString("String_Pilot").ConcatFast(strSpace,
+                            "(", (ParentVehicle?.Pilot ?? 0).ToString(GlobalSettings.CultureInfo), ")");
                         string strAutosoft = RelevantAutosoft;
                         string strName = Name;
                         string strDisplayName = CurrentDisplayName;
@@ -11589,10 +11589,8 @@ namespace Chummer.Backend.Equipment
             {
                 case FiringMode.DogBrain:
                 {
-                    strReturn = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2})",
-                        strSpace,
-                        await LanguageManager.GetStringAsync("String_Pilot", token: token).ConfigureAwait(false),
-                        ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0);
+                    strReturn = (await LanguageManager.GetStringAsync("String_Pilot", token: token).ConfigureAwait(false)).ConcatFast(strSpace,
+                        "(", (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0).ToString(GlobalSettings.CultureInfo), ")");
                     string strAutosoft = await GetRelevantAutosoftAsync(token).ConfigureAwait(false);
                     string strName = Name;
                     string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);

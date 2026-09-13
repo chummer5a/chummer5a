@@ -729,10 +729,9 @@ namespace Chummer
                                 Program.ShowScrollableMessageBox(
                                     string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
                                         objCustomDataDirectory.XmlException.Message),
-                                    string.Format(CultureInfo,
-                                        LanguageManager.GetString("MessageTitle_FailedLoad") +
-                                        LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name +
-                                        Path.DirectorySeparatorChar + "manifest.xml"), MessageBoxButtons.OK,
+                                    LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
+                                        LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
+                                        Path.DirectorySeparatorChar.ToString(), "manifest.xml"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                             }
 
@@ -797,10 +796,9 @@ namespace Chummer
                         Program.ShowScrollableMessageBox(
                             string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
                                 objCustomDataDirectory.XmlException.Message),
-                            string.Format(CultureInfo,
-                                LanguageManager.GetString("MessageTitle_FailedLoad") +
-                                LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name +
-                                Path.DirectorySeparatorChar + "manifest.xml"), MessageBoxButtons.OK,
+                            LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
+                                LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
+                                Path.DirectorySeparatorChar.ToString(), "manifest.xml"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
 

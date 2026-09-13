@@ -1438,6 +1438,318 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6, string strArg7)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7));
+            intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0) + (strArg7?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7));
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg7?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg7)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6, string strArg7, string strArg8)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8);
+            intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0) + (strArg7?.Length ?? 0) + (strArg8?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg7?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg7)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg8?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg8)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6, string strArg7, string strArg8, string strArg9)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0) + (strArg4?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8, strArg9);
+            intTotalLength += (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0) + (strArg7?.Length ?? 0) + (strArg8?.Length ?? 0) + (strArg9?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8, strArg9);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg7?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg7)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg8?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg8)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg9?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg9)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
         /// Version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings)
@@ -6237,9 +6549,9 @@ namespace Chummer
                     continue;
                 Color objExistingColor = Color.FromArgb(intRed, intGreen, intBlue);
                 Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
-                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
+                dicColorReplacements.Add(objColorEntry.Value, "\\red".ConcatFast(objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\green", objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\blue", objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo), ";"));
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {
@@ -6293,9 +6605,9 @@ namespace Chummer
                     continue;
                 Color objDarkModeColor = Color.FromArgb(intRed, intGreen, intBlue);
                 Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
-                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
+                dicColorReplacements.Add(objColorEntry.Value, "\\red".ConcatFast(objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\green", objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\blue", objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo), ";"));
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {

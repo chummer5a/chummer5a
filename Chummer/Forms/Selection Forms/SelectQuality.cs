@@ -434,10 +434,14 @@ namespace Chummer
                                          out intMin);
                         }
 
-                        string strBP = intMax == int.MaxValue
-                            ? intMin.ToString(GlobalSettings.CultureInfo)
-                            : string.Format(GlobalSettings.CultureInfo, "{0}{1}-{1}{2}", intMin,
-                                            await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), intMax);
+                        string strBP;
+                        if (intMax == int.MaxValue)
+                            strBP = intMin.ToString(GlobalSettings.CultureInfo);
+                        else
+                        {
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                            strBP = intMin.ToString(GlobalSettings.CultureInfo).ConcatFast(strSpace, "-", strSpace, intMax.ToString(GlobalSettings.CultureInfo));
+                        }
                         await lblBP.DoThreadSafeAsync(x => x.Text = strBP, token: token).ConfigureAwait(false);
                     }
                     else
@@ -496,11 +500,10 @@ namespace Chummer
                                     intSpellPoints = intFreeSpells;
                                 }
 
-                                string strBP = string.Format(GlobalSettings.CultureInfo, "{1}{0}+{0}{2}{0}{3}",
-                                                             await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                                                             intRemainder,
-                                                             intSpellPoints,
-                                                             await LanguageManager.GetStringAsync("String_SpellPoints", token: token).ConfigureAwait(false));
+                                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                                string strBP = intRemainder.ToString(GlobalSettings.CultureInfo).ConcatFast(
+                                    strSpace, "+", strSpace, intSpellPoints.ToString(GlobalSettings.CultureInfo),
+                                    strSpace, await LanguageManager.GetStringAsync("String_SpellPoints", token: token).ConfigureAwait(false));
                                 string strBPTooltip
                                     = await LanguageManager.GetStringAsync("Tip_SelectSpell_MasteryQuality", token: token).ConfigureAwait(false);
                                 await lblBP.DoThreadSafeAsync(x => x.Text = strBP, token: token).ConfigureAwait(false);

@@ -363,7 +363,7 @@ namespace Chummer
                 string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes", token: _objMyToken).ConfigureAwait(false);
                 strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strNotes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                    strTooltip += Utils.DoubleNewLine + strNotes;
                 strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
             }

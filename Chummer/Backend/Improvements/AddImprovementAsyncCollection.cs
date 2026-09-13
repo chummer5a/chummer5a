@@ -1072,22 +1072,22 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sdbValue))
+                                                              out StringBuilder sbdValue))
                 {
                     foreach (string s in AttributeSection.AttributeStrings)
                     {
                         int i = selectedValues.Count(c => c == s);
                         if (i <= 0)
                             continue;
-                        if (sdbValue.Length > 0)
+                        if (sbdValue.Length > 0)
                         {
-                            sdbValue.Append(',', strSpace);
+                            sbdValue.Append(',', strSpace);
                         }
 
-                        sdbValue.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
+                        sbdValue.Append(s, strSpace, "(", i.ToString(GlobalSettings.CultureInfo), ")");
                     }
 
-                    SelectedValue = sdbValue.ToString();
+                    SelectedValue = sbdValue.ToString();
                 }
             }
         }
