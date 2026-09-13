@@ -12786,7 +12786,7 @@ namespace Chummer
                                 = await objWriter.StartElementAsync("arts", token: t).ConfigureAwait(false);
                             try
                             {
-                                token.ThrowIfCancellationRequested();
+                                t.ThrowIfCancellationRequested();
                                 await (await GetArtsAsync(t).ConfigureAwait(false))
                                     .ForEachAsync((x, t2) => x.Grade == objGrade.Grade
                                         ? x.Print(objWriter, strLanguageToPrint, t2)
@@ -12803,7 +12803,7 @@ namespace Chummer
                                 .StartElementAsync("enhancements", token: t).ConfigureAwait(false);
                             try
                             {
-                                token.ThrowIfCancellationRequested();
+                                t.ThrowIfCancellationRequested();
                                 await (await GetEnhancementsAsync(t).ConfigureAwait(false))
                                     .ForEachAsync((x, t2) => x.Grade == objGrade.Grade
                                         ? x.Print(objWriter, strLanguageToPrint, t2)
@@ -46044,7 +46044,7 @@ namespace Chummer
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
                 List<string> lstSeekerAttributes = new List<string>(AttributeSection.AttributeStrings.Count);
                 bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
-                await Improvements.ForEachAsync(async objImprovement =>
+                await Improvements.ForEachAsync(async (objImprovement, t) =>
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute
                         || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM)
@@ -46054,7 +46054,7 @@ namespace Chummer
                     }
                     else if (objImprovement.ImproveType == Improvement.ImprovementType.Seeker
                              && objImprovement.Enabled
-                             && await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, token).ConfigureAwait(false))
+                             && await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, t).ConfigureAwait(false))
                     {
                         string strImprovedName = objImprovement.ImprovedName;
                         if (strImprovedName == "BOX" || AttributeSection.AttributeStrings.Contains(strImprovedName))

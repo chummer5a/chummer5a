@@ -2489,11 +2489,11 @@ namespace Chummer.Backend.Equipment
             }
 
             intRestrictedCount += await GearChildren
-                                        .SumAsync(objChild =>
+                                        .SumAsync((objChild, t) =>
                                                 objChild
                                                     .CheckRestrictedGear(
                                                         dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                        token), token: token)
+                                                        t), token: token)
                                         .ConfigureAwait(false);
 
             return intRestrictedCount;

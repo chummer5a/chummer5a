@@ -929,10 +929,10 @@ namespace Chummer
 
                     string[] astrSelectedValues =
                     {
-                    await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
-                    await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
-                    await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
-                };
+                        await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
+                        await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
+                        await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
+                    };
 
                     foreach (string strSelectedId in astrSelectedValues)
                     {

@@ -1938,7 +1938,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                intAvail += await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token).ConfigureAwait(false);
+                intAvail += await ProcessRatingStringAsync(strAvail, GetRatingAsync, token).ConfigureAwait(false);
             }
 
             if (blnCheckChildren)
@@ -2351,7 +2351,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The number of Slots the Mod consumes.
         /// </summary>
-        public Task<int> GetCalculatedSlotsAsync(CancellationToken token = default) => ProcessRatingStringAsync(Slots, () => GetRatingAsync(token), token);
+        public Task<int> GetCalculatedSlotsAsync(CancellationToken token = default) => ProcessRatingStringAsync(Slots, GetRatingAsync, token);
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

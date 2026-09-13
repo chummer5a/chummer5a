@@ -284,13 +284,13 @@ namespace Chummer
             {
                 if (blnDoUIUpdate)
                 {
-                    await lstSpells.PopulateWithListItemAsync(ListItem.Blank, token: token).ConfigureAwait(false);
+                    await lstSpells.PopulateWithListItemAsync(ListItem.Blank, token).ConfigureAwait(false);
                 }
                 return false;
             }
 
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token: token).ConfigureAwait(false);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token).ConfigureAwait(false);
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpellItems))
@@ -368,7 +368,7 @@ namespace Chummer
                             {
                                 if (!blnDoUIUpdate)
                                     return true;
-                                await AddSpell(objXmlSpell, strSpellCategory).ConfigureAwait(false);
+                                await AddSpell(objXmlSpell, strSpellCategory, token).ConfigureAwait(false);
                                 continue;
                             }
 
@@ -379,7 +379,7 @@ namespace Chummer
                             {
                                 if (!blnDoUIUpdate)
                                     return true;
-                                await AddSpell(objXmlSpell, strSpellCategory).ConfigureAwait(false);
+                                await AddSpell(objXmlSpell, strSpellCategory, token).ConfigureAwait(false);
                                 continue;
                             }
 
@@ -404,7 +404,7 @@ namespace Chummer
 
                         if (!blnDoUIUpdate)
                             return true;
-                        await AddSpell(objXmlSpell, strSpellCategory).ConfigureAwait(false);
+                        await AddSpell(objXmlSpell, strSpellCategory, token).ConfigureAwait(false);
                     }
                 }
 
@@ -424,11 +424,11 @@ namespace Chummer
                     }, token: token).ConfigureAwait(false);
                 }
 
-                async ValueTask AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
+                async ValueTask AddSpell(XPathNavigator objXmlSpell, string strSpellCategory, CancellationToken innerToken)
                 {
-                    string strDisplayName = objXmlSpell.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ??
-                                            objXmlSpell.SelectSingleNodeAndCacheExpression("name", token)?.Value ??
-                                            await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    string strDisplayName = objXmlSpell.SelectSingleNodeAndCacheExpression("translate", innerToken)?.Value ??
+                                            objXmlSpell.SelectSingleNodeAndCacheExpression("name", innerToken)?.Value ??
+                                            await LanguageManager.GetStringAsync("String_Unknown", token: innerToken).ConfigureAwait(false);
                     if (!GlobalSettings.SearchInCategoryOnly && blnHasSearch
                                                              && !string.IsNullOrEmpty(strSpellCategory))
                     {
@@ -440,7 +440,7 @@ namespace Chummer
                         }
                     }
 
-                    lstSpellItems.Add(new ListItem(objXmlSpell.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty,
+                    lstSpellItems.Add(new ListItem(objXmlSpell.SelectSingleNodeAndCacheExpression("id", innerToken)?.Value ?? string.Empty,
                                                    strDisplayName));
                 }
 

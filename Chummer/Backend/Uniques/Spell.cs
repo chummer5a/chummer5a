@@ -2682,7 +2682,7 @@ namespace Chummer
                                     // - @range = Touch - only apply to touch spells
                                     // - @name != "Specific Spell" - exclude specific spells
                                     // - @alchemical = false and @range = Touch - multiple conditions
-                                    if (!await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, token).ConfigureAwait(false))
+                                    if (!await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, t).ConfigureAwait(false))
                                         break;
                                 }
                                 

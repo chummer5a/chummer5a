@@ -607,6 +607,10 @@ namespace Chummer.Backend.Equipment
 
                         if (blnSync)
                         {
+                            string strDescription = string.Format(
+                                               GlobalSettings.CultureInfo,
+                                               LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                               CurrentDisplayNameShort);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                    = ThreadSafeForm<SelectNumber>.Get(() =>
@@ -614,10 +618,7 @@ namespace Chummer.Backend.Equipment
                                        {
                                            Minimum = decMin,
                                            Maximum = decMax,
-                                           Description = string.Format(
-                                               GlobalSettings.CultureInfo,
-                                               LanguageManager.GetString("String_SelectVariableCost", token: token),
-                                               CurrentDisplayNameShort),
+                                           Description = strDescription,
                                            AllowCancel = false
                                        }))
                             {
@@ -1036,7 +1037,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intAddWeaponRating = blnSync
                                 ? ProcessRatingString(strRating, () => Rating, token: token)
-                                : await ProcessRatingStringAsync(strRating, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
+                                : await ProcessRatingStringAsync(strRating, GetRatingAsync, token: token).ConfigureAwait(false);
                     }
 
                     Weapon objSubWeapon = new Weapon(_objCharacter);
@@ -5550,58 +5551,58 @@ namespace Chummer.Backend.Equipment
                     strReturn = strReturn
                         .CheapReplace(
                             " or ",
-                            () => strSpace + LanguageManager.GetString("String_Or", strLanguage, token: token) +
+                            t => strSpace + LanguageManager.GetString("String_Or", strLanguage, token: t) +
                                     strSpace,
-                            StringComparison.OrdinalIgnoreCase)
+                            StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplace(
-                            " Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token),
-                            StringComparison.OrdinalIgnoreCase)
+                            " Belt", t => LanguageManager.GetString("String_AmmoBelt", strLanguage, token: t),
+                            StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplace(
                             " Energy",
-                            () => LanguageManager.GetString("String_AmmoEnergy", strLanguage, token: token),
-                            StringComparison.OrdinalIgnoreCase)
+                            t => LanguageManager.GetString("String_AmmoEnergy", strLanguage, token: t),
+                            StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplace(" External Source",
-                            () => LanguageManager.GetString(
-                                "String_AmmoExternalSource", strLanguage, token: token),
-                            StringComparison.OrdinalIgnoreCase)
+                            t => LanguageManager.GetString(
+                                "String_AmmoExternalSource", strLanguage, token: t),
+                            StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplace(
                             " Special",
-                            () => LanguageManager.GetString("String_AmmoSpecial", strLanguage, token: token),
-                            StringComparison.OrdinalIgnoreCase)
+                            t => LanguageManager.GetString("String_AmmoSpecial", strLanguage, token: t),
+                            StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplace(
                             "(b)",
-                            () => "(" + LanguageManager.GetString("String_AmmoBreakAction", strLanguage,
-                                            token: token)
-                                        + ")")
+                            t => "(" + LanguageManager.GetString("String_AmmoBreakAction", strLanguage,
+                                            token: t)
+                                        + ")", token: token)
                         .CheapReplace(
                             "(belt)",
-                            () => "(" + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: token) +
-                                    ")")
+                            t => "(" + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: t) +
+                                    ")", token: token)
                         .CheapReplace(
                             "(box)",
-                            () => "(" + LanguageManager.GetString("String_AmmoBox", strLanguage, token: token) +
-                                    ")")
+                            t => "(" + LanguageManager.GetString("String_AmmoBox", strLanguage, token: t) +
+                                    ")", token: token)
                         .CheapReplace(
                             "(c)",
-                            () => "(" + LanguageManager.GetString("String_AmmoClip", strLanguage, token: token) +
-                                    ")")
+                            t => "(" + LanguageManager.GetString("String_AmmoClip", strLanguage, token: t) +
+                                    ")", token: token)
                         .CheapReplace(
                             "(cy)",
-                            () => "(" +
-                                    LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: token) + ")")
+                            t => "(" +
+                                    LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: t) + ")", token: token)
                         .CheapReplace(
                             "(d)",
-                            () => "(" + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: token) +
-                                    ")")
+                            t => "(" + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: t) +
+                                    ")", token: token)
                         .CheapReplace(
                             "(m)",
-                            () => "(" +
-                                    LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: token) + ")")
+                            t => "(" +
+                                    LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: t) + ")", token: token)
                         .CheapReplace(
                             "(ml)",
-                            () => "(" + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage,
-                                            token: token)
-                                        + ")");
+                            t => "(" + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage,
+                                            token: t)
+                                        + ")", token: token);
                     // ReSharper restore MethodHasAsyncOverloadWithCancellation
                 }
                 else
@@ -8340,7 +8341,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            int intAccuracy = await ProcessRatingStringAsync(strAccuracy, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
+            int intAccuracy = await ProcessRatingStringAsync(strAccuracy, GetRatingAsync, token: token).ConfigureAwait(false);
 
             string strNameUpper = Name.ToUpperInvariant();
 
@@ -11935,7 +11936,7 @@ namespace Chummer.Backend.Equipment
                         strAvail = strAvail.Replace("{Children Avail}",
                                          intMaxChildAvail.ToString(GlobalSettings.InvariantCultureInfo));
                     }
-                    intAvail += await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
+                    intAvail += await ProcessRatingStringAsync(strAvail, GetRatingAsync, token: token).ConfigureAwait(false);
                 }
                 else
                     intAvail += decValue.StandardRound();
@@ -12742,15 +12743,15 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            intRestrictedCount += await UnderbarrelWeapons.SumAsync(objChild =>
+            intRestrictedCount += await UnderbarrelWeapons.SumAsync((objChild, t) =>
                                                                         objChild.CheckRestrictedGear(
                                                                             dicRestrictedGearLimits, sbdAvailItems,
-                                                                            sbdRestrictedItems, token), token)
+                                                                            sbdRestrictedItems, t), token)
                                                           .ConfigureAwait(false)
-                                  + await WeaponAccessories.SumAsync(objChild =>
+                                  + await WeaponAccessories.SumAsync((objChild, t) =>
                                                                          objChild.CheckRestrictedGear(
                                                                              dicRestrictedGearLimits, sbdAvailItems,
-                                                                             sbdRestrictedItems, token), token)
+                                                                             sbdRestrictedItems, t), token)
                                                            .ConfigureAwait(false);
 
             return intRestrictedCount;
@@ -14370,7 +14371,7 @@ namespace Chummer.Backend.Equipment
                         strExpression = sbdValue.ToString();
                     }
                 }
-                return await ProcessRatingStringAsync(strExpression, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
+                return await ProcessRatingStringAsync(strExpression, GetRatingAsync, token: token).ConfigureAwait(false);
             }
             return decValue.StandardRound();
         }

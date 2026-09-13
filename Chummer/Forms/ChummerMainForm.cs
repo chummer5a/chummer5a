@@ -2652,7 +2652,7 @@ namespace Chummer
                                 break;
                         }
                     }
-                }, token: token);
+                }, token);
             }
             finally
             {
