@@ -409,7 +409,7 @@ namespace Chummer
                 else
                     objEnumerator.Dispose();
             }
-            return hashCode.GetHashCode();
+            return hashCode.ToHashCode();
         }
 
         /// <summary>
