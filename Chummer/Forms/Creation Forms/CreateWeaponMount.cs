@@ -730,7 +730,7 @@ namespace Chummer
                             }
 
                             intTotalSlots += await _lstMods
-                                .SumAsync(x => !x.IncludedInVehicle, x => x.GetCalculatedSlotsAsync(token), token)
+                                .SumAsync(x => !x.IncludedInVehicle, (x, t) => x.GetCalculatedSlotsAsync(t), token)
                                 .ConfigureAwait(false);
 
                             decimal decMarkupInner = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
@@ -838,22 +838,22 @@ namespace Chummer
                     if (int.TryParse(strLoopAvail, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLoopAvail))
                         intAvail += intLoopAvail;
                 }
-                intSlots += await _lstMods.SumAsync(x => !x.IncludedInVehicle, async x =>
+                intSlots += await _lstMods.SumAsync(x => !x.IncludedInVehicle, async (x, t) =>
                 {
-                    AvailabilityValue objLoopAvail = await x.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    AvailabilityValue objLoopAvail = await x.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     char chrLoopAvailSuffix = objLoopAvail.Suffix;
                     if (chrLoopAvailSuffix == 'F')
                         chrAvailSuffix = 'F';
                     else if (chrAvailSuffix != 'F' && chrLoopAvailSuffix == 'R')
                         chrAvailSuffix = 'R';
-                    intAvail += await objLoopAvail.GetValueAsync(token).ConfigureAwait(false);
-                    return await x.GetCalculatedSlotsAsync(token).ConfigureAwait(false);
+                    intAvail += await objLoopAvail.GetValueAsync(t).ConfigureAwait(false);
+                    return await x.GetCalculatedSlotsAsync(t).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
                 _decCurrentBaseCost = decCost;
                 if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                 {
                     decCost += await _lstMods
-                        .SumAsync(x => !x.IncludedInVehicle, x => x.TotalCostInMountCreation(intSlots, token), token)
+                        .SumAsync(x => !x.IncludedInVehicle, (x, t) => x.TotalCostInMountCreation(intSlots, t), token)
                         .ConfigureAwait(false);
                 }
 
@@ -946,7 +946,7 @@ namespace Chummer
                         }
                     }
 
-                    intSlots += await _lstMods.SumAsync(x => !x.IncludedInVehicle, x => x.GetCalculatedSlotsAsync(token), token).ConfigureAwait(false);
+                    intSlots += await _lstMods.SumAsync(x => !x.IncludedInVehicle, (x, t) => x.GetCalculatedSlotsAsync(t), token).ConfigureAwait(false);
 
                     TreeNode objModsParentNode = await treMods.DoThreadSafeFuncAsync(x => x.FindNode("Node_AdditionalMods"), token).ConfigureAwait(false);
                     do

@@ -1322,7 +1322,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<int> GetCalculatedSlotsAsync(CancellationToken token = default)
         {
-            return Slots + await WeaponMountOptions.SumAsync(w => w.Slots, token).ConfigureAwait(false) + await Mods.SumAsync(x => !x.IncludedInVehicle, m => m.GetCalculatedSlotsAsync(token), token).ConfigureAwait(false);
+            return Slots + await WeaponMountOptions.SumAsync(w => w.Slots, token).ConfigureAwait(false) + await Mods.SumAsync(x => !x.IncludedInVehicle, (m, t) => m.GetCalculatedSlotsAsync(t), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1490,15 +1490,15 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the Vehicle Mods and add in their availability.
-                intAvail += await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async objVehicleMod =>
+                intAvail += await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async (objVehicleMod, t) =>
                 {
                     AvailabilityValue objLoopAvailTuple
-                        = await objVehicleMod.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objVehicleMod.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
+                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(t).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
 

@@ -26356,22 +26356,22 @@ namespace Chummer
         private static async Task CopyArmorImprovements(Character objSource, Character objDestination, Armor objArmor, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objSource.Improvements.ForEachAsync(async objImprovement =>
+            await objSource.Improvements.ForEachAsync(async (objImprovement, t) =>
             {
                 if (objImprovement.SourceName == objArmor.InternalId
-                    || await objArmor.ArmorMods.AnyAsync(x => objImprovement.SourceName == x.InternalId, token).ConfigureAwait(false))
-                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    || await objArmor.ArmorMods.AnyAsync(x => objImprovement.SourceName == x.InternalId, t).ConfigureAwait(false))
+                    await objDestination.Improvements.AddAsync(objImprovement, t).ConfigureAwait(false);
             }, token: token).ConfigureAwait(false);
 
             // Look through any Armor Mods and add the Improvements as well.
-            await objArmor.ArmorMods.ForEachWithSideEffectsAsync(x =>
+            await objArmor.ArmorMods.ForEachWithSideEffectsAsync((x, t) =>
                 // Look through any children and add their Improvements as well.
                 x.GearChildren.ForEachWithSideEffectsAsync(
-                    y => CopyGearImprovements(objSource, objDestination, y, token), token: token), token).ConfigureAwait(false);
+                    (y, t2) => CopyGearImprovements(objSource, objDestination, y, t2), token: t), token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await objArmor.Children.ForEachWithSideEffectsAsync(x =>
-                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await objArmor.Children.ForEachWithSideEffectsAsync((x, t) =>
+                CopyGearImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26384,15 +26384,15 @@ namespace Chummer
         private static async Task CopyGearImprovements(Character objSource, Character objDestination, Gear objGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objSource.Improvements.ForEachAsync(async objImprovement =>
+            await objSource.Improvements.ForEachAsync(async (objImprovement, t) =>
             {
                 if (objImprovement.SourceName == objGear.InternalId)
-                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    await objDestination.Improvements.AddAsync(objImprovement, t).ConfigureAwait(false);
             }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await objGear.Children.ForEachWithSideEffectsAsync(x =>
-                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await objGear.Children.ForEachWithSideEffectsAsync((x, t) =>
+                CopyGearImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26405,17 +26405,17 @@ namespace Chummer
         private static async Task CopyCyberwareImprovements(Character objSource, Character objDestination, Cyberware objCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objSource.Improvements.ForEachAsync(async objImprovement =>
+            await objSource.Improvements.ForEachAsync(async (objImprovement, t) =>
             {
                 if (objImprovement.SourceName == objCyberware.InternalId)
-                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    await objDestination.Improvements.AddAsync(objImprovement, t).ConfigureAwait(false);
             }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(x =>
-                CopyCyberwareImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
-            await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(x =>
-                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((x, t) =>
+                CopyCyberwareImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
+            await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((x, t) =>
+                CopyGearImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>

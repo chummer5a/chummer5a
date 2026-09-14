@@ -786,7 +786,7 @@ namespace Chummer.Backend.Equipment
                 return _decCachedCost;
             decimal decReturn = Components.Count > 0
                 ? await Components.SumAsync(d => d.ActiveDrugEffect != null,
-                    d => d.GetCostPerLevelAsync(token), token).ConfigureAwait(false)
+                    (d, t) => d.GetCostPerLevelAsync(t), token).ConfigureAwait(false)
                 : _decCost;
             if (DiscountCost)
                 decReturn *= 0.9m;

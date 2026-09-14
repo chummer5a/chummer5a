@@ -13389,7 +13389,7 @@ namespace Chummer
                         int intMasteryQualityKarmaUsed = await lstQualities.SumAsync(
                                 objQuality =>
                                     objQuality.CanBuyWithSpellPoints,
-                                objQuality => objQuality.GetBPAsync(token), token)
+                                (objQuality, t) => objQuality.GetBPAsync(t), token)
                             .ConfigureAwait(false);
                         if (intMasteryQualityKarmaUsed != 0)
                         {
@@ -13704,12 +13704,12 @@ namespace Chummer
                     intKarmaPointsRemain -=
                         await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false))
                             .SumAsync(
-                                async objFocus =>
+                                async (objFocus, t) =>
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!objFocus.Bonded)
                                         return 0;
-                                    int intBindingCost = await objFocus.GetBindingCostAsync(token)
+                                    int intBindingCost = await objFocus.GetBindingCostAsync(t)
                                         .ConfigureAwait(false);
                                     intFociPointsUsed += intBindingCost;
 
@@ -13718,7 +13718,7 @@ namespace Chummer
                                     if (sbdFociPointsTooltip.Length > 0)
                                         sbdFociPointsTooltip.AppendLine().Append(strSpace, '+', strSpace);
                                     sbdFociPointsTooltip
-                                        .Append(await objFocus.GetCurrentDisplayNameAsync(token)
+                                        .Append(await objFocus.GetCurrentDisplayNameAsync(t)
                                             .ConfigureAwait(false), strSpace)
                                         .Append('(', intBindingCost.ToString(GlobalSettings.CultureInfo), ')');
                                     return intBindingCost;
@@ -13740,22 +13740,21 @@ namespace Chummer
                 int intSpritePointsUsed = 0;
                 intKarmaPointsRemain -= await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false))
                     .SumAsync(
-                        async objSpirit =>
+                        async (objSpirit, t) =>
                         {
-                            token.ThrowIfCancellationRequested();
-                            int intLoopKarma = await objSpirit.GetServicesOwedAsync(token).ConfigureAwait(false)
-                                               * await CharacterObjectSettings.GetKarmaSpiritAsync(token)
+                            int intLoopKarma = await objSpirit.GetServicesOwedAsync(t).ConfigureAwait(false)
+                                               * await CharacterObjectSettings.GetKarmaSpiritAsync(t)
                                                    .ConfigureAwait(false);
                             // Each Sprite costs KarmaSpirit x Services Owed.
                             int intReturn = intLoopKarma;
-                            if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit)
+                            if (await objSpirit.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Spirit)
                             {
                                 intSpiritPointsUsed += intLoopKarma;
                                 // Each Fettered Spirit costs 3 x Force.
-                                if (await objSpirit.GetFetteredAsync(token).ConfigureAwait(false))
+                                if (await objSpirit.GetFetteredAsync(t).ConfigureAwait(false))
                                 {
-                                    int intTemp = await objSpirit.GetForceAsync(token).ConfigureAwait(false)
-                                                  * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(token)
+                                    int intTemp = await objSpirit.GetForceAsync(t).ConfigureAwait(false)
+                                                  * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(t)
                                                       .ConfigureAwait(false);
                                     intReturn += intTemp;
                                     intSpiritPointsUsed += intTemp;
@@ -13767,7 +13766,7 @@ namespace Chummer
                             }
 
                             return intReturn;
-                        }, token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                 intFreestyleBP += intSpiritPointsUsed + intSpritePointsUsed;
 
                 token.ThrowIfCancellationRequested();
@@ -13788,9 +13787,9 @@ namespace Chummer
                 int intAIAdvancedProgramPointsUsed = 0;
                 int intAINormalProgramPointsUsed
                     = await (await CharacterObject.GetAIProgramsAsync(token).ConfigureAwait(false)).SumAsync(
-                        objProgram =>
+                        (objProgram, t) =>
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objProgram.CanDelete)
                                 return 0;
                             if (objProgram.IsAdvancedProgram)
@@ -13839,18 +13838,18 @@ namespace Chummer
                 // Calculate the BP used by Initiation.
                 int intInitiationPoints
                     = await (await CharacterObject.GetInitiationGradesAsync(token).ConfigureAwait(false)).SumAsync(
-                        async objGrade =>
+                        async (objGrade, t) =>
                         {
-                            int intLoop = await objGrade.GetKarmaCostAsync(token).ConfigureAwait(false);
+                            int intLoop = await objGrade.GetKarmaCostAsync(t).ConfigureAwait(false);
                             // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
                             int metamagicKarma
                                 = Math.Max(
-                                    await (await CharacterObject.GetMetamagicsAsync(token).ConfigureAwait(false))
-                                        .CountAsync(x => x.Grade == objGrade.Grade, token: token).ConfigureAwait(false)
+                                    await (await CharacterObject.GetMetamagicsAsync(t).ConfigureAwait(false))
+                                        .CountAsync(x => x.Grade == objGrade.Grade, token: t).ConfigureAwait(false)
                                     - 1,
                                     0);
                             intLoop
-                                += await CharacterObjectSettings.GetKarmaMetamagicAsync(token).ConfigureAwait(false)
+                                += await CharacterObjectSettings.GetKarmaMetamagicAsync(t).ConfigureAwait(false)
                                    * metamagicKarma;
                             return intLoop;
                         }, token).ConfigureAwait(false);
@@ -13859,7 +13858,7 @@ namespace Chummer
                 intInitiationPoints += await (await CharacterObject.GetEnhancementsAsync(token).ConfigureAwait(false))
                     .GetCountAsync(token).ConfigureAwait(false) * 2;
                 intInitiationPoints += await (await CharacterObject.GetPowersAsync(token).ConfigureAwait(false))
-                    .SumAsync(objPower => objPower.Enhancements.GetCountAsync(token),
+                    .SumAsync((objPower, t) => objPower.Enhancements.GetCountAsync(t),
                         token).ConfigureAwait(false) * 2;
 
                 // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
@@ -14040,7 +14039,7 @@ namespace Chummer
 
             int intActiveSkillsTotalCostKarma = await CharacterObject.SkillsSection.Skills
                                                                      .SumAsync(
-                                                                         x => x.GetCurrentKarmaCostAsync(token)
+                                                                         (x, t) => x.GetCurrentKarmaCostAsync(t)
                                                                                , token: token)
                                                                      .ConfigureAwait(false);
             if (intActiveSkillsTotalCostKarma > 0)
@@ -14103,7 +14102,7 @@ namespace Chummer
 
             int intSkillGroupsTotalCostKarma = await CharacterObject.SkillsSection.SkillGroups
                                                                     .SumAsync(
-                                                                        x => x.GetCurrentKarmaCostAsync(token),
+                                                                        (x, t) => x.GetCurrentKarmaCostAsync(t),
                                                                         token: token).ConfigureAwait(false);
             if (intSkillGroupsTotalCostKarma > 0)
             {

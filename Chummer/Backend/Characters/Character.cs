@@ -54521,11 +54521,11 @@ namespace Chummer
                 CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                 int intNewValue
                     = await Qualities.SumAsync(
-                        async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive && objQuality.ContributeToLimit,
-                        objQuality => objQuality.GetBPAsync(token), token).ConfigureAwait(false) * await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
+                        async (objQuality, t) => await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Positive && objQuality.ContributeToLimit,
+                        (objQuality, t) => objQuality.GetBPAsync(t), token).ConfigureAwait(false) * await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                 // Group contacts are counted as positive qualities
-                intNewValue += await Contacts.SumAsync(async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Contact && await x.GetIsGroupAsync(token).ConfigureAwait(false) && !await x.GetFreeAsync(token).ConfigureAwait(false),
-                                                       x => x.GetContactPointsAsync(token), token).ConfigureAwait(false)
+                intNewValue += await Contacts.SumAsync(async (x, t) => await x.GetEntityTypeAsync(t).ConfigureAwait(false) == ContactType.Contact && await x.GetIsGroupAsync(t).ConfigureAwait(false) && !await x.GetFreeAsync(t).ConfigureAwait(false),
+                                                       (x, t) => x.GetContactPointsAsync(t), token).ConfigureAwait(false)
                     * await objSettings.GetKarmaContactAsync(token).ConfigureAwait(false);
 
                 // Deduct the amount for free Qualities.
@@ -54643,16 +54643,16 @@ namespace Chummer
                 // Qualities that count towards the Quality Limit are checked first to support the house rule allowing zeroing of qualities over said limit.
                 int intNewValue
                     = await lstQualities.SumAsync(
-                              async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive &&
-                                                  await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false)
-                                                  && await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
-                              objQuality => objQuality.GetBPAsync(token), token: token)
+                              async (objQuality, t) => await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Positive &&
+                                                  await objQuality.GetContributeToBPAsync(t).ConfigureAwait(false)
+                                                  && await objQuality.GetContributeToLimitAsync(t).ConfigureAwait(false),
+                              (objQuality, t) => objQuality.GetBPAsync(t), token: token)
                           .ConfigureAwait(false)
                       * intKarmaQuality;
                 // Group contacts are counted as positive qualities
                 intNewValue += await (await GetContactsAsync(token).ConfigureAwait(false)).SumAsync(
                                    x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free,
-                                   x => x.GetContactPointsAsync(token), token: token).ConfigureAwait(false)
+                                   (x, t) => x.GetContactPointsAsync(t), token: token).ConfigureAwait(false)
                                * await objSettings.GetKarmaContactAsync(token).ConfigureAwait(false);
 
                 // Deduct the amount for free Qualities.
@@ -54698,10 +54698,10 @@ namespace Chummer
 
                 // Qualities that don't count towards the cap are added afterwards.
                 intNewValue += await lstQualities.SumAsync(
-                    async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive &&
-                                        await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false)
-                                        && !await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
-                    objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false) * intKarmaQuality;
+                    async (objQuality, t) => await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Positive &&
+                                        await objQuality.GetContributeToBPAsync(t).ConfigureAwait(false)
+                                        && !await objQuality.GetContributeToLimitAsync(t).ConfigureAwait(false),
+                    (objQuality, t) => objQuality.GetBPAsync(t), token: token).ConfigureAwait(false) * intKarmaQuality;
 
                 return _intCachedPositiveQualities = intNewValue;
             }
@@ -54827,11 +54827,11 @@ namespace Chummer
                 // Qualities that count towards the Quality Limit are checked first to support the house rule allowing zeroing of qualities over said limit.
                 int intNewValue
                     = await lstQualities.SumAsync(
-                          async objQuality =>
-                              await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative &&
-                              await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false)
-                              && await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
-                          objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false)
+                          async (objQuality, t) =>
+                              await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Negative &&
+                              await objQuality.GetContributeToBPAsync(t).ConfigureAwait(false)
+                              && await objQuality.GetContributeToLimitAsync(t).ConfigureAwait(false),
+                          (objQuality, t) => objQuality.GetBPAsync(t), token: token).ConfigureAwait(false)
                       * intKarmaQuality;
                 // Group contacts are counted as positive qualities
                 intNewValue += await GetEnemyKarmaAsync(token).ConfigureAwait(false);
@@ -54859,11 +54859,11 @@ namespace Chummer
 
                 // Qualities that don't count towards the cap are added afterwards.
                 intNewValue += await lstQualities.SumAsync(
-                                   async objQuality =>
-                                       await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative &&
-                                       await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false) &&
-                                       !await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
-                                   objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false) *
+                                   async (objQuality, t) =>
+                                       await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Negative &&
+                                       await objQuality.GetContributeToBPAsync(t).ConfigureAwait(false) &&
+                                       !await objQuality.GetContributeToLimitAsync(t).ConfigureAwait(false),
+                                   (objQuality, t) => objQuality.GetBPAsync(t), token: token).ConfigureAwait(false) *
                                intKarmaQuality;
 
                 return blnCacheValue ? _intCachedNegativeQualities = -intNewValue : -intNewValue;
@@ -54930,10 +54930,10 @@ namespace Chummer
                 CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                 int intNewValue
                     = await Qualities.SumAsync(
-                          async objQuality =>
-                              await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative &&
-                              await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
-                          objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false) *
+                          async (objQuality, t) =>
+                              await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Negative &&
+                              await objQuality.GetContributeToLimitAsync(t).ConfigureAwait(false),
+                          (objQuality, t) => objQuality.GetBPAsync(t), token: token).ConfigureAwait(false) *
                       await objSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                 // Group contacts are counted as positive qualities
                 if (await objSettings.GetEnemyKarmaQualityLimitAsync(token).ConfigureAwait(false))
@@ -55050,9 +55050,9 @@ namespace Chummer
                 if (_intCachedMetagenicPositiveQualities != int.MinValue)
                     return _intCachedMetagenicPositiveQualities;
                 ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
-                return _intCachedMetagenicPositiveQualities = await lstQualities.SumAsync(async objQuality =>
-                        await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive && await objQuality.GetContributeToMetagenicLimitAsync(token).ConfigureAwait(false),
-                    objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false);
+                return _intCachedMetagenicPositiveQualities = await lstQualities.SumAsync(async (objQuality, t) =>
+                        await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Positive && await objQuality.GetContributeToMetagenicLimitAsync(t).ConfigureAwait(false),
+                    (objQuality, t) => objQuality.GetBPAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -55094,9 +55094,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_intCachedMetagenicNegativeQualities != int.MinValue) return _intCachedMetagenicNegativeQualities;
                 ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
-                int intNewValue = await lstQualities.SumAsync(async objQuality =>
-                        await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative && await objQuality.GetContributeToMetagenicLimitAsync(token).ConfigureAwait(false),
-                    objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false);
+                int intNewValue = await lstQualities.SumAsync(async (objQuality, t) =>
+                        await objQuality.GetTypeAsync(t).ConfigureAwait(false) == QualityType.Negative && await objQuality.GetContributeToMetagenicLimitAsync(t).ConfigureAwait(false),
+                    (objQuality, t) => objQuality.GetBPAsync(t), token: token).ConfigureAwait(false);
                 // Deduct the amount for free Qualities.
                 intNewValue -=
                     (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreeNegativeQualities, token: token).ConfigureAwait(false))
@@ -55186,10 +55186,10 @@ namespace Chummer
                 return intKarmaEnemy > 0
                     ? _intCachedEnemyKarma
                         = await (await GetContactsAsync(token).ConfigureAwait(false)).SumAsync(
-                                  async x => await x.GetIsEnemyAsync(token).ConfigureAwait(false) &&
-                                             !await x.GetFreeAsync(token).ConfigureAwait(false),
-                                  async x => await x.GetConnectionAsync(token).ConfigureAwait(false) +
-                                             await x.GetLoyaltyAsync(token).ConfigureAwait(false), token: token)
+                                  async (x, t) => await x.GetIsEnemyAsync(t).ConfigureAwait(false) &&
+                                             !await x.GetFreeAsync(t).ConfigureAwait(false),
+                                  async (x, t) => await x.GetConnectionAsync(t).ConfigureAwait(false) +
+                                             await x.GetLoyaltyAsync(t).ConfigureAwait(false), token: token)
                               .ConfigureAwait(false)
                           * intKarmaEnemy
                     : _intCachedEnemyKarma = 0;

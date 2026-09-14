@@ -3054,11 +3054,11 @@ namespace Chummer
             else
             {
                 await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
-                    async x =>
+                    async (x, t) =>
                     {
                         LifestyleQuality objLoopQuality = await x.LifestyleQualities.FirstOrDefaultAsync(
                             q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra,
-                                strNodeInnerText, strExtra, strIgnoreQuality), token).ConfigureAwait(false);
+                                strNodeInnerText, strExtra, strIgnoreQuality), t).ConfigureAwait(false);
                         if (objLoopQuality == null)
                             return true;
                         objQuality = objLoopQuality;

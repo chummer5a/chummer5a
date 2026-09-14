@@ -2560,42 +2560,42 @@ namespace Chummer.Backend.Equipment
 
             if (blnIncludeChildren)
             {
-                intAvail += await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async objChild =>
+                intAvail += await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async (objChild, t) =>
                 {
                     AvailabilityValue objLoopAvail
-                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objChild.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await WeaponMounts.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async objChild =>
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(t).ConfigureAwait(false) : 0;
+                }, token).ConfigureAwait(false) + await WeaponMounts.SumAsync(x => !x.IncludedInVehicle && x.Equipped, async (objChild, t) =>
                 {
                     AvailabilityValue objLoopAvail
-                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objChild.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await Weapons.SumAsync(x => x.ParentID != InternalId && x.Equipped, async objChild =>
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(t).ConfigureAwait(false) : 0;
+                }, token).ConfigureAwait(false) + await Weapons.SumAsync(x => x.ParentID != InternalId && x.Equipped, async (objChild, t) =>
                 {
                     AvailabilityValue objLoopAvail
-                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objChild.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(t).ConfigureAwait(false) : 0;
+                }, token).ConfigureAwait(false) + await GearChildren.SumAsync(x => x.ParentID != InternalId, async (objChild, t) =>
                 {
                     AvailabilityValue objLoopAvail
-                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objChild.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvail.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(token).ConfigureAwait(false) : 0;
+                    return objLoopAvail.AddToParent ? await objLoopAvail.GetValueAsync(t).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
 

@@ -1944,24 +1944,24 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through cyberware children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await Cyberware.SumAsync(x => x.ParentID != InternalId, async objChild =>
+                intAvail += await Cyberware.SumAsync(x => x.ParentID != InternalId, async (objChild, t) =>
                 {
                     AvailabilityValue objLoopAvailTuple
-                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objChild.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
-                }, token).ConfigureAwait(false) + await Weapons.SumAsync(x => x.ParentID != InternalId, async objChild =>
+                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(t).ConfigureAwait(false) : 0;
+                }, token).ConfigureAwait(false) + await Weapons.SumAsync(x => x.ParentID != InternalId, async (objChild, t) =>
                 {
                     AvailabilityValue objLoopAvailTuple
-                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                        = await objChild.TotalAvailTupleAsync(token: t).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
+                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(t).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
 
@@ -2289,8 +2289,8 @@ namespace Chummer.Backend.Equipment
                     decReturn *= 0.9m;
             }
 
-            return decReturn + await Weapons.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
-                             + await Cyberware.SumAsync(x => x.ParentID != InternalId, x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+            return decReturn + await Weapons.SumAsync(x => x.ParentID != InternalId, (x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false)
+                             + await Cyberware.SumAsync(x => x.ParentID != InternalId, (x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
         }
 
         /// <summary>
