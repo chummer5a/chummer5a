@@ -3269,17 +3269,17 @@ namespace Chummer
                     }
 
                     foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                     x => x.GetChildrenAsync(token), async x =>
+                                     (x, t) => x.GetChildrenAsync(t), async (x, t) =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Bioware)
                                              return false;
-                                         Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
+                                         Guid guidSourceId = await x.GetSourceIDAsync(t).ConfigureAwait(false);
                                          return guidSourceId != Cyberware.EssenceHoleGUID
                                                 && guidSourceId != Cyberware.EssenceAntiHoleGUID
-                                                && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                && await x.GetIsModularCurrentlyEquippedAsync(t)
                                                     .ConfigureAwait(false)
-                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
-                                                    || await x.GetCanRemoveThroughImprovementsAsync(token)
+                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false))
+                                                    || await x.GetCanRemoveThroughImprovementsAsync(t)
                                                         .ConfigureAwait(false));
                                      }, token)
                                  .ConfigureAwait(false))
@@ -3342,17 +3342,17 @@ namespace Chummer
                     }
 
                     foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                     x => x.GetChildrenAsync(token), async x =>
+                                     (x, t) => x.GetChildrenAsync(t), async (x, t) =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Cyberware)
                                              return false;
-                                         Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
+                                         Guid guidSourceId = await x.GetSourceIDAsync(t).ConfigureAwait(false);
                                          return guidSourceId != Cyberware.EssenceHoleGUID
                                                 && guidSourceId != Cyberware.EssenceAntiHoleGUID
-                                                && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                && await x.GetIsModularCurrentlyEquippedAsync(t)
                                                     .ConfigureAwait(false)
-                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
-                                                    || await x.GetCanRemoveThroughImprovementsAsync(token)
+                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false))
+                                                    || await x.GetCanRemoveThroughImprovementsAsync(t)
                                                         .ConfigureAwait(false));
                                      }, token)
                                  .ConfigureAwait(false))
@@ -3411,16 +3411,16 @@ namespace Chummer
                     }
 
                     foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                     x => x.GetChildrenAsync(token), async x =>
+                                     (x, t) => x.GetChildrenAsync(t), async (x, t) =>
                                      {
-                                         Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
+                                         Guid guidSourceId = await x.GetSourceIDAsync(t).ConfigureAwait(false);
                                          return guidSourceId != Cyberware.EssenceHoleGUID
                                                 && guidSourceId != Cyberware.EssenceAntiHoleGUID
-                                                && (await x.GetGradeAsync(token).ConfigureAwait(false)).Name != "None"
-                                                && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                && (await x.GetGradeAsync(t).ConfigureAwait(false)).Name != "None"
+                                                && await x.GetIsModularCurrentlyEquippedAsync(t)
                                                     .ConfigureAwait(false)
-                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
-                                                    || await x.GetCanRemoveThroughImprovementsAsync(token)
+                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false))
+                                                    || await x.GetCanRemoveThroughImprovementsAsync(t)
                                                         .ConfigureAwait(false));
                                      }, token)
                                  .ConfigureAwait(false))
@@ -4915,11 +4915,11 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh AI Programs and Advanced Programs
-                            await CharacterObject.AIPrograms.ForEachWithSideEffectsAsync(async objProgram =>
+                            await CharacterObject.AIPrograms.ForEachWithSideEffectsAsync(async (objProgram, t) =>
                             {
                                 if (lstInternalIdFilter?.Contains(objProgram.InternalId) == false)
                                     return;
-                                XmlNode objNode = await objProgram.GetNodeAsync(token).ConfigureAwait(false);
+                                XmlNode objNode = await objProgram.GetNodeAsync(t).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
                                     if (objNode["bonus"] != null)
@@ -4929,37 +4929,37 @@ namespace Chummer
                                             CharacterObject, Improvement.ImprovementSource.AIProgram,
                                             objProgram.InternalId,
                                             objNode["bonus"], 1,
-                                            await objProgram.GetCurrentDisplayNameShortAsync(token)
+                                            await objProgram.GetCurrentDisplayNameShortAsync(t)
                                                             .ConfigureAwait(false),
-                                            token: token).ConfigureAwait(false);
+                                            token: t).ConfigureAwait(false);
                                         string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
                                         if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
                                             objProgram.Extra = strSelectedValue;
-                                            string strName = await objProgram.GetCurrentDisplayNameShortAsync(token)
+                                            string strName = await objProgram.GetCurrentDisplayNameShortAsync(t)
                                                                              .ConfigureAwait(false);
                                             await treAIPrograms.DoThreadSafeAsync(x =>
                                             {
                                                 TreeNode objProgramNode = x.FindNode(objProgram.InternalId);
                                                 if (objProgramNode != null)
                                                     objProgramNode.Text = strName;
-                                            }, token).ConfigureAwait(false);
+                                            }, t).ConfigureAwait(false);
                                         }
                                     }
                                 }
                                 else
                                 {
                                     sbdOutdatedItems.AppendLine(
-                                        await objProgram.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                        await objProgram.GetCurrentDisplayNameShortAsync(t).ConfigureAwait(false));
                                 }
                             }, token).ConfigureAwait(false);
 
                             // Refresh Critter Powers.
-                            await CharacterObject.CritterPowers.ForEachWithSideEffectsAsync(async objPower =>
+                            await CharacterObject.CritterPowers.ForEachWithSideEffectsAsync(async (objPower, t) =>
                             {
                                 if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
                                     return;
-                                XmlNode objNode = await objPower.GetNodeAsync(token).ConfigureAwait(false);
+                                XmlNode objNode = await objPower.GetNodeAsync(t).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
                                     objPower.Bonus = objNode["bonus"];
@@ -4975,27 +4975,27 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.CritterPower,
                                             objPower.InternalId, objPower.Bonus, intRating,
-                                            await objPower.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                            token: token).ConfigureAwait(false);
+                                            await objPower.GetCurrentDisplayNameShortAsync(t).ConfigureAwait(false),
+                                            token: t).ConfigureAwait(false);
                                         string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
                                         if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
                                             objPower.Extra = strSelectedValue;
-                                            string strName = await objPower.GetCurrentDisplayNameAsync(token)
+                                            string strName = await objPower.GetCurrentDisplayNameAsync(t)
                                                                            .ConfigureAwait(false);
                                             await treCritterPowers.DoThreadSafeAsync(x =>
                                             {
                                                 TreeNode objPowerNode = x.FindNode(objPower.InternalId);
                                                 if (objPowerNode != null)
                                                     objPowerNode.Text = strName;
-                                            }, token).ConfigureAwait(false);
+                                            }, t).ConfigureAwait(false);
                                         }
                                     }
                                 }
                                 else
                                 {
                                     sbdOutdatedItems.AppendLine(
-                                        await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                        await objPower.GetCurrentDisplayNameAsync(t).ConfigureAwait(false));
                                 }
                             }, token).ConfigureAwait(false);
 
@@ -5122,10 +5122,10 @@ namespace Chummer
                                 Cyberware objCyberware = objItem.Key;
                                 int intCyberwaresCount = objItem.Value;
                                 List<Cyberware> lstPairableCyberwares = await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false))
-                                    .DeepWhereAsync(x => x.GetChildrenAsync(token),
-                                                    async x => objCyberware.IncludePair.Contains(x.Name)
+                                    .DeepWhereAsync((x, t) => x.GetChildrenAsync(t),
+                                                    async (x, t) => objCyberware.IncludePair.Contains(x.Name)
                                                                && x.Extra == objCyberware.Extra
-                                                               && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                               && await x.GetIsModularCurrentlyEquippedAsync(t)
                                                                          .ConfigureAwait(false), token)
                                     .ConfigureAwait(false);
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
@@ -22943,9 +22943,9 @@ namespace Chummer
                             string strSelectedLocation =
                                 await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
                             foreach (Cyberware objLoopCyberware in await (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                             x => x.GetChildrenAsync(token),
-                                             async x => string.IsNullOrEmpty(await x
-                                                 .GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
+                                             (x, t) => x.GetChildrenAsync(t),
+                                             async (x, t) => string.IsNullOrEmpty(await x
+                                                 .GetPlugsIntoModularMountAsync(t).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
                             {
                                 string strLoopLocation =
@@ -22989,9 +22989,9 @@ namespace Chummer
                                         setLoopHasModularMount.Add(strLoopHasModularMount);
                                     foreach (Cyberware objInnerLoopCyberware in await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                                  .DeepWhereAsync(
-                                                     x => x.GetChildrenAsync(token),
-                                                     async x => string.IsNullOrEmpty(
-                                                         await x.GetPlugsIntoModularMountAsync(token)
+                                                     (x, t) => x.GetChildrenAsync(t),
+                                                     async (x, t) => string.IsNullOrEmpty(
+                                                         await x.GetPlugsIntoModularMountAsync(t)
                                                              .ConfigureAwait(false)),
                                                      token).ConfigureAwait(false))
                                     {
@@ -25772,7 +25772,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false);
                         //Find the last karma/nuyen entry as well in case a chart only contains one point
                         DateTime KarmaLast = DateTime.MinValue;
-                        await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(async objExpense =>
+                        await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(async (objExpense, t) =>
                         {
                             if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !blnShowFreeKarma))
                                 return;
@@ -25786,7 +25786,7 @@ namespace Chummer
                                 new ListViewItemWithValue.ListViewSubItemWithValue
                                 {
                                     Value = objExpense.Reason,
-                                    Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
+                                    Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, t)
                                                            .ConfigureAwait(false)
                                 };
                             ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
@@ -25815,7 +25815,7 @@ namespace Chummer
                                 x.Items.Add(objItem);
                                 if (objExpense.Undo != null)
                                     x.ContextMenuStrip = cmsUndoKarmaExpense;
-                            }, token).ConfigureAwait(false);
+                            }, t).ConfigureAwait(false);
                             if (objExpense.Amount == 0)
                                 return;
                             // ReSharper disable once AccessToModifiedClosure
@@ -25823,7 +25823,7 @@ namespace Chummer
                                 KarmaLast = objExpense.Date;
                             decKarmaValue += objExpense.Amount;
                             chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
-                        }, GenericToken).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
 
                         if (KarmaLast == DateTime.MinValue)
                         {

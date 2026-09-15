@@ -2044,9 +2044,9 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                     return LP - Comforts - Area - Security +
                            // HT 140: Bonus LP cannot exceed 2x base LP
-                           Math.Min(Roommates + BonusLP - LifestyleQualities.Sum(x => x.LPCost < 0, x => x.LPCost),
+                           Math.Min(Roommates + BonusLP - LifestyleQualities.Sum(x => Math.Min(x.LPCost, 0)),
                                2*LP) -
-                           LifestyleQualities.Sum(x => x.LPCost > 0, x => x.LPCost);
+                           LifestyleQualities.Sum(x => Math.Max(x.LPCost, 0));
             }
         }
 
@@ -2063,9 +2063,9 @@ namespace Chummer.Backend.Equipment
                        + Math.Min(await GetRoommatesAsync(token).ConfigureAwait(false) +
                                   await GetBonusLPAsync(token).ConfigureAwait(false) -
                                   await LifestyleQualities
-                                      .SumAsync(x => x.LPCost < 0, x => x.GetLPCostAsync(token), token)
+                                      .SumAsync(async (x, t) => Math.Min(await x.GetLPCostAsync(t).ConfigureAwait(false), 0), token)
                                       .ConfigureAwait(false), 2*LP) -
-                       await LifestyleQualities.SumAsync(x => x.LPCost > 0, x => x.GetLPCostAsync(token), token).ConfigureAwait(false);
+                       await LifestyleQualities.SumAsync(async (x, t) => Math.Max(await x.GetLPCostAsync(t).ConfigureAwait(false), 0), token).ConfigureAwait(false);
             }
             finally
             {
@@ -3638,7 +3638,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 return BaseArea + await GetAreaAsync(token).ConfigureAwait(false)
                                 + await LifestyleQualities.SumAsync(
-                                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                    async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                     lq => lq.Area, token: token).ConfigureAwait(false);
             }
             finally
@@ -3674,7 +3674,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 return BaseComforts + await GetComfortsAsync(token).ConfigureAwait(false)
                                     + await LifestyleQualities.SumAsync(
-                                            async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                            async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                             lq => lq.Comforts, token: token)
                                         .ConfigureAwait(false);
             }
@@ -3711,7 +3711,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 return BaseSecurity + await GetSecurityAsync(token).ConfigureAwait(false)
                                     + await LifestyleQualities.SumAsync(
-                                            async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                                            async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                             lq => lq.Security, token: token)
                                         .ConfigureAwait(false);
             }
@@ -3743,7 +3743,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
                     await GetTotalAreaMaximumAsync(token).ConfigureAwait(false) - (BaseArea + await LifestyleQualities
-                        .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                        .SumAsync(async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                             lq => lq.Area, token: token)
                         .ConfigureAwait(false)), 0);
             }
@@ -3776,7 +3776,7 @@ namespace Chummer.Backend.Equipment
                 return Math.Max(
                     await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false) - (BaseComforts
                         + await LifestyleQualities
-                            .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                            .SumAsync(async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                 lq => lq.Comforts, token: token)
                             .ConfigureAwait(false)), 0);
             }
@@ -3809,7 +3809,7 @@ namespace Chummer.Backend.Equipment
                 return Math.Max(
                     await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false) - (BaseSecurity
                         + await LifestyleQualities
-                            .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
+                            .SumAsync(async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                 lq => lq.Security, token: token)
                             .ConfigureAwait(false)), 0);
             }
@@ -4032,14 +4032,14 @@ namespace Chummer.Backend.Equipment
                 // Add costs from Entertainment Assets.
                 decMultiplier = 1.0m;
                 decimal decFlatCosts = await LifestyleQualities.SumAsync(
-                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                    async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
                                x.Category.Contains("Asset"),
-                    async lq =>
+                    async (lq, t) =>
                     {
-                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(token).ConfigureAwait(false);
+                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(t).ConfigureAwait(false);
                         if (decInnerMultiplier != 0)
                             decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
-                        return await lq.GetCostAsync(token).ConfigureAwait(false);
+                        return await lq.GetCostAsync(t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 // Flat costs added after multipliers, as per HT 139
                 if (decMultiplier != 1.0m)
@@ -4049,14 +4049,14 @@ namespace Chummer.Backend.Equipment
                 // Add costs from qualities that are not Entertainment Assets (or Contracts)
                 decMultiplier = 1.0m;
                 decFlatCosts = await LifestyleQualities.SumAsync(
-                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment &&
+                    async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment &&
                                x.Type != QualityType.Contracts,
-                    async lq =>
+                    async (lq, t) =>
                     {
-                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(token).ConfigureAwait(false);
+                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(t).ConfigureAwait(false);
                         if (decInnerMultiplier != 0)
                             decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
-                        return await lq.GetCostAsync(token).ConfigureAwait(false);
+                        return await lq.GetCostAsync(t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 // Flat costs added after multipliers, as per HT 139
                 if (decMultiplier != 1.0m)
@@ -4442,18 +4442,18 @@ namespace Chummer.Backend.Equipment
                 decimal decMultiplier = 1.0m;
                 decimal decBaseMultiplier = 1.0m;
                 decimal decOutingsAndServicesCost = await LifestyleQualities.SumAsync(
-                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, async x =>
+                    async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn, async (x, t) =>
                     {
                         switch (x.Type)
                         {
                             case QualityType.Contracts:
-                                decContractCost += await x.GetCostAsync(token).ConfigureAwait(false);
+                                decContractCost += await x.GetCostAsync(t).ConfigureAwait(false);
                                 break;
                             case QualityType.Entertainment when !x.Category.Contains("Asset"):
                             {
-                                decMultiplier *= 1.0m + (await x.GetMultiplierAsync(token).ConfigureAwait(false)) / 100.0m;
-                                decBaseMultiplier *= 1.0m + (await x.GetBaseMultiplierAsync(token).ConfigureAwait(false)) / 100.0m;
-                                return await x.GetCostAsync(token).ConfigureAwait(false);
+                                decMultiplier *= 1.0m + (await x.GetMultiplierAsync(t).ConfigureAwait(false)) / 100.0m;
+                                decBaseMultiplier *= 1.0m + (await x.GetBaseMultiplierAsync(t).ConfigureAwait(false)) / 100.0m;
+                                return await x.GetCostAsync(t).ConfigureAwait(false);
                             }
                         }
                         return 0;

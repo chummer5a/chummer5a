@@ -92,6 +92,38 @@ namespace Chummer
             return default;
         }
 
+        /// <inheritdoc cref="Enumerable.Select{TSource}{TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
+        public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, CancellationToken, TResult> selector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (TSource objItem in objParentList)
+                yield return selector(objItem, token);
+        }
+
+        /// <inheritdoc cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
+        public static bool Any<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objItem in objParentList)
+            {
+                if (predicate(objItem, token))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <inheritdoc cref="Enumerable.All{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
+        public static bool All<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objItem in objParentList)
+            {
+                if (!predicate(objItem, token))
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Similar to <see cref="Enumerable.Aggregate{TSource}(IEnumerable{TSource}, Func{TSource, TSource, TSource})"/>, but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
@@ -257,21 +289,89 @@ namespace Chummer
         /// <summary>
         /// Similar to <see cref="Enumerable.All{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static bool DeepAll<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
+        public static bool DeepAll<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
-            return objParentList.All(objLoopChild =>
+            token.ThrowIfCancellationRequested();
+            return objParentList.All((objLoopChild, t) =>
                 predicate(objLoopChild) &&
-                funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate));
+                funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, t), token);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.All{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static bool DeepAll<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            return objParentList.All((objLoopChild, t) =>
+                predicate(objLoopChild) &&
+                funcGetChildrenMethod(objLoopChild, t).DeepAll(funcGetChildrenMethod, predicate, t), token);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.All{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static bool DeepAll<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            return objParentList.All((objLoopChild, t) =>
+                predicate(objLoopChild, t) &&
+                funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, t), token);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.All{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static bool DeepAll<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            return objParentList.All((objLoopChild, t) =>
+                predicate(objLoopChild, t) &&
+                funcGetChildrenMethod(objLoopChild, t).DeepAll(funcGetChildrenMethod, predicate, t), token);
         }
 
         /// <summary>
         /// Similar to <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static bool DeepAny<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
+        public static bool DeepAny<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
-            return objParentList.Any(objLoopChild =>
+            token.ThrowIfCancellationRequested();
+            return objParentList.Any((objLoopChild, t) =>
                 predicate(objLoopChild) ||
-                funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate));
+                funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, t), token);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static bool DeepAny<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            return objParentList.Any((objLoopChild, t) =>
+                predicate(objLoopChild) ||
+                funcGetChildrenMethod(objLoopChild, t).DeepAny(funcGetChildrenMethod, predicate, t), token);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static bool DeepAny<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            return objParentList.Any((objLoopChild, t) =>
+                predicate(objLoopChild, t) ||
+                funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, t), token);
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static bool DeepAny<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            return objParentList.Any((objLoopChild, t) =>
+                predicate(objLoopChild, t) ||
+                funcGetChildrenMethod(objLoopChild, t).DeepAny(funcGetChildrenMethod, predicate, t), token);
         }
 
         /// <summary>
@@ -298,6 +398,84 @@ namespace Chummer
         {
             return objParentList?.Sum(objLoopChild =>
                 1 + funcGetChildrenMethod(objLoopChild).DeepCount(funcGetChildrenMethod)) ?? 0;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return 0;
+            int intReturn = 0;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    ++intReturn;
+                intReturn += funcGetChildrenMethod(objLoopChild, token).DeepCount(funcGetChildrenMethod, predicate, token);
+            }
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource})"/>, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return 0;
+            int intReturn = 0;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                ++intReturn;
+                token.ThrowIfCancellationRequested();
+                intReturn += funcGetChildrenMethod(objLoopChild, token).DeepCount(funcGetChildrenMethod, token);
+            }
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return 0;
+            int intReturn = 0;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild, token))
+                    ++intReturn;
+                token.ThrowIfCancellationRequested();
+                intReturn += funcGetChildrenMethod(objLoopChild).DeepCount(funcGetChildrenMethod, predicate, token);
+            }
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return 0;
+            int intReturn = 0;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild, token))
+                    ++intReturn;
+                token.ThrowIfCancellationRequested();
+                intReturn += funcGetChildrenMethod(objLoopChild, token).DeepCount(funcGetChildrenMethod, predicate, token);
+            }
+            return intReturn;
         }
 
         /// <summary>
@@ -668,6 +846,51 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static IEnumerable<T> DeepWhere<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            foreach (T objLoopChild in objParentList)
+            {
+                if (predicate(objLoopChild))
+                    yield return objLoopChild;
+
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopChild, token).DeepWhere(funcGetChildrenMethod, predicate, token))
+                    yield return objLoopGrandchild;
+            }
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static IEnumerable<T> DeepWhere<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            foreach (T objLoopChild in objParentList)
+            {
+                if (predicate(objLoopChild, token))
+                    yield return objLoopChild;
+
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token))
+                    yield return objLoopGrandchild;
+            }
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static IEnumerable<T> DeepWhere<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, Func<T, CancellationToken, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            foreach (T objLoopChild in objParentList)
+            {
+                if (predicate(objLoopChild, token))
+                    yield return objLoopChild;
+
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopChild, token).DeepWhere(funcGetChildrenMethod, predicate, token))
+                    yield return objLoopGrandchild;
+            }
+        }
+
+        /// <summary>
         /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static IEnumerable<T> GetAllDescendants<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
@@ -811,6 +1034,476 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate(objCurrent))
                     decReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
+            }
+            return decReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    intReturn += funcSelector.Invoke(objCurrent);
+            }
+            return intReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    intReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
+            }
+            return intReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    lngReturn += funcSelector.Invoke(objCurrent);
+            }
+            return lngReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    lngReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
+            }
+            return lngReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    fltReturn += funcSelector.Invoke(objCurrent);
+            }
+            return fltReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    fltReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
+            }
+            return fltReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    dblReturn += funcSelector.Invoke(objCurrent);
+            }
+            return dblReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    dblReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
+            }
+            return dblReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    decReturn += funcSelector.Invoke(objCurrent);
+            }
+            return decReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    decReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
+            }
+            return decReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    intReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return intReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    intReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return intReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    lngReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return lngReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    lngReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return lngReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    fltReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return fltReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    fltReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return fltReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    dblReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return dblReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    dblReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return dblReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    decReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return decReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    decReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return decReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    intReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return intReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    intReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return intReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    lngReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return lngReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    lngReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return lngReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    fltReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return fltReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    fltReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return fltReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    dblReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return dblReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    dblReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return dblReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    decReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return decReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent, token))
+                    decReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return decReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return intReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return intReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                lngReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return lngReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                lngReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return lngReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                fltReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return fltReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                fltReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return fltReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                dblReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return dblReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                dblReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
+            }
+            return dblReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                decReturn += funcSelector.Invoke(objCurrent, token);
+            }
+            return decReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                decReturn += Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token);
             }
             return decReturn;
         }

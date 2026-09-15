@@ -6011,7 +6011,7 @@ namespace Chummer.Backend.Equipment
             if (!blnSkipEncumbranceOnPropertyChanged && (!string.IsNullOrEmpty(Weight)
                                                          || await Children
                                                              .DeepAnyAsync(
-                                                                 async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                                                 async (x, t) => await x.Children.ToListAsync(y => y.Equipped, t).ConfigureAwait(false),
                                                                  x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token).ConfigureAwait(false)))
                 await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
         }
@@ -7747,7 +7747,7 @@ namespace Chummer.Backend.Equipment
                 if (Equipped && ((setNamesOfChangedProperties.Contains(nameof(TotalWeight))
                                   && (!string.IsNullOrEmpty(Weight)
                                       || await Children.DeepAnyAsync(
-                                          async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                          async (x, t) => await x.Children.ToListAsync(y => y.Equipped, t).ConfigureAwait(false),
                                           x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token).ConfigureAwait(false)))
                                  || (setNamesOfChangedProperties.Contains(nameof(Rating))
                                      && await Children.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"),

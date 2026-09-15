@@ -1179,15 +1179,15 @@ namespace Chummer
         {
             if (MainForm == null)
                 return Task.FromResult<Form>(null);
-            return objCharacter == null ? Task.FromResult<Form>(MainForm) : InnerMethod();
-            async Task<Form> InnerMethod()
+            return objCharacter == null ? Task.FromResult<Form>(MainForm) : InnerMethod(token);
+            async Task<Form> InnerMethod(CancellationToken innerToken)
             {
                 Form frmReturn;
                 ThreadSafeObservableCollection<CharacterShared> lstForms1 = MainForm.OpenCharacterEditorForms;
                 if (lstForms1 != null)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
-                        x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false);
+                        x => ReferenceEquals(x.CharacterObject, objCharacter), token: innerToken).ConfigureAwait(false);
                     if (frmReturn != null)
                         return frmReturn;
                 }
@@ -1195,7 +1195,7 @@ namespace Chummer
                 if (lstForms2 != null)
                 {
                     frmReturn = await lstForms2.FirstOrDefaultAsync(
-                        x => x.CharacterObjects.Contains(objCharacter), token: token).ConfigureAwait(false);
+                        x => x.CharacterObjects.Contains(objCharacter), token: innerToken).ConfigureAwait(false);
                     if (frmReturn != null)
                         return frmReturn;
                 }
@@ -1203,7 +1203,7 @@ namespace Chummer
                 if (lstForms3 != null)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
-                        x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false);
+                        x => ReferenceEquals(x.CharacterObject, objCharacter), token: innerToken).ConfigureAwait(false);
                     if (frmReturn != null)
                         return frmReturn;
                 }

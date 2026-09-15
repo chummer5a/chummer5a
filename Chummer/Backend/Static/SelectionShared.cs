@@ -3297,9 +3297,9 @@ namespace Chummer
             }
 
             int intAsyncMatchCount = await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                .DeepCountAsync(x => x.GetChildrenAsync(token), async objCyberware =>
+                .DeepCountAsync((x, t) => x.GetChildrenAsync(t), async (objCyberware, t) =>
                         await InstalledCyberwareMatchesRequirementAsync(objCyberware, strNodeInnerText,
-                            strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, false, token)
+                            strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, false, t)
                             .ConfigureAwait(false),
                     token).ConfigureAwait(false);
             return new ValueTuple<bool, string>(intAsyncMatchCount >= intCount, strName);

@@ -2639,8 +2639,8 @@ namespace Chummer.Backend.Skills
                     .Count > 0)
                 {
                     bool blnHasReflexRecorder = await CharacterObject.Cyberware.DeepAnyAsync(
-                        x => x.GetChildrenAsync(token),
-                        async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == ReflexRecorderGUID,
+                        (x, t) => x.GetChildrenAsync(t),
+                        async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) == ReflexRecorderGUID,
                         token).ConfigureAwait(false);
                     if (blnHasReflexRecorder)
                     {
@@ -2653,8 +2653,8 @@ namespace Chummer.Backend.Skills
                                     setSkillNames.Add(await objSkill.GetDictionaryKeyAsync(token)
                                         .ConfigureAwait(false));
                                 if (await CharacterObject.Cyberware.DeepAnyAsync(
-                                        x => x.GetChildrenAsync(token),
-                                        async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) ==
+                                        (x, t) => x.GetChildrenAsync(t),
+                                        async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) ==
                                                    ReflexRecorderGUID &&
                                                    setSkillNames.Contains(x.Extra),
                                         token).ConfigureAwait(false))
@@ -2666,8 +2666,8 @@ namespace Chummer.Backend.Skills
                             {
                                 string strKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                 if (await CharacterObject.Cyberware.DeepAnyAsync(
-                                        x => x.GetChildrenAsync(token),
-                                        async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) ==
+                                        (x, t) => x.GetChildrenAsync(t),
+                                        async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) ==
                                                    ReflexRecorderGUID &&
                                                    x.Extra == strKey,
                                         token).ConfigureAwait(false))
@@ -5069,18 +5069,9 @@ namespace Chummer.Backend.Skills
                            out StringBuilder sbdReturn))
                 {
                     token.ThrowIfCancellationRequested();
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-                    string strConjunction = "," + strSpace;
-                    bool blnAddConjunction = false;
-                    foreach (SkillSpecialization objSpec in await GetSpecializationsAsync(token).ConfigureAwait(false))
-                    {
-                        if (blnAddConjunction)
-                            sbdReturn.Append(strConjunction);
-                        else
-                            blnAddConjunction = true;
-                        sbdReturn.Append(await objSpec.DisplayNameAsync(strLanguage, token).ConfigureAwait(false));
-                    }
-                    strReturn = sbdReturn.ToString();
+                    await sbdReturn.AppendJoinAsync("," + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                        (await GetSpecializationsAsync(token).ConfigureAwait(false)).Select((x, t) => x.DisplayNameAsync(strLanguage, t), token), token).ConfigureAwait(false);
+                    strReturn = sbdReturn.ToTrimmedString();
                 }
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);

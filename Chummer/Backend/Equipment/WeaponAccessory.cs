@@ -2849,7 +2849,7 @@ namespace Chummer.Backend.Equipment
                         {
                             XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
                             if (xmlGearCategoryList?.Count > 0 && xmlGearCategoryList.Cast<XmlNode>()
-                                    .Any(objAllowed => objAllowed.InnerTextViaPool(token) == strCheckValue))
+                                    .Any((objAllowed, t) => objAllowed.InnerTextViaPool(t) == strCheckValue, token))
                             {
                                 return true;
                             }
@@ -2860,7 +2860,7 @@ namespace Chummer.Backend.Equipment
                         {
                             XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
                             if (xmlGearNameList?.Count > 0 && xmlGearNameList.Cast<XmlNode>()
-                                    .Any(objAllowed => objAllowed.InnerTextViaPool(token) == strCheckValue))
+                                    .Any((objAllowed, t) => objAllowed.InnerTextViaPool(t) == strCheckValue, token))
                             {
                                 return true;
                             }
