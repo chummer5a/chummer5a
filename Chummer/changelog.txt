@@ -84,6 +84,9 @@ Weapons:
 - Fixed underbarrel weapons being blocked from being added to weapons.
 - Fixed some issues with Reach and Damage calculations for the Unarmed Attack weapon not including unarmedreach or unarmeddv improvements unless the optional rule for weapons that use Unarmed Combat was enabled.
 
+Life Modules:
+- Updated source for lifemodules from The Complete Trog to correct shortcode (TCT instead of TCG).
+
 Changed/New Strings:
 - String_Improvement_SelectSpiritType
 - String_Improvement_SelectSpiritTypeGeneric
