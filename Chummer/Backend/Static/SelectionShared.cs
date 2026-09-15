@@ -52,10 +52,10 @@ namespace Chummer
             if (objCharacter.IgnoreRules)
                 return true;
             XPathNavigator objNavigator = xmlNode.CreateNavigator();
-            return Utils.SafelyRunSynchronously(() => objNavigator.RequirementsMetCoreAsync(
+            return Utils.SafelyRunSynchronously(t => objNavigator.RequirementsMetCoreAsync(
                                                     true, objCharacter, objParent, strLocalName,
                                                     strIgnoreQuality, strLocation,
-                                                    blnIgnoreLimit, token), token);
+                                                    blnIgnoreLimit, t), token);
         }
 
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
@@ -96,8 +96,8 @@ namespace Chummer
                                            bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => xmlNode.RequirementsMetCoreAsync(true, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                       strLocation, blnIgnoreLimit, token), token);
+                t => xmlNode.RequirementsMetCoreAsync(true, objCharacter, objParent, strLocalName, strIgnoreQuality,
+                                                       strLocation, blnIgnoreLimit, t), token);
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -533,7 +533,7 @@ namespace Chummer
                                     foreach (Cyberware objItem in blnSync
                                                  ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                                  : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                         .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                                         .GetAllDescendantsAsync((x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                                     {
                                         if (!setNamesIncludedInLimit.Contains(objItem.Name)
                                             && !setNamesIncludedInLimit.Contains(objItem.InternalId))
@@ -583,7 +583,7 @@ namespace Chummer
                             foreach (Cyberware objItem in blnSync
                                          ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                          : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                             .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                             .GetAllDescendantsAsync((x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                             {
                                 if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                     continue;
@@ -663,8 +663,8 @@ namespace Chummer
                         // The character is not allowed to take the Quality, so display a message and uncheck the item.
                         (bool blnLoopSuccess, string strName) = blnSync
                             ? Utils.SafelyRunSynchronously(
-                                () => xmlForbiddenItemNode.TestNodeRequirementsAsync(
-                                    true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
+                                t => xmlForbiddenItemNode.TestNodeRequirementsAsync(
+                                    true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, t), token)
                             : await xmlForbiddenItemNode
                                     .TestNodeRequirementsAsync(false, objCharacter, objParent, strIgnoreQuality,
                                                                blnShowMessage, token).ConfigureAwait(false);
@@ -731,8 +731,8 @@ namespace Chummer
                             {
                                 (bool blnLoopSuccess, string strName) = blnSync
                                     ? Utils.SafelyRunSynchronously(
-                                        () => xmlRequiredItemNode.TestNodeRequirementsAsync(
-                                            true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
+                                        t => xmlRequiredItemNode.TestNodeRequirementsAsync(
+                                            true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, t), token)
                                     : await xmlRequiredItemNode
                                             .TestNodeRequirementsAsync(false, objCharacter, objParent, strIgnoreQuality,
                                                                        blnShowMessage, token).ConfigureAwait(false);
@@ -783,8 +783,8 @@ namespace Chummer
                                     // If this item was not found, fail the AllOfMet condition.
                                     (bool blnLoopSuccess, string strName) = blnSync
                                         ? Utils.SafelyRunSynchronously(
-                                            () => xmlRequiredItemNode.TestNodeRequirementsAsync(
-                                                true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
+                                            t => xmlRequiredItemNode.TestNodeRequirementsAsync(
+                                                true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, t), token)
                                         : await xmlRequiredItemNode
                                                 .TestNodeRequirementsAsync(false, objCharacter, objParent, strIgnoreQuality,
                                                                            blnShowMessage, token).ConfigureAwait(false);
@@ -883,9 +883,9 @@ namespace Chummer
                         int intTargetValue =
                             xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                objAttribute?.CurrentDisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token),
-                                strSpace, intTargetValue);
+                            strName = Environment.NewLine + "\t"
+                                + (objAttribute?.CurrentDisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token))
+                                + strSpace + intTargetValue.ToString(GlobalSettings.CultureInfo);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
@@ -903,12 +903,12 @@ namespace Chummer
                         int intTargetValue
                             = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                objAttribute != null
+                            strName = Environment.NewLine + "\t"
+                                + (objAttribute != null
                                     ? await objAttribute.GetCurrentDisplayAbbrevAsync(token)
                                         .ConfigureAwait(false)
                                     : await objCharacter.TranslateExtraAsync(strNodeName, token: token)
-                                        .ConfigureAwait(false), strSpace, intTargetValue);
+                                        .ConfigureAwait(false)) + strSpace + intTargetValue.ToString(GlobalSettings.CultureInfo);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
@@ -940,23 +940,22 @@ namespace Chummer
                             {
                                 strValue = objCharacter.ProcessAttributesInXPath(strValue, token: token);
                                 if (blnShowMessage)
-                                    strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                        strSpace,
+                                    strName = Environment.NewLine.ConcatFast("\t",
                                         objCharacter.ProcessAttributesInXPathForTooltip(
-                                            strNodeAttributes,
-                                            blnShowValues: false, token: token), intNodeVal);
+                                            strNodeAttributes, blnShowValues: false, token: token),
+                                        strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             }
                             else if(blnShowMessage)
-                                strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                    strSpace, strValue, intNodeVal);
+                                strName = Environment.NewLine.ConcatFast("\t",
+                                    strValue, strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(strValue, token);
                             return new ValueTuple<bool, string>(
                                 (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal, strName);
                         }
                         else if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                strSpace, decValue, intNodeVal);
+                            strName = Environment.NewLine.ConcatFast("\t",
+                                decValue.ToString(GlobalSettings.CultureInfo), strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                         return new ValueTuple<bool, string>(decValue >= intNodeVal, strName);
                         // ReSharper restore MethodHasAsyncOverload
                     }
@@ -975,17 +974,15 @@ namespace Chummer
                                     = await objCharacter.ProcessAttributesInXPathAsync(strNodeAttributes, token: token)
                                         .ConfigureAwait(false);
                                 if (blnShowMessage)
-                                    strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                        strSpace,
+                                    strName = Environment.NewLine.ConcatFast("\t",
                                         await objCharacter.ProcessAttributesInXPathForTooltipAsync(
-                                            strNodeAttributes,
-                                            blnShowValues: false, token: token).ConfigureAwait(false), intNodeVal);
+                                            strNodeAttributes, blnShowValues: false, token: token),
+                                        strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             }
                             else if (blnShowMessage)
                             {
-                                strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                    strSpace,
-                                    strValue, intNodeVal);
+                                strName = Environment.NewLine.ConcatFast("\t",
+                                    strValue, strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                             }
                             (bool blnIsSuccess, object objProcess)
                                     = await CommonFunctions.EvaluateInvariantXPathAsync(strValue, token).ConfigureAwait(false);
@@ -993,8 +990,8 @@ namespace Chummer
                                 (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal, strName);
                         }
                         else if (blnShowMessage)
-                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
-                                strSpace, decValue, intNodeVal);
+                            strName = Environment.NewLine.ConcatFast("\t",
+                                decValue.ToString(GlobalSettings.CultureInfo), strSpace, intNodeVal.ToString(GlobalSettings.CultureInfo));
                         return new ValueTuple<bool, string>(decValue >= intNodeVal, strName);
                     }
                 }
@@ -1082,10 +1079,10 @@ namespace Chummer
                 case "bioware":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Bioware, WareMatchMode.ExactNameOrId, "Label_Bioware",
                                 "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
-                                token), token)
+                                t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Bioware, WareMatchMode.ExactNameOrId, "Label_Bioware",
                             "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
@@ -1093,10 +1090,10 @@ namespace Chummer
                 case "cyberware":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Cyberware, WareMatchMode.ExactNameOrId,
                                 "Label_Cyberware", "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText,
-                                strSpace, blnShowMessage, token), token)
+                                strSpace, blnShowMessage, t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Cyberware, WareMatchMode.ExactNameOrId, "Label_Cyberware",
                             "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace, blnShowMessage,
@@ -1104,10 +1101,10 @@ namespace Chummer
                 case "biowarecategory":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Bioware, WareMatchMode.Category, "Label_Bioware",
                                 "bioware.xml", "biowares/bioware", true, strNodeInnerText, strSpace, blnShowMessage,
-                                token), token)
+                                t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Bioware, WareMatchMode.Category, "Label_Bioware",
                             "bioware.xml", "biowares/bioware", true, strNodeInnerText, strSpace, blnShowMessage,
@@ -1115,10 +1112,10 @@ namespace Chummer
                 case "cyberwarecategory":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Cyberware, WareMatchMode.Category, "Label_Cyberware",
                                 "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace,
-                                blnShowMessage, token), token)
+                                blnShowMessage, t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Cyberware, WareMatchMode.Category, "Label_Cyberware",
                             "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace, blnShowMessage,
@@ -1126,10 +1123,10 @@ namespace Chummer
                 case "biowarecontains":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Bioware, WareMatchMode.NameContains, "Label_Bioware",
                                 "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
-                                token), token)
+                                t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Bioware, WareMatchMode.NameContains, "Label_Bioware",
                             "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
@@ -1137,10 +1134,10 @@ namespace Chummer
                 case "cyberwarecontains":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Cyberware, WareMatchMode.NameContains,
                                 "Label_Cyberware", "cyberware.xml", "cyberwares/cyberware", false, strNodeInnerText,
-                                strSpace, blnShowMessage, token), token)
+                                strSpace, blnShowMessage, t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Cyberware, WareMatchMode.NameContains, "Label_Cyberware",
                             "cyberware.xml", "cyberwares/cyberware", false, strNodeInnerText, strSpace, blnShowMessage,
@@ -1234,7 +1231,7 @@ namespace Chummer
                                                       token: token).ConfigureAwait(false), strNodeInnerText,
                                               strEssNodeGradeAttributeText,
                                               decGrade.ToString(GlobalSettings.CultureInfo));
-                            decimal.TryParse(strNodeInnerText.TrimStart('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold1);
+                            decimal.TryParse(strNodeInnerText.TrimStartNoAlloc('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold1);
                             return new ValueTuple<bool, string>(decGrade < decThreshold1, strName);
                         }
 
@@ -1274,7 +1271,7 @@ namespace Chummer
                                                   "Message_SelectQuality_RequireESSBelow",
                                                   token: token).ConfigureAwait(false), strNodeInnerText,
                                           decEssence.ToString(GlobalSettings.CultureInfo));
-                        decimal.TryParse(strNodeInnerText.TrimStart('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold3);
+                        decimal.TryParse(strNodeInnerText.TrimStartNoAlloc('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold3);
                         return new ValueTuple<bool, string>(decEssence < decThreshold3, strName);
                     }
 
@@ -1349,24 +1346,24 @@ namespace Chummer
                 case "gear":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
-                                "gear.xml", "gears/gear", "String_Gear", token), token)
+                                "gear.xml", "gears/gear", "String_Gear", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
                             "gear.xml", "gears/gear", "String_Gear", token).ConfigureAwait(false);
                 case "group":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
-                                strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, token), token)
+                            t => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
+                                strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, t), token)
                         : await TestGroupedRequirementsCoreAsync(false, xmlNode, objCharacter, objParent,
                             strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, token).ConfigureAwait(false);
                 case "grouponeof":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
-                                strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, token), token)
+                            t => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
+                                strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, t), token)
                         : await TestGroupedRequirementsCoreAsync(false, xmlNode, objCharacter, objParent,
                             strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, token).ConfigureAwait(false);
                 case "initiategrade":
@@ -1425,12 +1422,12 @@ namespace Chummer
                     else
                     {
                         await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false))
-                            .ForEachWithBreakAsync(async x =>
+                            .ForEachWithBreakAsync(async (x, t) =>
                             {
                                 MartialArtTechnique objLoopTechnique
                                     = await x.Techniques.FirstOrDefaultAsync(
                                             y => MatchesNameOrSourceId(y.Name, y.SourceIDString, strNodeInnerText),
-                                            token)
+                                            t)
                                         .ConfigureAwait(false);
                                 if (objLoopTechnique != null)
                                 {
@@ -1774,9 +1771,9 @@ namespace Chummer
                 case "power":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
-                                "powers.xml", "powers/power", "Tab_Adept", token), token)
+                                "powers.xml", "powers/power", "Tab_Adept", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
                             "powers.xml", "powers/power", "Tab_Adept", token).ConfigureAwait(false);
@@ -1800,15 +1797,15 @@ namespace Chummer
                 case "quality":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledCharacterQualityRequirementCoreAsync(true, xmlNode, objCharacter,
-                                strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token), token)
+                            t => TestInstalledCharacterQualityRequirementCoreAsync(true, xmlNode, objCharacter,
+                                strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, t), token)
                         : await TestInstalledCharacterQualityRequirementCoreAsync(false, xmlNode, objCharacter,
                             strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
                 case "lifestylequality":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledLifestyleQualityRequirementCoreAsync(true, xmlNode, objCharacter,
-                                objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token), token)
+                            t => TestInstalledLifestyleQualityRequirementCoreAsync(true, xmlNode, objCharacter,
+                                objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, t), token)
                         : await TestInstalledLifestyleQualityRequirementCoreAsync(false, xmlNode, objCharacter,
                             objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token)
                             .ConfigureAwait(false);
@@ -1832,7 +1829,7 @@ namespace Chummer
                             : await (await objCharacter.GetLifestylesAsync(token)
                                     .ConfigureAwait(false))
                                 .AnyAsync(
-                                    async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) ==
+                                    async (x, t) => await x.GetBaseLifestyleAsync(t).ConfigureAwait(false) ==
                                                strNodeInnerText,
                                     token)
                                 .ConfigureAwait(false), strName);
@@ -1892,18 +1889,18 @@ namespace Chummer
                         {
                             objSkill = string.IsNullOrEmpty(strSpec)
                                 ? await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x => (string.Equals(x.SourceIDString, strNodeId,
+                                    async (x, t) => (string.Equals(x.SourceIDString, strNodeId,
                                                     StringComparison.OrdinalIgnoreCase) ||
                                                 x.DictionaryKey == strNodeName)
-                                               && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >=
+                                               && await x.GetTotalBaseRatingAsync(t).ConfigureAwait(false) >=
                                                intValue, token).ConfigureAwait(false)
                                 : await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x =>
+                                    async (x, t) =>
                                         (string.Equals(x.SourceIDString, strNodeId,
                                              StringComparison.OrdinalIgnoreCase) ||
-                                         await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strNodeName)
-                                        && await x.HasSpecializationAsync(strSpec, token).ConfigureAwait(false)
-                                        && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >= intValue,
+                                         await x.GetDictionaryKeyAsync(t).ConfigureAwait(false) == strNodeName)
+                                        && await x.HasSpecializationAsync(strSpec, t).ConfigureAwait(false)
+                                        && await x.GetTotalBaseRatingAsync(t).ConfigureAwait(false) >= intValue,
                                     token).ConfigureAwait(false);
                         }
 
@@ -2544,9 +2541,9 @@ namespace Chummer
                 case "armormod":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
-                                "armor.xml", "armormods/armormod", "String_ArmorMod", token), token)
+                                "armor.xml", "armormods/armormod", "String_ArmorMod", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
                             "armor.xml", "armormods/armormod", "String_ArmorMod", token).ConfigureAwait(false);
@@ -2767,8 +2764,8 @@ namespace Chummer
             if (blnSync)
             {
                 return Utils.SafelyRunSynchronously(
-                    () => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
-                        strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token), token);
+                    t => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                        strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, t), token);
             }
 
             return await BuildInstalledWareRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
@@ -2839,8 +2836,8 @@ namespace Chummer
             if (blnSync)
             {
                 return Utils.SafelyRunSynchronously(
-                    () => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
-                        strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token), token);
+                    t => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                        strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, t), token);
             }
 
             return await BuildDataItemRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
@@ -2943,8 +2940,8 @@ namespace Chummer
                 {
                     (bool blnLoopResult, string strLoopResult) = blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => xmlChildNode.TestNodeRequirementsAsync(true, objCharacter, objParent,
-                                strIgnoreQuality, blnShowMessage, token), token)
+                            t => xmlChildNode.TestNodeRequirementsAsync(true, objCharacter, objParent,
+                                strIgnoreQuality, blnShowMessage, t), token)
                         : await xmlChildNode.TestNodeRequirementsAsync(false, objCharacter, objParent,
                             strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
                     if (eMode == RequirementGroupMode.AllOf)
@@ -3057,11 +3054,11 @@ namespace Chummer
             else
             {
                 await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
-                    async x =>
+                    async (x, t) =>
                     {
                         LifestyleQuality objLoopQuality = await x.LifestyleQualities.FirstOrDefaultAsync(
                             q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra,
-                                strNodeInnerText, strExtra, strIgnoreQuality), token).ConfigureAwait(false);
+                                strNodeInnerText, strExtra, strIgnoreQuality), t).ConfigureAwait(false);
                         if (objLoopQuality == null)
                             return true;
                         objQuality = objLoopQuality;
@@ -3141,8 +3138,8 @@ namespace Chummer
                                     x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                         strNodeInnerText, objRatingFilter), token)
                                 : await objGearParent.GearChildren.AnyAsync(
-                                    async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                        await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                    async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                         objRatingFilter), token).ConfigureAwait(false)),
                             strName);
                     }
@@ -3153,8 +3150,8 @@ namespace Chummer
                             x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                 strNodeInnerText, objRatingFilter))
                         : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                            async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                 objRatingFilter), token).ConfigureAwait(false);
 
                     if (objGear != null)
@@ -3176,8 +3173,8 @@ namespace Chummer
                             x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                 strNodeInnerText, objRatingFilter))
                         : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                            async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                 objRatingFilter), token).ConfigureAwait(false);
 
                     if (objPower != null)
@@ -3201,8 +3198,8 @@ namespace Chummer
                                     x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                         strNodeInnerText, objRatingFilter), token)
                                 : await objArmor.ArmorMods.AnyAsync(
-                                    async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                        await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                    async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                         objRatingFilter), token).ConfigureAwait(false)),
                             strName);
                     }
@@ -3211,13 +3208,13 @@ namespace Chummer
                         blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.Armor.Any(
-                                x => x.ArmorMods.Any(y => CharacterItemMatchesNameOrIdAndRating(y.Name,
-                                    y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), token), token)
+                                (x, t) => x.ArmorMods.Any(y => CharacterItemMatchesNameOrIdAndRating(y.Name,
+                                    y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), t), token)
                             : await objCharacter.Armor.AnyAsync(
-                                x => x.ArmorMods.AnyAsync(
-                                    async y => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
-                                        await y.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
-                                        objRatingFilter), token),
+                                (x, t1) => x.ArmorMods.AnyAsync(
+                                    async (y, t2) => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
+                                        await y.GetRatingAsync(t2).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), t1),
                                 token).ConfigureAwait(false), strName);
                 }
                 default:
@@ -3282,9 +3279,9 @@ namespace Chummer
                                 strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, true), token)
                         : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                             .AnyAsync(
-                                mod => InstalledCyberwareMatchesRequirementAsync(mod, strNodeInnerText,
+                                (mod, t) => InstalledCyberwareMatchesRequirementAsync(mod, strNodeInnerText,
                                     strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, true,
-                                    token), token).ConfigureAwait(false);
+                                    t), token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnResult, strName);
                 }
 

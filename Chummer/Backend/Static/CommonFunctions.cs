@@ -158,7 +158,7 @@ namespace Chummer
                 return Task.FromResult(tupReturn);
             }
             if (blnIsMathExpression)
-                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStart('+');
+                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStartNoAlloc('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(false, strXPath);
@@ -171,7 +171,7 @@ namespace Chummer
                 s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
                 return Task.FromResult(tupReturn);
             }
-            return s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async x =>
+            return s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -179,12 +179,12 @@ namespace Chummer
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
-                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
+                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(t).ConfigureAwait(false);
                     }
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
                     }
                     finally
                     {
@@ -234,7 +234,7 @@ namespace Chummer
                 return tupReturn;
             }
             if (blnIsMathExpression)
-                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStart('+');
+                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStartNoAlloc('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(false, strXPath);
@@ -259,7 +259,7 @@ namespace Chummer
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
                     }
                     finally
                     {
@@ -289,7 +289,7 @@ namespace Chummer
         public static Task<ValueTuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return s_DicCompiledEvaluations.GetOrAddAsync(strExpression, async x =>
+            return s_DicCompiledEvaluations.GetOrAddAsync(strExpression, async (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -297,12 +297,12 @@ namespace Chummer
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
-                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
+                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(t).ConfigureAwait(false);
                     }
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
                     }
                     finally
                     {
@@ -494,9 +494,9 @@ namespace Chummer
             Vehicle objReturnVehicle = null;
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
-                await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
+                await lstVehicles.ForEachWithBreakAsync(async (objVehicle, t) =>
                 {
-                    (objReturn, objReturnAccessory, objReturnCyberware) = await objVehicle.FindVehicleGearAsync(strGuid, token).ConfigureAwait(false);
+                    (objReturn, objReturnAccessory, objReturnCyberware) = await objVehicle.FindVehicleGearAsync(strGuid, t).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnVehicle = objVehicle;
@@ -673,52 +673,52 @@ namespace Chummer
             VehicleMod objReturnMod = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
+                await lstVehicles.ForEachWithBreakAsync(async (objVehicle, t1) =>
                 {
-                    objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                    objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: t1).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnVehicle = objVehicle;
                         return false;
                     }
 
-                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objWeaponMount, t2) =>
                     {
-                        objReturn = await objWeaponMount.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                        objReturn = await objWeaponMount.Weapons.DeepFindByIdAsync(strGuid, token: t2).ConfigureAwait(false);
                         if (objReturn != null)
                         {
                             objReturnMount = objWeaponMount;
                             return false;
                         }
 
-                        await objWeaponMount.Mods.ForEachWithBreakAsync(async objMod =>
+                        await objWeaponMount.Mods.ForEachWithBreakAsync(async (objMod, t3) =>
                         {
-                            objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                            objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: t3).ConfigureAwait(false);
                             if (objReturn == null)
                                 return true;
                             objReturnMod = objMod;
                             return false;
-                        }, token).ConfigureAwait(false);
+                        }, t2).ConfigureAwait(false);
 
                         if (objReturn == null)
                             return true;
                         objReturnMount = objWeaponMount;
                         return false;
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnVehicle = objVehicle;
                         return false;
                     }
 
-                    await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                    await objVehicle.Mods.ForEachWithBreakAsync(async (objMod, t2) =>
                     {
-                        objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                        objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: t2).ConfigureAwait(false);
                         if (objReturn == null)
                             return true;
                         objReturnMod = objMod;
                         return false;
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
 
                     if (objReturn == null)
                         return true;
@@ -853,10 +853,10 @@ namespace Chummer
                 {
                     VehicleMod objReturnMod = null;
                     WeaponMount objReturnMount = null;
-                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objWeaponMount, t) =>
                     {
                         objReturnMod =
-                            await objWeaponMount.Mods.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                            await objWeaponMount.Mods.FirstOrDefaultAsync(x => x.InternalId == strGuid, t).ConfigureAwait(false);
                         if (objReturnMod != null)
                         {
                             objReturnMount = objWeaponMount;
@@ -935,9 +935,9 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMod =>
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objMod, t) =>
                     {
-                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, t).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
                     if (objReturn != null)
@@ -945,9 +945,9 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                    await objVehicle.Mods.ForEachWithBreakAsync(async (objMod, t) =>
                     {
-                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, t).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
                     if (objReturn != null)
@@ -1089,24 +1089,24 @@ namespace Chummer
             ArmorMod objReturnMod = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                await lstArmors.ForEachWithBreakAsync(async objArmor =>
+                await lstArmors.ForEachWithBreakAsync(async (objArmor, t1) =>
                 {
-                    objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                    objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: t1).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnArmor = objArmor;
                         return false;
                     }
 
-                    await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
+                    await objArmor.ArmorMods.ForEachWithBreakAsync(async (objMod, t2) =>
                     {
-                        objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                        objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: t2).ConfigureAwait(false);
                         if (objReturn == null)
                             return true;
 
                         objReturnMod = objMod;
                         return false;
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
 
                     if (objReturn == null)
                         return true;
@@ -1355,12 +1355,12 @@ namespace Chummer
                 WeaponAccessory objReturnAccessory = null;
                 foreach (Weapon objWeapon in await lstWeapons.DeepWhereAsync(x => x.Children,
                              x => x.WeaponAccessories.AnyAsync(
-                                 async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),
+                                 async (y, t) => await y.GearChildren.GetCountAsync(t).ConfigureAwait(false) > 0, token),
                              token: token).ConfigureAwait(false))
                 {
-                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objAccessory, t) =>
                     {
-                        objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(strGuid, token)
+                        objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(strGuid, t)
                             .ConfigureAwait(false);
                         if (objReturn != null)
                         {
@@ -1427,9 +1427,9 @@ namespace Chummer
                     if (objReturn != null)
                         return objReturn;
 
-                    await objCharacter.Powers.ForEachWithBreakAsync(async objPower =>
+                    await objCharacter.Powers.ForEachWithBreakAsync(async (objPower, t) =>
                     {
-                        objReturn = await objPower.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                        objReturn = await objPower.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, t).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
                 }
@@ -1730,25 +1730,23 @@ namespace Chummer
 
             // Treat everything as being uppercase so the search is case-insensitive.
             // Include Cyrillic characters (а-я, А-Я + extendeds for non-Russian Cyrillic alphabets), Greek characters (α-ω, Α-Ω) for proper search support
-            string strReturn = "((not(" + strTranslateElement + ") and contains(translate(" + strNameElement
+            string strReturn = StringExtensions.ConcatFast("((not(", strTranslateElement, ") and contains(translate(", strNameElement,
                                // ReSharper disable once StringLiteralTypo
-                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                               + strSearchText + ")) " +
-                               "or contains(translate(" + strTranslateElement
+                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                               strSearchText, ")) or contains(translate(", strTranslateElement,
                                // ReSharper disable once StringLiteralTypo
-                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                               + strSearchText + "))";
+                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                               strSearchText, "))");
             if (!string.IsNullOrEmpty(strSearchText2))
             {
-                strReturn = "(" + strReturn + " or ((not(" + strTranslateElement + ") and contains(translate("
-                            + strNameElement
+                strReturn = StringExtensions.ConcatFast("(", strReturn, " or ((not(", strTranslateElement, ") and contains(translate(",
+                            strNameElement,
                             // ReSharper disable once StringLiteralTypo
-                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                            + strSearchText2 + ")) " +
-                            "or contains(translate(" + strTranslateElement
+                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                            strSearchText2, ")) or contains(translate(", strTranslateElement,
                             // ReSharper disable once StringLiteralTypo
-                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
-                            + strSearchText2 + ")))";
+                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                            strSearchText2, ")))");
             }
 
             return strReturn;
@@ -2287,7 +2285,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static string GetTextFromPdf(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, token), token);
+            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, t), token);
         }
 
         /// <summary>
@@ -2442,20 +2440,20 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            string strReturn = blnSync ? Utils.SafelyRunSynchronously(FetchTexts, token) : await FetchTexts().ConfigureAwait(false);
+            string strReturn = blnSync ? Utils.SafelyRunSynchronously(FetchTexts, token) : await FetchTexts(token).ConfigureAwait(false);
 
-            async Task<string> FetchTexts()
+            async Task<string> FetchTexts(CancellationToken innerToken)
             {
-                token.ThrowIfCancellationRequested();
+                innerToken.ThrowIfCancellationRequested();
                 PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
                 if (objPdfDocument == null)
                     return string.Empty;
-                token.ThrowIfCancellationRequested();
+                innerToken.ThrowIfCancellationRequested();
                 int intMaxPagesToRead = 3; // parse at most 3 pages of content
                 // Loop through each page, starting at the listed page + offset.
                 for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
                 {
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     // failsafe if something goes wrong, I guess no description takes more than two full pages?
                     if (intMaxPagesToRead-- == 0)
                         break;
@@ -2465,35 +2463,35 @@ namespace Chummer
                     // this way we don't need to check for previous page appearing in the current page
                     // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
 
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     string strPageText = string.Empty;
                     try
                     {
                         strPageText = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? GetPdfTextFromPageSafe(objPdfDocument, intPage, token)
-                            : await GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, token).ConfigureAwait(false);
+                            ? GetPdfTextFromPageSafe(objPdfDocument, intPage, innerToken)
+                            : await GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, innerToken).ConfigureAwait(false);
                     }
                     catch (IndexOutOfRangeException)
                     {
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         return blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, token)
-                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token)
+                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, innerToken)
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, innerToken)
                                                    .ConfigureAwait(false);
                     }
                     // Don't generate a new canceled exception if the one we generated originates from our token
-                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                    catch (OperationCanceledException) when (!innerToken.IsCancellationRequested)
                     {
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                     }
                     // All sorts of weird things can happen when we hammer I/O from constantly running tasks, and there's no good way of handling these without this very broad try-catch
 #if DEBUG
                     catch (Exception e)
                     {
                         // Make sure we throw the cancellation token if it was triggered first
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         Utils.BreakIfDebug();
                         return e.ToString();
                     }
@@ -2501,15 +2499,15 @@ namespace Chummer
                     catch (Exception)
                     {
                         // Make sure we throw the cancellation token if it was triggered first
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         return string.Empty;
                     }
 #endif
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
 
                     strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
                                              .NormalizeLineEndings().CleanOfXmlInvalidUnicodeChars();
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                     lstStringFromPdf.AddRange(strPageText
@@ -2518,14 +2516,14 @@ namespace Chummer
 
                     for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                     {
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         // failsafe for languages that don't have case distinction (chinese, japanese, etc)
                         // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
                         if (intExtraAllCapsInfo > 10)
                             break;
 
                         string strCurrentLine = lstStringFromPdf[i];
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         // we still haven't found anything
                         if (intTitleIndex == -1)
                         {
@@ -2536,7 +2534,7 @@ namespace Chummer
                                 // if the line is smaller first check if it contains the start of the text, before parsing the rest
                                 if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    innerToken.ThrowIfCancellationRequested();
                                     // now just add more lines to it until it is enough
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdCurrentLine))
@@ -2545,7 +2543,7 @@ namespace Chummer
                                         while (sbdCurrentLine.Length < intTextToSearchLength
                                                && i + intTitleExtraLines + 1 < lstStringFromPdf.Count)
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            innerToken.ThrowIfCancellationRequested();
                                             intTitleExtraLines++;
                                             // add the content plus a space
                                             sbdCurrentLine.Append(' ', lstStringFromPdf[i + intTitleExtraLines]);
@@ -2601,7 +2599,7 @@ namespace Chummer
                             // it is something in all caps we need to verify what it is
                             if (strCurrentLine.IsAllLettersUpperCase())
                             {
-                                token.ThrowIfCancellationRequested();
+                                innerToken.ThrowIfCancellationRequested();
                                 // if it is header or footer information just remove it
                                 // do we also include lines with just numbers as probably page numbers??
                                 if (strCurrentLine.All(char.IsDigit) || strCurrentLine.ContainsAny(">>", "<<"))
@@ -2874,7 +2872,7 @@ namespace Chummer
         /// <returns>XPath expression for numeric range filtering</returns>
         public static string GenerateNumericRangeXPath(decimal decMaxValue, decimal decMinValue, string strElementName = "cost", bool blnInclusive = true)
         {
-            return "((" + strElementName + (blnInclusive ? " >= " : " > ") + decMinValue.ToString(GlobalSettings.InvariantCultureInfo) + ") and (" + strElementName + (blnInclusive ? " <= " : " < ") + decMaxValue.ToString(GlobalSettings.InvariantCultureInfo) + "))";
+            return StringExtensions.ConcatFast("((", strElementName, blnInclusive ? " >= " : " > ", decMinValue.ToString(GlobalSettings.InvariantCultureInfo), ") and (", strElementName, blnInclusive ? " <= " : " < ", decMaxValue.ToString(GlobalSettings.InvariantCultureInfo), "))");
         }
 
         #endregion Equipment Filtering

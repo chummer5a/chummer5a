@@ -433,7 +433,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, token), token);
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -611,8 +611,8 @@ namespace Chummer
                             };
                             if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objEnhancement.Load(nodEnhancement);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objEnhancement.Load(nodEnhancement, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Enhancements.Add(objEnhancement);
                             }
@@ -753,7 +753,7 @@ namespace Chummer
                     try
                     {
                         await Enhancements
-                            .ForEachAsync(objEnhancement => objEnhancement.Print(objWriter, strLanguageToPrint, token),
+                            .ForEachAsync((objEnhancement, t) => objEnhancement.Print(objWriter, strLanguageToPrint, t),
                                 token).ConfigureAwait(false);
                     }
                     finally
@@ -3460,7 +3460,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3493,18 +3493,18 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                     }
                                 }
@@ -3513,14 +3513,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

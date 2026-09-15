@@ -174,7 +174,7 @@ namespace Chummer
                 bool blnForce = strFv.StartsWith('L');
                 strFv = blnForce ? strFv.TrimStartOnce("L", true) : strFv;
                 //Navigator can't do math on a single value, so inject a mathable value.
-                strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
+                strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStartNoAlloc('+');
 
                 string strToAppend = string.Empty;
                 int intFadingDv = 0;

@@ -872,46 +872,46 @@ namespace Chummer
                                 string strXml
                                     = await objFetchNode.SelectSingleNodeAndCacheExpression("xml", token).Value
                                         .CheapReplaceAsync("{val}",
-                                                           () => nudVal.DoThreadSafeFuncAsync(
+                                                           t => nudVal.DoThreadSafeFuncAsync(
                                                                x => x.Value.ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                                   GlobalSettings.InvariantCultureInfo), token: t),
                                                            token: token)
                                         .CheapReplaceAsync("{min}",
-                                                           () => nudMin.DoThreadSafeFuncAsync(
+                                                           t => nudMin.DoThreadSafeFuncAsync(
                                                                x => x.Value.ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                                   GlobalSettings.InvariantCultureInfo), token: t),
                                                            token: token)
                                         .CheapReplaceAsync("{max}",
-                                                           () => nudMax.DoThreadSafeFuncAsync(
+                                                           t => nudMax.DoThreadSafeFuncAsync(
                                                                x => x.Value.ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                                   GlobalSettings.InvariantCultureInfo), token: t),
                                                            token: token)
                                         .CheapReplaceAsync("{aug}",
-                                                           () => nudAug.DoThreadSafeFuncAsync(
+                                                           t => nudAug.DoThreadSafeFuncAsync(
                                                                x => x.Value.ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                                   GlobalSettings.InvariantCultureInfo), token: t),
                                                            token: token)
                                         .CheapReplaceAsync("{percent}",
-                                                           () => nudAug.DoThreadSafeFuncAsync(
+                                                           t => nudAug.DoThreadSafeFuncAsync(
                                                                x => x.Value.ToString(
-                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                                   GlobalSettings.InvariantCultureInfo), token: t),
                                                            token: token)
                                         .CheapReplaceAsync("{free}",
-                                                           () =>
+                                                           t =>
                                                                chkFree.DoThreadSafeFuncAsync(
                                                                    x => x.Checked.ToString(
                                                                        GlobalSettings
-                                                                           .InvariantCultureInfo), token: token),
+                                                                           .InvariantCultureInfo), token: t),
                                                            token: token)
                                         .CheapReplaceAsync("{select}",
-                                                           () => txtSelect
+                                                           t => txtSelect
                                                                .DoThreadSafeFuncAsync(
-                                                                   x => x.Text, token: token), token: token)
+                                                                   x => x.Text, token: t), token: token)
                                         .CheapReplaceAsync(
                                             "{applytorating}",
-                                            async () =>
+                                            async t =>
                                                 await chkApplyToRating
-                                                      .DoThreadSafeFuncAsync(x => x.Checked, token: token)
+                                                      .DoThreadSafeFuncAsync(x => x.Checked, token: t)
                                                       .ConfigureAwait(false)
                                                     ? "<applytorating>True</applytorating>"
                                                     : string.Empty, token: token).ConfigureAwait(false);

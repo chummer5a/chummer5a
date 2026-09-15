@@ -110,7 +110,7 @@ namespace Chummer
         public static bool ProcessFilterOperationNode(this XPathNavigator xmlParentNode,
                                                       XPathNavigator xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode, token), token);
+            return Utils.SafelyRunSynchronously(t => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode, t), token);
         }
 
         /// <summary>
@@ -564,16 +564,14 @@ namespace Chummer
             // This is mostly for improvements.xml, which uses the improvement id (such as addecho) as the id rather than a guid.
             if (!blnIdIsGuid)
             {
-                return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
-                                             + (string.IsNullOrEmpty(strExtraXPath)
-                                                 ? "]"
-                                                 : " and (" + strExtraXPath + ") ]"));
+                return string.IsNullOrEmpty(strExtraXPath)
+                    ? node.SelectSingleNode(string.Concat(strPath, "[id = ", strId.CleanXPath(), "]"))
+                    : node.SelectSingleNode(strPath.ConcatFast("[id = ", strId.CleanXPath(), " and (", strExtraXPath, ") ]"));
             }
 
-            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()
-                                         + (string.IsNullOrEmpty(strExtraXPath)
-                                             ? "]"
-                                             : " and (" + strExtraXPath + ") ]"));
+            return string.IsNullOrEmpty(strExtraXPath)
+                    ? node.SelectSingleNode(string.Concat(strPath, "[name = ", strId.CleanXPath(), "]"))
+                    : node.SelectSingleNode(strPath.ConcatFast("[name = ", strId.CleanXPath(), " and (", strExtraXPath, ") ]"));
         }
 
         /// <summary>
@@ -585,16 +583,15 @@ namespace Chummer
             if (node == null || string.IsNullOrEmpty(strPath))
                 return null;
             string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
-                                         + (string.IsNullOrEmpty(strExtraXPath)
-                                             ? "]"
-                                             : " and (" + strExtraXPath + ")]"))
+            if (string.IsNullOrEmpty(strExtraXPath))
+            {
+                return node.SelectSingleNode(string.Concat(strPath, "[id = ", strId.CleanXPath(), "]"))
                    // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
-                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = "
-                                                    + strId.ToUpperInvariant().CleanXPath()
-                                                    + (string.IsNullOrEmpty(strExtraXPath)
-                                                        ? "]"
-                                                        : " and (" + strExtraXPath + ")]"));
+                   ?? node.SelectSingleNode(string.Concat(strPath, "[translate(id, 'abcdef', 'ABCDEF') = ", strId.ToUpperInvariant().CleanXPath(), "]"));
+            }
+            return node.SelectSingleNode(strPath.ConcatFast("[id = ", strId.CleanXPath(), " and (", strExtraXPath, ")]"))
+                   // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
+                   ?? node.SelectSingleNode(strPath.ConcatFast("[translate(id, 'abcdef', 'ABCDEF') = ", strId.ToUpperInvariant().CleanXPath(), " and (", strExtraXPath + ")]"));
         }
 
         /// <summary>
@@ -792,17 +789,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (xmlNode.NodeType == XPathNodeType.Attribute)
             {
-                return xmlNode.Name + "=\"" + xmlNode.Value + "\"";
+                return string.Concat(xmlNode.Name, "=\"", xmlNode.Value, "\"");
             }
 
             if (xmlNode.NodeType == XPathNodeType.Namespace)
             {
                 if (xmlNode.LocalName.Length == 0)
                 {
-                    return "xmlns=\"" + xmlNode.Value + "\"";
+                    return string.Concat("xmlns=\"", xmlNode.Value, "\"");
                 }
 
-                return "xmlns:" + xmlNode.LocalName + "=\"" + xmlNode.Value + "\"";
+                return "xmlns:".ConcatFast(xmlNode.LocalName, "=\"", xmlNode.Value, "\"");
             }
 
             token.ThrowIfCancellationRequested();

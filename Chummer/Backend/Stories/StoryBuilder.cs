@@ -99,17 +99,17 @@ namespace Chummer
                     XPathNavigator xmlBaseMacrosNode = xdoc
                             .SelectSingleNodeAndCacheExpression(
                                 "/chummer/storybuilder/macros", token: token);
-                    await ParallelExtensions.ForAsync(0, modules.Count, async i =>
+                    await ParallelExtensions.ForAsync(0, modules.Count, async (i, t) =>
                     {
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdTemp))
                         {
-                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerTextViaPool(token) ?? string.Empty, 5,
-                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToTrimmedString();
+                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerTextViaPool(t) ?? string.Empty, 5,
+                                xmlBaseMacrosNode, t).ConfigureAwait(false)).ToTrimmedString();
                         }
                     }, token).ConfigureAwait(false);
 
-                    return StringExtensions.JoinFast(Environment.NewLine + Environment.NewLine, story, 0, modules.Count);
+                    return StringExtensions.JoinFast(Utils.DoubleNewLine, story, 0, modules.Count);
                 }
                 finally
                 {
@@ -194,7 +194,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            string endString = innerText.ToLowerInvariant().Substring(1).TrimEnd(',', '.');
+            string endString = innerText.ToLowerInvariant().Substring(1).TrimEndNoAlloc(',', '.');
             string macroName, macroPool;
             if (endString.Contains('_'))
             {
@@ -342,7 +342,7 @@ namespace Chummer
                             return strDefault;
                         }
 
-                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
+                        return "(Unknown key ".ConcatFast(macroPool, " in $DOLLAR", macroName, ")");
                     }
 
                     return xmlUserMacroNode.Value;

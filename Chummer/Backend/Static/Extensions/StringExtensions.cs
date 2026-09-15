@@ -1438,6 +1438,318 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6, string strArg7)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7));
+            intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0) + (strArg7?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7));
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg7?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg7)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6, string strArg7, string strArg8)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8);
+            intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0) + (strArg7?.Length ?? 0) + (strArg8?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg7?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg7)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg8?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg8)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6, string strArg7, string strArg8, string strArg9)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0) + (strArg4?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8, strArg9);
+            intTotalLength += (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0) + (strArg7?.Length ?? 0) + (strArg8?.Length ?? 0) + (strArg9?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), string.Concat(strArg4, strArg5, strArg6, strArg7), strArg8, strArg9);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg7?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg7)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg8?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg8)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg9?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg9)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
         /// Version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings)
@@ -2594,6 +2906,59 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Method to quickly remove all instances of all chars in an array from a string (much faster than using a series of <see cref="string.Replace(string, string)"/> with an empty string)
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToDelete1">First character to remove</param>
+        /// <param name="chrToDelete2">Second character to remove</param>
+        /// <returns>New string with characters removed</returns>
+        public static string FastEscape(this string strInput, char chrToDelete1, char chrToDelete2)
+        {
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return strInput;
+            if (intLength > Utils.MaxStackLimit16BitTypes)
+            {
+                string strReturn;
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
+                {
+                    // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                    int intCurrent = 0;
+                    for (int i = 0; i < intLength; ++i)
+                    {
+                        char chrLoop = strInput[i];
+                        if (chrLoop != chrToDelete1 && chrLoop != chrToDelete2)
+                            achrNewChars[intCurrent++] = chrLoop;
+                    }
+
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                    strReturn = new string(achrNewChars, 0, intCurrent);
+                }
+
+                return strReturn;
+            }
+
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intLength];
+                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                int intCurrent = 0;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (chrLoop != chrToDelete1 && chrLoop != chrToDelete2)
+                        achrNewChars[intCurrent++] = chrLoop;
+                }
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
         /// Method to quickly remove all instances of a substring from a string (should be faster than using <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -2657,6 +3022,292 @@ namespace Chummer
 
             int intIndexToBeginRemove = strInput.LastIndexOf(strSubstringToDelete, intStartIndex, eComparison);
             return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimNoAlloc(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength && strInput[intStart] == chrToTrim; ++intStart)
+            {
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart && strInput[intEnd] == chrToTrim; --intEnd)
+            {
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimNoAllocWithWhitespace(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimStartNoAlloc(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength && strInput[intStart] == chrToTrim; ++intStart)
+            {
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimStartNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimStartNoAllocWithWhitespace(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimStartNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimEndNoAlloc(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0 && strInput[intEnd] == chrToTrim; --intEnd)
+            {
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimEndNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
         }
 
         /// <summary>
@@ -2779,12 +3430,194 @@ namespace Chummer
         /// Find the index of the first instance of a set of strings inside a haystack string.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.IndexOf(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="intStartIndex">Index from which to start looking.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, int intStartIndex, params string[] astrNeedles)
         {
-            return strHaystack.IndexOfAny(astrNeedles, intStartIndex);
+            return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle)
+        {
+            return strHaystack.IndexOf(strNeedle, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -2861,6 +3694,101 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.Contains(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
         /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
@@ -2918,6 +3846,101 @@ namespace Chummer
         public static bool ContainsAnyParallel(this string strHaystack, params string[] astrNeedles)
         {
             return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.Contains(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -3288,7 +4311,7 @@ namespace Chummer
                 if (intLoopLength != 0)
                     astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                 else if (eSplitOptions == StringSplitOptions.None)
-                    ++intIndex;
+                    astrReturn[intIndex++] = string.Empty;
                 if (intIndex >= intSize)
                     break;
             }
@@ -3333,7 +4356,7 @@ namespace Chummer
                 if (intLoopLength != 0)
                     astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                 else if (eSplitOptions == StringSplitOptions.None)
-                    ++intIndex;
+                    astrReturn[intIndex++] = string.Empty;
                 if (intIndex >= intSize)
                     break;
             }
@@ -3418,7 +4441,7 @@ namespace Chummer
                     if (intLoopLength != 0)
                         astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                     else if (eSplitOptions == StringSplitOptions.None)
-                        ++intIndex;
+                        astrReturn[intIndex++] = string.Empty;
                     if (intIndex >= intSize)
                         break;
                 }
@@ -3474,7 +4497,58 @@ namespace Chummer
                     if (intLoopLength != 0)
                         astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
                     else if (eSplitOptions == StringSplitOptions.None)
-                        ++intIndex;
+                        astrReturn[intIndex++] = string.Empty;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[], int)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, int intSize, char chrSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = strInput.Length;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
                     if (intIndex >= intSize)
                         break;
                 }
@@ -4076,7 +5150,7 @@ namespace Chummer
                 return strInput;
             int intTrimLength = strToTrim.Length;
             if (intTrimLength == 1)
-                return strInput.TrimStart(strToTrim[0]);
+                return strInput.TrimStartNoAlloc(strToTrim[0]);
 
             int i = strInput.IndexOf(strToTrim, eComparison);
             if (i == -1)
@@ -4107,7 +5181,7 @@ namespace Chummer
                 return strInput;
             int intTrimLength = strToTrim.Length;
             if (intTrimLength == 1)
-                return strInput.TrimEnd(strToTrim[0]);
+                return strInput.TrimEndNoAlloc(strToTrim[0]);
 
             int i = strInput.LastIndexOf(strToTrim, eComparison);
             if (i == -1)
@@ -4193,7 +5267,70 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                char chrFirstChar = strInput[0];
+                if (chrFirstChar == chrToTrim1 || chrFirstChar == chrToTrim2)
+                    return strInput.Substring(1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                char chrFirstChar = strInput[0];
+                if (chrFirstChar == chrToTrim1 || chrFirstChar == chrToTrim2 || chrFirstChar == chrToTrim3)
+                    return strInput.Substring(1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <param name="chrToTrim4">Fourth char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3, char chrToTrim4)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                char chrFirstChar = strInput[0];
+                if (chrFirstChar == chrToTrim1 || chrFirstChar == chrToTrim2 || chrFirstChar == chrToTrim3 || chrFirstChar == chrToTrim4)
+                    return strInput.Substring(1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of some specified chars, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="achrToTrim">Chars to trim</param>
@@ -4280,10 +5417,76 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If a string ends with any chars, the one with which it begins is trimmed out of the string once.
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
-        /// <param name="achrToTrim">Chars to trim</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                int intLength = strInput.Length;
+                char chrLastChar = strInput[intLength - 1];
+                if (chrLastChar == chrToTrim1 || chrLastChar == chrToTrim2)
+                    return strInput.Substring(0, intLength - 1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                int intLength = strInput.Length;
+                char chrLastChar = strInput[intLength - 1];
+                if (chrLastChar == chrToTrim1 || chrLastChar == chrToTrim2 || chrLastChar == chrToTrim3)
+                    return strInput.Substring(0, intLength - 1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim1">First char to consider for trim</param>
+        /// <param name="chrToTrim2">Second char to consider for trim</param>
+        /// <param name="chrToTrim3">Third char to consider for trim</param>
+        /// <param name="chrToTrim4">Fourth char to consider for trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3, char chrToTrim4)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                int intLength = strInput.Length;
+                char chrLastChar = strInput[intLength - 1];
+                if (chrLastChar == chrToTrim1 || chrLastChar == chrToTrim2 || chrLastChar == chrToTrim3 || chrLastChar == chrToTrim4)
+                    return strInput.Substring(0, intLength - 1);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with any of some specified chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to consider for trim</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEndOnce(this string strInput, params char[] achrToTrim)
@@ -4303,6 +5506,25 @@ namespace Chummer
         public static bool StartsWith(this string strInput, char chrToCheck)
         {
             return strInput?.Length > 0 && strInput[0] == chrToCheck;
+        }
+
+        /// <summary>
+        /// Determines whether the first char of this string instance matches one of a list of specified chars.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="chrToCheck1">First Char to check.</param>
+        /// <param name="chrToCheck2">Second Char to check.</param>
+        /// <returns>True if string has a non-zero length and begins with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool StartsWith(this string strInput, char chrToCheck1, char chrToCheck2)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return false;
+            char chrFirstChar = strInput[0];
+            return chrFirstChar == chrToCheck1 || chrFirstChar == chrToCheck2;
         }
 
         /// <summary>
@@ -4364,6 +5586,25 @@ namespace Chummer
                 return false;
             int intLength = strInput.Length;
             return intLength > 0 && strInput[intLength - 1] == chrToCheck;
+        }
+
+        /// <summary>
+        /// Determines whether the last char of this string instance matches the specified char.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="chrToCheck1">First char to check.</param>
+        /// <param name="chrToCheck2">Second char to check.</param>
+        /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool EndsWith(this string strInput, char chrToCheck1, char chrToCheck2)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return false;
+            char chrLastChar = strInput[intLength - 1];
+            return chrLastChar == chrToCheck1 || chrLastChar == chrToCheck2;
         }
 
         /// <summary>
@@ -4437,6 +5678,33 @@ namespace Chummer
                 }
                 else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
                     return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string CheapReplace(this string strInput, string strOldValue, Func<CancellationToken, string> funcNewValueFactory,
+                                          StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        {
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                        return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(token));
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(token), eStringComparison);
             }
 
             return strInput;
@@ -4629,6 +5897,202 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<CancellationToken, string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strFactoryResult = string.Empty;
+                        using (CancellationTokenTaskSource<string> objCancelTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                      x => strFactoryResult
+                                                                          = funcNewValueFactory.EndInvoke(x), token, null),
+                                               objCancelTaskSource.Task).ConfigureAwait(false);
+                        }
+
+                        token.ThrowIfCancellationRequested();
+                        return strInput.Replace(strOldValue, strFactoryResult);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strFactoryResult = string.Empty;
+                    using (CancellationTokenTaskSource<string> objCancelTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                  x => strFactoryResult
+                                                                      = funcNewValueFactory.EndInvoke(x), token, null),
+                                           objCancelTaskSource.Task).ConfigureAwait(false);
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<CancellationToken, Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strNewValue = await funcNewValueFactory.Invoke(token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        return strInput.Replace(strOldValue, strNewValue);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strNewValue = await funcNewValueFactory.Invoke(token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    return strInput.Replace(strOldValue, strNewValue, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, Task<string>> funcNewValueFactory,
                                                            StringComparison eStringComparison
                                                                = StringComparison.Ordinal,
                                                            CancellationToken token = default)
@@ -5085,9 +6549,9 @@ namespace Chummer
                     continue;
                 Color objExistingColor = Color.FromArgb(intRed, intGreen, intBlue);
                 Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
-                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
+                dicColorReplacements.Add(objColorEntry.Value, "\\red".ConcatFast(objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\green", objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\blue", objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo), ";"));
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {
@@ -5141,9 +6605,9 @@ namespace Chummer
                     continue;
                 Color objDarkModeColor = Color.FromArgb(intRed, intGreen, intBlue);
                 Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
-                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
-                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
+                dicColorReplacements.Add(objColorEntry.Value, "\\red".ConcatFast(objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\green", objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo),
+                    "\\blue", objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo), ";"));
             }
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
             {
@@ -5459,6 +6923,99 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
         /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        public static string ProcessFixedValuesString(this string strInput, Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, funcRating(token), intIndexInner, token);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating(token);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    token.ThrowIfCancellationRequested();
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = funcRating(token);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating(token);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = funcRating(token);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<Task<int>> funcRating, CancellationToken token = default)
         {
@@ -5544,6 +7101,100 @@ namespace Chummer
             if (intIndex < 0)
                 return strFirstPart + strSecondPartA + strSecondPartB;
             int intRating = await funcRating().ConfigureAwait(false);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<CancellationToken, Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, await funcRating(token).ConfigureAwait(false), intIndexInner, token);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = await funcRating(token).ConfigureAwait(false);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    token.ThrowIfCancellationRequested();
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = await funcRating(token).ConfigureAwait(false);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = await funcRating(token).ConfigureAwait(false);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = await funcRating(token).ConfigureAwait(false);
             return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
         }
 

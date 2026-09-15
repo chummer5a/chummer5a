@@ -448,9 +448,9 @@ namespace Chummer
                     {
                         // Remove qualities that require the old metatype
                         List<Quality> lstQualitiesToCheck = new List<Quality>(await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false));
-                        await _objCharacter.Qualities.ForEachAsync(async objQuality =>
+                        await _objCharacter.Qualities.ForEachAsync(async (objQuality, t) =>
                         {
-                            QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
+                            QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(t).ConfigureAwait(false);
                             if (eOriginSource == QualitySource.Improvement
                                 || eOriginSource == QualitySource.QualityLevelImprovement
                                 || eOriginSource == QualitySource.Metatype
@@ -458,22 +458,22 @@ namespace Chummer
                                 || eOriginSource == QualitySource.MetatypeRemovedAtChargen)
                                 return;
                             XPathNavigator xmlBaseNode
-                                = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                = await objQuality.GetNodeXPathAsync(token: t).ConfigureAwait(false);
                             XPathNavigator xmlRestrictionNode
-                                = xmlBaseNode?.SelectSingleNodeAndCacheExpression("required", token);
+                                = xmlBaseNode?.SelectSingleNodeAndCacheExpression("required", t);
                             if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", token) != null
-                                 || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", token) != null))
+                                (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
+                                 || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", t) != null))
                             {
                                 lstQualitiesToCheck.Add(objQuality);
                             }
                             else
                             {
                                 xmlRestrictionNode
-                                    = xmlBaseNode?.SelectSingleNodeAndCacheExpression("forbidden", token);
+                                    = xmlBaseNode?.SelectSingleNodeAndCacheExpression("forbidden", t);
                                 if (xmlRestrictionNode != null &&
-                                    (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", token) != null
-                                     || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", token) != null))
+                                    (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
+                                     || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", t) != null))
                                 {
                                     lstQualitiesToCheck.Add(objQuality);
                                 }
@@ -502,28 +502,28 @@ namespace Chummer
                     }
 
                     // Flip all attribute, skill, and skill group points to karma levels (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objAttrib =>
+                    await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objAttrib, t) =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = await objAttrib.GetBaseAsync(token).ConfigureAwait(false);
-                        await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
-                        await objAttrib.ModifyKarmaAsync(intBase, token).ConfigureAwait(false);
+                        int intBase = await objAttrib.GetBaseAsync(t).ConfigureAwait(false);
+                        await objAttrib.SetBaseAsync(0, t).ConfigureAwait(false);
+                        await objAttrib.ModifyKarmaAsync(intBase, t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objSkill =>
+                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkill, t) =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = await objSkill.GetBasePointsAsync(token).ConfigureAwait(false);
-                        await objSkill.SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        await objSkill.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
+                        int intBase = await objSkill.GetBasePointsAsync(t).ConfigureAwait(false);
+                        await objSkill.SetBasePointsAsync(0, t).ConfigureAwait(false);
+                        await objSkill.ModifyKarmaPointsAsync(intBase, t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objGroup =>
+                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objGroup, t) =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = await objGroup.GetBasePointsAsync(token).ConfigureAwait(false);
-                        await objGroup.SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        await objGroup.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
+                        int intBase = await objGroup.GetBasePointsAsync(t).ConfigureAwait(false);
+                        await objGroup.SetBasePointsAsync(0, t).ConfigureAwait(false);
+                        await objGroup.ModifyKarmaPointsAsync(intBase, t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 }
                 finally

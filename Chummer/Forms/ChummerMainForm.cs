@@ -202,7 +202,7 @@ namespace Chummer
                         if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                    async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
@@ -264,7 +264,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -296,7 +296,7 @@ namespace Chummer
                                     if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                     {
                                         if (await Program.OpenCharacters.AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                             && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                             await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                     }
@@ -358,7 +358,7 @@ namespace Chummer
                         if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                    async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
@@ -421,7 +421,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -451,7 +451,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -517,7 +517,7 @@ namespace Chummer
                                      .ConfigureAwait(false))
                     {
                         if (await Program.OpenCharacters
-                                         .AllAsync(async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                         .AllAsync(async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                    token: token).ConfigureAwait(false)
                             && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                             await Program.OpenCharacters.RemoveAsync(objCharacter, token)
@@ -586,7 +586,7 @@ namespace Chummer
                                 continue;
                             if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                     && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                     await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                             }
@@ -620,7 +620,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -853,8 +853,8 @@ namespace Chummer
                                             }
 
                                             // Delete all old autosaves
-                                            await ParallelExtensions.ForEachAsync(lstOldAutosaves, strOldAutosave =>
-                                                FileExtensions.SafeDeleteAsync(strOldAutosave, token: _objGenericToken), _objGenericToken).ConfigureAwait(false);
+                                            await ParallelExtensions.ForEachAsync(lstOldAutosaves, (strOldAutosave, t) =>
+                                                FileExtensions.SafeDeleteAsync(strOldAutosave, token: t), _objGenericToken).ConfigureAwait(false);
                                         }
 
                                         if (setFilesToLoad.Count > 0)
@@ -2652,7 +2652,7 @@ namespace Chummer
                                 break;
                         }
                     }
-                }, token: token);
+                }, token);
             }
             finally
             {
@@ -2830,11 +2830,11 @@ namespace Chummer
                                                                          Character.NumLoadingSections * s.Length, _objGenericToken).ConfigureAwait(false))
                     {
                         // Array instead of concurrent bag because we want to preserve order
-                        await ParallelExtensions.ForAsync(0, s.Length, async i =>
+                        await ParallelExtensions.ForAsync(0, s.Length, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -3462,11 +3462,11 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -3569,7 +3569,7 @@ namespace Chummer
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -3678,11 +3678,11 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -3711,7 +3711,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Open print forms for a list of characters.
+        /// Open print forms for a list of characters (each one gets its own form).
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
@@ -3785,7 +3785,7 @@ namespace Chummer
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -3918,11 +3918,11 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -4020,7 +4020,7 @@ namespace Chummer
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -4121,8 +4121,8 @@ namespace Chummer
                                                                          * setCharactersToOpen.Count, token)
                                           .ConfigureAwait(false))
                     {
-                        lstCharacters.AddRange(await ParallelExtensions.ForEachAsync(setCharactersToOpen, strFile =>
-                            Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm, token: token), token).ConfigureAwait(false));
+                        lstCharacters.AddRange(await ParallelExtensions.ForEachAsync(setCharactersToOpen, (strFile, t) =>
+                            Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm, token: t), token).ConfigureAwait(false));
                     }
 
                     await OpenCharacterList(lstCharacters, token: token).ConfigureAwait(false);

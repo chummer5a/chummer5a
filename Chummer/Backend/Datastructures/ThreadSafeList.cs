@@ -898,11 +898,30 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ForEach(x =>
+                _lstData.ForEach((x, t) =>
                 {
-                    token.ThrowIfCancellationRequested();
+                    t.ThrowIfCancellationRequested();
                     action.Invoke(x);
-                });
+                }, token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.ForEach" />
+        public async Task ForEachAsync(Action<T, CancellationToken> action, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _lstData.ForEach((x, t) =>
+                {
+                    t.ThrowIfCancellationRequested();
+                    action.Invoke(x, t);
+                }, token);
             }
             finally
             {
@@ -917,6 +936,12 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.ForEach" />
+        public Task ForEachAsync(Func<T, CancellationToken, Task> action, CancellationToken token = default)
+        {
+            return AsyncEnumerableExtensions.ForEachAsync(this, action, token);
+        }
+
+        /// <inheritdoc cref="List{T}.ForEach" />
         public async Task ForEachAsync(Task<Action<T>> action, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -925,11 +950,24 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Action<T> funcAction = await action.ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                _lstData.ForEach(x =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    funcAction.Invoke(x);
-                });
+                _lstData.ForEach(funcAction, token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.ForEach" />
+        public async Task ForEachAsync(Task<Action<T, CancellationToken>> action, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Action<T, CancellationToken> funcAction = await action.ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                _lstData.ForEach(funcAction, token);
             }
             finally
             {

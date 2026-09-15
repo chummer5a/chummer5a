@@ -219,7 +219,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, t), token);
         }
 
         /// <summary>
@@ -577,9 +577,9 @@ namespace Chummer
         /// Load the Quality from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -1597,11 +1597,11 @@ namespace Chummer
                 string strMyExtra = await GetExtraAsync(token).ConfigureAwait(false);
                 string strMySourceName = await GetSourceNameAsync(token).ConfigureAwait(false);
                 QualityType eMyType = await GetTypeAsync(token).ConfigureAwait(false);
-                return await _objCharacter.Qualities.CountAsync(async objExistingQuality =>
+                return await _objCharacter.Qualities.CountAsync(async (objExistingQuality, t) =>
                     objExistingQuality.SourceID == guiMyId
-                    && await objExistingQuality.GetExtraAsync(token).ConfigureAwait(false) == strMyExtra
-                    && await objExistingQuality.GetSourceNameAsync(token).ConfigureAwait(false) == strMySourceName
-                    && await objExistingQuality.GetTypeAsync(token).ConfigureAwait(false) == eMyType, token: token).ConfigureAwait(false);
+                    && await objExistingQuality.GetExtraAsync(t).ConfigureAwait(false) == strMyExtra
+                    && await objExistingQuality.GetSourceNameAsync(t).ConfigureAwait(false) == strMySourceName
+                    && await objExistingQuality.GetTypeAsync(t).ConfigureAwait(false) == eMyType, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -1821,9 +1821,9 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 string strName = await GetNameAsync(token).ConfigureAwait(false);
                 if (strName == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
-                        async objQuality =>
+                        async (objQuality, t) =>
                         {
-                            string strInnerName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                            string strInnerName = await objQuality.GetNameAsync(t).ConfigureAwait(false);
                             return strInnerName == "The Beast's Way" || strInnerName == "The Spiritual Way";
                         }, token: token).ConfigureAwait(false))
                     return false;
@@ -2021,9 +2021,9 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 string strName = await GetNameAsync(token).ConfigureAwait(false);
                 if (strName == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
-                        async objQuality =>
+                        async (objQuality, t) =>
                         {
-                            string strInnerName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                            string strInnerName = await objQuality.GetNameAsync(t).ConfigureAwait(false);
                             return strInnerName == "The Beast's Way" || strInnerName == "The Spiritual Way";
                         }, token: token).ConfigureAwait(false))
                     return false;
@@ -2069,7 +2069,7 @@ namespace Chummer
                                  .GetCachedImprovementListForValueOf(_objCharacter,
                                                                      Improvement.ImprovementType.DisableQuality, Name)
                                  .FirstOrDefault();
-                        strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                        strCachedNotes = string.Format(GlobalSettings.CultureInfo,
                                                         LanguageManager.GetString("String_SuppressedBy"),
                                                         _objCharacter.GetObjectName(objDisablingImprovement)
                                                         ?? LanguageManager.GetString("String_Unknown"))
@@ -2116,7 +2116,7 @@ namespace Chummer
                               .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                   Improvement.ImprovementType.DisableQuality, Name, token: token).ConfigureAwait(false))
                           .FirstOrDefault();
-                    strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                    strCachedNotes = string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync("String_SuppressedBy", token: token)
                                               .ConfigureAwait(false),
                                           await _objCharacter.GetObjectNameAsync(objDisablingImprovement, token: token)
@@ -2714,8 +2714,7 @@ namespace Chummer
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
             XmlNode node = xmlDoc.TryGetNodeByNameOrId(".//*", id)
-                           ?? throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name
-                                                          + ".");
+                           ?? throw new ArgumentException("Could not find node ".ConcatFast(id, " in xmlDoc ", xmlDoc.Name, "."));
             return GetNodeOverrideable(node);
         }
 
@@ -3172,7 +3171,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3206,18 +3205,18 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                     }
                                 }
@@ -3226,14 +3225,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in lstPropertyNames)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -3374,35 +3373,35 @@ namespace Chummer
                     {
                         List<Weapon> lstWeapons = await _objCharacter.Weapons
                             .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
-                        await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
+                        await _objCharacter.Vehicles.ForEachAsync(async (objVehicle, t1) =>
                         {
                             lstWeapons.AddRange(await objVehicle.Weapons
-                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t1)
                                 .ConfigureAwait(false));
-                            await objVehicle.Mods.ForEachAsync(async objMod =>
+                            await objVehicle.Mods.ForEachAsync(async (objMod, t2) =>
                             {
                                 lstWeapons.AddRange(await objMod.Weapons
-                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                                     .ConfigureAwait(false));
-                            }, token).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
 
-                            await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                            await objVehicle.WeaponMounts.ForEachAsync(async (objMount, t2) =>
                             {
                                 lstWeapons.AddRange(await objMount.Weapons
-                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                                     .ConfigureAwait(false));
-                                await objMount.Mods.ForEachAsync(async objMod =>
+                                await objMount.Mods.ForEachAsync(async (objMod, t3) =>
                                 {
                                     lstWeapons.AddRange(await objMod.Weapons
-                                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t3)
                                         .ConfigureAwait(false));
-                                }, token).ConfigureAwait(false);
-                            }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
-                        decReturn += await lstWeapons.SumAsync(async objDeleteWeapon =>
-                                await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false), token)
+                        decReturn += await lstWeapons.SumAsync(async (objDeleteWeapon, t) =>
+                                await objDeleteWeapon.GetTotalCostAsync(t).ConfigureAwait(false)
+                                + await objDeleteWeapon.DeleteWeaponAsync(token: t).ConfigureAwait(false), token)
                             .ConfigureAwait(false);
                     }
 

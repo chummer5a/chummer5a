@@ -236,7 +236,7 @@ namespace Chummer
                             strInfo =
                                 string.Format(GlobalSettings.InvariantCultureInfo,
                                     "Application Chummer5a build {0} started at {1} with command line arguments {2}",
-                                    Utils.CurrentChummerVersion, DateTime.UtcNow,
+                                    Utils.CurrentChummerVersion, DateTime.UtcNow.ToString(GlobalSettings.InvariantCultureInfo),
                                     Environment.CommandLine);
                             sw.TaskEnd("infogen");
 
@@ -290,7 +290,7 @@ namespace Chummer
                                             {
                                                 CancellationToken objTimeoutToken = objTimeout.Token;
                                                 Utils.SafelyRunSynchronously(
-                                                    () => objLocalTelemetryClient.FlushAsync(objTimeoutToken),
+                                                    t => objLocalTelemetryClient.FlushAsync(t),
                                                     objTimeoutToken);
                                             }
                                         }
@@ -534,7 +534,7 @@ namespace Chummer
                                         string strWhatPlugin =
                                             strArg.Substring(strArg.IndexOf("/plugin", StringComparison.Ordinal) + 8);
                                         //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                        strWhatPlugin = strWhatPlugin.TrimStart(':');
+                                        strWhatPlugin = strWhatPlugin.TrimStartNoAlloc(':');
                                         int intEndPlugin = strWhatPlugin.IndexOf(':');
                                         string strParameter = strWhatPlugin.Substring(intEndPlugin + 1);
                                         strWhatPlugin = strWhatPlugin.Substring(0, intEndPlugin);
@@ -630,7 +630,7 @@ namespace Chummer
                                        = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
                                 {
                                     CancellationToken objTimeoutToken = objTimeout.Token;
-                                    Utils.SafelyRunSynchronously(() => objTelemetryClient.FlushAsync(objTimeoutToken),
+                                    Utils.SafelyRunSynchronously(t => objTelemetryClient.FlushAsync(t),
                                                                  objTimeoutToken);
                                 }
                             }
@@ -1262,8 +1262,8 @@ namespace Chummer
         public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors,
-                                             frmLoadingBar, token), token);
+                t => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors,
+                                             frmLoadingBar, t), token);
         }
 
         /// <summary>
@@ -1310,7 +1310,7 @@ namespace Chummer
                 {
                     objCharacter = blnSync
                         ? OpenCharacters.FirstOrDefault(x => x.FileName == strFileName)
-                        : await OpenCharacters.FirstOrDefaultAsync(async x => await x.GetFileNameAsync(token).ConfigureAwait(false) == strFileName, token)
+                        : await OpenCharacters.FirstOrDefaultAsync(async (x, t) => await x.GetFileNameAsync(t).ConfigureAwait(false) == strFileName, token)
                                               .ConfigureAwait(false);
                     if (objCharacter != null)
                         return objCharacter;
@@ -1402,8 +1402,8 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_AutosaveFound", token: token),
                                             Path.GetFileName(strFileName),
-                                            File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                            File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime().ToString(GlobalSettings.CultureInfo),
+                                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime().ToString(GlobalSettings.CultureInfo)),
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -1417,8 +1417,8 @@ namespace Chummer
                                                  .GetStringAsync("Message_AutosaveFound", token: token)
                                                  .ConfigureAwait(false),
                                              Path.GetFileName(strFileName),
-                                             File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                             File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime().ToString(GlobalSettings.CultureInfo),
+                                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime().ToString(GlobalSettings.CultureInfo)),
                                          await LanguageManager
                                              .GetStringAsync("MessageTitle_AutosaveFound", token: token)
                                              .ConfigureAwait(false),

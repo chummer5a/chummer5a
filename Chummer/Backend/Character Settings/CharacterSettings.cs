@@ -480,7 +480,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -514,17 +514,18 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -533,13 +534,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -894,8 +896,8 @@ namespace Chummer
                                         await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                                         await objOther._dicCustomDataDirectoryKeys
                                             .ForEachAsync(
-                                                kvpOther => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key,
-                                                    kvpOther.Value, token), token).ConfigureAwait(false);
+                                                (kvpOther, t) => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key,
+                                                    kvpOther.Value, t), token).ConfigureAwait(false);
                                     }
                                     finally
                                     {
@@ -3257,7 +3259,7 @@ namespace Chummer
                     await objWriter.WriteStartElementAsync("customdatadirectorynames", token: token)
                         .ConfigureAwait(false);
                     int i = -1;
-                    await _dicCustomDataDirectoryKeys.ForEachAsync(async kvpDirectoryInfo =>
+                    await _dicCustomDataDirectoryKeys.ForEachAsync(async (kvpDirectoryInfo, t) =>
                     {
                         string strDirectoryName = kvpDirectoryInfo.Key;
                         bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
@@ -3267,17 +3269,17 @@ namespace Chummer
                                             strDirectoryName, StringComparison.OrdinalIgnoreCase)))
                             return; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         // ReSharper disable AccessToDisposedClosure
-                        await objWriter.WriteStartElementAsync("customdatadirectoryname", token: token)
+                        await objWriter.WriteStartElementAsync("customdatadirectoryname", token: t)
                             .ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("directoryname", strDirectoryName, token: token)
+                        await objWriter.WriteElementStringAsync("directoryname", strDirectoryName, token: t)
                             .ConfigureAwait(false);
                         await objWriter
                             .WriteElementStringAsync("order",
                                 Interlocked.Increment(ref i).ToString(GlobalSettings.InvariantCultureInfo),
-                                token: token).ConfigureAwait(false);
+                                token: t).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
                             "enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
+                            token: t).ConfigureAwait(false);
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         // ReSharper restore AccessToDisposedClosure
                     }, token).ConfigureAwait(false);
@@ -6673,7 +6675,7 @@ namespace Chummer
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();
-                _dicCustomDataDirectoryKeys.ForEach(kvpCustomDataDirectoryName =>
+                _dicCustomDataDirectoryKeys.ForEach((kvpCustomDataDirectoryName, t) =>
                 {
                     if (!kvpCustomDataDirectoryName.Value)
                         return;
@@ -6686,7 +6688,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
@@ -6697,7 +6699,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)
@@ -6740,7 +6742,7 @@ namespace Chummer
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();
-                await _dicCustomDataDirectoryKeys.ForEachAsync(kvpCustomDataDirectoryName =>
+                await _dicCustomDataDirectoryKeys.ForEachAsync((kvpCustomDataDirectoryName, t) =>
                 {
                     if (!kvpCustomDataDirectoryName.Value)
                         return;
@@ -6753,7 +6755,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
@@ -6764,7 +6766,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)
@@ -6927,9 +6929,8 @@ namespace Chummer
                         else
                         {
                             strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
-                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
-                                         + LanguageManager.GetString("String_Space", strLanguage) + "("
-                                         + strToAppend + ")");
+                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage).ConcatFast(
+                                         LanguageManager.GetString("String_Space", strLanguage), "(", strToAppend, ")"));
                         }
                     }
                 }
@@ -6984,13 +6985,13 @@ namespace Chummer
                         else
                         {
                             strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode", token)?.Value ?? strBook;
-                            lstBooks.Add(await LanguageManager
+                            lstBooks.Add((await LanguageManager
                                                .GetStringAsync("String_Unknown", strLanguage, token: token)
-                                               .ConfigureAwait(false)
-                                         + await LanguageManager
+                                               .ConfigureAwait(false)).ConcatFast(
+                                         await LanguageManager
                                                  .GetStringAsync("String_Space", strLanguage, token: token)
-                                                 .ConfigureAwait(false) + "("
-                                         + strToAppend + ")");
+                                                 .ConfigureAwait(false), "(",
+                                         strToAppend, ")"));
                         }
                     }
                 }
@@ -8509,7 +8510,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strContactPointsExpression, value) == value)
@@ -8542,7 +8543,7 @@ namespace Chummer
         public async Task SetContactPointsExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8568,7 +8569,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strKnowledgePointsExpression, value) == value)
@@ -8601,7 +8602,7 @@ namespace Chummer
         public async Task SetKnowledgePointsExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8627,7 +8628,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 // A safety check to make sure that we always still account for Priority-given Nuyen
                 if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey)
                     && !value.Contains("{PriorityNuyen}"))
@@ -8665,7 +8666,7 @@ namespace Chummer
         /// </summary>
         public async Task SetChargenKarmaToNuyenExpressionAsync(string value, CancellationToken token = default)
         {
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             // A safety check to make sure that we always still account for Priority-given Nuyen
             if ((await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
                 .ContainsKey(await GetDictionaryKeyAsync(token).ConfigureAwait(false))
@@ -8701,7 +8702,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBoundSpiritExpression, value) == value)
@@ -8734,7 +8735,7 @@ namespace Chummer
         public async Task SetBoundSpiritExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8760,7 +8761,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRegisteredSpriteExpression, value) == value)
@@ -8793,7 +8794,7 @@ namespace Chummer
         public async Task SetRegisteredSpriteExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8819,7 +8820,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEssenceModifierPostExpression, value) == value)
@@ -8852,7 +8853,7 @@ namespace Chummer
         public async Task SetEssenceModifierPostExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11239,7 +11240,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strLiftLimitExpression, value) == value)
@@ -11273,7 +11274,7 @@ namespace Chummer
         public async Task SetLiftLimitExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11299,7 +11300,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCarryLimitExpression, value) == value)
@@ -11333,7 +11334,7 @@ namespace Chummer
         public async Task SetCarryLimitExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11359,7 +11360,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEncumbranceIntervalExpression, value) == value)
@@ -11393,7 +11394,7 @@ namespace Chummer
         public async Task SetEncumbranceIntervalExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {

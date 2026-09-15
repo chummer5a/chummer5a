@@ -460,9 +460,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
-        public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
+        public void Load(XmlNode objNode, Lifestyle objParentLifestyle, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, objParentLifestyle));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, objParentLifestyle, t), token);
         }
 
         /// <summary>
@@ -1342,9 +1342,9 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterReadLock())
             {
-                return DisplayName(strLanguage)
-                    + LanguageManager.GetString("String_Space", strLanguage)
-                    + "[" + DisplayCost(objCulture, strLanguage) + "]";
+                return DisplayName(strLanguage).ConcatFast(
+                    LanguageManager.GetString("String_Space", strLanguage),
+                    "[", DisplayCost(objCulture, strLanguage), "]");
             }
         }
 
@@ -1354,9 +1354,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await DisplayNameAsync(strLanguage, token).ConfigureAwait(false)
-                       + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                       + "[" + await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false) + "]";
+                return (await DisplayNameAsync(strLanguage, token).ConfigureAwait(false)).ConcatFast(
+                       await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                       "[", await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false), "]");
             }
             finally
             {
@@ -3028,7 +3028,7 @@ namespace Chummer.Backend.Equipment
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3062,18 +3062,18 @@ namespace Chummer.Backend.Equipment
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
                         
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                     }
                                 }
@@ -3082,14 +3082,14 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in lstPropertyNames)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

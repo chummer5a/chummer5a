@@ -2228,7 +2228,7 @@ namespace Chummer
                     await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Add the Spells that exist.
-                    await CharacterObject.Spells.ForEachAsync(async objSpell =>
+                    await CharacterObject.Spells.ForEachAsync(async (objSpell, t) =>
                     {
                         if (objSpell.Grade > 0 && treMetamagic != null)
                         {
@@ -2236,7 +2236,7 @@ namespace Chummer
                                                                  token).ConfigureAwait(false);
                         }
 
-                        await AddToTree(objSpell, false).ConfigureAwait(false);
+                        await AddToTree(objSpell, false, t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
                     await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
@@ -2262,7 +2262,7 @@ namespace Chummer
                         {
                             foreach (Spell objSpell in e.NewItems)
                             {
-                                await AddToTree(objSpell).ConfigureAwait(false);
+                                await AddToTree(objSpell, innerToken: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -2317,7 +2317,7 @@ namespace Chummer
 
                             foreach (Spell objSpell in e.NewItems)
                             {
-                                await AddToTree(objSpell).ConfigureAwait(false);
+                                await AddToTree(objSpell, innerToken: token).ConfigureAwait(false);
                             }
 
                             await treSpells.DoThreadSafeAsync(() =>
@@ -2340,9 +2340,9 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task AddToTree(Spell objSpell, bool blnSingleAdd = true)
+            async Task AddToTree(Spell objSpell, bool blnSingleAdd = true, CancellationToken innerToken = default)
             {
-                TreeNode objNode = await objSpell.CreateTreeNode(cmsSpell, token: token).ConfigureAwait(false);
+                TreeNode objNode = await objSpell.CreateTreeNode(cmsSpell, token: innerToken).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode;
@@ -2354,7 +2354,7 @@ namespace Chummer
                             objCombatNode = new TreeNode
                             {
                                 Tag = "Node_SelectedCombatSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2372,7 +2372,7 @@ namespace Chummer
                             objDetectionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedDetectionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2390,7 +2390,7 @@ namespace Chummer
                             objHealthNode = new TreeNode
                             {
                                 Tag = "Node_SelectedHealthSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2409,7 +2409,7 @@ namespace Chummer
                             objIllusionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedIllusionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2418,7 +2418,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objHealthNode != null).ToInt32(), objIllusionNode);
                                 objIllusionNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objIllusionNode;
                         break;
@@ -2429,7 +2429,7 @@ namespace Chummer
                             objManipulationNode = new TreeNode
                             {
                                 Tag = "Node_SelectedManipulationSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2439,7 +2439,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objIllusionNode != null).ToInt32(), objManipulationNode);
                                 objManipulationNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objManipulationNode;
                         break;
@@ -2450,7 +2450,7 @@ namespace Chummer
                             objRitualsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedGeomancyRituals",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2461,7 +2461,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objManipulationNode != null).ToInt32(), objRitualsNode);
                                 objRitualsNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objRitualsNode;
                         break;
@@ -2472,14 +2472,14 @@ namespace Chummer
                             objEnchantmentsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedEnchantments",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objEnchantmentsNode);
                                 objEnchantmentsNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objEnchantmentsNode;
                         break;
@@ -2490,7 +2490,7 @@ namespace Chummer
                             objSpellNode = new TreeNode
                             {
                                 Tag = objSpell.Category,
-                                Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false)
+                                Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2504,13 +2504,13 @@ namespace Chummer
                 }
                 if (objSpell.Grade > 0)
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, token).ConfigureAwait(false);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, innerToken).ConfigureAwait(false);
                     if (objGrade != null && treMetamagic != null)
                     {
-                        TreeNode nodMetamagicParent = await treMetamagic.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGrade), token).ConfigureAwait(false);
+                        TreeNode nodMetamagicParent = await treMetamagic.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGrade), innerToken).ConfigureAwait(false);
                         if (nodMetamagicParent != null)
                         {
-                            TreeNode objNodeForInitiations = await objSpell.CreateTreeNode(cmsInitiationNotes, true, token).ConfigureAwait(false);
+                            TreeNode objNodeForInitiations = await objSpell.CreateTreeNode(cmsInitiationNotes, true, innerToken).ConfigureAwait(false);
                             if (objNodeForInitiations == null)
                                 return;
                             await treMetamagic.DoThreadSafeAsync(x =>
@@ -2531,7 +2531,7 @@ namespace Chummer
                                 nodMetamagicParent.Expand();
                                 if (blnSingleAdd)
                                     x.SelectedNode = objNodeForInitiations;
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -2558,7 +2558,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token).ConfigureAwait(false);
+                }, innerToken).ConfigureAwait(false);
             }
         }
 
@@ -2582,7 +2582,7 @@ namespace Chummer
 
                     // Add AI Programs.
                     await CharacterObject.AIPrograms
-                                         .ForEachAsync(objAIProgram => AddToTree(objAIProgram, false), token)
+                                         .ForEachAsync((objAIProgram, t) => AddToTree(objAIProgram, false, t), token)
                                          .ConfigureAwait(false);
 
                     await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
@@ -2598,7 +2598,7 @@ namespace Chummer
                         {
                             foreach (AIProgram objAIProgram in e.NewItems)
                             {
-                                await AddToTree(objAIProgram).ConfigureAwait(false);
+                                await AddToTree(objAIProgram, innerToken: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -2641,7 +2641,7 @@ namespace Chummer
 
                             foreach (AIProgram objAIProgram in e.NewItems)
                             {
-                                await AddToTree(objAIProgram).ConfigureAwait(false);
+                                await AddToTree(objAIProgram, innerToken: token).ConfigureAwait(false);
                             }
 
                             await treAIPrograms.DoThreadSafeAsync(() =>
@@ -2664,9 +2664,9 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true, CancellationToken innerToken = default)
             {
-                TreeNode objNode = await objAIProgram.CreateTreeNode(cmsAdvancedProgram, token).ConfigureAwait(false);
+                TreeNode objNode = await objAIProgram.CreateTreeNode(cmsAdvancedProgram, innerToken).ConfigureAwait(false);
                 if (objNode == null)
                     return;
 
@@ -2675,7 +2675,7 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: token)
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: innerToken)
                             .ConfigureAwait(false)
                     };
                     await treAIPrograms.DoThreadSafeAsync(x =>
@@ -2683,7 +2683,7 @@ namespace Chummer
                         // ReSharper disable once AssignNullToNotNullAttribute
                         x.Nodes.Add(objParentNode);
                         objParentNode.Expand();
-                    }, token).ConfigureAwait(false);
+                    }, innerToken).ConfigureAwait(false);
                 }
 
                 await treAIPrograms.DoThreadSafeAsync(x =>
@@ -2708,7 +2708,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token).ConfigureAwait(false);
+                }, innerToken).ConfigureAwait(false);
             }
         }
 
@@ -6714,7 +6714,7 @@ namespace Chummer
                                     objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
-                                        async () => await objVehicle.Mods.GetCountAsync(innerToken).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(innerToken).ConfigureAwait(false) > 0).ToInt32(),
+                                        async t => await objVehicle.Mods.GetCountAsync(t).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0).ToInt32(),
                                         y, MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                 objVehicle.Mods.AddTaggedCollectionChanged(
@@ -6759,7 +6759,7 @@ namespace Chummer
                                         CancellationToken innerToken = default) =>
                                         objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                            cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                            cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                             MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objMod.Cyberware.AddTaggedCollectionChanged(
@@ -6819,7 +6819,7 @@ namespace Chummer
                                         CancellationToken innerToken = default) =>
                                         objMount.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                            cmsVehicleWeaponAccessoryGear, () => objMount.Mods.GetCountAsync(innerToken), y,
+                                            cmsVehicleWeaponAccessoryGear, t => objMount.Mods.GetCountAsync(t), y,
                                             MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objMount.Mods.AddTaggedCollectionChanged(
@@ -6868,7 +6868,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7014,7 +7014,7 @@ namespace Chummer
                                         objVehicle.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear,
-                                            async () => await objVehicle.Mods.GetCountAsync(innerToken).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(innerToken).ConfigureAwait(false) > 0).ToInt32(),
+                                            async t => await objVehicle.Mods.GetCountAsync(t).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0).ToInt32(),
                                             y, MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objVehicle.Mods.AddTaggedCollectionChanged(
@@ -7059,7 +7059,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7119,7 +7119,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMount.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMount.Mods.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMount.Mods.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMount.Mods.AddTaggedCollectionChanged(
@@ -7169,7 +7169,7 @@ namespace Chummer
                                                 CancellationToken innerToken = default) =>
                                                 objMod.RefreshChildrenWeapons(
                                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                    cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                    cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                     MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                             objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7528,7 +7528,7 @@ namespace Chummer
                                         objVehicle.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear,
-                                            async () => await objVehicle.Mods.GetCountAsync(innerToken).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(innerToken).ConfigureAwait(false) > 0).ToInt32(),
+                                            async t => await objVehicle.Mods.GetCountAsync(t).ConfigureAwait(false) + (await objVehicle.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0).ToInt32(),
                                             y, MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                     objVehicle.Mods.AddTaggedCollectionChanged(
@@ -7573,7 +7573,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7633,7 +7633,7 @@ namespace Chummer
                                             CancellationToken innerToken = default) =>
                                             objMount.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, () => objMount.Mods.GetCountAsync(innerToken), y,
+                                                cmsVehicleWeaponAccessoryGear, t => objMount.Mods.GetCountAsync(t), y,
                                                 MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                         objMount.Mods.AddTaggedCollectionChanged(
@@ -7683,7 +7683,7 @@ namespace Chummer
                                                 CancellationToken innerToken = default) =>
                                                 objMod.RefreshChildrenWeapons(
                                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                    cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.GetCountAsync(innerToken), y,
+                                                    cmsVehicleWeaponAccessoryGear, t => objMod.Cyberware.GetCountAsync(t), y,
                                                     MakeDirtyWithCharacterUpdate, token: innerToken);
 
                                             objMod.Cyberware.AddTaggedCollectionChanged(
@@ -7881,46 +7881,46 @@ namespace Chummer
                         {
                             await treFoci.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
                             await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false)).ForEachAsync(
-                                async objGear =>
+                                async (objGear, t) =>
                                 {
                                     switch (objGear.Category)
                                     {
                                         case "Foci":
                                         case "Metamagic Foci":
                                         {
-                                            TreeNode objNode = await objGear.CreateTreeNode(cmsFocus, null, token)
+                                            TreeNode objNode = await objGear.CreateTreeNode(cmsFocus, null, t)
                                                 .ConfigureAwait(false);
                                             if (objNode == null)
                                                 return;
                                             objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                                await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                await LanguageManager.GetStringAsync("String_Rating", token: t)
                                                     .ConfigureAwait(false),
-                                                () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
-                                                token: token).ConfigureAwait(false);
+                                                t2 => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t2),
+                                                token: t).ConfigureAwait(false);
                                             objNode.Checked = objGear.Bonded;
-                                            await AddToTree(objNode, false).ConfigureAwait(false);
+                                            await AddToTree(objNode, false, t).ConfigureAwait(false);
                                         }
                                             break;
 
                                         case "Stacked Focus":
                                         {
-                                            await CharacterObject.StackedFoci.ForEachAsync(async objStack =>
+                                            await CharacterObject.StackedFoci.ForEachAsync(async (objStack, t2) =>
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, t2)
                                                                 .ConfigureAwait(false);
                                                     if (objNode == null)
                                                         return;
                                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: t2)
                                                             .ConfigureAwait(false),
-                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
-                                                        token: token).ConfigureAwait(false);
+                                                        t3 => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t3),
+                                                        token: t2).ConfigureAwait(false);
                                                     objNode.Checked = objStack.Bonded;
-                                                    await AddToTree(objNode, false).ConfigureAwait(false);
+                                                    await AddToTree(objNode, false, t2).ConfigureAwait(false);
                                                 }
-                                            }, token).ConfigureAwait(false);
+                                            }, t).ConfigureAwait(false);
                                         }
                                             break;
                                     }
@@ -7954,30 +7954,30 @@ namespace Chummer
                                             objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                 await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                     .ConfigureAwait(false),
-                                                () => LanguageManager.GetStringAsync("String_Force", token: token),
+                                                t => LanguageManager.GetStringAsync("String_Force", token: t),
                                                 token: token).ConfigureAwait(false);
                                             objNode.Checked = objGear.Bonded;
-                                            await AddToTree(objNode).ConfigureAwait(false);
+                                            await AddToTree(objNode, innerToken: token).ConfigureAwait(false);
                                         }
                                             break;
 
                                         case "Stacked Focus":
                                         {
-                                            await CharacterObject.StackedFoci.ForEachAsync(async objStack =>
+                                            await CharacterObject.StackedFoci.ForEachAsync(async (objStack, t) =>
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, t)
                                                                 .ConfigureAwait(false);
                                                     if (objNode == null)
                                                         return;
                                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: t)
                                                             .ConfigureAwait(false),
-                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
-                                                        token: token).ConfigureAwait(false);
+                                                        t2 => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t2),
+                                                        token: t).ConfigureAwait(false);
                                                     objNode.Checked = objStack.Bonded;
-                                                    await AddToTree(objNode, false).ConfigureAwait(false);
+                                                    await AddToTree(objNode, false, t).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }
@@ -8107,30 +8107,30 @@ namespace Chummer
                                             objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                 await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                     .ConfigureAwait(false),
-                                                () => LanguageManager.GetString("String_Force", token: token),
+                                                t => LanguageManager.GetString("String_Force", token: t),
                                                 token: token).ConfigureAwait(false);
                                             objNode.Checked = objGear.Bonded;
-                                            await AddToTree(objNode).ConfigureAwait(false);
+                                            await AddToTree(objNode, innerToken: token).ConfigureAwait(false);
                                         }
                                             break;
 
                                         case "Stacked Focus":
                                         {
-                                            await CharacterObject.StackedFoci.ForEachAsync(async objStack =>
+                                            await CharacterObject.StackedFoci.ForEachAsync(async (objStack, t) =>
                                             {
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, token)
+                                                    TreeNode objNode = await objStack.CreateTreeNode(objGear, cmsFocus, t)
                                                                 .ConfigureAwait(false);
                                                     if (objNode == null)
                                                         return;
                                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                        await LanguageManager.GetStringAsync("String_Rating", token: t)
                                                             .ConfigureAwait(false),
-                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
-                                                        token: token).ConfigureAwait(false);
+                                                        t2 => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t2),
+                                                        token: t).ConfigureAwait(false);
                                                     objNode.Checked = objStack.Bonded;
-                                                    await AddToTree(objNode, false).ConfigureAwait(false);
+                                                    await AddToTree(objNode, false, t).ConfigureAwait(false);
                                                 }
                                             }, token).ConfigureAwait(false);
                                         }
@@ -8142,7 +8142,7 @@ namespace Chummer
                         }
                     }
 
-                    Task AddToTree(TreeNode objNode, bool blnSingleAdd = true)
+                    Task AddToTree(TreeNode objNode, bool blnSingleAdd = true, CancellationToken innerToken = default)
                     {
                         return treFoci.DoThreadSafeAsync(x =>
                         {
@@ -8165,7 +8165,7 @@ namespace Chummer
                             }
                             else
                                 lstParentNodeChildren.Add(objNode);
-                        }, token);
+                        }, innerToken);
                     }
                 }
                 finally
@@ -8233,9 +8233,9 @@ namespace Chummer
                         {
                             await treMartialArts.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
-                            await CharacterObject.MartialArts.ForEachWithSideEffectsAsync(async objMartialArt =>
+                            await CharacterObject.MartialArts.ForEachWithSideEffectsAsync(async (objMartialArt, t) =>
                             {
-                                await AddToTree(objMartialArt, false).ConfigureAwait(false);
+                                await AddToTree(objMartialArt, false, t).ConfigureAwait(false);
                                 objMartialArt.Techniques.AddTaggedCollectionChanged(
                                     treMartialArts, MakeDirtyWithCharacterUpdate);
                                 objMartialArt.Techniques.AddTaggedCollectionChanged(
@@ -8272,7 +8272,7 @@ namespace Chummer
                             {
                                 foreach (MartialArt objMartialArt in e.NewItems)
                                 {
-                                    await AddToTree(objMartialArt).ConfigureAwait(false);
+                                    await AddToTree(objMartialArt, innerToken: token).ConfigureAwait(false);
                                     objMartialArt.Techniques.AddTaggedCollectionChanged(
                                         treMartialArts, MakeDirtyWithCharacterUpdate);
                                     objMartialArt.Techniques.AddTaggedCollectionChanged(
@@ -8330,7 +8330,7 @@ namespace Chummer
 
                                 foreach (MartialArt objMartialArt in e.NewItems)
                                 {
-                                    await AddToTree(objMartialArt).ConfigureAwait(false);
+                                    await AddToTree(objMartialArt, innerToken: token).ConfigureAwait(false);
                                     objMartialArt.Techniques.AddTaggedCollectionChanged(
                                         treMartialArts, MakeDirtyWithCharacterUpdate);
                                     objMartialArt.Techniques.AddTaggedCollectionChanged(
@@ -8355,9 +8355,9 @@ namespace Chummer
                         }
                     }
 
-                    async Task AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
+                    async Task AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true, CancellationToken innerToken = default)
                     {
-                        TreeNode objNode = await objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique, token);
+                        TreeNode objNode = await objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique, innerToken);
                         if (objNode == null)
                             return;
 
@@ -8369,7 +8369,7 @@ namespace Chummer
                                 objQualityNode = new TreeNode
                                 {
                                     Tag = "Node_SelectedQualities",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedQualities", token: token)
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedQualities", token: innerToken)
                                         .ConfigureAwait(false)
                                 };
                                 await treMartialArts.DoThreadSafeAsync(x =>
@@ -8377,7 +8377,7 @@ namespace Chummer
                                     // ReSharper disable once AssignNullToNotNullAttribute
                                     x.Nodes.Add(objQualityNode);
                                     objQualityNode.Expand();
-                                }, token).ConfigureAwait(false);
+                                }, innerToken).ConfigureAwait(false);
                             }
 
                             objParentNode = objQualityNode;
@@ -8390,7 +8390,7 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectedMartialArts",
                                     Text = await LanguageManager
-                                        .GetStringAsync("Node_SelectedMartialArts", token: token).ConfigureAwait(false)
+                                        .GetStringAsync("Node_SelectedMartialArts", token: innerToken).ConfigureAwait(false)
                                 };
                                 await treMartialArts.DoThreadSafeAsync(x =>
                                 {
@@ -8428,7 +8428,7 @@ namespace Chummer
                                 objParentNode.Nodes.Add(objNode);
 
                             objParentNode.Expand();
-                        }, token).ConfigureAwait(false);
+                        }, innerToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -8462,7 +8462,7 @@ namespace Chummer
                         {
                             foreach (MartialArtTechnique objTechnique in e.NewItems)
                             {
-                                await AddToTree(objTechnique).ConfigureAwait(false);
+                                await AddToTree(objTechnique, innerToken: token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -8500,15 +8500,15 @@ namespace Chummer
                                 nodMartialArt.Nodes.Clear();
                                 return strInnerReturn;
                             }, token).ConfigureAwait(false);
-                            await objMartialArt.Techniques.ForEachAsync(x => AddToTree(x), token).ConfigureAwait(false);
+                            await objMartialArt.Techniques.ForEachAsync((x, t) => AddToTree(x, innerToken: t), token).ConfigureAwait(false);
                             await treMartialArts.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
                         }
                             break;
                     }
 
-                    async Task AddToTree(MartialArtTechnique objTechnique, bool blnSingleAdd = true)
+                    async Task AddToTree(MartialArtTechnique objTechnique, bool blnSingleAdd = true, CancellationToken innerToken = default)
                     {
-                        TreeNode objNode = await objTechnique.CreateTreeNode(cmsTechnique, token).ConfigureAwait(false);
+                        TreeNode objNode = await objTechnique.CreateTreeNode(cmsTechnique, innerToken).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         await treMartialArts.DoThreadSafeAsync(x =>
@@ -8533,7 +8533,7 @@ namespace Chummer
                                 nodMartialArt.Nodes.Add(objNode);
 
                             nodMartialArt.Expand();
-                        }, token).ConfigureAwait(false);
+                        }, innerToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -8585,7 +8585,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
 
                             // Add the Locations.
-                            await (await CharacterObject.GetImprovementGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(strGroup =>
+                            await (await CharacterObject.GetImprovementGroupsAsync(token).ConfigureAwait(false)).ForEachAsync((strGroup, t) =>
                             {
                                 TreeNode objGroup = new TreeNode
                                 {
@@ -8593,15 +8593,15 @@ namespace Chummer
                                     Text = strGroup,
                                     ContextMenuStrip = cmsImprovementLocation
                                 };
-                                return treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objGroup), token);
+                                return treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objGroup), t);
                             }, token).ConfigureAwait(false);
 
-                            await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objImprovement =>
+                            await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync((objImprovement, t) =>
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
-                                    return AddToTree(objImprovement, false);
+                                    return AddToTree(objImprovement, false, t);
                                 }
 
                                 return Task.CompletedTask;
@@ -8640,8 +8640,8 @@ namespace Chummer
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                     {
-                                        await AddToTree(objImprovement).ConfigureAwait(false);
-                                        await AddToLimitTree(objImprovement).ConfigureAwait(false);
+                                        await AddToTree(objImprovement, innerToken: token).ConfigureAwait(false);
+                                        await AddToLimitTree(objImprovement, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -8649,7 +8649,7 @@ namespace Chummer
                             }
                             case NotifyCollectionChangedAction.Remove:
                             {
-                                await treImprovements.DoThreadSafeAsync(x =>
+                                await treImprovements.DoThreadSafeAsync((x, t) =>
                                 {
                                     foreach (Improvement objImprovement in e.OldItems)
                                     {
@@ -8676,7 +8676,7 @@ namespace Chummer
                                                     if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                                         objParent.Remove();
                                                 }
-                                            }, token);
+                                            }, t);
                                         }
                                     }
                                 }, token).ConfigureAwait(false);
@@ -8687,7 +8687,7 @@ namespace Chummer
                             {
                                 List<TreeNode> lstOldParents =
                                     new List<TreeNode>(e.OldItems.Count);
-                                await treImprovements.DoThreadSafeAsync(x =>
+                                await treImprovements.DoThreadSafeAsync((x, t) =>
                                 {
                                     foreach (Improvement objImprovement in e.OldItems)
                                     {
@@ -8709,7 +8709,7 @@ namespace Chummer
                                                     lstOldParents.Add(objNode.Parent);
                                                     objNode.Remove();
                                                 }
-                                            }, token);
+                                            }, t);
                                         }
                                     }
                                 }, token).ConfigureAwait(false);
@@ -8719,8 +8719,8 @@ namespace Chummer
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                     {
-                                        await AddToTree(objImprovement).ConfigureAwait(false);
-                                        await AddToLimitTree(objImprovement).ConfigureAwait(false);
+                                        await AddToTree(objImprovement, innerToken: token).ConfigureAwait(false);
+                                        await AddToLimitTree(objImprovement, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -8737,7 +8737,7 @@ namespace Chummer
                             }
                         }
 
-                        async ValueTask AddToLimitTree(Improvement objImprovement)
+                        async ValueTask AddToLimitTree(Improvement objImprovement, CancellationToken innerToken)
                         {
                             if (treLimit == null)
                                 return;
@@ -8773,30 +8773,30 @@ namespace Chummer
                                             {
                                                 Tag = "Node_Physical",
                                                 Text = await LanguageManager
-                                                    .GetStringAsync("Node_Physical", token: token).ConfigureAwait(false)
+                                                    .GetStringAsync("Node_Physical", token: innerToken).ConfigureAwait(false)
                                             };
                                             await treLimit.DoThreadSafeAsync(
-                                                x => x.Nodes.Insert(0, objParentNode), token).ConfigureAwait(false);
+                                                x => x.Nodes.Insert(0, objParentNode), innerToken).ConfigureAwait(false);
                                             break;
 
                                         case 1:
                                             objParentNode = new TreeNode
                                             {
                                                 Tag = "Node_Mental",
-                                                Text = await LanguageManager.GetStringAsync("Node_Mental", token: token)
+                                                Text = await LanguageManager.GetStringAsync("Node_Mental", token: innerToken)
                                                     .ConfigureAwait(false)
                                             };
                                             await treLimit.DoThreadSafeAsync(
                                                 x => x.Nodes.Insert((aobjLimitNodes[0] != null).ToInt32(),
                                                     objParentNode),
-                                                token).ConfigureAwait(false);
+                                                innerToken).ConfigureAwait(false);
                                             break;
 
                                         case 2:
                                             objParentNode = new TreeNode
                                             {
                                                 Tag = "Node_Social",
-                                                Text = await LanguageManager.GetStringAsync("Node_Social", token: token)
+                                                Text = await LanguageManager.GetStringAsync("Node_Social", token: innerToken)
                                                     .ConfigureAwait(false)
                                             };
                                             await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(
@@ -8809,38 +8809,38 @@ namespace Chummer
                                             objParentNode = new TreeNode
                                             {
                                                 Tag = "Node_Astral",
-                                                Text = await LanguageManager.GetStringAsync("Node_Astral", token: token)
+                                                Text = await LanguageManager.GetStringAsync("Node_Astral", token: innerToken)
                                                     .ConfigureAwait(false)
                                             };
-                                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token)
+                                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), innerToken)
                                                 .ConfigureAwait(false);
                                             break;
                                     }
 
                                     if (objParentNode != null)
-                                        await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), token)
+                                        await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), innerToken)
                                             .ConfigureAwait(false);
                                 }
 
                                 string strName = objImprovement.UniqueName
-                                                 + await LanguageManager.GetStringAsync("String_Colon", token: token)
+                                                 + await LanguageManager.GetStringAsync("String_Colon", token: innerToken)
                                                      .ConfigureAwait(false) +
-                                                 await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                 await LanguageManager.GetStringAsync("String_Space", token: innerToken)
                                                      .ConfigureAwait(false);
                                 if (objImprovement.Value > 0)
                                     strName += "+";
                                 strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                                 if (!string.IsNullOrEmpty(objImprovement.Condition))
                                 {
-                                    string strTranslatedCondition = await objImprovement.GetCurrentDisplayConditionAsync(token).ConfigureAwait(false);
-                                    strName += "," + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                    string strTranslatedCondition = await objImprovement.GetCurrentDisplayConditionAsync(innerToken).ConfigureAwait(false);
+                                    strName += "," + await LanguageManager.GetStringAsync("String_Space", token: innerToken)
                                                        .ConfigureAwait(false)
                                                    + strTranslatedCondition;
                                 }
                                 if (objParentNode?.Nodes.ContainsKey(strName) == false)
                                 {
-                                    string strNotes = (await objImprovement.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
-                                    Color objColor = await objImprovement.GetPreferredColorAsync(token).ConfigureAwait(false);
+                                    string strNotes = (await objImprovement.GetNotesAsync(innerToken).ConfigureAwait(false)).WordWrap();
+                                    Color objColor = await objImprovement.GetPreferredColorAsync(innerToken).ConfigureAwait(false);
                                     TreeNode objNode = new TreeNode
                                     {
                                         Name = strName,
@@ -8886,15 +8886,15 @@ namespace Chummer
 
                                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                                         x.SelectedNode = objNode;
-                                    }, token).ConfigureAwait(false);
+                                    }, innerToken).ConfigureAwait(false);
                                 }
                             }
                         }
                     }
 
-                    async Task AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
+                    async Task AddToTree(Improvement objImprovement, bool blnSingleAdd = true, CancellationToken innerToken = default)
                     {
-                        TreeNode objNode = await objImprovement.CreateTreeNode(cmsImprovement, token).ConfigureAwait(false);
+                        TreeNode objNode = await objImprovement.CreateTreeNode(cmsImprovement, innerToken).ConfigureAwait(false);
 
                         TreeNode objParentNode = objRoot;
                         if (!string.IsNullOrEmpty(objImprovement.CustomGroup))
@@ -8909,7 +8909,7 @@ namespace Chummer
                                         break;
                                     }
                                 }
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         else
                         {
@@ -8919,9 +8919,9 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectedImprovements",
                                     Text = await LanguageManager
-                                        .GetStringAsync("Node_SelectedImprovements", token: token).ConfigureAwait(false)
+                                        .GetStringAsync("Node_SelectedImprovements", token: innerToken).ConfigureAwait(false)
                                 };
-                                await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token)
+                                await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), innerToken)
                                     .ConfigureAwait(false);
                             }
                         }
@@ -8949,7 +8949,7 @@ namespace Chummer
                                 objParentNode.Nodes.Add(objNode);
 
                             objParentNode.Expand();
-                        }, token).ConfigureAwait(false);
+                        }, innerToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -8991,7 +8991,7 @@ namespace Chummer
                             if (await CharacterObject.Lifestyles.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 await CharacterObject.Lifestyles
-                                    .ForEachAsync(objLifestyle => AddToTree(objLifestyle, false),
+                                    .ForEachAsync((objLifestyle, t) => AddToTree(objLifestyle, false, t),
                                         token).ConfigureAwait(false);
 
                                 await treLifestyles.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
@@ -9016,7 +9016,7 @@ namespace Chummer
                             {
                                 foreach (Lifestyle objLifestyle in e.NewItems)
                                 {
-                                    await AddToTree(objLifestyle).ConfigureAwait(false);
+                                    await AddToTree(objLifestyle, innerToken: token).ConfigureAwait(false);
                                 }
 
                                 break;
@@ -9058,7 +9058,7 @@ namespace Chummer
 
                                 foreach (Lifestyle objLifestyle in e.NewItems)
                                 {
-                                    await AddToTree(objLifestyle).ConfigureAwait(false);
+                                    await AddToTree(objLifestyle, innerToken: token).ConfigureAwait(false);
                                 }
 
                                 await treLifestyles.DoThreadSafeAsync(() =>
@@ -9075,9 +9075,9 @@ namespace Chummer
                         }
                     }
 
-                    async Task AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
+                    async Task AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true, CancellationToken innerToken = default)
                     {
-                        TreeNode objNode = await objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle, token).ConfigureAwait(false);
+                        TreeNode objNode = await objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle, innerToken).ConfigureAwait(false);
                         if (objNode == null)
                             return;
 
@@ -9086,7 +9086,7 @@ namespace Chummer
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedLifestyles",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles", token: innerToken)
                                     .ConfigureAwait(false)
                             };
                             await treLifestyles.DoThreadSafeAsync(x =>
@@ -9094,7 +9094,7 @@ namespace Chummer
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objParentNode);
                                 objParentNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
 
                         await treLifestyles.DoThreadSafeAsync(x =>
@@ -9120,7 +9120,7 @@ namespace Chummer
                             }
                             else
                                 objParentNode.Nodes.Add(objNode);
-                        }, token).ConfigureAwait(false);
+                        }, innerToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -9155,12 +9155,12 @@ namespace Chummer
                         try
                         {
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.Clear(), token).ConfigureAwait(false);
-                            await lstCalendarWeeks.ForEachAsync(async objWeek =>
+                            await lstCalendarWeeks.ForEachAsync(async (objWeek, t) =>
                             {
-                                Color objColor = await objWeek.GetPreferredColorAsync(token).ConfigureAwait(false);
+                                Color objColor = await objWeek.GetPreferredColorAsync(t).ConfigureAwait(false);
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = await objWeek.GetNotesAsync(token).ConfigureAwait(false),
+                                    Text = await objWeek.GetNotesAsync(t).ConfigureAwait(false),
                                     ForeColor = objColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
@@ -9171,13 +9171,13 @@ namespace Chummer
 
                                 ListViewItem objItem = new ListViewItem
                                 {
-                                    Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                    Text = await objWeek.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
                                     ForeColor = objColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
 
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Add(objItem), token)
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Add(objItem), t)
                                     .ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
                         }
@@ -9317,14 +9317,14 @@ namespace Chummer
                 {
                     if (panContacts != null)
                     {
-                        await panContacts.DoThreadSafeAsync(x =>
+                        await panContacts.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is ContactControl objContactControl))
                                         continue;
                                     objContactControl.ContactObject.PropertyChangedAsync -=
@@ -9342,14 +9342,14 @@ namespace Chummer
 
                     if (panEnemies != null)
                     {
-                        await panEnemies.DoThreadSafeAsync(x =>
+                        await panEnemies.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is ContactControl objContactControl))
                                         continue;
                                     objContactControl.ContactObject.PropertyChangedAsync -=
@@ -9367,14 +9367,14 @@ namespace Chummer
 
                     if (panPets != null)
                     {
-                        await panPets.DoThreadSafeAsync(x =>
+                        await panPets.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is PetControl objPetControl))
                                         continue;
                                     objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
@@ -9432,7 +9432,7 @@ namespace Chummer
                             if (panPets != null)
                                 await panPets.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
                             bool blnHasEnemyTracking = await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false);
-                            await CharacterObject.Contacts.ForEachAsync(objContact =>
+                            await CharacterObject.Contacts.ForEachAsync((objContact, t) =>
                             {
                                 switch (objContact.EntityType)
                                 {
@@ -9451,7 +9451,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panContacts.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, t);
                                     }
 
                                     case ContactType.Enemy:
@@ -9469,7 +9469,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panEnemies.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, t);
                                     }
 
                                     case ContactType.Pet:
@@ -9485,12 +9485,12 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panPets.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, t);
                                     }
                                 }
 
                                 return Task.CompletedTask;
-                            }, GenericToken).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -9805,14 +9805,14 @@ namespace Chummer
                 {
                     if (pnlSustainedSpells != null)
                     {
-                        await pnlSustainedSpells.DoThreadSafeAsync(x =>
+                        await pnlSustainedSpells.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SustainedObjectControl objSustainedObjectControl))
                                         continue;
                                     objSustainedObjectControl.SustainedObjectDetailChanged -=
@@ -9829,14 +9829,14 @@ namespace Chummer
 
                     if (pnlSustainedComplexForms != null)
                     {
-                        await pnlSustainedComplexForms.DoThreadSafeAsync(x =>
+                        await pnlSustainedComplexForms.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SustainedObjectControl objSustainedObjectControl))
                                         continue;
                                     objSustainedObjectControl.SustainedObjectDetailChanged -=
@@ -9853,14 +9853,14 @@ namespace Chummer
 
                     if (pnlSustainedCritterPowers != null)
                     {
-                        await pnlSustainedCritterPowers.DoThreadSafeAsync(x =>
+                        await pnlSustainedCritterPowers.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SustainedObjectControl objSustainedObjectControl))
                                         continue;
                                     objSustainedObjectControl.SustainedObjectDetailChanged -=
@@ -9965,7 +9965,7 @@ namespace Chummer
                                 x.Visible = false;
                             }
                         }, token).ConfigureAwait(false);
-                        await CharacterObject.SustainedCollection.ForEachAsync(objSustained =>
+                        await CharacterObject.SustainedCollection.ForEachAsync((objSustained, t1) =>
                         {
                             Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
                                 pnlSustainedComplexForms,
@@ -9974,7 +9974,7 @@ namespace Chummer
                             if (refreshingPanel == null)
                                 return Task.CompletedTask;
 
-                            return refreshingPanel.DoThreadSafeAsync(x =>
+                            return refreshingPanel.DoThreadSafeAsync((x, t2) =>
                             {
                                 x.Visible = true;
                                 switch (objSustained.LinkedObjectType)
@@ -9984,7 +9984,7 @@ namespace Chummer
                                         {
                                             if (y != null)
                                                 y.Visible = true;
-                                        }, token);
+                                        }, t2);
                                         break;
 
                                     case Improvement.ImprovementSource.ComplexForm:
@@ -9992,7 +9992,7 @@ namespace Chummer
                                         {
                                             if (y != null)
                                                 y.Visible = true;
-                                        }, token);
+                                        }, t2);
                                         break;
                                 }
 
@@ -10007,7 +10007,7 @@ namespace Chummer
                                 objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
 
                                 x.Controls.Add(objSustainedObjectControl);
-                            }, token);
+                            }, t1);
                         }, token).ConfigureAwait(false);
                     }
                     else
@@ -10024,7 +10024,7 @@ namespace Chummer
                                     if (refreshingPanel == null)
                                         continue;
 
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    await refreshingPanel.DoThreadSafeAsync((x, t) =>
                                     {
                                         x.Visible = true;
                                         switch (objSustained.LinkedObjectType)
@@ -10034,7 +10034,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = true;
-                                                }, token);
+                                                }, t);
                                                 break;
 
                                             case Improvement.ImprovementSource.ComplexForm:
@@ -10042,7 +10042,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = true;
-                                                }, token);
+                                                }, t);
                                                 break;
                                         }
 
@@ -10075,7 +10075,7 @@ namespace Chummer
                                         continue;
 
                                     int intMoveUpAmount = 0;
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    await refreshingPanel.DoThreadSafeAsync((x, t) =>
                                     {
                                         int intSustainedObjects = x.Controls.Count;
 
@@ -10111,7 +10111,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = false;
-                                                }, token);
+                                                }, t);
                                             }
                                             else if (x == pnlSustainedComplexForms)
                                             {
@@ -10119,7 +10119,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = false;
-                                                }, token);
+                                                }, t);
                                             }
                                         }
                                     }, token).ConfigureAwait(false);
@@ -10138,7 +10138,7 @@ namespace Chummer
                                         continue;
 
                                     int intMoveUpAmount = 0;
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    await refreshingPanel.DoThreadSafeAsync((x, t) =>
                                     {
                                         int intSustainedObjects = x.Controls.Count;
 
@@ -10174,7 +10174,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = false;
-                                                }, token);
+                                                }, t);
                                             }
                                             else if (x == pnlSustainedComplexForms)
                                             {
@@ -10182,7 +10182,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = false;
-                                                }, token);
+                                                }, t);
                                             }
                                         }
                                     }, token).ConfigureAwait(false);
@@ -10196,7 +10196,7 @@ namespace Chummer
                                     if (refreshingPanel == null)
                                         continue;
 
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    await refreshingPanel.DoThreadSafeAsync((x, t) =>
                                     {
                                         x.Visible = true;
                                         switch (objSustained.LinkedObjectType)
@@ -10206,7 +10206,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = true;
-                                                }, token);
+                                                }, t);
                                                 break;
 
                                             case Improvement.ImprovementSource.ComplexForm:
@@ -10214,7 +10214,7 @@ namespace Chummer
                                                 {
                                                     if (y != null)
                                                         y.Visible = true;
-                                                }, token);
+                                                }, t);
                                                 break;
                                         }
 
@@ -11111,14 +11111,14 @@ namespace Chummer
                 {
                     if (panSpirits != null)
                     {
-                        await panSpirits.DoThreadSafeAsync(x =>
+                        await panSpirits.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SpiritControl objSpiritControl))
                                         continue;
                                     objSpiritControl.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
@@ -11134,14 +11134,14 @@ namespace Chummer
 
                     if (panSprites != null)
                     {
-                        await panSprites.DoThreadSafeAsync(x =>
+                        await panSprites.DoThreadSafeAsync((x, t) =>
                         {
                             x.SuspendLayout();
                             try
                             {
                                 for (int i = x.Controls.Count - 1; i >= 0; --i)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SpiritControl objSpiritControl))
                                         continue;
                                     objSpiritControl.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
@@ -11194,9 +11194,9 @@ namespace Chummer
                                     .ConfigureAwait(false);
                             int intSpirits = -1;
                             int intSprites = -1;
-                            await CharacterObject.Spirits.ForEachAsync(async objSpirit =>
+                            await CharacterObject.Spirits.ForEachAsync(async (objSpirit, t) =>
                             {
-                                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
+                                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(t).ConfigureAwait(false) ==
                                                    SpiritType.Spirit;
                                 if (blnIsSpirit)
                                 {
@@ -11208,30 +11208,30 @@ namespace Chummer
 
                                 SpiritControl objSpiritControl
                                     = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit, GenericToken),
-                                            token)
+                                            t)
                                         .ConfigureAwait(false);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
                                 objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
+                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, t)
                                     .ConfigureAwait(false);
 
                                 if (blnIsSpirit)
                                 {
                                     int index = Interlocked.Increment(ref intSpirits);
                                     await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = index * x.Height, token).ConfigureAwait(false);
-                                    await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), token)
+                                        x => x.Top = index * x.Height, t).ConfigureAwait(false);
+                                    await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), t)
                                         .ConfigureAwait(false);
                                 }
                                 else
                                 {
                                     int index = Interlocked.Increment(ref intSprites);
                                     await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = index * x.Height, token).ConfigureAwait(false);
-                                    await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), token)
+                                        x => x.Top = index * x.Height, t).ConfigureAwait(false);
+                                    await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), t)
                                         .ConfigureAwait(false);
                                 }
                             }, token).ConfigureAwait(false);
@@ -11239,10 +11239,10 @@ namespace Chummer
                         finally
                         {
                             if (panSpirits != null)
-                                await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
+                                await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token)
                                     .ConfigureAwait(false);
                             if (panSprites != null)
-                                await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
+                                await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token)
                                     .ConfigureAwait(false);
                         }
                     }
@@ -11542,9 +11542,9 @@ namespace Chummer
             {
                 int intBoundCount = await CharacterObject.Spirits
                     .CountAsync(
-                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit &&
-                                   await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false) &&
-                                   await x.GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        async (x, t) => await x.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Spirit &&
+                                   await x.GetBoundAsync(t).ConfigureAwait(false) && !await x.GetFetteredAsync(t).ConfigureAwait(false) &&
+                                   await x.GetCountsAgainstBoundSpiritLimitAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                 blnAtBoundLimit = intBoundCount >= await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false);
             }
 
@@ -11582,8 +11582,8 @@ namespace Chummer
             if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
                 await CharacterObject.Spirits
                     .CountAsync(
-                        async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite &&
-                                   await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
+                        async (x, t) => await x.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Sprite &&
+                                   await x.GetBoundAsync(t).ConfigureAwait(false) && !await x.GetFetteredAsync(t).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false))
             {
                 string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(

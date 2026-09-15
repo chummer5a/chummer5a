@@ -103,7 +103,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(t => SaveCoreAsync(true, objWriter, t), token);
         }
 
         /// <summary>
@@ -746,46 +746,46 @@ namespace Chummer
                             strDisplayRange = await strDisplayRange
                                 .CheapReplaceAsync(
                                     "Self",
-                                    () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeSelf", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
+                                    t => LanguageManager.GetStringAsync(
+                                        "String_SpellRangeSelf", strLanguageToPrint, token: t), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "Special",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellDurationSpecial", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOS",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfSight", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOI",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfInfluence", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "Touch",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellRangeTouch",
-                                        strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
+                                        strLanguageToPrint, token: t), StringComparison.OrdinalIgnoreCase,
                                     token: token) // Short form to remain export-friendly
                                 .CheapReplaceAsync(
                                     "T",
-                                    () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeTouch", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
+                                    t => LanguageManager.GetStringAsync(
+                                        "String_SpellRangeTouch", strLanguageToPrint, token: t), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "(A)",
-                                    async () => "(" + await LanguageManager.GetStringAsync(
+                                    async t => "(" + await LanguageManager.GetStringAsync(
                                             "String_SpellRangeArea", strLanguageToPrint,
-                                            token: token)
+                                            token: t)
                                         .ConfigureAwait(false) + ")", StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "MAG",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_AttributeMAGShort", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token).ConfigureAwait(false);
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -1238,12 +1238,12 @@ namespace Chummer
                 {
                     if (value > 0 && _intServicesOwed <= 0 && !await GetBoundAsync(token).ConfigureAwait(false) &&
                         !await GetFetteredAsync(token).ConfigureAwait(false) && await CharacterObject.Spirits.AnyAsync(
-                            async x =>
+                            async (x, t) =>
                                 !ReferenceEquals(x, this)
-                                && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
-                                && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                                && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                                && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eType
+                                && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                                && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                                && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                         await Program.ShowScrollableMessageBoxAsync(
@@ -1487,12 +1487,12 @@ namespace Chummer
                     && eType == SpiritType.Spirit
                     && await GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false)
                     && !await GetFetteredAsync(token).ConfigureAwait(false)
-                    && await CharacterObject.Spirits.CountAsync(async x =>
+                    && await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false)).CountAsync(async (x, t) =>
                                                                    !ReferenceEquals(x, this)
-                                                                   && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit
-                                                                   && await x.GetBoundAsync(token).ConfigureAwait(false)
-                                                                   && !await x.GetFetteredAsync(token).ConfigureAwait(false)
-                                                                   && await x.GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                                   && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == SpiritType.Spirit
+                                                                   && await x.GetBoundAsync(t).ConfigureAwait(false)
+                                                                   && !await x.GetFetteredAsync(t).ConfigureAwait(false)
+                                                                   && await x.GetCountsAgainstBoundSpiritLimitAsync(t).ConfigureAwait(false), token).ConfigureAwait(false)
                     >= await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false))
                 {
                     string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
@@ -1507,12 +1507,12 @@ namespace Chummer
                     return;
                 }
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !value && await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && !await GetFetteredAsync(token).ConfigureAwait(false)
-                    && await CharacterObject.Spirits.AnyAsync(async x =>
+                    && await CharacterObject.Spirits.AnyAsync(async (x, t) =>
                         !ReferenceEquals(x, this)
-                        && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
-                        && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                        && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                        && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                        && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eType
+                        && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                        && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                        && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                     await Program.ShowScrollableMessageBoxAsync(
@@ -2164,7 +2164,7 @@ namespace Chummer
 
                     //Only one Fettered spirit is permitted.
                     if (await CharacterObject.Spirits
-                            .AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                            .AnyAsync((objSpirit, t) => objSpirit.GetFetteredAsync(t), token: token)
                             .ConfigureAwait(false))
                         return;
                 }
@@ -2172,12 +2172,12 @@ namespace Chummer
                          !await GetBoundAsync(token).ConfigureAwait(false) &&
                          await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits
                              .AnyAsync(
-                                 async x =>
+                                 async (x, t) =>
                                      !ReferenceEquals(x, this)
-                                     && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
-                                     && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                                     && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                                     && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token)
+                                     && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eEntityType
+                                     && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                                     && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                                     && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token)
                              .ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
@@ -2213,7 +2213,7 @@ namespace Chummer
                         return;
 
                     //Only one Fettered spirit is permitted.
-                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                    if (await CharacterObject.Spirits.AnyAsync((objSpirit, t) => objSpirit.GetFetteredAsync(t), token: token)
                             .ConfigureAwait(false))
                         return;
                     if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
@@ -2235,12 +2235,12 @@ namespace Chummer
                 }
                 else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !await GetBoundAsync(token).ConfigureAwait(false) &&
                          await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits.AnyAsync(
-                             async x =>
+                             async (x, t) =>
                                  !ReferenceEquals(x, this)
-                                 && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
-                                 && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                                 && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                                 && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                 && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eEntityType
+                                 && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                                 && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                                 && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                     await Program.ShowScrollableMessageBoxAsync(
@@ -2532,7 +2532,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -2566,17 +2566,18 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -2585,13 +2586,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -2946,8 +2948,8 @@ namespace Chummer
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
+                                if (await Program.OpenCharacters.AllAsync(async (x, t) => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
                                     && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter, token: token).ConfigureAwait(false))
@@ -3316,7 +3318,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => SaveMugshotsCore(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(t => SaveMugshotsCore(true, objWriter, t), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
@@ -3366,12 +3368,12 @@ namespace Chummer
                         = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                     try
                     {
-                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async imgMugshot =>
+                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async (imgMugshot, t) =>
                         {
                             await objWriter.WriteElementStringAsync(
                                 "mugshot",
-                                await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token)
-                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, t)
+                                    .ConfigureAwait(false), token: t).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }
                     finally
@@ -3471,11 +3473,13 @@ namespace Chummer
 
                         if (xmlMugshotsList.Count > 1)
                         {
-                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, i =>
+                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, (i, t) =>
                             {
+                                if (t.IsCancellationRequested)
+                                    return Task.FromCanceled<Bitmap>(t);
                                 string strLoop = astrMugshotsBase64[i];
                                 if (!string.IsNullOrEmpty(strLoop))
-                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token);
+                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, t);
                                 return Task.FromResult<Bitmap>(null);
                             }, token).ConfigureAwait(false);
                             foreach (Bitmap objImage in aobjMugshots)

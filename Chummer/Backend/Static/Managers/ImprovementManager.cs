@@ -719,8 +719,8 @@ namespace Chummer
                                                                      bool blnAddToRating, string strImprovedName,
                                                                      bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
-                                                                           blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token), token);
+            return Utils.SafelyRunSynchronously(t => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
+                                                                           blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, t), token);
         }
 
         /// <summary>
@@ -1636,9 +1636,9 @@ namespace Chummer
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
+            return Utils.SafelyRunSynchronously(t => DoSelectSkillCoreAsync(true, xmlBonusNode, objCharacter,
                 intRating, strFriendlyName,
-                blnIsKnowledgeSkill, token), token);
+                blnIsKnowledgeSkill, t), token);
         }
 
         /// <summary>
@@ -2300,8 +2300,8 @@ namespace Chummer
         public static string DoSelectSkillGroup(XmlNode xmlBonusNode, Character objCharacter, string strFriendlyName,
             CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter,
-                strFriendlyName, token), token);
+            return Utils.SafelyRunSynchronously(t => DoSelectSkillGroupCoreAsync(true, xmlBonusNode, objCharacter,
+                strFriendlyName, t), token);
         }
 
         public static Task<string> DoSelectSkillGroupAsync(XmlNode xmlBonusNode, Character objCharacter,
@@ -2391,8 +2391,8 @@ namespace Chummer
                                               XmlNode nodBonus, int intRating = 1, string strFriendlyName = "",
                                               bool blnAddImprovementsToCharacter = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
-                                                    intRating, strFriendlyName, blnAddImprovementsToCharacter, token), token);
+            return Utils.SafelyRunSynchronously(t => CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
+                                                    intRating, strFriendlyName, blnAddImprovementsToCharacter, t), token);
         }
 
         /// <summary>
@@ -3080,15 +3080,15 @@ namespace Chummer
                 }).ToList();
             }
 
-            return await objCharacter.Qualities.ToListAsync(async o =>
+            return await objCharacter.Qualities.ToListAsync(async (o, t) =>
             {
-                if (await o.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.Improvement)
+                if (await o.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.Improvement)
                     return false;
                 if (!string.IsNullOrEmpty(strSourceFriendlyName)
-                    && await o.GetSourceNameAsync(token).ConfigureAwait(false) != strSourceFriendlyName)
+                    && await o.GetSourceNameAsync(t).ConfigureAwait(false) != strSourceFriendlyName)
                     return false;
                 if (!string.IsNullOrEmpty(strQualityName)
-                    && await o.GetNameAsync(token).ConfigureAwait(false) == strQualityName)
+                    && await o.GetNameAsync(t).ConfigureAwait(false) == strQualityName)
                     return true;
                 string strImprovedName = objImprovement.ImprovedName;
                 return strImprovedName.IsGuid() && o.InternalId == strImprovedName;
@@ -3198,7 +3198,7 @@ namespace Chummer
 
         public static void EnableImprovements(Character objCharacter, IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => EnableImprovementsCoreAsync(true, objCharacter, objImprovementList, token), token);
+            Utils.SafelyRunSynchronously(t => EnableImprovementsCoreAsync(true, objCharacter, objImprovementList, t), token);
         }
 
         public static Task EnableImprovementsAsync(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
@@ -3918,7 +3918,7 @@ namespace Chummer
         public static void DisableImprovements(Character objCharacter,
                                                IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => DisableImprovementsCoreAsync(true, objCharacter, objImprovementList, token), token);
+            Utils.SafelyRunSynchronously(t => DisableImprovementsCoreAsync(true, objCharacter, objImprovementList, t), token);
         }
 
         public static Task DisableImprovementsAsync(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
@@ -5155,8 +5155,8 @@ namespace Chummer
                                                  bool blnReapplyImprovements = false,
                                                  bool blnAllowDuplicatesFromSameSource = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
-                                                    blnAllowDuplicatesFromSameSource, token), token);
+            return Utils.SafelyRunSynchronously(t => RemoveImprovementsCoreAsync(true, objCharacter, objImprovementList, blnReapplyImprovements,
+                                                    blnAllowDuplicatesFromSameSource, t), token);
         }
 
         /// <summary>
@@ -5667,7 +5667,7 @@ namespace Chummer
                                              ? objCharacter.Cyberware.GetAllDescendants(
                                                  x => x.Children, token)
                                              : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
-                                                 x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                                 (x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                                 {
                                     Grade objOldGrade = blnSync ? objCyberware.Grade : await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
                                     if (objOldGrade.Adapsin)
@@ -6038,7 +6038,7 @@ namespace Chummer
                                             x => x.InternalId == strUniqueName, token).ConfigureAwait(false)
                                         // Kept for legacy reasons
                                         : await objSkill.Specializations.FirstOrDefaultAsync(
-                                            async x => await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                            async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) ==
                                                        strUniqueName, token).ConfigureAwait(false);
                                 if (objSkillSpec != null)
                                 {
@@ -7199,7 +7199,7 @@ namespace Chummer
                 string propertyName = xpathMatch.Groups[2].Value;
                 string strOperator = xpathMatch.Groups[3].Success ? xpathMatch.Groups[3].Value : null;
                 string expectedValue = xpathMatch.Groups[4].Success
-                    ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
+                    ? xpathMatch.Groups[4].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 (bool found, object value) = await TryGetConditionValueAsync(targetObject, objectType, propertyName, token).ConfigureAwait(false);
@@ -7219,7 +7219,7 @@ namespace Chummer
                 string propertyName = atMatch.Groups[1].Value;
                 string strOperator = atMatch.Groups[2].Success ? atMatch.Groups[2].Value : null;
                 string expectedValue = atMatch.Groups[3].Success
-                    ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
+                    ? atMatch.Groups[3].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 (bool found, object value) = await TryGetConditionValueAsync(targetObject, objectType, propertyName, token).ConfigureAwait(false);
@@ -7242,7 +7242,7 @@ namespace Chummer
                 string propertyName = xpathMatch.Groups[2].Value;
                 string strOperator = xpathMatch.Groups[3].Success ? xpathMatch.Groups[3].Value : null;
                 string expectedValue = xpathMatch.Groups[4].Success
-                    ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
+                    ? xpathMatch.Groups[4].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value, token))
@@ -7261,7 +7261,7 @@ namespace Chummer
                 string propertyName = atMatch.Groups[1].Value;
                 string strOperator = atMatch.Groups[2].Success ? atMatch.Groups[2].Value : null;
                 string expectedValue = atMatch.Groups[3].Success
-                    ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
+                    ? atMatch.Groups[3].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value, token))

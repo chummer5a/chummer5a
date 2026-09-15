@@ -486,11 +486,10 @@ namespace Chummer.UI.Powers
                 decimal decPowerPointsRemaining = decPowerPointsTotal -
                                                   await _objCharacter.GetPowerPointsUsedAsync(token)
                                                       .ConfigureAwait(false);
-                string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    decPowerPointsTotal,
-                    decPowerPointsRemaining,
-                    await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false));
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strText = decPowerPointsTotal.ToString(GlobalSettings.CultureInfo).ConcatFast(strSpace, "(",
+                    decPowerPointsRemaining.ToString(GlobalSettings.CultureInfo),
+                    strSpace, await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false), ")");
                 await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
             }
             finally
@@ -1024,7 +1023,7 @@ namespace Chummer.UI.Powers
                                     .GetStringAsync("Tip_Power_EditNotes", token: t).ConfigureAwait(false);
                                 string strNotes = await p.GetNotesAsync(t).ConfigureAwait(false);
                                 if (!string.IsNullOrEmpty(strNotes))
-                                    strTooltip += Environment.NewLine + Environment.NewLine +
+                                    strTooltip += Utils.DoubleNewLine +
                                                   await strNotes.RtfToPlainTextAsync(token: t).ConfigureAwait(false);
                                 return strTooltip.WordWrap();
                             }

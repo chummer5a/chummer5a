@@ -272,7 +272,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (_setAddingNewAsync.Count > 0)
-                    await ParallelExtensions.ForEachAsync(_setAddingNewAsync, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(_setAddingNewAsync, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 base.OnAddingNew(e);
             }
             finally
@@ -327,7 +327,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (_setListChangedAsync.Count > 0)
-                    await ParallelExtensions.ForEachAsync(_setListChangedAsync, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(_setListChangedAsync, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 base.OnListChanged(e);
             }
             finally
@@ -384,7 +384,7 @@ namespace Chummer
                             lstAsyncEventsList.Add(new ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>(objEvent, new RemovingOldEventArgs(Items[j], j)));
                         }
                     }
-                    await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
                 }
             }
             finally
@@ -478,7 +478,7 @@ namespace Chummer
                     if (_setBeforeRemoveAsync.Count > 0)
                     {
                         RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                        await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -562,7 +562,7 @@ namespace Chummer
                 if (_setBeforeRemoveAsync.Count > 0)
                 {
                     RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
-                    await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                 }
             }
             finally

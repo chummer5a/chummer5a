@@ -355,9 +355,9 @@ namespace Chummer
         /// Load the Spell from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -1063,32 +1063,32 @@ namespace Chummer
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "F",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellForce", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellForce", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync("Overflow damage",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellOverflowDamage", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellOverflowDamage", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync("Damage Value",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellDamageValue", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellDamageValue", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync(
                                           "Toxin DV",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellToxinDV", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellToxinDV", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync("Disease DV",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellDiseaseDV", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellDiseaseDV", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync("Radiation Power",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellRadiationPower", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellRadiationPower", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync(
                                           "Special",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_Special", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_Special", strLanguage, token: t), token: token)
                                       .ConfigureAwait(false);
                 }
 
@@ -1267,41 +1267,41 @@ namespace Chummer
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "Self",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeSelf", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeSelf", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "LOS",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeLineOfSight", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeLineOfSight", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "LOI",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeLineOfInfluence", strLanguage, token: token),
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeLineOfInfluence", strLanguage, token: t),
                                           token: token)
                                       .CheapReplaceAsync(
                                           "Touch",
-                                          () => LanguageManager.GetStringAsync("String_SpellRangeTouch",
-                                                                               strLanguage, token: token),
+                                          t => LanguageManager.GetStringAsync("String_SpellRangeTouch",
+                                                                               strLanguage, token: t),
                                           token: token) // Short form to remain export-friendly
                                       .CheapReplaceAsync(
                                           "T",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeTouch", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeTouch", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "(A)",
-                                          async () => "(" + await LanguageManager
+                                          async t => "(" + await LanguageManager
                                                                   .GetStringAsync(
                                                                       "String_SpellRangeArea", strLanguage,
-                                                                      token: token).ConfigureAwait(false) + ")",
+                                                                      token: t).ConfigureAwait(false) + ")",
                                           token: token)
                                       .CheapReplaceAsync(
                                           "MAG",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_AttributeMAGShort", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_AttributeMAGShort", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "Special",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_Special", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_Special", strLanguage, token: t), token: token)
                                       .ConfigureAwait(false);
                 }
 
@@ -1481,7 +1481,7 @@ namespace Chummer
                     bool blnForce = strReturn.StartsWith('F');
                     string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    strDv = string.IsNullOrEmpty(strDv) ? "0" : strDv.TrimStart('+');
+                    strDv = string.IsNullOrEmpty(strDv) ? "0" : strDv.TrimStartNoAlloc('+');
 
                     string strToAppend = string.Empty;
                     int intDrainDv = 0;
@@ -1587,7 +1587,7 @@ namespace Chummer
                 bool blnForce = strReturn.StartsWith('F');
                 string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
                 //Navigator can't do math on a single value, so inject a mathable value.
-                strDv = string.IsNullOrEmpty(strDv) ? "0" : strDv.TrimStart('+');
+                strDv = string.IsNullOrEmpty(strDv) ? "0" : strDv.TrimStartNoAlloc('+');
 
                 string strToAppend = string.Empty;
                 int intDrainDv = 0;
@@ -2340,14 +2340,13 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = Skill;
                     CharacterAttrib objAttrib
                         = _objCharacter.GetAttribute(BarehandedAdept ? "MAG" : objSkill?.Attribute ?? "MAG");
                     if (objAttrib != null)
                     {
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                        sbdReturn.Append(strSpace, objAttrib.DisplayNameFormatted, strSpace)
+                                .Append('(').Append(objAttrib.DisplayValue).Append(')');
                     }
 
                     if (objSkill != null)
@@ -2367,8 +2366,8 @@ namespace Chummer
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace, '+', strSpace);
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                        sbdReturn.Append(strSpace, _objCharacter.GetObjectName(objImprovement), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();
@@ -2390,7 +2389,6 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
-                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                     CharacterAttrib objAttrib
                         = await _objCharacter.GetAttributeAsync(
@@ -2398,8 +2396,8 @@ namespace Chummer
                             objSkill != null ? await objSkill.GetAttributeAsync(token).ConfigureAwait(false) : "MAG", token: token).ConfigureAwait(false);
                     if (objAttrib != null)
                     {
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                            objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                        sbdReturn.Append(strSpace, await objAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(await objAttrib.GetDisplayValueAsync(token).ConfigureAwait(false)).Append(')');
                     }
 
                     if (objSkill != null)
@@ -2421,8 +2419,8 @@ namespace Chummer
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace, '+', strSpace);
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                            await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                        sbdReturn.Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();
@@ -2642,7 +2640,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 List<Improvement> lstReturn = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
-                await _objCharacter.Improvements.ForEachWithBreakAsync(async objImprovement =>
+                await _objCharacter.Improvements.ForEachWithBreakAsync(async (objImprovement, t) =>
                 {
                     if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
                         return true;
@@ -2684,7 +2682,7 @@ namespace Chummer
                                     // - @range = Touch - only apply to touch spells
                                     // - @name != "Specific Spell" - exclude specific spells
                                     // - @alchemical = false and @range = Touch - multiple conditions
-                                    if (!await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, token).ConfigureAwait(false))
+                                    if (!await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, t).ConfigureAwait(false))
                                         break;
                                 }
                                 
@@ -2695,7 +2693,7 @@ namespace Chummer
                                 {
                                     //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
                                     // we are returning either the original improvement, null or a newly instantiated improvement
-                                    Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, token).ConfigureAwait(false);
+                                    Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, t).ConfigureAwait(false);
                                     if (objCompensatedImprovement != null)
                                     {
                                         lstReturn.Add(objCompensatedImprovement);

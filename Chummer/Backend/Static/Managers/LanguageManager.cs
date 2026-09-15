@@ -77,26 +77,26 @@ namespace Chummer
                     {
                         ManagerErrorMessage = "Language strings for the default language ("
                                               + GlobalSettings.DefaultLanguage + ") could not be loaded:"
-                                              + Environment.NewLine + Environment.NewLine + "No strings found in file.";
+                                              + Utils.DoubleNewLine + "No strings found in file.";
                     }
                 }
                 catch (IOException ex)
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
+                        + Utils.DoubleNewLine + ex.Demystify().ToString();
                 }
                 catch (XmlException ex)
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
+                        + Utils.DoubleNewLine + ex.Demystify().ToString();
                 }
             }
             else
                 ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                     + ") could not be loaded:"
-                    + Environment.NewLine + Environment.NewLine + "File " + strFilePath
+                    + Utils.DoubleNewLine + "File " + strFilePath
                     + " does not exist or cannot be found.";
         }
 
@@ -116,7 +116,7 @@ namespace Chummer
                                             bool blnDoResumeLayout = true, CancellationToken token = default)
         {
             // Use RunOnMainThread here because we don't want redraws while we translate a form
-            Utils.RunOnMainThread(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token: token);
+            Utils.RunOnMainThread(t => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, t), token: token);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Chummer
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                   || Utils.SafelyRunSynchronously(() => LoadLanguageCoreAsync(true, strLanguage, token), token);
+                   || Utils.SafelyRunSynchronously(t => LoadLanguageCoreAsync(true, strLanguage, t), token);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Chummer
             {
                 objNewLanguage = await s_DicLanguageData
                     .GetOrAddAsync(
-                        strKey, x => LanguageData.CreateAsync(strLanguage, token), token)
+                        strKey, (x, t) => LanguageData.CreateAsync(strLanguage, t), token)
                     .ConfigureAwait(false);
             }
 
@@ -259,7 +259,7 @@ namespace Chummer
                 {
                     string strMessage = "Language with code " + strLanguage +
                                         " could not be loaded for the following reasons:" +
-                                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage;
+                                        Utils.DoubleNewLine + objNewLanguage.ErrorMessage;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         Program.ShowScrollableMessageBox(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -842,7 +842,7 @@ namespace Chummer
                                        CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token), token);
+                t => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, t), token);
         }
 
         /// <summary>
@@ -894,7 +894,7 @@ namespace Chummer
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
             string strReturn
-                = Utils.SafelyRunSynchronously(() => GetStringCoreAsync(true, strKey, strLanguage, false, token), token);
+                = Utils.SafelyRunSynchronously(t => GetStringCoreAsync(true, strKey, strLanguage, false, t), token);
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -1093,7 +1093,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetDataDocumentCoreAsync(true, strLanguage, token), token);
+            return Utils.SafelyRunSynchronously(t => GetDataDocumentCoreAsync(true, strLanguage, t), token);
         }
 
         /// <summary>
@@ -1235,7 +1235,7 @@ namespace Chummer
                             }
                         }, token)).ConfigureAwait(false);
 
-                    strMessage = sbdMissingMessage.Append(sbdUnusedMessage).ToString().TrimEndOnce(Environment.NewLine);
+                    strMessage = sbdMissingMessage.Append(sbdUnusedMessage).ToTrimmedString();
                 }
             }
 
@@ -1408,8 +1408,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                             token: token) + GetString("String_Space", strLanguage, token: token)
-                                           + "(" + GetString("String_DescAdept", strLanguage, token: token) + ")";
+                             token: token).ConcatFast(GetString("String_Space", strLanguage, token: token),
+                                           "(", GetString("String_DescAdept", strLanguage, token: token), ")");
         }
 
         public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false,
@@ -1417,11 +1417,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                                        token: token).ConfigureAwait(false)
-                   + await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                   + "(" + await GetStringAsync(
-                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
+            return (await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
+                                        token: token).ConfigureAwait(false)).ConcatFast(
+                   await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
+                   "(", await GetStringAsync(
+                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
         }
 
         /// <summary>
@@ -1439,7 +1439,7 @@ namespace Chummer
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
                 : Utils.SafelyRunSynchronously(
-                    () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token),
+                    t => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, t),
                     token);
         }
 
@@ -1654,7 +1654,7 @@ namespace Chummer
                                 string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
                                 if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
                                 {
-                                    strPreferFile = strSnippet.Trim('[', ']');
+                                    strPreferFile = strSnippet.TrimNoAlloc('[', ']');
                                     strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
                                 }
                             }
@@ -2001,8 +2001,8 @@ namespace Chummer
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
                 : Utils.SafelyRunSynchronously(
-                    () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile,
-                                                         token), token);
+                    t => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile,
+                                                         t), token);
         }
 
         /// <summary>
@@ -2171,7 +2171,7 @@ namespace Chummer
                     string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
                     if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
                     {
-                        strPreferFile = strSnippet.Trim('[', ']');
+                        strPreferFile = strSnippet.TrimNoAlloc('[', ']');
                         strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
                     }
                 }
@@ -2520,9 +2520,9 @@ namespace Chummer
         {
             return cboLanguage == null
                 ? Task.FromException(new ArgumentNullException(nameof(cboLanguage)))
-                : PopulateSheetLanguageListAsyncInner();
+                : PopulateSheetLanguageListAsyncInner(token);
 
-            async Task PopulateSheetLanguageListAsyncInner()
+            async Task PopulateSheetLanguageListAsyncInner(CancellationToken innerToken)
             {
                 string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
                 int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
@@ -2534,10 +2534,10 @@ namespace Chummer
                 }
 
                 List<ListItem> lstSheetLanguageList
-                    = await GetSheetLanguageListAsync(lstCharacters, true, token).ConfigureAwait(false);
+                    = await GetSheetLanguageListAsync(lstCharacters, true, innerToken).ConfigureAwait(false);
                 try
                 {
-                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: token)
+                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: innerToken)
                                      .ConfigureAwait(false);
                     await cboLanguage.DoThreadSafeAsync(x =>
                     {
@@ -2546,7 +2546,7 @@ namespace Chummer
                         if (x.SelectedIndex == -1)
                             x.SelectedValue
                                 = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
-                    }, token: token).ConfigureAwait(false);
+                    }, token: innerToken).ConfigureAwait(false);
                 }
                 finally
                 {

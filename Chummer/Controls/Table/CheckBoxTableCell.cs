@@ -50,13 +50,13 @@ namespace Chummer.UI.Table
                 if (VisibleExtractor != null)
                 {
                     _checkBox.Visible =
-                        Utils.SafelyRunSynchronously(() => VisibleExtractor(tValue, _objMyToken), _objMyToken);
+                        Utils.SafelyRunSynchronously(t => VisibleExtractor(tValue, t), _objMyToken);
                 }
 
                 if (EnabledExtractor != null)
                 {
                     _checkBox.Enabled =
-                        Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, _objMyToken), _objMyToken);
+                        Utils.SafelyRunSynchronously(t => EnabledExtractor(Value as T, t), _objMyToken);
                 }
 
                 if (ValueUpdater == null)
@@ -66,7 +66,7 @@ namespace Chummer.UI.Table
                 try
                 {
                     _checkBox.Checked =
-                        Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken);
+                        Utils.SafelyRunSynchronously(t => ValueGetter(tValue, t), _objMyToken);
                 }
                 finally
                 {

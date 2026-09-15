@@ -237,14 +237,14 @@ namespace Chummer
                                    Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
-                                = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
+                                = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                             bool blnSuccess = dicCharacterSettings.TryGetValue(
                                 GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting);
-                            await dicCharacterSettings.ForEachAsync(async x =>
+                            await dicCharacterSettings.ForEachAsync(async (x, t) =>
                             {
                                 lstCharacterSettings.Add(new ListItem(x.Value,
                                                                       await x.Value
-                                                                             .GetCurrentDisplayNameAsync(token)
+                                                                             .GetCurrentDisplayNameAsync(t)
                                                                              .ConfigureAwait(false)));
                             }, token).ConfigureAwait(false);
 

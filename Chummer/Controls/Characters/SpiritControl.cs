@@ -147,7 +147,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes", token: _objMyToken).ConfigureAwait(false);
                     string strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strNotes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                        strTooltip += Utils.DoubleNewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
                 else
@@ -171,7 +171,7 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
                     string strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strNotes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                        strTooltip += Utils.DoubleNewLine + strNotes;
                     await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
                 }
 
@@ -443,7 +443,7 @@ namespace Chummer
                         : "Tip_Sprite_EditNotes", token: _objMyToken).ConfigureAwait(false);
                 strNotes = await _objSpirit.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strNotes))
-                    strTooltip += Environment.NewLine + Environment.NewLine + strNotes;
+                    strTooltip += Utils.DoubleNewLine + strNotes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

@@ -191,7 +191,7 @@ namespace Chummer.UI.Attributes
                 await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, token).ConfigureAwait(false);
             }
 
-            if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+            if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && cmdImproveATT != null) // Need second check because this method could fire when a create mode character is being saved into career mode
             {
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.UpgradeToolTip)))
                 {

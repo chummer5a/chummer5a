@@ -444,10 +444,10 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                         out StringBuilder sbdAccessories))
                         {
-                            await objSelectedWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                            await objSelectedWeapon.WeaponAccessories.ForEachAsync(async (objAccessory, t) =>
                             {
                                 sbdAccessories.AppendLine(
-                                    await objAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                    await objAccessory.GetCurrentDisplayNameAsync(t).ConfigureAwait(false));
                             }, token).ConfigureAwait(false);
 
                             if (sbdAccessories.Length > 0)
@@ -486,15 +486,15 @@ namespace Chummer
 
         private async Task<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false, CancellationToken token = default)
         {
-            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
             try
             {
-                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
+                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
+                bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                 decimal decNuyen = !blnFreeItem && blnShowOnlyAffordItems ? await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false) : decimal.MaxValue;
-                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
-                if (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) == 1 && !blnForCategories)
+                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
+                if (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == 1 && !blnForCategories)
                 {
                     DataTable tabWeapons = new DataTable("weapons");
                     tabWeapons.Columns.Add("WeaponGuid");
@@ -608,9 +608,9 @@ namespace Chummer
                                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdAccessories))
                                 {
-                                    await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                                    await objWeapon.WeaponAccessories.ForEachAsync(async (objAccessory, t) =>
                                     {
-                                        sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(token)
+                                        sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(t)
                                             .ConfigureAwait(false));
                                     }, token).ConfigureAwait(false);
 
@@ -778,7 +778,7 @@ namespace Chummer
                                                                       intOverLimit)));
                         }
 
-                        string strOldSelected = await lstWeapon.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+                        string strOldSelected = await lstWeapon.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                         Interlocked.Increment(ref _intLoading);
                         try
                         {
@@ -794,13 +794,13 @@ namespace Chummer
                                 x.SelectedValue = strOldSelected;
                             else
                                 x.SelectedIndex = -1;
-                        }, token: token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                 }
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
             }
 
             return true;

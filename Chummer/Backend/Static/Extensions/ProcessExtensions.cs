@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -37,19 +38,31 @@ namespace Chummer
             TaskCompletionSource<int> objTaskCompletionSource = new TaskCompletionSource<int>();
             if (token != default)
             {
-                using (token.RegisterWithoutEC(x => ((TaskCompletionSource<int>)x).TrySetCanceled(token), objTaskCompletionSource))
+                Tuple<TaskCompletionSource<int>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<int>, CancellationToken>(objTaskCompletionSource, token);
+                using (token.RegisterWithoutEC(TrySetTaskCanceled, tupArg))
                 {
                     objProcess.EnableRaisingEvents = true;
-                    objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
+                    objProcess.Exited += TrySetTaskResultToExit;
                     objProcess.Start();
                     return await objTaskCompletionSource.Task.ConfigureAwait(false);
                 }
             }
 
             objProcess.EnableRaisingEvents = true;
-            objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
+            objProcess.Exited += TrySetTaskResultToExit;
             objProcess.Start();
             return await objTaskCompletionSource.Task.ConfigureAwait(false);
+
+            void TrySetTaskResultToExit(object sender, EventArgs args)
+            {
+                objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
+            }
+        }
+
+        private static void TrySetTaskCanceled(object objTuple)
+        {
+            Tuple<TaskCompletionSource<int>, CancellationToken> tupToProcess = (Tuple<TaskCompletionSource<int>, CancellationToken>)objTuple;
+            tupToProcess.Item1.TrySetCanceled(tupToProcess.Item2);
         }
 
         /// <summary>

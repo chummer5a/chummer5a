@@ -341,7 +341,7 @@ namespace Chummer.Backend.Equipment
                         if (lstGridNodes == null || lstGridNodes.Count <= 0)
                             return;
 
-                        foreach (LifestyleQuality objFreeGrid in await LifestyleQualities.ToListAsync(x => x.GetIsFreeGridAsync(token),
+                        foreach (LifestyleQuality objFreeGrid in await LifestyleQualities.ToListAsync((x, t) => x.GetIsFreeGridAsync(t),
                                      token: token).ConfigureAwait(false))
                         {
                             await objFreeGrid.RemoveAsync(false, token).ConfigureAwait(false);
@@ -379,12 +379,12 @@ namespace Chummer.Backend.Equipment
                 }
 
                 List<LifestyleQuality> lstToRemove = new List<LifestyleQuality>(await _lstLifestyleQualities.GetCountAsync(token).ConfigureAwait(false));
-                await _lstLifestyleQualities.ForEachAsync(async objQuality =>
+                await _lstLifestyleQualities.ForEachAsync(async (objQuality, t) =>
                 {
-                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Selected)
+                    if (await objQuality.GetOriginSourceAsync(t).ConfigureAwait(false) == QualitySource.Selected)
                     {
-                        XPathNavigator xmlQuality = await objQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
-                        if (!await xmlQuality.RequirementsMetAsync(_objCharacter, this, token: token)
+                        XPathNavigator xmlQuality = await objQuality.GetNodeXPathAsync(t).ConfigureAwait(false);
+                        if (!await xmlQuality.RequirementsMetAsync(_objCharacter, this, token: t)
                                 .ConfigureAwait(false))
                         {
                             lstToRemove.Add(objQuality);
@@ -518,9 +518,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing lifestyle.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -741,8 +741,8 @@ namespace Chummer.Backend.Equipment
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objQuality.Load(xmlQuality, this);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objQuality.Load(xmlQuality, this, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     LifestyleQualities.Add(objQuality);
                                 }
@@ -787,8 +787,8 @@ namespace Chummer.Backend.Equipment
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objQuality.Load(xmlQuality, this);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objQuality.Load(xmlQuality, this, token);
                                     objQuality.IsFreeGrid = true;
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     LifestyleQualities.Add(objQuality);
@@ -994,9 +994,9 @@ namespace Chummer.Backend.Equipment
                 xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
 
                 // Calculate the cost of Positive Qualities.
-                await LifestyleQualities.ForEachAsync(async objQuality =>
+                await LifestyleQualities.ForEachAsync(async (objQuality, t) =>
                 {
-                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                    if (await objQuality.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn)
                     {
                         intMinArea -= objQuality.Area;
                         intMinComfort -= objQuality.Comforts;
@@ -1110,7 +1110,7 @@ namespace Chummer.Backend.Equipment
                     try
                     {
                         // Retrieve the Qualities for the Advanced Lifestyle if applicable.
-                        await LifestyleQualities.ForEachAsync(objQuality => objQuality.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                        await LifestyleQualities.ForEachAsync((objQuality, t) => objQuality.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -1931,14 +1931,14 @@ namespace Chummer.Backend.Equipment
                     token.ThrowIfCancellationRequested();
                     // This needs a handler for translations, will fix later.
                     LifestyleQuality objNotAHomeQuality = await LifestyleQualities.FirstOrDefaultAsync(
-                                                              async x =>
-                                                                  await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                              async (x, t) =>
+                                                                  await x.GetNameAsync(t).ConfigureAwait(false) ==
                                                                   "Not a Home" &&
-                                                                  await x.GetOriginSourceAsync(token)
+                                                                  await x.GetOriginSourceAsync(t)
                                                                       .ConfigureAwait(false) == QualitySource.BuiltIn,
                                                               token: token).ConfigureAwait(false)
                                                           ?? await LifestyleQualities.FirstOrDefaultAsync(
-                                                              async x => await x.GetNameAsync(token)
+                                                              async (x, t) => await x.GetNameAsync(t)
                                                                   .ConfigureAwait(false) == "Not a Home",
                                                               token: token).ConfigureAwait(false);
                     if (value == "Bolt Hole")
@@ -4008,11 +4008,11 @@ namespace Chummer.Backend.Equipment
 
                 // Base cost multiplier
                 decimal decMultiplier = 1.0m;
-                await LifestyleQualities.ForEachAsync(async x =>
+                await LifestyleQualities.ForEachAsync(async (x, t) =>
                 {
-                    if (await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                    if (await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn)
                     {
-                        decimal decInnerMultiplier = await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                        decimal decInnerMultiplier = await x.GetBaseMultiplierAsync(t).ConfigureAwait(false);
                         if (decInnerMultiplier != 0)
                             decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
                     }
@@ -4356,7 +4356,7 @@ namespace Chummer.Backend.Equipment
                             // We want to make sure that the largest discounts affect the costliest lifestyle first and the largest markups affect the smallest first
                             List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
                                 ? await _objCharacter.Lifestyles.ToListAsync(token)
-                                : await _objCharacter.Lifestyles.ToListAsync(async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) == strBaseLifestyle, token);
+                                : await _objCharacter.Lifestyles.ToListAsync(async (x, t) => await x.GetBaseLifestyleAsync(t).ConfigureAwait(false) == strBaseLifestyle, token);
                             Dictionary<Lifestyle, decimal> dicLifestyleCosts = new Dictionary<Lifestyle, decimal>(lstLifestyles.Count);
                             foreach (Lifestyle objLoop in lstLifestyles)
                             {
@@ -4411,7 +4411,7 @@ namespace Chummer.Backend.Equipment
                 // Dependents and metatype adjustments are handled separately
                 List<Quality> lstDependentsQualities =
                     await _objCharacter.Qualities.ToListAsync(
-                        async x => (await x.GetNameAsync(token).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
+                        async (x, t) => (await x.GetNameAsync(t).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
                 decimal decDependents = 0;
                 decimal decMetatype = 0;
                 decimal decOther = 1.0m;
@@ -4997,7 +4997,7 @@ namespace Chummer.Backend.Equipment
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -5031,17 +5031,18 @@ namespace Chummer.Backend.Equipment
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -5050,13 +5051,14 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

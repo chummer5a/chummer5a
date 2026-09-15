@@ -1356,9 +1356,9 @@ namespace Chummer
                         AvailabilityValue objTotalAvail = new AvailabilityValue(
                             intRating,
                             await strAvailExpression.CheapReplaceAsync("MinRating",
-                                                                       () => nudRating.DoThreadSafeFuncAsync(
+                                                                       t => nudRating.DoThreadSafeFuncAsync(
                                                                            y => y.Minimum.ToString(
-                                                                               GlobalSettings.InvariantCultureInfo), token: token),
+                                                                               GlobalSettings.InvariantCultureInfo), token: t),
                                                                        token: token).ConfigureAwait(false),
                             _intAvailModifier + (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlCyberware.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound());
                         string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
@@ -1601,7 +1601,7 @@ namespace Chummer
                                         strText = "[" + strText + "]";
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
 
-                                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                                    strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
                                     if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                                     {
                                         bool blnIsSuccess;
@@ -2566,7 +2566,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strExpression))
                 return new ValueTuple<decimal, bool>(0, true);
             bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating, token).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(intRating, token).TrimStartNoAlloc('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
@@ -2576,23 +2576,18 @@ namespace Chummer
                     {
                         sbdValue.Append(strExpression);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
-                            () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
-                            () => _strCachedParentCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "{Parent Gear Cost}",
-                            () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentGearCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Parent Gear Cost",
-                            () => _strCachedParentGearCost.GetValueAsync(token), token: token).ConfigureAwait(false);
+                            t => _strCachedParentGearCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                         // Deliberately don't replace "Gear Cost" and "Children Cost" so that they get properly displayed in the UI
-
-                        await sbdValue.CheapReplaceAsync(strExpression, "{MinRating}",
-                            () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "MinRating",
-                            () => intMinRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}",
-                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        await sbdValue.CheapReplaceAsync(strExpression, "Rating",
-                            () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        string strMinRating = intMinRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdValue.Replace("{MinRating}", strMinRating).Replace("MinRating", strMinRating);
+                        string strRating = intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        sbdValue.Replace("{Rating}", strRating).Replace("Rating", strRating);
 
                         Dictionary<string, int> dicVehicleValues = null;
                         if (strExpression.Contains("{STR") || strExpression.Contains("{AGI"))

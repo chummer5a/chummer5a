@@ -1025,22 +1025,22 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sdbValue))
+                                                              out StringBuilder sbdValue))
                 {
                     foreach (string s in AttributeSection.AttributeStrings)
                     {
                         int i = selectedValues.Count(c => c == s);
                         if (i <= 0)
                             continue;
-                        if (sdbValue.Length > 0)
+                        if (sbdValue.Length > 0)
                         {
-                            sdbValue.Append(',', strSpace);
+                            sbdValue.Append(',', strSpace);
                         }
 
-                        sdbValue.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
+                        sbdValue.Append(s, strSpace, "(", i.ToString(GlobalSettings.CultureInfo), ")");
                     }
 
-                    SelectedValue = sdbValue.ToString();
+                    SelectedValue = sbdValue.ToString();
                 }
             }
         }
@@ -7100,7 +7100,7 @@ namespace Chummer
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
                     frmPickItem.MyForm.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
-                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml"))));
+                        .Where(x => !objSkill.HasSpecialization(x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml"))));
                 else
                     frmPickItem.MyForm.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))

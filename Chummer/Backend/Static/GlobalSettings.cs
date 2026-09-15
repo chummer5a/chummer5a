@@ -729,10 +729,9 @@ namespace Chummer
                                 Program.ShowScrollableMessageBox(
                                     string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
                                         objCustomDataDirectory.XmlException.Message),
-                                    string.Format(CultureInfo,
-                                        LanguageManager.GetString("MessageTitle_FailedLoad") +
-                                        LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name +
-                                        Path.DirectorySeparatorChar + "manifest.xml"), MessageBoxButtons.OK,
+                                    LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
+                                        LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
+                                        Path.DirectorySeparatorChar.ToString(), "manifest.xml"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                             }
 
@@ -797,10 +796,9 @@ namespace Chummer
                         Program.ShowScrollableMessageBox(
                             string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
                                 objCustomDataDirectory.XmlException.Message),
-                            string.Format(CultureInfo,
-                                LanguageManager.GetString("MessageTitle_FailedLoad") +
-                                LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name +
-                                Path.DirectorySeparatorChar + "manifest.xml"), MessageBoxButtons.OK,
+                            LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
+                                LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
+                                Path.DirectorySeparatorChar.ToString(), "manifest.xml"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
 
@@ -1650,7 +1648,7 @@ namespace Chummer
                     s_xmlClipboard.ImportNode(value, true);
 
                     if (ClipboardChangedAsync != null)
-                        Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
+                        Utils.SafelyRunSynchronously(t => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), t), token);
                     ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
                 }
             }

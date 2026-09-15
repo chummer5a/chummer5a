@@ -39,7 +39,7 @@ namespace Chummer
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDelete(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = Utils.DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => SafeDeleteCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token), token);
+            return Utils.SafelyRunSynchronously(t => SafeDeleteCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, t), token);
         }
 
         /// <summary>

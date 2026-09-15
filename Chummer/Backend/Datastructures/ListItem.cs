@@ -299,11 +299,11 @@ namespace Chummer
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
             string strNumberX = strX?.TrimEnd(_achrCachedNuyenSymbols)
-                                    .TrimEnd('+')
+                                    .TrimEndNoAlloc('+')
                                     .TrimEndOnce(_strCachedRestrictedSymbol)
                                     .TrimEndOnce(_strCachedForbiddenSymbol);
             string strNumberY = strY?.TrimEnd(_achrCachedNuyenSymbols)
-                                    .TrimEnd('+')
+                                    .TrimEndNoAlloc('+')
                                     .TrimEndOnce(_strCachedRestrictedSymbol)
                                     .TrimEndOnce(_strCachedForbiddenSymbol);
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decX))

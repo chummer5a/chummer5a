@@ -397,7 +397,7 @@ namespace Chummer
                                      .ConfigureAwait(false);
                         if (lstPlugins.Count > 0)
                         {
-                            await ParallelExtensions.ForEachAsync(lstPlugins, objPlugin => RefreshPluginNodesAsync(objPlugin, objTempToken), objTempToken).ConfigureAwait(false);
+                            await ParallelExtensions.ForEachAsync(lstPlugins, RefreshPluginNodesAsync, objTempToken).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
@@ -1109,7 +1109,7 @@ namespace Chummer
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
                         if (!string.IsNullOrEmpty(strFilePath))
-                            strTooltip += Environment.NewLine + Environment.NewLine;
+                            strTooltip += Utils.DoubleNewLine;
                         strTooltip += strErrorPrefix + strErrorText;
                     }
                     else
@@ -1180,8 +1180,8 @@ namespace Chummer
 
                     try
                     {
-                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async i => lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                        await ParallelExtensions.ForAsync(0, intRecentsCount, async i => lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async (i, t) => lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: t).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intRecentsCount, async (i, t) => lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: t).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -1410,11 +1410,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                await ParallelExtensions.ForEachAsync(dicWatch.Keys, async strKey =>
+                await ParallelExtensions.ForEachAsync(dicWatch.Keys, async (strKey, t) =>
                 {
-                    TreeNode objNode = await CacheCharacter(strKey, token: token).ConfigureAwait(false);
+                    TreeNode objNode = await CacheCharacter(strKey, token: t).ConfigureAwait(false);
                     if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
-                        dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
+                        dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(t).ConfigureAwait(false)]);
                 }, token).ConfigureAwait(false);
                 
                 foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
@@ -1539,13 +1539,13 @@ namespace Chummer
                             try
                             {
                                 int i1 = i;
-                                await treCharacterList.DoThreadSafeAsync(treList =>
+                                await treCharacterList.DoThreadSafeAsync((treList, t) =>
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (objExistingNode != null)
                                     {
                                         treList.Nodes.Remove(objExistingNode);
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                     }
 
                                     if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
@@ -1556,7 +1556,7 @@ namespace Chummer
                                         TreeNode objFavoriteNode = treList.FindNode("Favorite", false);
                                         TreeNode objRecentNode = treList.FindNode("Recent", false);
                                         TreeNode objWatchNode = treList.FindNode("Watch", false);
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         if (objFavoriteNode != null && objRecentNode != null
                                                                     && objWatchNode != null)
                                             treList.Nodes.Insert(i1 + intNodeOffset + 3, node);
@@ -1675,14 +1675,14 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .AddOrUpdateAsync(
                                                  strFile,
-                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token)
+                                                 async (x, t) => objTemp = await objGeneratedCache.GetValueAsync(t)
                                                      .ConfigureAwait(false),
-                                                 async (x, y) =>
+                                                 async (x, y, t) =>
                                                  {
-                                                     if (!await y.LoadFromFileAsync(strFile, token).ConfigureAwait(false))
+                                                     if (!await y.LoadFromFileAsync(strFile, t).ConfigureAwait(false))
                                                      {
                                                          objToDispose = y;
-                                                         return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
+                                                         return objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false);
                                                      }
                                                      return y;
                                                  }, token)
@@ -1695,7 +1695,7 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .GetOrAddAsync(
                                                  strFile,
-                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false),
+                                                 async (x, t) => objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false),
                                                  token)
                                              .ConfigureAwait(false);
                         }
@@ -1742,7 +1742,7 @@ namespace Chummer
             {
                 objNode.ForeColor = ColorManager.ErrorColor;
                 if (!string.IsNullOrEmpty(objNode.ToolTipText))
-                    objNode.ToolTipText += Environment.NewLine + Environment.NewLine;
+                    objNode.ToolTipText += Utils.DoubleNewLine;
                 objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) +
                                        await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + Environment.NewLine +
                                        strErrorText;

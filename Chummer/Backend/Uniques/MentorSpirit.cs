@@ -541,9 +541,9 @@ namespace Chummer
         /// Load the Mentor Spirit from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -887,37 +887,28 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                string strReturn;
                 string strReturn1 = LanguageManager.TranslateExtra(Extra, strLanguage, _objCharacter);
                 string strReturn2 = LanguageManager.TranslateExtra(ExtraChoice1, strLanguage, _objCharacter);
                 string strReturn3 = LanguageManager.TranslateExtra(ExtraChoice2, strLanguage, _objCharacter);
 
-                if (!string.IsNullOrWhiteSpace(strReturn1))
+                if (string.IsNullOrWhiteSpace(strReturn1))
                 {
-                    strReturn = strReturn1;
-                    if (!string.IsNullOrWhiteSpace(strReturn2))
-                    {
-                        strReturn += Environment.NewLine + strReturn2;
-                    }
-                    if (!string.IsNullOrWhiteSpace(strReturn3))
-                    {
-                        strReturn += Environment.NewLine + strReturn3;
-                    }
+                    if (string.IsNullOrWhiteSpace(strReturn2))
+                        return strReturn3;
+                    else
+                        return string.Concat(strReturn2, Environment.NewLine, strReturn3);
                 }
-                else if (!string.IsNullOrWhiteSpace(strReturn2))
+                else if (string.IsNullOrWhiteSpace(strReturn2))
                 {
-                    strReturn = strReturn2;
-                    if (!string.IsNullOrWhiteSpace(strReturn3))
-                    {
-                        strReturn += Environment.NewLine + strReturn3;
-                    }
+                    if (string.IsNullOrWhiteSpace(strReturn3))
+                        return strReturn1;
+                    else
+                        return string.Concat(strReturn1, Environment.NewLine, strReturn3);
                 }
+                else if (string.IsNullOrWhiteSpace(strReturn3))
+                    return string.Concat(strReturn1, Environment.NewLine, strReturn2);
                 else
-                {
-                    strReturn = strReturn3;
-                }
-
-                return strReturn;
+                    return strReturn1.ConcatFast(Environment.NewLine, strReturn2, Environment.NewLine, strReturn3);
             }
         }
 
@@ -930,7 +921,6 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strReturn;
                 string strReturn1 = await LanguageManager
                     .TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false), strLanguage, _objCharacter, token: token)
                     .ConfigureAwait(false);
@@ -941,32 +931,24 @@ namespace Chummer
                     .TranslateExtraAsync(await GetExtraChoice2Async(token).ConfigureAwait(false), strLanguage, _objCharacter, token: token)
                     .ConfigureAwait(false);
 
-                if (!string.IsNullOrWhiteSpace(strReturn1))
+                if (string.IsNullOrWhiteSpace(strReturn1))
                 {
-                    strReturn = strReturn1;
-                    if (!string.IsNullOrWhiteSpace(strReturn2))
-                    {
-                        strReturn += Environment.NewLine + strReturn2;
-                    }
-                    if (!string.IsNullOrWhiteSpace(strReturn3))
-                    {
-                        strReturn += Environment.NewLine + strReturn3;
-                    }
+                    if (string.IsNullOrWhiteSpace(strReturn2))
+                        return strReturn3;
+                    else
+                        return string.Concat(strReturn2, Environment.NewLine, strReturn3);
                 }
-                else if (!string.IsNullOrWhiteSpace(strReturn2))
+                else if (string.IsNullOrWhiteSpace(strReturn2))
                 {
-                    strReturn = strReturn2;
-                    if (!string.IsNullOrWhiteSpace(strReturn3))
-                    {
-                        strReturn += Environment.NewLine + strReturn3;
-                    }
+                    if (string.IsNullOrWhiteSpace(strReturn3))
+                        return strReturn1;
+                    else
+                        return string.Concat(strReturn1, Environment.NewLine, strReturn3);
                 }
+                else if (string.IsNullOrWhiteSpace(strReturn3))
+                    return string.Concat(strReturn1, Environment.NewLine, strReturn2);
                 else
-                {
-                    strReturn = strReturn3;
-                }
-
-                return strReturn;
+                    return strReturn1.ConcatFast(Environment.NewLine, strReturn2, Environment.NewLine, strReturn3);
             }
             finally
             {

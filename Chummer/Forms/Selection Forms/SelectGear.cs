@@ -1694,9 +1694,9 @@ namespace Chummer
                         if (_objGearParent is IHasRating objCastParent)
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                async t => (await objCastParent.GetRatingAsync(t)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                async t => (await objCastParent.GetRatingAsync(t)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -1706,8 +1706,8 @@ namespace Chummer
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Gear " + strMatrixAttribute + "}",
-                                () => (_objGearParent as IHasMatrixAttributes)?.GetBaseMatrixAttribute(
-                                        strMatrixAttribute).ToString(GlobalSettings.InvariantCultureInfo) ?? "0"
+                                async t => (_objGearParent is IHasMatrixAttributes objInnerParent ? await objInnerParent.GetBaseMatrixAttributeAsync(
+                                        strMatrixAttribute, t) : 0).ToString(GlobalSettings.InvariantCultureInfo)
                                     , token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent " + strMatrixAttribute + "}",
                                 () => (_objGearParent as IHasMatrixAttributes)?.GetMatrixAttributeString(

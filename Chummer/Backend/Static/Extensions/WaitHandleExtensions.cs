@@ -90,9 +90,8 @@ namespace Chummer
                     objTaskCompletionSource,
                     intTimeout,
                     true);
-                objTokenRegistration = token.RegisterWithoutEC(
-                    objState => ((TaskCompletionSource<bool>)objState).TrySetCanceled(token),
-                    objTaskCompletionSource);
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<bool>, CancellationToken>(objTaskCompletionSource, token);
+                objTokenRegistration = token.RegisterWithoutEC(TrySetTaskCanceled, tupArg);
                 return await objTaskCompletionSource.Task.ConfigureAwait(false);
             }
             finally
@@ -101,6 +100,12 @@ namespace Chummer
                 if (objTokenRegistration != default)
                     objTokenRegistration.Dispose();
             }
+        }
+
+        private static void TrySetTaskCanceled(object objTuple)
+        {
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupToProcess = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objTuple;
+            tupToProcess.Item1.TrySetCanceled(tupToProcess.Item2);
         }
 
         /// <summary>

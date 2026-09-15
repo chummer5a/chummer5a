@@ -222,9 +222,9 @@ namespace Chummer
         /// Load the Complex Form from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -660,23 +660,23 @@ namespace Chummer
             {
                 strReturn = await strReturn
                                   .CheapReplaceAsync(
-                                      "L", () => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage, token: token), token: token)
+                                      "L", t => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Overflow damage",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellOverflowDamage", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellOverflowDamage", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Damage Value",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellDamageValue", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellDamageValue", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync(
-                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage, token: token), token: token)
+                                      "Toxin DV", t => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Disease DV",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellDiseaseDV", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellDiseaseDV", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Radiation Power",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellRadiationPower", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellRadiationPower", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync(
-                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage, token: token), token: token).ConfigureAwait(false);
+                                      "Special", t => LanguageManager.GetStringAsync("String_Special", strLanguage, token: t), token: token).ConfigureAwait(false);
             }
             return strReturn;
         }
@@ -759,7 +759,7 @@ namespace Chummer
                         bool blnForce = strReturn.StartsWith('L');
                         string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
                         //Navigator can't do math on a single value, so inject a mathable value.
-                        strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
+                        strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStartNoAlloc('+');
 
                         string strToAppend = string.Empty;
                         int intFadingDv = 0;
@@ -829,7 +829,7 @@ namespace Chummer
                     bool blnForce = strReturn.StartsWith('L');
                     string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
+                    strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStartNoAlloc('+');
 
                     string strToAppend = string.Empty;
                     int intFadingDv = 0;
@@ -1317,13 +1317,11 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                     {
-                        string strFormat = strSpace + "{0}" + strSpace + "({1})";
                         CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
                         if (objResonanceAttrib != null)
                         {
-                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                                   objResonanceAttrib.DisplayNameFormatted,
-                                                   objResonanceAttrib.DisplayValue);
+                            sbdReturn.Append(strSpace, objResonanceAttrib.DisplayNameFormatted, strSpace)
+                                .Append('(').Append(objResonanceAttrib.DisplayValue).Append(')');
                         }
 
                         Skill objSkill = Skill;
@@ -1342,8 +1340,8 @@ namespace Chummer
                         {
                             if (sbdReturn.Length > 0)
                                 sbdReturn.Append(strSpace, '+', strSpace);
-                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                                   _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                            sbdReturn.Append(strSpace, _objCharacter.GetObjectName(objImprovement), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                         }
 
                         return sbdReturn.ToString();
@@ -1366,13 +1364,11 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     CharacterAttrib objResonanceAttrib = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
                     if (objResonanceAttrib != null)
                     {
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               await objResonanceAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false),
-                                               await objResonanceAttrib.GetDisplayValueAsync(token).ConfigureAwait(false));
+                        sbdReturn.Append(strSpace, await objResonanceAttrib.GetDisplayNameFormattedAsync(token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(await objResonanceAttrib.GetDisplayValueAsync(token).ConfigureAwait(false)).Append(')');
                     }
 
                     Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
@@ -1392,8 +1388,8 @@ namespace Chummer
                     {
                         if (sbdReturn.Length > 0)
                             sbdReturn.Append(strSpace, '+', strSpace);
-                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                                               await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                        sbdReturn.Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace)
+                                .Append('(').Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
                     return sbdReturn.ToString();

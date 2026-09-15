@@ -1275,7 +1275,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <cost>20000</cost>
-      <allowed>High</allowed>
+      <allowed>High,Luxury</allowed>
       <source>HT</source>
       <page>141</page>
     </quality>

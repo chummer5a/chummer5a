@@ -36,7 +36,7 @@ namespace Chummer
 
         private static Task<string> GetNuyenSymbolAsync(string strLanguage, CancellationToken token = default)
         {
-            return s_DicCachedStrings.GetOrAddAsync(strLanguage, x => LanguageManager.GetStringAsync("String_NuyenSymbol", x, token: token), token);
+            return s_DicCachedStrings.GetOrAddAsync(strLanguage, (x, t) => LanguageManager.GetStringAsync("String_NuyenSymbol", x, token: t), token);
         }
 
         public string BaseString { get; }

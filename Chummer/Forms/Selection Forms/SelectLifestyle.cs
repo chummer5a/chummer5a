@@ -121,7 +121,7 @@ namespace Chummer
                             foreach (LifestyleQuality objQuality in e.NewItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                await AddToTree(objQuality).ConfigureAwait(false);
+                                await AddToTree(objQuality, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -164,7 +164,7 @@ namespace Chummer
 
                             foreach (LifestyleQuality objQuality in e.NewItems)
                             {
-                                await AddToTree(objQuality).ConfigureAwait(false);
+                                await AddToTree(objQuality, token).ConfigureAwait(false);
                             }
 
                             if (lstOldParents.Count > 0)
@@ -185,20 +185,20 @@ namespace Chummer
 
                     break;
 
-                    async ValueTask AddToTree(LifestyleQuality objQuality)
+                    async ValueTask AddToTree(LifestyleQuality objQuality, CancellationToken innerToken)
                     {
-                        TreeNode objNode = await objQuality.CreateTreeNode(token).ConfigureAwait(false);
+                        TreeNode objNode = await objQuality.CreateTreeNode(innerToken).ConfigureAwait(false);
                         if (objNode == null)
                             return;
                         TreeNode objParentNode;
-                        if (await objQuality.GetIsFreeGridAsync(token).ConfigureAwait(false))
+                        if (await objQuality.GetIsFreeGridAsync(innerToken).ConfigureAwait(false))
                         {
                             if (nodFreeGridsRoot == null)
                             {
                                 nodFreeGridsRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids", token: token).ConfigureAwait(false)
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids", token: innerToken).ConfigureAwait(false)
                                 };
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 await treLifestyleQualities.DoThreadSafeAsync(x =>
@@ -209,7 +209,7 @@ namespace Chummer
                                         // ReSharper disable once AssignNullToNotNullAttribute
                                         + (nodEntertainmentsRoot == null ? 0 : 1), nodFreeGridsRoot);
                                     nodFreeGridsRoot.Expand();
-                                }, token: token).ConfigureAwait(false);
+                                }, token: innerToken).ConfigureAwait(false);
                             }
                             objParentNode = nodFreeGridsRoot;
                         }
@@ -224,7 +224,7 @@ namespace Chummer
                                         {
                                             Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
                                             Text = await LanguageManager.GetStringAsync(
-                                                "Node_SelectAdvancedLifestyle_PositiveQualities", token: token).ConfigureAwait(false)
+                                                "Node_SelectAdvancedLifestyle_PositiveQualities", token: innerToken).ConfigureAwait(false)
                                         };
                                         // ReSharper disable once AssignNullToNotNullAttribute
                                         await treLifestyleQualities.DoThreadSafeAsync(x =>
@@ -232,7 +232,7 @@ namespace Chummer
                                             x.Nodes.Insert(0,
                                                            nodPositiveQualityRoot);
                                             nodPositiveQualityRoot.Expand();
-                                        }, token: token).ConfigureAwait(false);
+                                        }, token: innerToken).ConfigureAwait(false);
                                     }
 
                                     objParentNode = nodPositiveQualityRoot;
@@ -245,7 +245,7 @@ namespace Chummer
                                         {
                                             Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
                                             Text = await LanguageManager.GetStringAsync(
-                                                "Node_SelectAdvancedLifestyle_NegativeQualities", token: token).ConfigureAwait(false)
+                                                "Node_SelectAdvancedLifestyle_NegativeQualities", token: innerToken).ConfigureAwait(false)
                                         };
                                         // ReSharper disable once AssignNullToNotNullAttribute
                                         await treLifestyleQualities.DoThreadSafeAsync(x =>
@@ -253,7 +253,7 @@ namespace Chummer
                                             x.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
                                                            nodNegativeQualityRoot);
                                             nodNegativeQualityRoot.Expand();
-                                        }, token: token).ConfigureAwait(false);
+                                        }, token: innerToken).ConfigureAwait(false);
                                     }
 
                                     objParentNode = nodNegativeQualityRoot;
@@ -266,7 +266,7 @@ namespace Chummer
                                         {
                                             Tag = "Node_SelectAdvancedLifestyle_Entertainments",
                                             Text = await LanguageManager.GetStringAsync(
-                                                "Node_SelectAdvancedLifestyle_Entertainments", token: token).ConfigureAwait(false)
+                                                "Node_SelectAdvancedLifestyle_Entertainments", token: innerToken).ConfigureAwait(false)
                                         };
                                         await treLifestyleQualities.DoThreadSafeAsync(x =>
                                         {
@@ -275,7 +275,7 @@ namespace Chummer
                                                 // ReSharper disable once AssignNullToNotNullAttribute
                                                 + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
                                             nodEntertainmentsRoot.Expand();
-                                        }, token: token).ConfigureAwait(false);
+                                        }, token: innerToken).ConfigureAwait(false);
                                     }
 
                                     objParentNode = nodEntertainmentsRoot;
@@ -300,7 +300,7 @@ namespace Chummer
 
                             lstParentNodeChildren.Insert(intTargetIndex, objNode);
                             x.SelectedNode = objNode;
-                        }, token: token).ConfigureAwait(false);
+                        }, token: innerToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -317,12 +317,12 @@ namespace Chummer
 
             await treLifestyleQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
-            await _objLifestyle.LifestyleQualities.ForEachAsync(async objQuality =>
+            await _objLifestyle.LifestyleQualities.ForEachAsync(async (objQuality, t) =>
             {
-                TreeNode objNode = await objQuality.CreateTreeNode(token).ConfigureAwait(false);
+                TreeNode objNode = await objQuality.CreateTreeNode(t).ConfigureAwait(false);
                 if (objNode == null)
                     return;
-                if (await objQuality.GetIsFreeGridAsync(token).ConfigureAwait(false))
+                if (await objQuality.GetIsFreeGridAsync(t).ConfigureAwait(false))
                 {
                     if (nodFreeGridsRoot == null)
                     {
@@ -330,7 +330,7 @@ namespace Chummer
                         {
                             Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
                             Text = await LanguageManager
-                                .GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities", token: token)
+                                .GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities", token: t)
                                 .ConfigureAwait(false)
                         };
                         nodFreeGridsRoot = objNewNode;
@@ -341,11 +341,11 @@ namespace Chummer
                         {
                             x.Nodes.Insert(intOffset, objNewNode);
                             objNewNode.Expand();
-                        }, token: token).ConfigureAwait(false);
+                        }, token: t).ConfigureAwait(false);
                     }
 
                     TreeNode root = nodFreeGridsRoot;
-                    await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                    await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: t)
                         .ConfigureAwait(false);
                 }
                 else
@@ -361,7 +361,7 @@ namespace Chummer
                                     Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
                                     Text = await LanguageManager.GetStringAsync(
                                             "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                            token: token)
+                                            token: t)
                                         .ConfigureAwait(false)
                                 };
                                 nodPositiveQualityRoot = objNewNode;
@@ -369,11 +369,11 @@ namespace Chummer
                                 {
                                     x.Nodes.Insert(0, objNewNode);
                                     objNewNode.Expand();
-                                }, token: token).ConfigureAwait(false);
+                                }, token: t).ConfigureAwait(false);
                             }
 
                             TreeNode root = nodPositiveQualityRoot;
-                            await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                            await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: t)
                                 .ConfigureAwait(false);
                             break;
                         }
@@ -386,7 +386,7 @@ namespace Chummer
                                     Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
                                     Text = await LanguageManager.GetStringAsync(
                                             "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                            token: token)
+                                            token: t)
                                         .ConfigureAwait(false)
                                 };
                                 nodNegativeQualityRoot = objNewNode;
@@ -395,11 +395,11 @@ namespace Chummer
                                 {
                                     x.Nodes.Insert(intOffset, objNewNode);
                                     objNewNode.Expand();
-                                }, token: token).ConfigureAwait(false);
+                                }, token: t).ConfigureAwait(false);
                             }
 
                             TreeNode root = nodNegativeQualityRoot;
-                            await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                            await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: t)
                                 .ConfigureAwait(false);
                             break;
                         }
@@ -412,7 +412,7 @@ namespace Chummer
                                     Tag = "Node_SelectAdvancedLifestyle_Entertainments",
                                     Text = await LanguageManager.GetStringAsync(
                                             "Node_SelectAdvancedLifestyle_Entertainments",
-                                            token: token)
+                                            token: t)
                                         .ConfigureAwait(false)
                                 };
                                 nodEntertainmentsRoot = objNewNode;
@@ -422,12 +422,12 @@ namespace Chummer
                                 {
                                     x.Nodes.Insert(intOffset, objNewNode);
                                     objNewNode.Expand();
-                                }, token: token).ConfigureAwait(false);
+                                }, token: t).ConfigureAwait(false);
                             }
 
                             TreeNode root = nodEntertainmentsRoot;
                             await treLifestyleQualities
-                                .DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                                .DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: t)
                                 .ConfigureAwait(false);
                             break;
                         }

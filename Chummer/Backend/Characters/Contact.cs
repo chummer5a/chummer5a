@@ -291,7 +291,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -325,17 +325,18 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -344,13 +345,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -508,7 +510,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(t => SaveCoreAsync(true, objWriter, t), token);
         }
 
         /// <summary>
@@ -2218,9 +2220,11 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return "(" + Connection.ToString(GlobalSettings.CultureInfo)
-                        + "/" + Loyalty.ToString(GlobalSettings.CultureInfo)
-                        + (IsGroup ? LanguageManager.GetString("String_GroupContactAbbrev") + ")" : ")");
+                    return IsGroup
+                        ? "(".ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
+                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_GroupContactAbbrev"), ")")
+                        : "(".ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
+                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), ")");
                 }
             }
         }
@@ -2231,9 +2235,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return "(" + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
-                        + "/" + (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
-                        + (IsGroup ? await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false) + ")" : ")");
+                return IsGroup
+                        ? "(".ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false), ")")
+                        : "(".ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")");
             }
             finally
             {
@@ -3351,8 +3358,8 @@ namespace Chummer
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
+                                if (await Program.OpenCharacters.AllAsync(async (x, t) => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
                                     && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter, token: token).ConfigureAwait(false))
@@ -3730,7 +3737,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => SaveMugshotsCore(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(t => SaveMugshotsCore(true, objWriter, t), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
@@ -3783,12 +3790,12 @@ namespace Chummer
                         = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                     try
                     {
-                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async imgMugshot =>
+                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async (imgMugshot, t) =>
                         {
                             await objWriter.WriteElementStringAsync(
                                 "mugshot",
-                                await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token)
-                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, t)
+                                    .ConfigureAwait(false), token: t).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }
                     finally
@@ -3890,11 +3897,13 @@ namespace Chummer
 
                         if (xmlMugshotsList.Count > 1)
                         {
-                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, i =>
+                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, (i, t) =>
                             {
+                                if (t.IsCancellationRequested)
+                                    return Task.FromCanceled<Bitmap>(t);
                                 string strLoop = astrMugshotsBase64[i];
                                 if (!string.IsNullOrEmpty(strLoop))
-                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token);
+                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, t);
                                 return Task.FromResult<Bitmap>(null);
                             }, token).ConfigureAwait(false);
                             foreach (Bitmap objImage in aobjMugshots)

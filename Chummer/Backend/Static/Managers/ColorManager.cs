@@ -447,64 +447,62 @@ namespace Chummer
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode, CancellationToken token = default)
         {
-            void ApplyButtonStyle()
+            void ApplyButtonStyle(CancellationToken innerToken)
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                objControl.DoThreadSafe((x, y) =>
+                objControl.DoThreadSafe(x =>
                 {
                     x.ForeColor = SystemColors.ControlText;
                     if (x is ButtonBase z)
                         z.UseVisualStyleBackColor = true;
-                }, token);
+                }, innerToken);
             }
             switch (objControl)
             {
                 case DataGridView objDataGridView:
-                    objDataGridView.DoThreadSafe((x, y) =>
                     {
+                        Color objBackgroundColor;
+                        Color objForeColor;
+                        Color objBackColor;
+                        Color objAlternateBackColor;
                         if (blnLightMode)
                         {
-                            x.BackgroundColor = AppWorkspaceLight;
-                            x.GridColor = ControlTextLight;
-                            x.DefaultCellStyle.ForeColor = ControlTextLight;
-                            x.DefaultCellStyle.BackColor = ControlLight;
-                            x.ColumnHeadersDefaultCellStyle.ForeColor = ControlTextLight;
-                            x.ColumnHeadersDefaultCellStyle.BackColor = ControlLight;
-                            x.AlternatingRowsDefaultCellStyle.ForeColor = ControlTextLight;
-                            x.AlternatingRowsDefaultCellStyle.BackColor = ControlLighterLight;
-                            x.RowTemplate.DefaultCellStyle.ForeColor = ControlTextLight;
-                            x.RowTemplate.DefaultCellStyle.BackColor = ControlLight;
-                            foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
-                            {
-                                y.ThrowIfCancellationRequested();
-                                objColumn.DefaultCellStyle.ForeColor = ControlTextLight;
-                                objColumn.DefaultCellStyle.BackColor = ControlLight;
-                            }
+                            objBackgroundColor = AppWorkspaceLight;
+                            objForeColor = ControlTextLight;
+                            objBackColor = ControlLight;
+                            objAlternateBackColor = ControlLighterLight;
                         }
                         else
                         {
-                            x.BackgroundColor = AppWorkspaceDark;
-                            x.GridColor = ControlTextDark;
-                            x.DefaultCellStyle.ForeColor = ControlTextDark;
-                            x.DefaultCellStyle.BackColor = ControlDark;
-                            x.ColumnHeadersDefaultCellStyle.ForeColor = ControlTextDark;
-                            x.ColumnHeadersDefaultCellStyle.BackColor = ControlDark;
-                            x.AlternatingRowsDefaultCellStyle.ForeColor = ControlTextDark;
-                            x.AlternatingRowsDefaultCellStyle.BackColor = ControlLighterDark;
-                            x.RowTemplate.DefaultCellStyle.ForeColor = ControlTextDark;
-                            x.RowTemplate.DefaultCellStyle.BackColor = ControlDark;
+                            objBackgroundColor = AppWorkspaceDark;
+                            objForeColor = ControlTextDark;
+                            objBackColor = ControlDark;
+                            objAlternateBackColor = ControlLighterDark;
+                        }
+                        objDataGridView.DoThreadSafe((x, t) =>
+                        {
+                            x.BackgroundColor = objBackgroundColor;
+                            x.GridColor = objForeColor;
+                            x.DefaultCellStyle.ForeColor = objForeColor;
+                            x.DefaultCellStyle.BackColor = objBackColor;
+                            x.ColumnHeadersDefaultCellStyle.ForeColor = objForeColor;
+                            x.ColumnHeadersDefaultCellStyle.BackColor = objBackColor;
+                            x.AlternatingRowsDefaultCellStyle.ForeColor = objForeColor;
+                            x.AlternatingRowsDefaultCellStyle.BackColor = objAlternateBackColor;
+                            x.RowTemplate.DefaultCellStyle.ForeColor = objForeColor;
+                            x.RowTemplate.DefaultCellStyle.BackColor = objBackColor;
                             foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
                             {
-                                y.ThrowIfCancellationRequested();
-                                objColumn.DefaultCellStyle.ForeColor = ControlTextDark;
-                                objColumn.DefaultCellStyle.BackColor = ControlDark;
+                                t.ThrowIfCancellationRequested();
+                                objColumn.DefaultCellStyle.ForeColor = objForeColor;
+                                objColumn.DefaultCellStyle.BackColor = objBackColor;
                             }
-                        }
-                    }, token);
+                        }, token);
+                    }
                     break;
 
                 case SplitContainer objSplitControl:
-                    objSplitControl.DoThreadSafe((x, y) =>
+                    objSplitControl.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -517,12 +515,12 @@ namespace Chummer
                             x.BackColor = SplitterColorDark;
                         }
                     }, token);
-                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel1, token), blnLightMode, token);
-                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel2, token), blnLightMode, token);
+                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc(x => x.Panel1, token), blnLightMode, token);
+                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc(x => x.Panel2, token), blnLightMode, token);
                     break;
 
                 case TreeView treControl:
-                    treControl.DoThreadSafe((x, y) =>
+                    treControl.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -542,7 +540,7 @@ namespace Chummer
                     break;
 
                 case TextBox txtControl:
-                    txtControl.DoThreadSafe((x, y) =>
+                    txtControl.DoThreadSafe(x =>
                     {
                         if (x.ForeColor != ErrorColor)
                         {
@@ -578,7 +576,7 @@ namespace Chummer
                     break;
 
                 case ListView objListView:
-                    objListView.DoThreadSafe((x, y) =>
+                    objListView.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -648,7 +646,7 @@ namespace Chummer
                 case ListBox _:
                 case ComboBox _:
                 case TableCell _:
-                    objControl.DoThreadSafe((x, y) =>
+                    objControl.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -664,7 +662,7 @@ namespace Chummer
                     break;
 
                 case GroupBox _:
-                    objControl.DoThreadSafe((x, y) =>
+                    objControl.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -691,15 +689,15 @@ namespace Chummer
                     return;
 
                 case CheckBox chkControl:
-                    if (chkControl.DoThreadSafeFunc((x, y) => x.Appearance == Appearance.Button, token) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
+                    if (chkControl.DoThreadSafeFunc(x => x.Appearance == Appearance.Button, token) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
                     {
-                        ApplyButtonStyle();
+                        ApplyButtonStyle(token);
                         break;
                     }
 
                     if (chkControl is ColorableCheckBox chkControlColored)
                     {
-                        chkControlColored.DoThreadSafe((x, y) =>
+                        chkControlColored.DoThreadSafe(x =>
                         {
                             x.DefaultColorScheme = blnLightMode;
                             if (blnLightMode) // Disabled case for Light mode already handled by the switch above
@@ -712,14 +710,14 @@ namespace Chummer
                     goto default;
 
                 case Button cmdControl:
-                    if (cmdControl.DoThreadSafeFunc((x, y) => x.FlatStyle, token) == FlatStyle.Flat)
+                    if (cmdControl.DoThreadSafeFunc(x => x.FlatStyle, token) == FlatStyle.Flat)
                         goto default;
-                    ApplyButtonStyle();
+                    ApplyButtonStyle(token);
                     break;
 
                 case HeaderCell _:
                     // Header cells should use inverted colors
-                    objControl.DoThreadSafe((x, y) =>
+                    objControl.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -735,30 +733,30 @@ namespace Chummer
                     return;
 
                 case TableLayoutPanel tlpControl:
-                    tlpControl.DoThreadSafe((x, y) =>
+                    tlpControl.DoThreadSafe(x =>
                     {
                         if (x.BorderStyle != BorderStyle.None)
                             x.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
                     }, token);
                     goto default;
                 case Form frmControl:
-                    MenuStrip objMainMenuStrip = frmControl.DoThreadSafeFunc((x, y) => x.MainMenuStrip, token);
+                    MenuStrip objMainMenuStrip = frmControl.DoThreadSafeFunc(x => x.MainMenuStrip, token);
                     if (objMainMenuStrip != null)
                     {
-                        foreach (ToolStripMenuItem tssItem in objMainMenuStrip.DoThreadSafeFunc((x, y) => x.Items, token))
+                        foreach (ToolStripMenuItem tssItem in objMainMenuStrip.DoThreadSafeFunc(x => x.Items, token))
                             ApplyColorsRecursively(tssItem, blnLightMode, token);
                     }
                     goto default;
                 case TabControl objTabControl:
-                    foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc((x, y) => x.TabPages, token))
+                    foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc(x => x.TabPages, token))
                         ApplyColorsRecursively(tabPage, blnLightMode, token);
                     goto default;
                 case ToolStrip tssStrip:
-                    foreach (ToolStripItem tssItem in tssStrip.DoThreadSafeFunc((x, y) => x.Items, token))
+                    foreach (ToolStripItem tssItem in tssStrip.DoThreadSafeFunc(x => x.Items, token))
                         ApplyColorsRecursively(tssItem, blnLightMode, token);
                     goto default;
                 default:
-                    objControl.DoThreadSafe((x, y) =>
+                    objControl.DoThreadSafe(x =>
                     {
                         if (blnLightMode)
                         {
@@ -789,10 +787,10 @@ namespace Chummer
                           || objControl is Button || (objControl is Panel && !(objControl is SplitterPanel
                                                                                || objControl
                                                                                    .DoThreadSafeFunc(
-                                                                                       (x, y) => x.BackColor, token).A
+                                                                                       x => x.BackColor, token).A
                                                                                == byte.MaxValue))))
                     {
-                        objControl.DoThreadSafe((x, y) =>
+                        objControl.DoThreadSafe(x =>
                         {
                             if (blnLightMode)
                             {
@@ -819,7 +817,7 @@ namespace Chummer
                     break;
             }
 
-            foreach (Control objChild in objControl.DoThreadSafeFunc((x, y) => x.Controls, token))
+            foreach (Control objChild in objControl.DoThreadSafeFunc(x => x.Controls, token))
                 ApplyColorsRecursively(objChild, blnLightMode, token);
         }
 
@@ -831,9 +829,9 @@ namespace Chummer
             if (objParent != null)
                 objParent.DoThreadSafe(DoColor, token: token);
             else
-                DoColor();
+                DoColor(token);
 
-            void DoColor()
+            void DoColor(CancellationToken innerToken)
             {
                 if (blnLightMode)
                 {
@@ -845,7 +843,7 @@ namespace Chummer
                         tssItem.ForeColor = ControlDarkestLight;
                     else
                         tssItem.ForeColor = ControlTextLight;
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     if (tssItem.BackColor == ControlLighterDark)
                         tssItem.BackColor = ControlLighterLight;
                     else if (tssItem.BackColor == ControlLightestDark)
@@ -863,7 +861,7 @@ namespace Chummer
                         tssItem.ForeColor = ControlDarkestDark;
                     else
                         tssItem.ForeColor = ControlTextDark;
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     if (tssItem.BackColor == ControlLighterLight)
                         tssItem.BackColor = ControlLighterDark;
                     else if (tssItem.BackColor == ControlLightestLight)
@@ -881,7 +879,7 @@ namespace Chummer
                         ApplyColorsRecursively(tssDropDownChild, blnLightMode, token);
                     break;
                 case ColorableToolStripSeparator tssSeparator when objParent != null:
-                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode, token: token);
+                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode, token);
                     break;
                 case ColorableToolStripSeparator tssSeparator:
                     tssSeparator.DefaultColorScheme = blnLightMode;
@@ -928,7 +926,7 @@ namespace Chummer
 
         private static async Task ApplyColorsRecursivelyAsync(Control objControl, bool blnLightMode, CancellationToken token = default)
         {
-            Task ApplyButtonStyle()
+            Task ApplyButtonStyle(CancellationToken innerToken)
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
                 return objControl.DoThreadSafeAsync(x =>
@@ -936,7 +934,7 @@ namespace Chummer
                     x.ForeColor = SystemColors.ControlText;
                     if (x is ButtonBase z)
                         z.UseVisualStyleBackColor = true;
-                }, token);
+                }, innerToken);
             }
             switch (objControl)
             {
@@ -960,7 +958,7 @@ namespace Chummer
                             objBackColor = ControlDark;
                             objAlternateBackColor = ControlLighterDark;
                         }
-                        await objDataGridView.DoThreadSafeAsync(x =>
+                        await objDataGridView.DoThreadSafeAsync((x, t) =>
                         {
                             x.BackgroundColor = objBackgroundColor;
                             x.GridColor = objForeColor;
@@ -974,6 +972,7 @@ namespace Chummer
                             x.RowTemplate.DefaultCellStyle.BackColor = objBackColor;
                             foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
                             {
+                                t.ThrowIfCancellationRequested();
                                 objColumn.DefaultCellStyle.ForeColor = objForeColor;
                                 objColumn.DefaultCellStyle.BackColor = objBackColor;
                             }
@@ -1195,7 +1194,7 @@ namespace Chummer
                 case CheckBox chkControl:
                     if (await chkControl.DoThreadSafeFuncAsync(x => x.Appearance == Appearance.Button, token).ConfigureAwait(false) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
                     {
-                        await ApplyButtonStyle().ConfigureAwait(false);
+                        await ApplyButtonStyle(token).ConfigureAwait(false);
                         break;
                     }
 
@@ -1224,7 +1223,7 @@ namespace Chummer
                 case Button cmdControl:
                     if (await cmdControl.DoThreadSafeFuncAsync(x => x.FlatStyle, token).ConfigureAwait(false) == FlatStyle.Flat)
                         goto default;
-                    await ApplyButtonStyle().ConfigureAwait(false);
+                    await ApplyButtonStyle(token).ConfigureAwait(false);
                     break;
 
                 case HeaderCell _:
@@ -1258,7 +1257,7 @@ namespace Chummer
                     }, token).ConfigureAwait(false);
                     goto default;
                 case Form frmControl:
-                    MenuStrip objMainMenuStrip = await frmControl.DoThreadSafeFuncAsync(x => x.MainMenuStrip, token: token).ConfigureAwait(false);
+                    MenuStrip objMainMenuStrip = await frmControl.DoThreadSafeFuncAsync(x => x.MainMenuStrip, token).ConfigureAwait(false);
                     if (objMainMenuStrip != null)
                     {
                         foreach (ToolStripMenuItem tssItem in await objMainMenuStrip.DoThreadSafeFuncAsync(x => x.Items, token).ConfigureAwait(false))
@@ -1360,9 +1359,9 @@ namespace Chummer
             if (objParent != null)
                 await objParent.DoThreadSafeAsync(DoColor, token).ConfigureAwait(false);
             else
-                DoColor();
+                DoColor(token);
 
-            void DoColor()
+            void DoColor(CancellationToken innerToken)
             {
                 if (blnLightMode)
                 {
@@ -1374,7 +1373,7 @@ namespace Chummer
                         tssItem.ForeColor = ControlDarkestLight;
                     else
                         tssItem.ForeColor = ControlTextLight;
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     if (tssItem.BackColor == ControlLighterDark)
                         tssItem.BackColor = ControlLighterLight;
                     else if (tssItem.BackColor == ControlLightestDark)
@@ -1392,7 +1391,7 @@ namespace Chummer
                         tssItem.ForeColor = ControlDarkestDark;
                     else
                         tssItem.ForeColor = ControlTextDark;
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     if (tssItem.BackColor == ControlLighterLight)
                         tssItem.BackColor = ControlLighterDark;
                     else if (tssItem.BackColor == ControlLightestLight)

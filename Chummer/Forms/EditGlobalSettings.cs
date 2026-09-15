@@ -1410,7 +1410,7 @@ namespace Chummer
                     && setAppNames.Contains(strAppNameUpper))
                     return;
 
-                await _dicCachedPdfAppNames.ForEachWithBreakAsync(async kvpEntry =>
+                await _dicCachedPdfAppNames.ForEachWithBreakAsync(async (kvpEntry, t) =>
                 {
                     if (kvpEntry.Value.Contains(strAppNameUpper))
                     {
@@ -1426,7 +1426,7 @@ namespace Chummer
                                 if (x.SelectedIndex == -1)
                                     x.SelectedIndex = 0;
                             }
-                        }, token).ConfigureAwait(false);
+                        }, t).ConfigureAwait(false);
                         return false;
                     }
 
@@ -2866,25 +2866,27 @@ namespace Chummer
                             await ScanFilesForPDFTexts(astrFiles, dicPatternsToMatch, dicBackupPatternsToMatch, frmLoadingBar.MyForm)
                                 .ConfigureAwait(false);
                         sw.Stop();
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdFeedback))
+                        if (Log.IsInfoEnabled)
                         {
-                            sbdFeedback.AppendLine().AppendLine()
-                                .AppendLine("-------------------------------------------------------------")
-                                .AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                    "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
-                                    strSelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
-                                    list.Count).AppendLine().AppendLine();
-                            foreach (SourcebookInfo sourcebook in list)
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                       out StringBuilder sbdFeedback))
                             {
-                                sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                    "{0} with Offset {1} path: {2}", sourcebook.Code,
-                                    sourcebook.Offset, sourcebook.Path).AppendLine();
-                            }
+                                sbdFeedback.AppendLine().AppendLine()
+                                    .AppendLine("-------------------------------------------------------------")
+                                    .Append("Scan for PDFs in Folder ", strSelectedPath, " completed in ")
+                                    .AppendLine(sw.ElapsedMilliseconds.ToString(GlobalSettings.InvariantCultureInfo), "ms.")
+                                    .AppendLine(list.Count.ToString(GlobalSettings.InvariantCultureInfo), " sourcebook(s) was/were found:")
+                                    .AppendLine();
+                                foreach (SourcebookInfo sourcebook in list)
+                                {
+                                    sbdFeedback.Append(sourcebook.Code, " with Offset ", sourcebook.Offset.ToString(GlobalSettings.InvariantCultureInfo))
+                                        .AppendLine(" path: ", sourcebook.Path);
+                                }
 
-                            sbdFeedback.AppendLine()
-                                .AppendLine("-------------------------------------------------------------");
-                            Log.Info(sbdFeedback.ToString());
+                                sbdFeedback.AppendLine()
+                                    .AppendLine("-------------------------------------------------------------");
+                                Log.Info(sbdFeedback.ToString());
+                            }
                         }
 
                         string message = string.Format(_objSelectedCultureInfo,
@@ -2920,12 +2922,12 @@ namespace Chummer
             if (dicPatternsToMatch != null)
             {
                 int intFileCounter = 0;
-                await ParallelExtensions.ForEachAsync(lstFiles, async strFile =>
+                await ParallelExtensions.ForEachAsync(lstFiles, async (strFile, t) =>
                 {
                     if (!dicPatternsToMatch.IsEmpty)
                     {
                         Interlocked.Increment(ref intFileCounter);
-                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicPatternsToMatch).ConfigureAwait(false))
+                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicPatternsToMatch, innerToken: t).ConfigureAwait(false))
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             if (objInfo == null)
@@ -2954,12 +2956,12 @@ namespace Chummer
             {
                 string strFallbackFormat = await LanguageManager.GetStringAsync("String_Fallback_Pattern", _strSelectedLanguage, token: token).ConfigureAwait(false);
                 int intFileCounter = 0;
-                await ParallelExtensions.ForEachAsync(lstFiles, async strFile =>
+                await ParallelExtensions.ForEachAsync(lstFiles, async (strFile, t) =>
                 {
                     if (!dicBackupPatternsToMatch.IsEmpty)
                     {
                         Interlocked.Increment(ref intFileCounter);
-                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicBackupPatternsToMatch, strFallbackFormat).ConfigureAwait(false))
+                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicBackupPatternsToMatch, strFallbackFormat, t).ConfigureAwait(false))
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             if (objInfo == null)
@@ -2985,16 +2987,16 @@ namespace Chummer
                 }
             }
 
-            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile, ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToUse, string strProgressBarTextFormat = "")
+            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile, ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToUse, string strProgressBarTextFormat = "", CancellationToken innerToken = default)
             {
                 FileInfo objFileInfo = new FileInfo(strBookFile);
                 string strText = string.IsNullOrEmpty(strProgressBarTextFormat)
                     ? objFileInfo.Name
                     : string.Format(_objSelectedCultureInfo, strProgressBarTextFormat, objFileInfo.Name);
                 await frmProgressBar
-                      .PerformStepAsync(strText, LoadingBar.ProgressBarTextPatterns.Scanning, token)
+                      .PerformStepAsync(strText, LoadingBar.ProgressBarTextPatterns.Scanning, innerToken)
                       .ConfigureAwait(false);
-                return await ScanPDFForMatchingText(objFileInfo.FullName, dicPatternsToUse, token).ConfigureAwait(false);
+                return await ScanPDFForMatchingText(objFileInfo.FullName, dicPatternsToUse, innerToken).ConfigureAwait(false);
             }
 
             List<SourcebookInfo> lstReturn

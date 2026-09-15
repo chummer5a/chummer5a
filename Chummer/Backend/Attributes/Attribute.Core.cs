@@ -127,9 +127,9 @@ namespace Chummer.Backend.Attributes
         /// Load the Character Attribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -1178,8 +1178,8 @@ namespace Chummer.Backend.Attributes
                 using (LockObject.EnterReadLock())
                 {
                     return HasModifiers()
-                        ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Value,
-                            LanguageManager.GetString("String_Space"), TotalValue)
+                        ? Value.ToString(GlobalSettings.CultureInfo).ConcatFast(LanguageManager.GetString("String_Space"),
+                            "(", TotalValue.ToString(GlobalSettings.CultureInfo), ")")
                         : Value.ToString(GlobalSettings.CultureInfo);
                 }
             }
@@ -1196,9 +1196,9 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 int intValue = await GetValueAsync(token).ConfigureAwait(false);
                 return await HasModifiersAsync(token).ConfigureAwait(false)
-                    ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue,
+                    ? intValue.ToString(GlobalSettings.CultureInfo).ConcatFast(
                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        await GetTotalValueAsync(token).ConfigureAwait(false))
+                        "(", (await GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")")
                     : intValue.ToString(GlobalSettings.CultureInfo);
             }
             finally
@@ -1390,8 +1390,8 @@ namespace Chummer.Backend.Attributes
                 {
                     return await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                         .AnyAsync(
-                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                            async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                       .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
 
@@ -1581,7 +1581,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token), token);
+            return Utils.SafelyRunSynchronously(t => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, t), token);
         }
 
         /// <summary>
@@ -1633,19 +1633,19 @@ namespace Chummer.Backend.Attributes
                 {
                     int intLimbTotal;
                     if (blnSync)
-                        (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware);
+                        (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware, token);
                     else
                         (intLimbCount, intLimbTotal) =
                             await ProcessCyberlimbsAsync(await _objCharacter.GetCyberwareAsync(token)
-                                .ConfigureAwait(false)).ConfigureAwait(false);
+                                .ConfigureAwait(false), token).ConfigureAwait(false);
 
-                    ValueTuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
+                    ValueTuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck, CancellationToken innerToken)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
-                            token.ThrowIfCancellationRequested();
+                            innerToken.ThrowIfCancellationRequested();
                             if (!objCyberware.IsModularCurrentlyEquipped)
                                 continue;
                             if (objCyberware.IsLimb)
@@ -1655,12 +1655,12 @@ namespace Chummer.Backend.Attributes
 
                                 int intLoop = objCyberware.LimbSlotCount;
                                 intLimbCountReturn += intLoop;
-                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev, token) *
+                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev, innerToken) *
                                                       intLoop;
                             }
                             else
                             {
-                                (int intLoop1, int intLoop2) = ProcessCyberlimbs(objCyberware.Children);
+                                (int intLoop1, int intLoop2) = ProcessCyberlimbs(objCyberware.Children, innerToken);
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
                             }
@@ -1669,34 +1669,34 @@ namespace Chummer.Backend.Attributes
                         return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
+                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck, CancellationToken innerToken)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
-                        await lstToCheck.ForEachAsync(async objCyberware =>
+                        await lstToCheck.ForEachAsync(async (objCyberware, t) =>
                         {
-                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(t).ConfigureAwait(false))
                                 return;
-                            if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
+                            if (await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false))
                             {
                                 if ((await _objCharacterSettings
-                                        .GetExcludeLimbSlotAsync(token).ConfigureAwait(false))
+                                        .GetExcludeLimbSlotAsync(t).ConfigureAwait(false))
                                     .Contains(objCyberware.LimbSlot))
                                     return;
 
-                                int intLoop = await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                int intLoop = await objCyberware.GetLimbSlotCountAsync(t).ConfigureAwait(false);
                                 intLimbCountReturn += intLoop;
-                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, token)
+                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, t)
                                     .ConfigureAwait(false) * intLoop;
                             }
                             else
                             {
-                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(t).ConfigureAwait(false), t)
                                     .ConfigureAwait(false);
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
                             }
-                        }, token).ConfigureAwait(false);
+                        }, innerToken).ConfigureAwait(false);
 
                         return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
@@ -2109,9 +2109,9 @@ namespace Chummer.Backend.Attributes
             {
                 string strSpacePlusParen = LanguageManager.GetString("String_Space", strLanguage) + "(";
                 if (Abbrev == "MAGAdept")
-                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpacePlusParen +
-                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ")"
-                           + strSpacePlusParen + LanguageManager.GetString("String_DescAdept", strLanguage) + ")";
+                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage).ConcatFast(strSpacePlusParen,
+                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage), ")",
+                           strSpacePlusParen, LanguageManager.GetString("String_DescAdept", strLanguage), ")");
 
                 return DisplayNameLong(strLanguage) + strSpacePlusParen + DisplayNameShort(strLanguage) + ")";
             }
@@ -2126,12 +2126,11 @@ namespace Chummer.Backend.Attributes
                 string strSpacePlusParen = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                     .ConfigureAwait(false) + "(";
                 if (Abbrev == "MAGAdept")
-                    return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
-                               .ConfigureAwait(false) + strSpacePlusParen + await LanguageManager
+                    return (await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
+                               .ConfigureAwait(false)).ConcatFast(strSpacePlusParen, await LanguageManager
                                .GetStringAsync("String_AttributeMAGShort", strLanguage, token: token)
-                               .ConfigureAwait(false) + ")"
-                           + strSpacePlusParen + await LanguageManager
-                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
+                               .ConfigureAwait(false), ")", strSpacePlusParen, await LanguageManager
+                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
 
                 return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpacePlusParen +
                        await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ")";
@@ -2161,8 +2160,12 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
-                        LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
+                {
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    return TotalMinimum.ToString(GlobalSettings.CultureInfo).ConcatFast(
+                        strSpace, "/", strSpace, TotalMaximum.ToString(GlobalSettings.CultureInfo),
+                        strSpace, "(", TotalAugmentedMaximum.ToString(GlobalSettings.CultureInfo), ")");
+                }
             }
         }
 
@@ -2175,11 +2178,10 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    await GetTotalMinimumAsync(token).ConfigureAwait(false),
-                    await GetTotalMaximumAsync(token).ConfigureAwait(false),
-                    await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false));
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                return (await GetTotalMinimumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo).ConcatFast(
+                    strSpace, "/", strSpace, (await GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                    strSpace, "(", (await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")");
             }
             finally
             {
@@ -2834,7 +2836,7 @@ namespace Chummer.Backend.Attributes
                         if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
-                            await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
+                            await _objCharacter.Cyberware.ForEachAsync((objCyberware, t) => BuildTooltip(sbdModifier, objCyberware, strSpace, t), token: token).ConfigureAwait(false);
                         }
 
                         // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
@@ -2847,23 +2849,23 @@ namespace Chummer.Backend.Attributes
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace)
+            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace, CancellationToken innerToken = default)
             {
-                if (!await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                if (!await objCyberware.GetIsLimbAsync(innerToken).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(innerToken).ConfigureAwait(false))
                 {
                     return;
                 }
 
-                if (await objCyberware.GetInheritAttributesAsync(token).ConfigureAwait(false))
+                if (await objCyberware.GetInheritAttributesAsync(innerToken).ConfigureAwait(false))
                 {
-                    await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(objChild => BuildTooltip(sbdModifier, objChild, strSpace), token: token).ConfigureAwait(false);
+                    await (await objCyberware.GetChildrenAsync(innerToken).ConfigureAwait(false)).ForEachAsync((objChild, t) => BuildTooltip(sbdModifier, objChild, strSpace, t), token: innerToken).ConfigureAwait(false);
 
                     return;
                 }
 
                 sbdModifier.AppendLine()
-                    .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace)
-                    .Append('(', (await objCyberware.GetAttributeTotalValueAsync(Abbrev, token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
+                    .Append(await objCyberware.GetCurrentDisplayNameAsync(innerToken).ConfigureAwait(false), strSpace)
+                    .Append('(', (await objCyberware.GetAttributeTotalValueAsync(Abbrev, innerToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
             }
         }
 
@@ -3362,12 +3364,12 @@ namespace Chummer.Backend.Attributes
                     if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
                         && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
                         && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                           .ConfigureAwait(false) &&
-                                                      !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                      !(await objSettings.GetExcludeLimbSlotAsync(t).ConfigureAwait(false)).Contains(
                                                           await objCyberware
-                                                              .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                                              .GetLimbSlotAsync(t).ConfigureAwait(false)), token: token)
                             .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));
@@ -3421,12 +3423,12 @@ namespace Chummer.Backend.Attributes
                 {
                     CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                     if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                            async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                       .ConfigureAwait(false) &&
-                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(t).ConfigureAwait(false)).Contains(
                                                       await objCyberware
-                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                                          .GetLimbSlotAsync(t).ConfigureAwait(false)), token: token)
                         .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));
@@ -3440,12 +3442,12 @@ namespace Chummer.Backend.Attributes
                 {
                     CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                     if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                            async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                       .ConfigureAwait(false) &&
-                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(t).ConfigureAwait(false)).Contains(
                                                       await objCyberware
-                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                                          .GetLimbSlotAsync(t).ConfigureAwait(false)), token: token)
                         .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));
@@ -3666,7 +3668,7 @@ namespace Chummer.Backend.Attributes
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3700,18 +3702,18 @@ namespace Chummer.Backend.Attributes
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -3720,14 +3722,14 @@ namespace Chummer.Backend.Attributes
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -3930,13 +3932,13 @@ namespace Chummer.Backend.Attributes
                         int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
                         int intValue = await GetValueAsync(token).ConfigureAwait(false);
 
-                        string strUpgradeText = string.Format(GlobalSettings.CultureInfo,
-                            "{1}{0}{2}{0}{3}{0}->{0}{4}",
-                            await LanguageManager.GetStringAsync(
-                                "String_Space", token: token).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync(
-                                "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
-                            intValue, intValue + 1);
+                        string strSpace = await LanguageManager.GetStringAsync(
+                                "String_Space", token: token).ConfigureAwait(false);
+                        string strUpgradeText =
+                            (await LanguageManager.GetStringAsync(
+                                "String_ExpenseAttribute", token: token).ConfigureAwait(false)).ConcatFast(
+                                strSpace, Abbrev, strSpace, intValue.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "->", strSpace, (intValue + 1).ToString(GlobalSettings.CultureInfo));
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);

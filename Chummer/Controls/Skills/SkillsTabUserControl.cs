@@ -112,14 +112,14 @@ namespace Chummer.UI.Skills
                 {
                     if (_objCharacter == null)
                         await RealLoad(MyToken, MyToken).ConfigureAwait(false);
-                    await this.DoThreadSafeAsync(x =>
+                    await this.DoThreadSafeAsync((x, t) =>
                     {
                         x.SuspendLayout();
                         try
                         {
-                            x.RefreshSkillLabels(MyToken);
-                            x.RefreshKnowledgeSkillLabels(MyToken);
-                            x.RefreshSkillGroupLabels(MyToken);
+                            x.RefreshSkillLabels(t);
+                            x.RefreshKnowledgeSkillLabels(t);
+                            x.RefreshSkillGroupLabels(t);
                         }
                         finally
                         {
@@ -198,7 +198,7 @@ namespace Chummer.UI.Skills
                 ThreadSafeBindingList<Skill> lstSkills = await objSkillSection.GetSkillsAsync(token).ConfigureAwait(false);
                 ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = await objSkillSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
                 ThreadSafeBindingList<SkillGroup> lstSkillGroups = await objSkillSection.GetSkillGroupsAsync(token).ConfigureAwait(false);
-                await this.DoThreadSafeAsync(() =>
+                await this.DoThreadSafeAsync(t1 =>
                 {
                     using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                     {
@@ -210,14 +210,14 @@ namespace Chummer.UI.Skills
                         try
                         {
                             _lstActiveSkills
-                                = new BindingListDisplay<Skill>(lstSkills, MakeActiveSkill)
+                                = new BindingListDisplay<Skill>(lstSkills, MakeActiveSkill, token: t1)
                                 {
                                     Dock = DockStyle.Fill
                                 };
 
-                            Control MakeActiveSkill(Skill arg)
+                            Control MakeActiveSkill(Skill arg, CancellationToken innerToken)
                             {
-                                SkillControl objSkillControl = new SkillControl(arg, objMyToken);
+                                SkillControl objSkillControl = new SkillControl(arg, innerToken);
                                 objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
                                 return objSkillControl;
                             }
@@ -231,7 +231,7 @@ namespace Chummer.UI.Skills
 
                             _lstKnowledgeSkills = new BindingListDisplay<KnowledgeSkill>(
                                 lstKnoSkills,
-                                knoSkill => new KnowledgeSkillControl(knoSkill, objMyToken))
+                                (knoSkill, t2) => new KnowledgeSkillControl(knoSkill, t2), token: t1)
                             {
                                 Dock = DockStyle.Fill
                             };
@@ -247,16 +247,16 @@ namespace Chummer.UI.Skills
                             {
                                 _lstSkillGroups = new BindingListDisplay<SkillGroup>(
                                     lstSkillGroups,
-                                    group => new SkillGroupControl(group, objMyToken))
+                                    (group, t2) => new SkillGroupControl(group, t2), token: t1)
                                 {
                                     Dock = DockStyle.Fill
                                 };
                                 _lstSkillGroups.Filter(
                                     z => z.SkillList.Any(y =>
                                         _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                                    (z, t) => z.SkillList.AnyAsync(async y =>
-                                        await (await _objCharacter.GetSkillsSectionAsync(t).ConfigureAwait(false)).HasActiveSkillAsync(
-                                            await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t).ConfigureAwait(false), t),
+                                    (z, t2) => z.SkillList.AnyAsync(async (y, t3) =>
+                                        await (await _objCharacter.GetSkillsSectionAsync(t3).ConfigureAwait(false)).HasActiveSkillAsync(
+                                            await y.GetDictionaryKeyAsync(t3).ConfigureAwait(false), t3).ConfigureAwait(false), t2),
                                     true);
                                 _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
 
@@ -372,45 +372,38 @@ namespace Chummer.UI.Skills
                     }
                 }, token: token).ConfigureAwait(false);
 
-                await ParallelExtensions.ForEachAsync(_lstActiveSkills.ContentControls.OfType<SkillControl>(), x => x.DoLoad(token), token).ConfigureAwait(false);
-                await ParallelExtensions.ForEachAsync(_lstKnowledgeSkills.ContentControls.OfType<KnowledgeSkillControl>(), x => x.DoLoad(token), token).ConfigureAwait(false);
-                await ParallelExtensions.ForEachAsync(_lstSkillGroups.ContentControls.OfType<SkillGroupControl>(), x => x.DoLoad(token), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_lstActiveSkills.ContentControls.OfType<SkillControl>(), (x, t) => x.DoLoad(t), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_lstKnowledgeSkills.ContentControls.OfType<KnowledgeSkillControl>(), (x, t) => x.DoLoad(t), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_lstSkillGroups.ContentControls.OfType<SkillGroupControl>(), (x, t) => x.DoLoad(t), token).ConfigureAwait(false);
 
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     await lblGroupsSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                             nameof(Character
                                 .EffectiveBuildMethodUsesPriorityTables),
-                            x => x
-                                .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken), token)
+                            (x, t) => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(t), token)
                         .ConfigureAwait(false);
                     await lblActiveSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                             nameof(Character
                                 .EffectiveBuildMethodUsesPriorityTables),
-                            x => x
-                                .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken), token)
+                            (x, t) => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(t), token)
                         .ConfigureAwait(false);
                     await lblBuyWithKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
                             _objCharacter,
                             nameof(Character
                                 .EffectiveBuildMethodUsesPriorityTables),
-                            x => x
-                                .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                    objMyToken), token)
+                            (x, t) => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(t), token)
                         .ConfigureAwait(false);
 
                     await lblKnoSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
                         objSkillSection,
                         nameof(SkillsSection.HasKnowledgePoints),
-                        x => x.GetHasKnowledgePointsAsync(objMyToken)
-                            ,
+                        (x, t) => x.GetHasKnowledgePointsAsync(t),
                         token).ConfigureAwait(false);
                     await lblKnoBwk.RegisterOneWayAsyncDataBindingAsync(
                         (x, y) => x.Visible = y, objSkillSection,
                         nameof(SkillsSection.HasKnowledgePoints),
-                        x => x.GetHasKnowledgePointsAsync(objMyToken),
+                        (x, t) => x.GetHasKnowledgePointsAsync(t),
                         token).ConfigureAwait(false);
                     await UpdateKnoSkillRemainingAsync(token).ConfigureAwait(false);
                 }
@@ -557,7 +550,7 @@ namespace Chummer.UI.Skills
 
             try
             {
-                Utils.RunOnMainThread(() => RefreshSkillGroupLabels(MyToken), token: MyToken);
+                Utils.RunOnMainThread(t => RefreshSkillGroupLabels(t), token: MyToken);
             }
             catch (OperationCanceledException)
             {
@@ -584,10 +577,10 @@ namespace Chummer.UI.Skills
                         .ConfigureAwait(false);
                 SkillGroup objNewSkillGroup = objNewSkill?.SkillGroupObject;
                 if (objNewSkillGroup != null &&
-                    await objNewSkillGroup.SkillList.CountAsync(async y =>
+                    await objNewSkillGroup.SkillList.CountAsync(async (y, t) =>
                         await _objCharacter.SkillsSection
-                            .HasActiveSkillAsync(await y.GetDictionaryKeyAsync(token).ConfigureAwait(false),
-                                token)
+                            .HasActiveSkillAsync(await y.GetDictionaryKeyAsync(t).ConfigureAwait(false),
+                                t)
                             .ConfigureAwait(false), token).ConfigureAwait(false) == 1)
                 {
                     await _lstSkillGroups
@@ -595,10 +588,10 @@ namespace Chummer.UI.Skills
                             x => x.Filter(
                                 z => z.SkillList.Any(y =>
                                     _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                                (z, t) => z.SkillList.AnyAsync(async y =>
-                                    await _objCharacter.SkillsSection.HasActiveSkillAsync(
-                                            await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t)
-                                        .ConfigureAwait(false), t), true), token)
+                                (z, t1) => z.SkillList.AnyAsync(async (y, t2) =>
+                                    await (await _objCharacter.GetSkillsSectionAsync(t2).ConfigureAwait(false)).HasActiveSkillAsync(
+                                            await y.GetDictionaryKeyAsync(t2).ConfigureAwait(false), t2)
+                                        .ConfigureAwait(false), t1), true), token)
                         .ConfigureAwait(false);
                 }
             }
@@ -608,11 +601,11 @@ namespace Chummer.UI.Skills
                     .DoThreadSafeAsync(
                         x => x.Filter(
                             z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                            (z, t) => z.SkillList.AnyAsync(async y =>
-                                    await _objCharacter.SkillsSection.HasActiveSkillAsync(
-                                        await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t)
+                            (z, t1) => z.SkillList.AnyAsync(async (y, t2) =>
+                                    await (await _objCharacter.GetSkillsSectionAsync(t2).ConfigureAwait(false)).HasActiveSkillAsync(
+                                        await y.GetDictionaryKeyAsync(t2).ConfigureAwait(false), t2)
                                     .ConfigureAwait(false),
-                                t),
+                                t1),
                             true), token).ConfigureAwait(false);
             }
         }
@@ -626,7 +619,7 @@ namespace Chummer.UI.Skills
 
             try
             {
-                Utils.RunOnMainThread(() => RefreshKnowledgeSkillLabels(MyToken), token: MyToken);
+                Utils.RunOnMainThread(t => RefreshKnowledgeSkillLabels(t), token: MyToken);
             }
             catch (OperationCanceledException)
             {

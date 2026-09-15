@@ -273,11 +273,11 @@ namespace Chummer
                                 = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
                             bool blnSuccess = dicCharacterSettings.TryGetValue(
                                 GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting);
-                            await dicCharacterSettings.ForEachAsync(async x =>
+                            await dicCharacterSettings.ForEachAsync(async (x, t) =>
                             {
                                 lstCharacterSettings.Add(new ListItem(x.Value,
                                                                       await x.Value
-                                                                             .GetCurrentDisplayNameAsync(token)
+                                                                             .GetCurrentDisplayNameAsync(t)
                                                                              .ConfigureAwait(false)));
                             }, token).ConfigureAwait(false);
 

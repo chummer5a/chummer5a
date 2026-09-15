@@ -48,8 +48,15 @@ namespace Chummer
                 return;
             }
             TaskCompletionSource<T> objTaskCompletionSource = new TaskCompletionSource<T>();
-            _objTokenRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<T>)x).TrySetCanceled(token), objTaskCompletionSource);
+            Tuple<TaskCompletionSource<T>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<T>, CancellationToken>(objTaskCompletionSource, token);
+            _objTokenRegistration = token.RegisterWithoutEC(TrySetTaskCanceled, tupArg);
             Task = objTaskCompletionSource.Task;
+        }
+
+        private static void TrySetTaskCanceled(object objTuple)
+        {
+            Tuple<TaskCompletionSource<T>, CancellationToken> tupToProcess = (Tuple<TaskCompletionSource<T>, CancellationToken>)objTuple;
+            tupToProcess.Item1.TrySetCanceled(tupToProcess.Item2);
         }
 
         /// <summary>
@@ -115,8 +122,15 @@ namespace Chummer
                 return;
             }
             TaskCompletionSource<bool> objTaskCompletionSource = new TaskCompletionSource<bool>();
-            _objTokenRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), objTaskCompletionSource);
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<bool>, CancellationToken>(objTaskCompletionSource, token);
+            _objTokenRegistration = token.RegisterWithoutEC(TrySetTaskCanceled, tupArg);
             Task = objTaskCompletionSource.Task;
+        }
+
+        private static void TrySetTaskCanceled(object objTuple)
+        {
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupToProcess = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objTuple;
+            tupToProcess.Item1.TrySetCanceled(tupToProcess.Item2);
         }
 
         /// <summary>

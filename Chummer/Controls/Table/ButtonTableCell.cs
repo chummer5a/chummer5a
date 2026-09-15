@@ -93,7 +93,7 @@ namespace Chummer.UI.Table
 
                 if (EnabledExtractor != null)
                 {
-                    _button.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, _objMyToken), _objMyToken);
+                    _button.Enabled = Utils.SafelyRunSynchronously(t => EnabledExtractor(Value as T, t), _objMyToken);
                 }
             }
             catch (OperationCanceledException)

@@ -4265,13 +4265,13 @@ namespace Chummer
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
                         // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
-                        await ParallelExtensions.ForAsync(0, intClones, async i =>
+                        await ParallelExtensions.ForAsync(0, intClones, async (i, t) =>
                         {
                             string strNewName = strAlias + strSpace + i.ToString(GlobalSettings.CultureInfo);
                             lstClones[i] = await Program.LoadCharacterAsync(strFileName, strNewName, true,
                                                                      // ReSharper disable once AccessToDisposedClosure
                                                                      frmLoadingBar: frmLoadingBar.MyForm,
-                                                                     token: GenericToken).ConfigureAwait(false);
+                                                                     token: t).ConfigureAwait(false);
                         }, GenericToken).ConfigureAwait(false);
                     }
 
@@ -5035,7 +5035,7 @@ namespace Chummer
                             Dictionary<Cyberware, int> dicPairableCyberwares
                                 = new Dictionary<Cyberware, int>(await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false));
                             foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
-                                         x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                         (x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
@@ -8721,10 +8721,10 @@ namespace Chummer
                         {
                             string strQuality = frmPickQuality.MyForm.SelectedQuality;
                             intRatingToAdd -= await (await CharacterObject.GetQualitiesAsync(GenericToken).ConfigureAwait(false))
-                                .CountAsync(async x =>
-                                    (await x.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                                .CountAsync(async (x, t) =>
+                                    (await x.GetSourceIDStringAsync(t).ConfigureAwait(false))
                                         .Equals(strQuality, StringComparison.OrdinalIgnoreCase)
-                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
+                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(t).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
                         }
                     }
 
@@ -9014,10 +9014,10 @@ namespace Chummer
                     {
                         string strQuality = frmPickQuality.MyForm.SelectedQuality;
                         intRatingToAdd -= await (await CharacterObject.GetQualitiesAsync(GenericToken).ConfigureAwait(false))
-                                .CountAsync(async x =>
-                                    (await x.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                                .CountAsync(async (x, t) =>
+                                    (await x.GetSourceIDStringAsync(t).ConfigureAwait(false))
                                         .Equals(strQuality, StringComparison.OrdinalIgnoreCase)
-                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
+                                    && string.IsNullOrEmpty(await x.GetSourceNameAsync(t).ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
                     }
                 }
 
@@ -9633,9 +9633,9 @@ namespace Chummer
                         for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                         {
                             Quality objInvisibleQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(
-                                async x => x.SourceID == guiSourceID
-                                     && await x.GetExtraAsync(GenericToken).ConfigureAwait(false) == strExtra
-                                     && await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false) == strSourceName
+                                async (x, t) => x.SourceID == guiSourceID
+                                     && await x.GetExtraAsync(t).ConfigureAwait(false) == strExtra
+                                     && await x.GetSourceNameAsync(t).ConfigureAwait(false) == strSourceName
                                      && x.InternalId != strInternalId
                                      && !ReferenceEquals(x, objSelectedQuality), GenericToken).ConfigureAwait(false);
                             if (objInvisibleQuality == null
@@ -16219,10 +16219,10 @@ namespace Chummer
                     return;
 
                 List<Vehicle> lstVehicles = await CharacterObject.Vehicles.ToListAsync(
-                    async x => await x.WeaponMounts.GetCountAsync(GenericToken).ConfigureAwait(false) > 0 || await x
+                    async (x, t) => await x.WeaponMounts.GetCountAsync(t).ConfigureAwait(false) > 0 || await x
                         .Mods.AnyAsync(
                             y => y.Name.Contains("Drone Arm") ||
-                                 y.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), GenericToken)
+                                 y.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), t)
                         .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                 // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.
@@ -19292,7 +19292,7 @@ namespace Chummer
                         try
                         {
                             Utils.SafelyRunSynchronously(
-                                () => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable, GenericToken), GenericToken);
+                                t => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable, t), GenericToken);
                         }
                         catch (OperationCanceledException)
                         {
@@ -23604,7 +23604,7 @@ namespace Chummer
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             string.Empty,
                             objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped,
-                            objParent: objSelectedGear ?? (object)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
+                            objParent: objSelectedGear ?? (IHasName)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;
@@ -26356,22 +26356,22 @@ namespace Chummer
         private static async Task CopyArmorImprovements(Character objSource, Character objDestination, Armor objArmor, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objSource.Improvements.ForEachAsync(async objImprovement =>
+            await objSource.Improvements.ForEachAsync(async (objImprovement, t) =>
             {
                 if (objImprovement.SourceName == objArmor.InternalId
-                    || await objArmor.ArmorMods.AnyAsync(x => objImprovement.SourceName == x.InternalId, token).ConfigureAwait(false))
-                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    || await objArmor.ArmorMods.AnyAsync(x => objImprovement.SourceName == x.InternalId, t).ConfigureAwait(false))
+                    await objDestination.Improvements.AddAsync(objImprovement, t).ConfigureAwait(false);
             }, token: token).ConfigureAwait(false);
 
             // Look through any Armor Mods and add the Improvements as well.
-            await objArmor.ArmorMods.ForEachWithSideEffectsAsync(x =>
+            await objArmor.ArmorMods.ForEachWithSideEffectsAsync((x, t) =>
                 // Look through any children and add their Improvements as well.
                 x.GearChildren.ForEachWithSideEffectsAsync(
-                    y => CopyGearImprovements(objSource, objDestination, y, token), token: token), token).ConfigureAwait(false);
+                    (y, t2) => CopyGearImprovements(objSource, objDestination, y, t2), token: t), token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await objArmor.Children.ForEachWithSideEffectsAsync(x =>
-                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await objArmor.Children.ForEachWithSideEffectsAsync((x, t) =>
+                CopyGearImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26384,15 +26384,15 @@ namespace Chummer
         private static async Task CopyGearImprovements(Character objSource, Character objDestination, Gear objGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objSource.Improvements.ForEachAsync(async objImprovement =>
+            await objSource.Improvements.ForEachAsync(async (objImprovement, t) =>
             {
                 if (objImprovement.SourceName == objGear.InternalId)
-                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    await objDestination.Improvements.AddAsync(objImprovement, t).ConfigureAwait(false);
             }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await objGear.Children.ForEachWithSideEffectsAsync(x =>
-                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await objGear.Children.ForEachWithSideEffectsAsync((x, t) =>
+                CopyGearImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26405,17 +26405,17 @@ namespace Chummer
         private static async Task CopyCyberwareImprovements(Character objSource, Character objDestination, Cyberware objCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objSource.Improvements.ForEachAsync(async objImprovement =>
+            await objSource.Improvements.ForEachAsync(async (objImprovement, t) =>
             {
                 if (objImprovement.SourceName == objCyberware.InternalId)
-                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    await objDestination.Improvements.AddAsync(objImprovement, t).ConfigureAwait(false);
             }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(x =>
-                CopyCyberwareImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
-            await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(x =>
-                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((x, t) =>
+                CopyCyberwareImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
+            await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((x, t) =>
+                CopyGearImprovements(objSource, objDestination, x, t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -28490,7 +28490,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    strCurrentCapacity = strCurrentCapacity.Trim('[', ']');
+                                    strCurrentCapacity = strCurrentCapacity.TrimNoAlloc('[', ']');
                                 }
 
                                 if (decimal.TryParse(strCurrentCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCurrentCapacity))

@@ -241,7 +241,7 @@ namespace Chummer
                     _dicPersistentModules.TryRemove(strKey, out _);
                 }
 
-                await Modules.ForEachAsync(x => x.TestRunToGeneratePersistents(objCulture, strLanguage, token), token)
+                await Modules.ForEachAsync((x, t) => x.TestRunToGeneratePersistents(objCulture, strLanguage, t), token)
                              .ConfigureAwait(false);
                 _blnNeedToRegeneratePersistents = false;
             }

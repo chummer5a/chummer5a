@@ -273,9 +273,9 @@ namespace Chummer.Controls.Shared
             }
 
             if (_comparisonAsync != null)
-                await objTTypeList.SortAsync((x, y) => _comparisonAsync.CompareAsync(x.Item1, y.Item1, token), token).ConfigureAwait(false);
+                await objTTypeList.SortAsync((x, y, t) => _comparisonAsync.CompareAsync(x.Item1, y.Item1, t), token).ConfigureAwait(false);
             else
-                await objTTypeList.SortAsync((x, y) => DefaultCompareAsync(_comparison, x.Item1, y.Item1, token), token).ConfigureAwait(false);
+                await objTTypeList.SortAsync((x, y, t) => DefaultCompareAsync(_comparison, x.Item1, y.Item1, t), token).ConfigureAwait(false);
 
             // Can't use stackalloc in async methods, so always use array pool instead
             using (new FetchSafelyFromArrayPool<int>(ArrayPool<int>.Shared, _lstDisplayIndex.Count, out int[] aintOldDisplayIndex))
@@ -702,13 +702,13 @@ namespace Chummer.Controls.Shared
 
                             List<Control> lstControls = new List<Control>(_lstContentList.Count);
                             _lstContentList.Clear();
-                            await Contents.ForEachWithSideEffectsAsync(async objLoopTType =>
+                            await Contents.ForEachWithSideEffectsAsync(async (objLoopTType, t) =>
                             {
                                 ControlWithMetaData objControlWithMetadata =
-                                    await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token)
+                                    await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, t)
                                         .ConfigureAwait(false);
                                 _lstContentList.Add(objControlWithMetadata);
-                                lstControls.Add(await objControlWithMetadata.GetControlAsync(token)
+                                lstControls.Add(await objControlWithMetadata.GetControlAsync(t)
                                     .ConfigureAwait(false));
                             }, token: token).ConfigureAwait(false);
 
@@ -734,7 +734,7 @@ namespace Chummer.Controls.Shared
                     PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(nameof(Contents));
                     if (_setChildPropertyChangedAsync.Count > 0)
                     {
-                        await ParallelExtensions.ForEachAsync(_setChildPropertyChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setChildPropertyChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                     }
                     if (ChildPropertyChanged != null)
                         await Utils.RunOnMainThreadAsync(() => ChildPropertyChanged?.Invoke(this, objArgs), token: token).ConfigureAwait(false);
@@ -971,7 +971,7 @@ namespace Chummer.Controls.Shared
                 }
 
                 if (_parent._setChildPropertyChangedAsync.Count > 0)
-                    await ParallelExtensions.ForEachAsync(_parent._setChildPropertyChangedAsync, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(_parent._setChildPropertyChangedAsync, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 if (_parent.ChildPropertyChanged != null)
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
                 if (changes)
@@ -1084,14 +1084,14 @@ namespace Chummer.Controls.Shared
                     objNewControl = objOldControl;
                 }
                 int intHeight = await objNewControl.DoThreadSafeFuncAsync(x => x.PreferredSize.Height, token: token).ConfigureAwait(false);
-                await objNewControl.DoThreadSafeAsync(x =>
+                await objNewControl.DoThreadSafeAsync((x, t) =>
                 {
                     x.SuspendLayout();
                     try
                     {
                         x.Visible = false;
                         intHeight = Math.Max(_parent.ListItemControlHeight, intHeight);
-                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, token);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, t);
                         if (x.AutoSize)
                         {
                             x.MinimumSize = new Size(intWidth, intHeight);
@@ -1166,11 +1166,11 @@ namespace Chummer.Controls.Shared
                 Control objControl = _control;
                 if (objControl != null)
                 {
-                    await objControl.DoThreadSafeAsync(x =>
+                    await objControl.DoThreadSafeAsync((x, t) =>
                     {
                         x.Visible = false;
                         x.Location = new Point(0, 0);
-                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, token);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, t);
                         int intHeight = _parent.ListItemControlHeight;
                         if (x.AutoSize)
                         {

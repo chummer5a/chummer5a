@@ -233,7 +233,7 @@ namespace Chummer
                         {
                             objCache.CharacterName = strNameString.Substring(0, intAsIndex);
                             objCache.CharacterAlias
-                                = strNameString.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
+                                = strNameString.Substring(intAsIndex).TrimStart(" as ").TrimNoAlloc('\'');
                         }
                         else
                         {
@@ -684,7 +684,7 @@ namespace Chummer
                     }
 
                     //Timekeeper.Start("load_file");
-                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false)).ConfigureAwait(false))
+                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false))
                         return;
                     blnLoaded = true;
                     //Timekeeper.Finish("load_file");

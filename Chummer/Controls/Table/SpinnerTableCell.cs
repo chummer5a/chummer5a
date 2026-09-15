@@ -74,21 +74,21 @@ namespace Chummer.UI.Table
                 {
                     if (MaxExtractor != null)
                     {
-                        decimal decMin = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
-                        decimal decMax = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
+                        decimal decMin = Utils.SafelyRunSynchronously(t => MinExtractor(tValue, t), _objMyToken);
+                        decimal decMax = Utils.SafelyRunSynchronously(t => MaxExtractor(tValue, t), _objMyToken);
                         nudSpinner.Minimum = Math.Min(decMin, decMax);
                         nudSpinner.Maximum = Math.Max(decMax, decMin);
                     }
                     else
-                        nudSpinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
+                        nudSpinner.Minimum = Utils.SafelyRunSynchronously(t => MinExtractor(tValue, t), _objMyToken);
                 }
                 else if (MaxExtractor != null)
                 {
-                    nudSpinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
+                    nudSpinner.Maximum = Utils.SafelyRunSynchronously(t => MaxExtractor(tValue, t), _objMyToken);
                 }
                 if (EnabledExtractor != null)
                 {
-                    nudSpinner.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(tValue, _objMyToken), _objMyToken);
+                    nudSpinner.Enabled = Utils.SafelyRunSynchronously(t => EnabledExtractor(tValue, t), _objMyToken);
                 }
 
                 if (ValueUpdater == null)
@@ -97,7 +97,7 @@ namespace Chummer.UI.Table
                     return;
                 try
                 {
-                    nudSpinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken);
+                    nudSpinner.Value = Utils.SafelyRunSynchronously(t => ValueGetter(tValue, t), _objMyToken);
                 }
                 finally
                 {

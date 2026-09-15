@@ -50,5 +50,69 @@ namespace Chummer
         {
             objSubject.OnMultiplePropertiesChanged(Array.AsReadOnly(lstPropertyNames));
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2, string strPropertyName3)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6, string strPropertyName7)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6, strPropertyName7))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
+                                                     string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6, string strPropertyName7, string strPropertyName8)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6, strPropertyName7, strPropertyName8))
+                objSubject.OnMultiplePropertiesChanged(astrArg);
+        }
     }
 }

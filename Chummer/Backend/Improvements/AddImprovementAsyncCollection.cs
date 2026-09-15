@@ -728,11 +728,11 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
-                if (await _objCharacter.SkillsSection.KnowledgeSkills.AnyAsync(async k => await k.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strSelectedSkill, token).ConfigureAwait(false))
+                if (await _objCharacter.SkillsSection.KnowledgeSkills.AnyAsync(async (k, t) => await k.GetDictionaryKeyAsync(t).ConfigureAwait(false) == strSelectedSkill, token).ConfigureAwait(false))
                 {
-                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objKnowledgeSkill =>
+                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async (objKnowledgeSkill, t) =>
                     {
-                        string strName = await objKnowledgeSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                        string strName = await objKnowledgeSkill.GetDictionaryKeyAsync(t).ConfigureAwait(false);
                         if (strName != strSelectedSkill)
                             return;
                         // We've found the selected Skill.
@@ -740,22 +740,22 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                         {
                             await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                                 Improvement.ImprovementType.Skill, _strUnique,
-                                await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), 1, 0, 0,
-                                0, 0, string.Empty, blnAddToRating, token: token).ConfigureAwait(false);
+                                await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, t).ConfigureAwait(false), 1, 0, 0,
+                                0, 0, string.Empty, blnAddToRating, token: t).ConfigureAwait(false);
                         }
 
                         if (blnDisableSpec)
                         {
                             await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.DisableSpecializationEffects, _strUnique, token: token).ConfigureAwait(false);
+                                Improvement.ImprovementType.DisableSpecializationEffects, _strUnique, token: t).ConfigureAwait(false);
                         }
 
                         if (!string.IsNullOrEmpty(strMax))
                         {
                             await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                                 Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-                                await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, token).ConfigureAwait(false), 0, 0,
-                                string.Empty, blnAddToRating, token: token).ConfigureAwait(false);
+                                await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, t).ConfigureAwait(false), 0, 0,
+                                string.Empty, blnAddToRating, token: t).ConfigureAwait(false);
                         }
                     }, token: token).ConfigureAwait(false);
                 }
@@ -1072,22 +1072,22 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sdbValue))
+                                                              out StringBuilder sbdValue))
                 {
                     foreach (string s in AttributeSection.AttributeStrings)
                     {
                         int i = selectedValues.Count(c => c == s);
                         if (i <= 0)
                             continue;
-                        if (sdbValue.Length > 0)
+                        if (sbdValue.Length > 0)
                         {
-                            sdbValue.Append(',', strSpace);
+                            sbdValue.Append(',', strSpace);
                         }
 
-                        sdbValue.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
+                        sbdValue.Append(s, strSpace, "(", i.ToString(GlobalSettings.CultureInfo), ")");
                     }
 
-                    SelectedValue = sdbValue.ToString();
+                    SelectedValue = sbdValue.ToString();
                 }
             }
         }
@@ -3822,17 +3822,17 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 string strType = bonusNode.Attributes?["type"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strType))
                 {
-                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async objWeapon =>
+                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objWeapon, t) =>
                     {
                         if (objWeapon.RangeType == strType)
                         {
-                            lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(t).ConfigureAwait(false)));
                         }
                     }, token: token).ConfigureAwait(false);
                 }
                 else
                 {
-                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async objWeapon => lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))), token).ConfigureAwait(false);
+                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objWeapon, t) => lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(t).ConfigureAwait(false))), token).ConfigureAwait(false);
                 }
 
                 Weapon objSelectedWeapon;
@@ -4214,7 +4214,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                             throw new AbortedException();
                         string strNewPowerName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
                         string strNewPowerExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
-                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strNewPowerName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strNewPowerExtra, token: token).ConfigureAwait(false);
+                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async (objPower, t) => await objPower.GetNameAsync(t).ConfigureAwait(false) == strNewPowerName && await objPower.GetExtraAsync(t).ConfigureAwait(false) == strNewPowerExtra, token: token).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -4306,7 +4306,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                                 strName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
                                 strExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
                                 blnHasPower = await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AnyAsync(
-                                    async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strExtra, token: token).ConfigureAwait(false);
+                                    async (objPower, t) => await objPower.GetNameAsync(t).ConfigureAwait(false) == strName && await objPower.GetExtraAsync(t).ConfigureAwait(false) == strExtra, token: token).ConfigureAwait(false);
                             }
                             catch
                             {
@@ -5506,8 +5506,12 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
                     await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
-                    frmPickItem.MyForm.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
-                        new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? objNode.Value)));
+                    List<ListItem> lstItems = new List<ListItem>();
+                    foreach (XPathNavigator xmlLoopNode in nodeList)
+                    {
+                        lstItems.Add(new ListItem(xmlLoopNode.Value, xmlLoopNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? xmlLoopNode.Value));
+                    }
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
@@ -6745,11 +6749,11 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                         }
                         else
                         {
-                            await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objGroup =>
+                            await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objGroup, t) =>
                             {
-                                if (!await objGroup.GetIsDisabledAsync(token).ConfigureAwait(false))
+                                if (!await objGroup.GetIsDisabledAsync(t).ConfigureAwait(false))
                                     lstSkills.Add(new ListItem(objGroup.Name,
-                                        await objGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                                        await objGroup.GetCurrentDisplayNameAsync(t).ConfigureAwait(false)));
                             }, token).ConfigureAwait(false);
                         }
                     }
@@ -7556,8 +7560,17 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
-                    frmPickItem.MyForm.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
-                        .Where(x => objSkill.Specializations.All(y => y.Name != x, token)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml", token: token))));
+                {
+                    List<ListItem> lstItems = new List<ListItem>();
+                    foreach (string strSpec in strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()))
+                    {
+                        if (!await objSkill.HasSpecializationAsync(strSpec, token).ConfigureAwait(false))
+                        {
+                            lstItems.Add(new ListItem(strSpec, _objCharacter.TranslateExtra(strSpec, GlobalSettings.Language, "skills.xml", token: token)));
+                        }
+                    }
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
+                }
                 else
                     frmPickItem.MyForm.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))

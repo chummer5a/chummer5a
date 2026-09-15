@@ -209,7 +209,7 @@ namespace Codaxy.WkHtmlToPdf
         public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput,
                                             CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => ConvertHtmlToPdfCoreAsync(true, document, environment, woutput, token),
+            Utils.SafelyRunSynchronously(t => ConvertHtmlToPdfCoreAsync(true, document, environment, woutput, t),
                                          token);
         }
 
@@ -498,7 +498,7 @@ namespace Codaxy.WkHtmlToPdf
                             woutput.OutputCallback?.Invoke(document, pdfFileBytes);
                             if (woutput.OutputCallbackAsync != null)
                             {
-                                Utils.SafelyRunSynchronously(() => woutput.OutputCallbackAsync(document, pdfFileBytes, token), token);
+                                Utils.SafelyRunSynchronously(t => woutput.OutputCallbackAsync(document, pdfFileBytes, t), token);
                             }
                         }
                         finally
