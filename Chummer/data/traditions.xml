@@ -934,7 +934,9 @@
       <source>FA</source>
       <page>74</page>
       <bonus>
-        <addquality select="Harmony with Nature, the Shaman’s Code">Code of Honor</addquality>
+        <addqualities>
+          <addquality forced="True" select="Harmony with Nature, the Shaman's Code">Code of Honor</addquality>
+        </addqualities>
         <!-- TODO: Disable binding spirits -->
         <!-- TODO: Add Spirit Affinity at IG 2. Easiest proxy is to have an additional quality that requires IG2 + this tradition -->
         <!-- TODO: Add +2 Dicepool when summoning choice of spirit at IG5. Proxy quality easiest again -->
