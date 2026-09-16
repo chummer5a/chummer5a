@@ -6633,7 +6633,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGearsClearBindings(treGear, y, innerToken);
 
                 Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: innerToken);
+                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, y, funcMakeDirty, token: innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treGear, FuncDelegateBeforeClearToAdd);
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
@@ -6664,7 +6664,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGearsClearBindings(treGear, y, innerToken);
 
                 Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty, token: innerToken);
+                    this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, y, funcMakeDirty, token: innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treGear, FuncDelegateBeforeClearToAdd);
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);

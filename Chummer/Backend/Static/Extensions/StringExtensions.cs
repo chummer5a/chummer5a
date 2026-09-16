@@ -6411,19 +6411,19 @@ namespace Chummer
         public static Task<string> PlainTextToRtfAsync(this string strInput, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
+            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo(token);
 
-            async Task<string> InnerDo()
+            async Task<string> InnerDo(CancellationToken innerToken)
             {
                 if (strInput.IsRtf())
                     return strInput;
                 strInput = strInput.NormalizeWhiteSpace();
-                await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
+                await s_RtbRtfManipulatorLock.WaitAsync(innerToken).ConfigureAwait(false);
                 try
                 {
                     if (!s_RtbRtfManipulator.Value.IsHandleCreated)
                     {
-                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.Value.CreateControl(), token)
+                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.Value.CreateControl(), innerToken)
                                    .ConfigureAwait(false);
                     }
 
@@ -6431,7 +6431,7 @@ namespace Chummer
                     {
                         x.Text = strInput;
                         return x.Rtf;
-                    }, token).ConfigureAwait(false);
+                    }, innerToken).ConfigureAwait(false);
                 }
                 finally
                 {

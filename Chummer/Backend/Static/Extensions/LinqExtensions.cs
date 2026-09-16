@@ -124,6 +124,65 @@ namespace Chummer
             return true;
         }
 
+        /// <inheritdoc cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
+        public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (TSource item in source)
+            {
+                if (predicate(item, token))
+                    return item;
+            }
+
+            throw new InvalidOperationException("No element satisfies the condition in predicate.");
+        }
+
+        /// <inheritdoc cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
+        public static TSource FirstOrDefault<TSource>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (TSource item in source)
+            {
+                if (predicate(item, token))
+                    return item;
+            }
+
+            return default;
+        }
+
+        /// <inheritdoc cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
+        public static TSource Last<TSource>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            TSource result = default;
+            bool blnFlag = false;
+            foreach (TSource item in source)
+            {
+                if (predicate(item, token))
+                {
+                    result = item;
+                    blnFlag = true;
+                }
+            }
+
+            if (blnFlag)
+                return result;
+            throw new InvalidOperationException("No element satisfies the condition in predicate.");
+        }
+
+        /// <inheritdoc cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
+        public static TSource LastOrDefault<TSource>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            TSource result = default;
+            foreach (TSource item in source)
+            {
+                if (predicate(item, token))
+                    result = item;
+            }
+            return result;
+        }
+
         /// <summary>
         /// Similar to <see cref="Enumerable.Aggregate{TSource}(IEnumerable{TSource}, Func{TSource, TSource, TSource})"/>, but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
@@ -3040,6 +3099,226 @@ namespace Chummer
             }
             foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
+            return decReturn;
+        }
+
+        public static int Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = int.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Max(intReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return intReturn;
+        }
+
+        public static int Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = int.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Max(intReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return intReturn;
+        }
+
+        public static long Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = long.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                lngReturn = Math.Max(lngReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return lngReturn;
+        }
+
+        public static long Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = long.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                lngReturn = Math.Max(lngReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return lngReturn;
+        }
+
+        public static float Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = float.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                fltReturn = Math.Max(fltReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return fltReturn;
+        }
+
+        public static float Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = float.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                fltReturn = Math.Max(fltReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return fltReturn;
+        }
+
+        public static double Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = double.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                dblReturn = Math.Max(dblReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return dblReturn;
+        }
+
+        public static double Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = double.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                dblReturn = Math.Max(dblReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return dblReturn;
+        }
+
+        public static decimal Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = decimal.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                decReturn = Math.Max(decReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return decReturn;
+        }
+
+        public static decimal Max<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = decimal.MinValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                decReturn = Math.Max(decReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return decReturn;
+        }
+
+        public static int Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = int.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Min(intReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return intReturn;
+        }
+
+        public static int Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = int.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Min(intReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return intReturn;
+        }
+
+        public static long Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = long.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                lngReturn = Math.Min(lngReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return lngReturn;
+        }
+
+        public static long Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            long lngReturn = long.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                lngReturn = Math.Min(lngReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return lngReturn;
+        }
+
+        public static float Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = float.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                fltReturn = Math.Min(fltReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return fltReturn;
+        }
+
+        public static float Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            float fltReturn = float.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                fltReturn = Math.Min(fltReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return fltReturn;
+        }
+
+        public static double Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = double.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                dblReturn = Math.Min(dblReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return dblReturn;
+        }
+
+        public static double Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            double dblReturn = double.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                dblReturn = Math.Min(dblReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
+            return dblReturn;
+        }
+
+        public static decimal Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = decimal.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                decReturn = Math.Min(decReturn, funcSelector.Invoke(objCurrent, token));
+            }
+            return decReturn;
+        }
+
+        public static decimal Min<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            decimal decReturn = decimal.MaxValue;
+            foreach (T objCurrent in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                decReturn = Math.Min(decReturn, Utils.SafelyRunSynchronously(t => funcSelector.Invoke(objCurrent, t), token));
+            }
             return decReturn;
         }
     }

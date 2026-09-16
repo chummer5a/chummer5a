@@ -6236,22 +6236,22 @@ namespace Chummer
                         using (Timekeeper.StartSyncron("load_xml", loadActivity))
                         {
                             bool blnKeepLoading = blnSync
-                                ? LoadSaveFileDocument()
-                                : await LoadSaveFileDocumentAsync().ConfigureAwait(false);
+                                ? LoadSaveFileDocument(token)
+                                : await LoadSaveFileDocumentAsync(token).ConfigureAwait(false);
 
-                            bool LoadSaveFileDocument()
+                            bool LoadSaveFileDocument(CancellationToken innerToken)
                             {
                                 bool blnErrorCaught = false;
                                 do
                                 {
                                     try
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        innerToken.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                            objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: token);
+                                            objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: innerToken);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             objXmlDocument.LoadStandardFromLzmaCompressedPatient(
-                                                strFileName, !blnErrorCaught, token: token);
+                                                strFileName, !blnErrorCaught, token: innerToken);
                                         else
                                             throw new InvalidOperationException();
                                         blnErrorCaught = false;
@@ -6266,9 +6266,9 @@ namespace Chummer
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
                                             if (Program.ShowScrollableMessageBox(
-                                                    LanguageManager.GetString("Message_InvalidTextFound", token: token),
+                                                    LanguageManager.GetString("Message_InvalidTextFound", token: innerToken),
                                                     LanguageManager.GetString(
-                                                        "Message_InvalidTextFound_Title", token: token),
+                                                        "Message_InvalidTextFound_Title", token: innerToken),
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                                                 DialogResult.No)
                                             {
@@ -6284,11 +6284,11 @@ namespace Chummer
                                                 Program.ShowScrollableMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
-                                                                      "Message_FailedLoad", token: token),
+                                                                      "Message_FailedLoad", token: innerToken),
                                                                   ex.Message),
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
-                                                                      "MessageTitle_FailedLoad", token: token),
+                                                                      "MessageTitle_FailedLoad", token: innerToken),
                                                                   ex.Message),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                                             }
@@ -6300,24 +6300,24 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator =
-                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character", token);
+                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character", innerToken);
                                 return true;
                             }
 
-                            async Task<bool> LoadSaveFileDocumentAsync()
+                            async Task<bool> LoadSaveFileDocumentAsync(CancellationToken innerToken)
                             {
                                 bool blnErrorCaught = false;
                                 do
                                 {
                                     try
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        innerToken.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardPatientAsync(
-                                                strFileName, !blnErrorCaught, token: token).ConfigureAwait(false);
+                                                strFileName, !blnErrorCaught, token: innerToken).ConfigureAwait(false);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardFromLzmaCompressedPatientAsync(
-                                                strFileName, !blnErrorCaught, token: token).ConfigureAwait(false);
+                                                strFileName, !blnErrorCaught, token: innerToken).ConfigureAwait(false);
                                         else
                                             throw new InvalidOperationException();
                                         blnErrorCaught = false;
@@ -6333,13 +6333,13 @@ namespace Chummer
 
                                             if (await Program.ShowScrollableMessageBoxAsync(
                                                     await LanguageManager
-                                                        .GetStringAsync("Message_InvalidTextFound", token: token)
+                                                        .GetStringAsync("Message_InvalidTextFound", token: innerToken)
                                                         .ConfigureAwait(false),
                                                     await LanguageManager
                                                         .GetStringAsync(
-                                                            "Message_InvalidTextFound_Title", token: token)
+                                                            "Message_InvalidTextFound_Title", token: innerToken)
                                                         .ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) ==
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: innerToken).ConfigureAwait(false) ==
                                                 DialogResult.No)
                                             {
                                                 return false;
@@ -6355,16 +6355,16 @@ namespace Chummer
                                                     string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager
                                                             .GetStringAsync(
-                                                                "Message_FailedLoad", token: token)
+                                                                "Message_FailedLoad", token: innerToken)
                                                             .ConfigureAwait(false),
                                                         ex.Message),
                                                     string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager
                                                             .GetStringAsync(
-                                                                "MessageTitle_FailedLoad", token: token)
+                                                                "MessageTitle_FailedLoad", token: innerToken)
                                                             .ConfigureAwait(false),
                                                         ex.Message),
-                                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: innerToken).ConfigureAwait(false);
                                             }
 
                                             return false;
@@ -6374,8 +6374,8 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator
-                                    = (await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false))
-                                            .SelectSingleNodeAndCacheExpression("/character", token);
+                                    = (await objXmlDocument.GetFastNavigatorAsync(innerToken).ConfigureAwait(false))
+                                            .SelectSingleNodeAndCacheExpression("/character", innerToken);
                                 return true;
                             }
 
@@ -6850,7 +6850,7 @@ namespace Chummer
                                         CharacterSettings objHashCodeMatchSettings
                                             = blnSync
                                                 ? SettingsManager.LoadedCharacterSettings.FirstOrDefault(
-                                                    x => x.Value.GetEquatableHashCode(token) == intSettingsHashCode).Value
+                                                    (x, t) => x.Value.GetEquatableHashCode(t) == intSettingsHashCode, token).Value
                                                 : (await (await SettingsManager
                                                                 .GetLoadedCharacterSettingsAsync(token)
                                                                 .ConfigureAwait(false))
@@ -16292,7 +16292,7 @@ namespace Chummer
                 {
                     intOldImprovementCount = Improvements.Count;
                     // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
-                    Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)), token);
+                    Improvements.RemoveAll((x, t) => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, t)), token);
                     intNewImprovementCount = Improvements.Count;
                 }
             }
@@ -27675,22 +27675,22 @@ namespace Chummer
                         await Metamagics.ForEachAsync(async (objMetamagic, t) =>
                         {
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
+                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", t) == true)
                             {
                                 blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
                                 // ReSharper disable once ForCanBeConvertedToForeach
                                 for (int i = 0;
-                                     i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                     i < await Improvements.GetCountAsync(t).ConfigureAwait(false);
                                      ++i)
                                 {
-                                    Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                    Improvement objImprovement = await Improvements.GetValueAtAsync(i, t)
                                         .ConfigureAwait(false);
                                     if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
                                         == Improvement.ImprovementSource.Echo)
                                     {
                                         blnFoundImprovement = true;
-                                        await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
+                                        await objImprovement.SetRatingAsync(value, t).ConfigureAwait(false);
                                     }
                                 }
 
@@ -28341,16 +28341,16 @@ namespace Chummer
                     return decReturn;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedCyberwareEssence = await Cyberware
-                    .SumAsync(async objCyberware =>
+                    .SumAsync(async (objCyberware, t) =>
                         {
-                            if (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) !=
+                            if (await objCyberware.GetSourceTypeAsync(t).ConfigureAwait(false) !=
                                 Improvement.ImprovementSource.Cyberware)
                                 return false;
-                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
+                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(t).ConfigureAwait(false);
                             return !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
                                    && !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                         },
-                        objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                        (objCyberware, t) => objCyberware.GetCalculatedESSAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -28401,16 +28401,16 @@ namespace Chummer
                     return decReturn;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedBiowareEssence = await Cyberware
-                    .SumAsync(async objCyberware =>
+                    .SumAsync(async (objCyberware, t) =>
                         {
-                            if (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) !=
+                            if (await objCyberware.GetSourceTypeAsync(t).ConfigureAwait(false) !=
                                 Improvement.ImprovementSource.Bioware)
                                 return false;
-                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
+                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(t).ConfigureAwait(false);
                             return !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
                                    && !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                         },
-                        objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                        (objCyberware, t) => objCyberware.GetCalculatedESSAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -28459,12 +28459,12 @@ namespace Chummer
                     return decReturn;
                 // Find the total Essence Cost of all Essence Hole objects.
                 return _decCachedEssenceHole = await Cyberware
-                    .SumAsync(async objCyberware =>
+                    .SumAsync(async (objCyberware, t) =>
                     {
-                        Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
+                        Guid guiSourceId = await objCyberware.GetSourceIDAsync(t).ConfigureAwait(false);
                         return guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
                                || guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
-                    }, objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                    }, (objCyberware, t) => objCyberware.GetCalculatedESSAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -28897,8 +28897,8 @@ namespace Chummer
                 if (!await GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false))
                     return _decCachedPrototypeTranshumanEssenceUsed = 0.0m;
                 return _decCachedPrototypeTranshumanEssenceUsed = await Cyberware
-                    .SumAsync(objCyberware => objCyberware.GetPrototypeTranshumanAsync(token),
-                        objCyberware => objCyberware.GetCalculatedESSPrototypeInvariantAsync(token), token: token)
+                    .SumAsync((objCyberware, t) => objCyberware.GetPrototypeTranshumanAsync(t),
+                        (objCyberware, t) => objCyberware.GetCalculatedESSPrototypeInvariantAsync(t), token: token)
                     .ConfigureAwait(false);
             }
             finally
@@ -37720,7 +37720,7 @@ namespace Chummer
                     + await Weapons.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
                     + await Gear.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
                     + await Cyberware.SumParallelAsync(
-                        x => x.GetIsModularCurrentlyEquippedAsync(token), x => x.TotalWeight, token: token).ConfigureAwait(false);
+                        (x, t) => x.GetIsModularCurrentlyEquippedAsync(t), x => x.TotalWeight, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -42816,27 +42816,27 @@ namespace Chummer
                             LoadDataXPath("weapons.xml", token: token)
                                 .SelectSingleNodeAndCacheExpression("/chummer", token), token));
 
-                        Armor.AsEnumerableWithSideEffects().ForEach(objArmor =>
+                        Armor.AsEnumerableWithSideEffects().ForEach((objArmor, t1) =>
                         {
                             objArmor.DiscountCost
                                 = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
-                            objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                            objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setArmorModBlackMarketMaps.Contains(objMod.Category);
                                 foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
                                 }
-                            }, token);
+                            }, t1);
 
                             foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
@@ -42871,19 +42871,19 @@ namespace Chummer
                                 = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                         }
 
-                        Vehicles.AsEnumerableWithSideEffects().ForEach(objVehicle =>
+                        Vehicles.AsEnumerableWithSideEffects().ForEach((objVehicle, t1) =>
                         {
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
                             foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
 
-                            objVehicle.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                            objVehicle.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
@@ -42891,7 +42891,7 @@ namespace Chummer
                                              .GetAllDescendants(
                                                  x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     if (objCyberware.DiscountCost)
                                     {
                                         objCyberware.DiscountCost
@@ -42904,20 +42904,20 @@ namespace Chummer
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t2.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
                                                                && setGearBlackMarketMaps.Contains(objGear.Category);
                                     }
                                 }
-                            }, token);
+                            }, t1);
 
                             foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = objWeapon.DiscountCost
                                                          && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t2) =>
                                 {
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
@@ -42926,19 +42926,19 @@ namespace Chummer
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t2.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
                                                                && setGearBlackMarketMaps.Contains(objGear.Category);
                                     }
-                                }, token);
+                                }, t1);
                             }
 
-                            objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach(objMount =>
+                            objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach((objMount, t2) =>
                             {
                                 objMount.DiscountCost = objMount.DiscountCost
                                                         && setWeaponMountBlackMarketMaps
                                                             .Contains(objMount.Category);
-                                objMount.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                                objMount.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t3) =>
                                 {
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
@@ -42946,7 +42946,7 @@ namespace Chummer
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t3.ThrowIfCancellationRequested();
                                         if (objCyberware.DiscountCost)
                                         {
                                             objCyberware.DiscountCost
@@ -42959,22 +42959,22 @@ namespace Chummer
                                                      .GetAllDescendants(
                                                          x => x.Children.AsEnumerableWithSideEffects()))
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            t3.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
                                                                    && setGearBlackMarketMaps.Contains(
                                                                        objGear.Category);
                                         }
                                     }
-                                }, token);
+                                }, t2);
 
                                 foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objWeapon.DiscountCost = objWeapon.DiscountCost
                                                              && setWeaponBlackMarketMaps.Contains(
                                                                  objWeapon.Category);
-                                    objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                    objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t3) =>
                                     {
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                     && setWeaponBlackMarketMaps
@@ -42983,14 +42983,14 @@ namespace Chummer
                                                      .GetAllDescendants(
                                                          x => x.Children.AsEnumerableWithSideEffects()))
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            t3.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
                                                                    && setGearBlackMarketMaps.Contains(
                                                                        objGear.Category);
                                         }
-                                    }, token);
+                                    }, t2);
                                 }
-                            }, token);
+                            }, t1);
                         }, token);
 
                         foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects()
@@ -42999,15 +42999,15 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = objWeapon.DiscountCost
                                                      && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t) =>
                             {
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
                                                             && setWeaponBlackMarketMaps
                                                                 .Contains(objWeapon.Category);
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                             x => x.Children, token))
+                                             x => x.Children, t))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
                                 }
@@ -43018,24 +43018,24 @@ namespace Chummer
                 else
                 {
                     // Forcefully disable all Black Market Discounts that don't apply.
-                    Armor.AsEnumerableWithSideEffects().ForEach(objArmor =>
+                    Armor.AsEnumerableWithSideEffects().ForEach((objArmor, t1) =>
                     {
                         objArmor.DiscountCost = false;
-                        objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                        objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                         {
                             objMod.DiscountCost = false;
                             foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t2.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
                             }
-                        }, token);
+                        }, t1);
 
                         foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t1.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
                     }, token);
@@ -43060,93 +43060,93 @@ namespace Chummer
                         objGear.DiscountCost = false;
                     }
 
-                    Vehicles.AsEnumerableWithSideEffects().ForEach(objVehicle =>
+                    Vehicles.AsEnumerableWithSideEffects().ForEach((objVehicle, t1) =>
                     {
                         objVehicle.DiscountCost = false;
                         foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t1.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
 
-                        objVehicle.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                        objVehicle.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                         {
                             objMod.DiscountCost = false;
                             foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(
                                              x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t2.ThrowIfCancellationRequested();
                                 objCyberware.DiscountCost = false;
                                 foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(
                                                  x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
                                 }
                             }
-                        }, token);
+                        }, t1);
 
                         foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
                                      .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t1.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = false;
-                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t2) =>
                             {
                                 objAccessory.DiscountCost = false;
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                             x => x.Children, token))
+                                             x => x.Children, t2))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
                                 }
-                            }, token);
+                            }, t1);
                         }
 
-                        objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach(objMount =>
+                        objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach((objMount, t2) =>
                         {
                             objMount.DiscountCost = false;
-                            objMount.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                            objMount.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t3) =>
                             {
                                 objMod.DiscountCost = false;
                                 foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(
                                                  x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t3.ThrowIfCancellationRequested();
                                     objCyberware.DiscountCost = false;
                                     foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t3.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
                                     }
                                 }
-                            }, token);
+                            }, t2);
 
                             foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(
                                              x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t2.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = false;
-                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t3) =>
                                 {
                                     objAccessory.DiscountCost = false;
                                     foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t3.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
                                     }
-                                }, token);
+                                }, t2);
                             }
-                        }, token);
+                        }, t1);
                     }, token);
 
                     foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects()
@@ -43154,14 +43154,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         objWeapon.DiscountCost = false;
-                        objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                        objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t) =>
                         {
                             objAccessory.DiscountCost = false;
                             foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(
                                              x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
                             }
                         }, token);
@@ -43255,7 +43255,7 @@ namespace Chummer
                                 foreach (Gear objGear in await objMod.GearChildren
                                              .GetAllDescendantsAsync(x => x.Children, t2).ConfigureAwait(false))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
                                 }
@@ -43264,7 +43264,7 @@ namespace Chummer
                             foreach (Gear objGear in await objArmor.GearChildren
                                          .GetAllDescendantsAsync(x => x.Children, t1).ConfigureAwait(false))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
@@ -51177,23 +51177,23 @@ namespace Chummer
                                             {
                                                 token.ThrowIfCancellationRequested();
                                                 if (blnSync)
-                                                    DoLoadStatblocks();
+                                                    DoLoadStatblocks(token);
                                                 else
-                                                    await TaskExtensions.RunWithoutEC(DoLoadStatblocks, token).ConfigureAwait(false);
-                                                void DoLoadStatblocks()
+                                                    await TaskExtensions.RunWithoutEC(() => DoLoadStatblocks(token), token).ConfigureAwait(false);
+                                                void DoLoadStatblocks(CancellationToken innerToken)
                                                 {
                                                     using (Stream objStream = objEntry.Open())
                                                     {
-                                                        token.ThrowIfCancellationRequested();
+                                                        innerToken.ThrowIfCancellationRequested();
                                                         using (StreamReader objStreamReader =
                                                                new StreamReader(objStream, true))
                                                         {
-                                                            token.ThrowIfCancellationRequested();
+                                                            innerToken.ThrowIfCancellationRequested();
                                                             using (XmlReader objReader = XmlReader.Create(
                                                                        objStreamReader,
                                                                        GlobalSettings.SafeXmlReaderSettings))
                                                             {
-                                                                token.ThrowIfCancellationRequested();
+                                                                innerToken.ThrowIfCancellationRequested();
                                                                 XPathDocument xmlSourceDoc
                                                                     = new XPathDocument(objReader);
                                                                 XPathNavigator objDummy
@@ -51294,23 +51294,23 @@ namespace Chummer
                                             {
                                                 token.ThrowIfCancellationRequested();
                                                 if (blnSync)
-                                                    DoLoadLeads();
+                                                    DoLoadLeads(token);
                                                 else
-                                                    await TaskExtensions.RunWithoutEC(DoLoadLeads, token).ConfigureAwait(false);
-                                                void DoLoadLeads()
+                                                    await TaskExtensions.RunWithoutEC(() => DoLoadLeads(token), token).ConfigureAwait(false);
+                                                void DoLoadLeads(CancellationToken innerToken)
                                                 {
                                                     using (Stream objStream = objEntry.Open())
                                                     {
-                                                        token.ThrowIfCancellationRequested();
+                                                        innerToken.ThrowIfCancellationRequested();
                                                         using (StreamReader objStreamReader =
                                                                new StreamReader(objStream, true))
                                                         {
-                                                            token.ThrowIfCancellationRequested();
+                                                            innerToken.ThrowIfCancellationRequested();
                                                             using (XmlReader objReader = XmlReader.Create(
                                                                        objStreamReader,
                                                                        GlobalSettings.SafeXmlReaderSettings))
                                                             {
-                                                                token.ThrowIfCancellationRequested();
+                                                                innerToken.ThrowIfCancellationRequested();
                                                                 XPathDocument xmlSourceDoc
                                                                     = new XPathDocument(objReader);
                                                                 xmlLeadsDocument = xmlSourceDoc.CreateNavigator();

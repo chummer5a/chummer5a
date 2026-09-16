@@ -1087,6 +1087,38 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc cref="List{T}.RemoveAll(Predicate{T})"/>
+        public static int RemoveAll<T>(this IList<T> lstCollection, Func<T, CancellationToken, bool> predicate,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+            IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                ? objHasLockObject.LockObject.EnterWriteLock(token)
+                : null;
+            try
+            {
+                int intReturn = 0;
+                for (int i = lstCollection.Count - 1; i >= 0; --i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (predicate(lstCollection[i], token))
+                    {
+                        lstCollection.RemoveAt(i);
+                        ++intReturn;
+                    }
+                }
+                return intReturn;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+        }
+
         /// <summary>
         /// Async version of <see cref="List{T}.RemoveAll(Predicate{T})"/>, but for the entire <see cref="IList{T}"/> interface.
         /// </summary>

@@ -1210,10 +1210,10 @@ namespace Chummer
                                     x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText), x => x.CalculatedESS,
                                     token)
                                 : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
-                                    async x =>
-                                        (await x.GetGradeAsync(token).ConfigureAwait(false)).Name.ContainsAny(
+                                    async (x, t) =>
+                                        (await x.GetGradeAsync(t).ConfigureAwait(false)).Name.ContainsAny(
                                             setEssNodeGradeAttributeText),
-                                    x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
+                                    (x, t) => x.GetCalculatedESSAsync(t), token).ConfigureAwait(false);
                         }
 
                         if (strNodeInnerText.StartsWith('-'))
@@ -1880,10 +1880,10 @@ namespace Chummer
                                              StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
                                          && x.TotalBaseRating >= intValue)
                                 : objSkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    x => (string.Equals(x.SourceIDString, strNodeId,
+                                    (x, t) => (string.Equals(x.SourceIDString, strNodeId,
                                              StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                         && x.HasSpecialization(strSpec, token)
-                                         && x.TotalBaseRating >= intValue);
+                                         && x.HasSpecialization(strSpec, t)
+                                         && x.TotalBaseRating >= intValue, token);
                         }
                         else
                         {
@@ -2269,7 +2269,7 @@ namespace Chummer
                                 objCharacter.Vehicles.SelectMany(
                                     y => y.Weapons.Concat(y.WeaponMounts.SelectMany(x => x.Weapons))
                                         .GetAllDescendants(x => x.UnderbarrelWeapons)))
-                            .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification, token));
+                            .Sum((x, t) => x.WeaponAccessories.Count(y => y.SpecialModification, t), token);
                     }
                     else
                     {

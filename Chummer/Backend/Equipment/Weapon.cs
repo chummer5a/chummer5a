@@ -9717,11 +9717,11 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decDicePoolModifier += WeaponAccessories.Sum(a => a.Equipped, a =>
+                decDicePoolModifier += WeaponAccessories.Sum(a => a.Equipped, (a, t) =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
-                        string strWeaponBonusPool = a.WirelessWeaponBonus["pool"]?.InnerTextViaPool(token);
+                        string strWeaponBonusPool = a.WirelessWeaponBonus["pool"]?.InnerTextViaPool(t);
                         if (!string.IsNullOrEmpty(strWeaponBonusPool)
                             && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                         {
@@ -9733,7 +9733,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (HasWirelessSmartgun)
                         {
-                            strWeaponBonusPool = a.WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool(token);
+                            strWeaponBonusPool = a.WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool(t);
                             if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
@@ -13414,7 +13414,7 @@ namespace Chummer.Backend.Equipment
 
                     Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
-                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);
 
                     TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;
@@ -13491,7 +13491,7 @@ namespace Chummer.Backend.Equipment
 
                     Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
-                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);
 
                     TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;

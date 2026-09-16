@@ -23897,7 +23897,7 @@ namespace Chummer
                         {
                             await sbdQualities.AppendJoinAsync("," + Environment.NewLine,
                                                                objLifestyle.LifestyleQualities.Select(
-                                                                   r => r.GetCurrentFormattedDisplayNameAsync(token)), token).ConfigureAwait(false);
+                                                                   (r, t) => r.GetCurrentFormattedDisplayNameAsync(t), token), token).ConfigureAwait(false);
                             foreach (Improvement objImprovement in await ImprovementManager
                                                                          .GetCachedImprovementListForValueOfAsync(
                                                                              CharacterObject,
@@ -24020,7 +24020,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpLifestyleDetails.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    await flpLifestyleDetails.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                 }
             }
             finally

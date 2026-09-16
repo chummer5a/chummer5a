@@ -3289,7 +3289,7 @@ namespace Chummer.Backend.Skills
 
                             case Improvement.ImprovementType.EnhancedArticulation:
                                 if (SkillCategory == "Physical Active" &&
-                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(token).ConfigureAwait(false)))
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(t).ConfigureAwait(false)))
                                 {
                                     lstReturn.Add(objImprovement);
                                     if (blnExitAfterFirst)
@@ -3300,7 +3300,7 @@ namespace Chummer.Backend.Skills
                         }
 
                         return true;
-                    }, token: token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
 
                 return lstReturn;
             }

@@ -1012,7 +1012,7 @@ namespace Chummer.Backend.Skills
                                         default:
                                             return 1;
                                     }
-                                }, MergeSkills, token: token);
+                                }, MergeSkills, token);
                             }
                             catch
                             {
@@ -1059,7 +1059,7 @@ namespace Chummer.Backend.Skills
                         {
                             setSkillsToRemove.Remove(objSkill);
                         }
-                    }, token: token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
 
                 if (setSkillsToRemove.Count == 0)
                     return;
@@ -1132,7 +1132,7 @@ namespace Chummer.Backend.Skills
                                             default:
                                                 return 1;
                                         }
-                                    }, MergeSkillsAsync, token: token).ConfigureAwait(false);
+                                    }, MergeSkillsAsync, token).ConfigureAwait(false);
                             }
                             catch
                             {
@@ -1158,7 +1158,7 @@ namespace Chummer.Backend.Skills
                                     await objSkillGroup.SetBaseAsync(0, t1).ConfigureAwait(false);
                                     await objSkillGroup.SetKarmaAsync(0, t1).ConfigureAwait(false);
                                 }
-                            }, token: token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                     }
                 }
                 finally
