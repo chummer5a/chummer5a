@@ -863,13 +863,13 @@ namespace Chummer
             }
             else
             {
-                await ParallelExtensions.ForEachAsync(astrFilesToDelete, async (strToDelete, t) =>
+                await ParallelExtensions.ForEachAsync(astrFilesToDelete, async (strToDelete, objSource, t) =>
                 {
-                    if (t.IsCancellationRequested)
+                    if (objSource.IsCancellationRequested)
                         return;
-                    if (!await FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token))
+                    if (!await FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, t))
                     {
-                        t.Cancel(false);
+                        objSource.Cancel(false);
                         Interlocked.Exchange(ref intReturn, 0);
                     }
                 }, token).ConfigureAwait(false);

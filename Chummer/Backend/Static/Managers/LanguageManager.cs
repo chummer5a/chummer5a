@@ -1919,12 +1919,12 @@ namespace Chummer
                                                 StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
                                     string strInnerReturn = string.Empty;
-                                    await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
+                                    await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource, t) =>
                                     {
                                         if (objSource.IsCancellationRequested)
                                             return;
                                         string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
-                                                    tupLoop.Item4, innerToken).ConfigureAwait(false);
+                                                    tupLoop.Item4, t).ConfigureAwait(false);
                                         if (!string.IsNullOrEmpty(strLoop))
                                         {
                                             objSource.Cancel(false);
@@ -2422,12 +2422,12 @@ namespace Chummer
                                     StringComparison.OrdinalIgnoreCase))
                                 : aobjPaths;
                         string strInnerReturn = string.Empty;
-                        await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
+                        await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource, t) =>
                         {
                             if (objSource.IsCancellationRequested)
                                 return;
                             string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
-                                        tupLoop.Item4, innerToken).ConfigureAwait(false);
+                                        tupLoop.Item4, t).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strLoop))
                             {
                                 objSource.Cancel(false);

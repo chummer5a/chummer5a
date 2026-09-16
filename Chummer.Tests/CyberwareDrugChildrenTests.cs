@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Xml;
 using Chummer.Backend.Equipment;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,53 +29,123 @@ namespace Chummer.Tests
     [TestClass]
     public class CyberwareDrugChildrenTests
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void ProcessCostExpression_GearCostIncludesNestedDrugTotalCost()
         {
-            using (Character objCharacter = new Character())
+            CancellationToken token = TestContext.CancellationToken;
+            token.ThrowIfCancellationRequested();
+            try
             {
-                Cyberware objGland = new Cyberware(objCharacter)
+                using (Character objCharacter = new Character())
                 {
-                    Cost = "20000 + (99 * Gear Cost)"
-                };
+                    Cyberware objGland = new Cyberware(objCharacter)
+                    {
+                        Cost = "20000 + (99 * Gear Cost)"
+                    };
 
-                Drug objDrug = new Drug(objCharacter);
-                XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
-                xmlDoc.LoadXml(
-                    "<drug><name>Jazz</name><category>Drugs</category><cost>150</cost><quantity>1</quantity><availability>2</availability></drug>");
-                objDrug.Load(xmlDoc.DocumentElement);
-                objGland.DrugChildren.Add(objDrug);
+                    try
+                    {
+                        Drug objDrug = new Drug(objCharacter);
+                        try
+                        {
+                            XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
+                            xmlDoc.LoadXml(
+                                "<drug><name>Jazz</name><category>Drugs</category><cost>150</cost><quantity>1</quantity><availability>2</availability></drug>");
+                            objDrug.Load(xmlDoc.DocumentElement, token);
+                            objGland.DrugChildren.Add(objDrug);
 
-                string strCost = objGland.ProcessCostExpression(objGland.Cost, () => 1, () => objGland.Grade);
-                Assert.AreEqual("34850", strCost);
+                            string strCost = objGland.ProcessCostExpression(objGland.Cost, () => 1, () => objGland.Grade);
+                            Assert.AreEqual("34850", strCost);
+                        }
+                        finally
+                        {
+                            objDrug.Remove(false);
+                        }
+                    }
+                    finally
+                    {
+                        objGland.Remove(false);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void ProcessCostExpression_ParentGearCostIncludesParentNestedDrugs()
         {
-            using (Character objCharacter = new Character())
+            CancellationToken token = TestContext.CancellationToken;
+            token.ThrowIfCancellationRequested();
+            try
             {
-                Cyberware objParent = new Cyberware(objCharacter)
+                using (Character objCharacter = new Character())
                 {
-                    Cost = "0"
-                };
-                Cyberware objExpanded = new Cyberware(objCharacter)
-                {
-                    Cost = "2000 + (4 * Parent Gear Cost)",
-                    Parent = objParent
-                };
+                    Cyberware objParent = new Cyberware(objCharacter)
+                    {
+                        Cost = "0"
+                    };
+                    try
+                    {
+                        Cyberware objExpanded = new Cyberware(objCharacter)
+                        {
+                            Cost = "2000 + (4 * Parent Gear Cost)",
+                            Parent = objParent
+                        };
+                        try
+                        {
+                            Drug objDrug = new Drug(objCharacter);
+                            try
+                            {
+                                XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
+                                xmlDoc.LoadXml(
+                                    "<drug><name>Jazz</name><category>Drugs</category><cost>100</cost><quantity>1</quantity><availability>2</availability></drug>");
+                                objDrug.Load(xmlDoc.DocumentElement, token);
+                                objParent.DrugChildren.Add(objDrug);
 
-                Drug objDrug = new Drug(objCharacter);
-                XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
-                xmlDoc.LoadXml(
-                    "<drug><name>Jazz</name><category>Drugs</category><cost>100</cost><quantity>1</quantity><availability>2</availability></drug>");
-                objDrug.Load(xmlDoc.DocumentElement);
-                objParent.DrugChildren.Add(objDrug);
-
-                string strCost = objExpanded.ProcessCostExpression(objExpanded.Cost, () => 1, () => objExpanded.Grade);
-                Assert.AreEqual("2400", strCost);
+                                string strCost = objExpanded.ProcessCostExpression(objExpanded.Cost, () => 1, () => objExpanded.Grade);
+                                Assert.AreEqual("2400", strCost);
+                            }
+                            finally
+                            {
+                                objDrug.Remove(false);
+                            }
+                        }
+                        finally
+                        {
+                            objExpanded.Remove(false);
+                        }
+                    }
+                    finally
+                    {
+                        objParent.Remove(false);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
@@ -87,41 +160,110 @@ namespace Chummer.Tests
         [TestMethod]
         public void GetCategoryForDrugSource_FindsNestedGlandDrug()
         {
-            using (Character objCharacter = new Character())
+            CancellationToken token = TestContext.CancellationToken;
+            token.ThrowIfCancellationRequested();
+            try
             {
-                Cyberware objGland = new Cyberware(objCharacter);
-                Drug objDrug = new Drug(objCharacter);
-                XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
-                xmlDoc.LoadXml(
-                    "<drug><name>Jazz</name><category>Drugs</category><cost>150</cost><quantity>1</quantity><availability>2</availability></drug>");
-                objDrug.Load(xmlDoc.DocumentElement);
-                objGland.DrugChildren.Add(objDrug);
-                objCharacter.Cyberware.Add(objGland);
+                using (Character objCharacter = new Character())
+                {
+                    Cyberware objGland = new Cyberware(objCharacter);
+                    try
+                    {
+                        Drug objDrug = new Drug(objCharacter);
+                        try
+                        {
+                            XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
+                            xmlDoc.LoadXml(
+                                "<drug><name>Jazz</name><category>Drugs</category><cost>150</cost><quantity>1</quantity><availability>2</availability></drug>");
+                            objDrug.Load(xmlDoc.DocumentElement, token);
+                            objGland.DrugChildren.Add(objDrug);
+                            objCharacter.Cyberware.Add(objGland);
 
-                Assert.AreEqual("Drugs", Drug.GetCategoryForDrugSource(objCharacter, objDrug.InternalId));
-                Assert.AreSame(objDrug, Drug.FindNestedDrug(objCharacter, objDrug.InternalId));
+                            Assert.AreEqual("Drugs", Drug.GetCategoryForDrugSource(objCharacter, objDrug.InternalId));
+                            Assert.AreSame(objDrug, Drug.FindNestedDrug(objCharacter, objDrug.InternalId));
+                        }
+                        finally
+                        {
+                            objDrug.Remove(false);
+                        }
+                    }
+                    finally
+                    {
+                        objGland.Remove(false);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void GetImprovementGroupName_NestedDrugDiffersFromInventoryDose()
         {
-            using (Character objCharacter = new Character())
+            CancellationToken token = TestContext.CancellationToken;
+            token.ThrowIfCancellationRequested();
+            try
             {
-                Drug objInventory = new Drug(objCharacter);
-                XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
-                xmlDoc.LoadXml(
-                    "<drug><name>Bliss</name><category>Drugs</category><cost>15</cost><quantity>1</quantity><availability>2R</availability></drug>");
-                objInventory.Load(xmlDoc.DocumentElement);
+                using (Character objCharacter = new Character())
+                {
+                    Drug objInventory = new Drug(objCharacter);
+                    try
+                    {
+                        XmlDocument xmlDoc = new XmlDocument { XmlResolver = null };
+                        xmlDoc.LoadXml(
+                            "<drug><name>Bliss</name><category>Drugs</category><cost>15</cost><quantity>1</quantity><availability>2R</availability></drug>");
+                        objInventory.Load(xmlDoc.DocumentElement, token);
 
-                Cyberware objGland = new Cyberware(objCharacter) { Name = "Chemical Gland" };
-                Drug objGlandDrug = new Drug(objCharacter);
-                objGlandDrug.Load(xmlDoc.DocumentElement);
-                objGland.DrugChildren.Add(objGlandDrug);
+                        Cyberware objGland = new Cyberware(objCharacter) { Name = "Chemical Gland" };
+                        try
+                        {
+                            Drug objGlandDrug = new Drug(objCharacter);
+                            try
+                            {
+                                objGlandDrug.Load(xmlDoc.DocumentElement, token);
+                                objGland.DrugChildren.Add(objGlandDrug);
 
-                Assert.AreEqual("Bliss", objInventory.GetImprovementGroupName());
-                Assert.AreEqual("Bliss (Chemical Gland)", objGlandDrug.GetImprovementGroupName());
+                                Assert.AreEqual("Bliss", objInventory.GetImprovementGroupName());
+                                Assert.AreEqual("Bliss (Chemical Gland)", objGlandDrug.GetImprovementGroupName());
+                            }
+                            finally
+                            {
+                                objGlandDrug.Remove(false);
+                            }
+                        }
+                        finally
+                        {
+                            objGland.Remove(false);
+                        }
+                    }
+                    finally
+                    {
+                        objInventory.Remove(false);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
     }
 }

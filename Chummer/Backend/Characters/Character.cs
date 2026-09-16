@@ -6734,7 +6734,7 @@ namespace Chummer
                                     // Calculate a score for a character option that roughly coincides with how suitable it is as a
                                     // replacement for the current one the character save contains Settings with a negative score
                                     // should not be considered suitable at all
-                                    async Task<int> CalculateCharacterSettingsMatchScoreAsync(CharacterSettings objOptionsToCheck)
+                                    async Task<int> CalculateCharacterSettingsMatchScoreAsync(CharacterSettings objOptionsToCheck, CancellationToken innerToken)
                                     {
                                         int intReturn = int.MaxValue;
 
@@ -6780,7 +6780,7 @@ namespace Chummer
 
                                         IReadOnlyList<CustomDataDirectoryInfo> lstOtherEnabledCustomDataDirectoryInfos
                                             = await objOptionsToCheck
-                                                    .GetEnabledCustomDataDirectoryInfosAsync(token)
+                                                    .GetEnabledCustomDataDirectoryInfosAsync(innerToken)
                                                     .ConfigureAwait(false);
                                         int intBaselineCustomDataCount = lstOtherEnabledCustomDataDirectoryInfos.Count;
                                         if (intBaselineCustomDataCount == 0)
@@ -6827,7 +6827,7 @@ namespace Chummer
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
                                             IReadOnlyCollection<string> setOtherBooks
-                                                = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
+                                                = await objOptionsToCheck.GetBooksAsync(innerToken).ConfigureAwait(false);
                                             int intExtraBooks = setOtherBooks.Count(x => !setDummyBooks.Remove(x));
                                             setDummyBooks.ExceptWith(setOtherBooks);
                                             // Missing books are weighted a lot more heavily than extra books
@@ -6916,7 +6916,7 @@ namespace Chummer
                                                 = blnSync
                                                     ? CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value)
                                                     : await CalculateCharacterSettingsMatchScoreAsync(kvpLoopOptions
-                                                        .Value).ConfigureAwait(false);
+                                                        .Value, token).ConfigureAwait(false);
                                             if (intLoopScore > intMostSuitable)
                                             {
                                                 intMostSuitable = intLoopScore;
@@ -7026,7 +7026,7 @@ namespace Chummer
                                                 = blnSync
                                                     ? CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value)
                                                     : await CalculateCharacterSettingsMatchScoreAsync(kvpLoopOptions
-                                                        .Value).ConfigureAwait(false);
+                                                        .Value, token).ConfigureAwait(false);
                                             if (intLoopScore > intMostSuitable)
                                             {
                                                 intMostSuitable = intLoopScore;
@@ -9160,25 +9160,25 @@ namespace Chummer
                                     if (blnSync)
                                     {
                                         // ReSharper disable MethodHasAsyncOverload
-                                        Cyberware.ForEach(objCyberware =>
+                                        Cyberware.ForEach((objCyberware, t1) =>
                                         {
                                             if (objCyberware.PairBonus?.HasChildNodes == true &&
-                                                !Cyberware.DeepAny(x => x.Children, x =>
+                                                !Cyberware.DeepAny(x => x.Children, (x, t2) =>
                                                 {
                                                     if (!objCyberware.IncludePair.Contains(x.Name) ||
                                                         x.Extra != objCyberware.Extra ||
                                                         !x.IsModularCurrentlyEquipped)
                                                         return false;
                                                     string strToMatch = x.InternalId + "Pair";
-                                                    return Improvements.Any(y => y.SourceName == strToMatch, token);
-                                                }))
+                                                    return Improvements.Any(y => y.SourceName == strToMatch, t2);
+                                                }, t1))
                                             {
-                                                XmlNode objNode = objCyberware.GetNode(token: token);
+                                                XmlNode objNode = objCyberware.GetNode(token: t1);
                                                 if (objNode != null)
                                                 {
                                                     using (TemporaryStringArray aParams = new TemporaryStringArray(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
                                                     {
-                                                        ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, aParams, token: token);
+                                                        ImprovementManager.RemoveImprovements(this, objCyberware.SourceType, aParams, token: t1);
                                                     }
 
                                                     objCyberware.Bonus = objNode["bonus"];
@@ -9194,7 +9194,7 @@ namespace Chummer
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.Bonus,
                                                             objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort, token: token);
+                                                            objCyberware.CurrentDisplayNameShort, token: t1);
                                                         string strSelectedValue =
                                                             ImprovementManager.GetSelectedValue(this);
                                                         if (!string.IsNullOrEmpty(strSelectedValue))
@@ -9207,7 +9207,7 @@ namespace Chummer
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.WirelessBonus,
                                                             objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort, token: token);
+                                                            objCyberware.CurrentDisplayNameShort, token: t1);
                                                         string strSelectedValue = ImprovementManager.GetSelectedValue(this);
                                                         if (!string.IsNullOrEmpty(strSelectedValue) &&
                                                             string.IsNullOrEmpty(objCyberware.Extra))
@@ -9239,25 +9239,25 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        await (await GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async objCyberware =>
+                                        await (await GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async (objCyberware, t1) =>
                                         {
                                             if (objCyberware.PairBonus?.HasChildNodes == true &&
-                                                !await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepAnyAsync(x => x.GetChildrenAsync(token), async x =>
+                                                !await (await GetCyberwareAsync(t1).ConfigureAwait(false)).DeepAnyAsync((x, t2) => x.GetChildrenAsync(t2), async (x, t2) =>
                                                 {
                                                     if (!objCyberware.IncludePair.Contains(x.Name) ||
                                                         x.Extra != objCyberware.Extra ||
-                                                        !await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                        !await x.GetIsModularCurrentlyEquippedAsync(t2).ConfigureAwait(false))
                                                         return false;
                                                     string strToMatch = x.InternalId + "Pair";
-                                                    return await Improvements.AnyAsync(y => y.SourceName == strToMatch, token).ConfigureAwait(false);
-                                                }, token).ConfigureAwait(false))
+                                                    return await Improvements.AnyAsync(y => y.SourceName == strToMatch, t2).ConfigureAwait(false);
+                                                }, t1).ConfigureAwait(false))
                                             {
-                                                XmlNode objNode = await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
+                                                XmlNode objNode = await objCyberware.GetNodeAsync(token: t1).ConfigureAwait(false);
                                                 if (objNode != null)
                                                 {
                                                     using (TemporaryStringArray aParams = new TemporaryStringArray(objCyberware.InternalId, objCyberware.InternalId + "Pair"))
                                                     {
-                                                        await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType, aParams, token: token).ConfigureAwait(false);
+                                                        await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType, aParams, token: t1).ConfigureAwait(false);
                                                     }
                                                     objCyberware.Bonus = objNode["bonus"];
                                                     objCyberware.WirelessBonus = objNode["wirelessbonus"];
@@ -9271,11 +9271,11 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
                                                                 objCyberware.InternalId, objCyberware.Bonus,
-                                                                await objCyberware.GetRatingAsync(token)
+                                                                await objCyberware.GetRatingAsync(t1)
                                                                     .ConfigureAwait(false),
                                                                 await objCyberware
-                                                                      .GetCurrentDisplayNameShortAsync(token)
-                                                                      .ConfigureAwait(false), token: token)
+                                                                      .GetCurrentDisplayNameShortAsync(t1)
+                                                                      .ConfigureAwait(false), token: t1)
                                                             .ConfigureAwait(false);
                                                         string strSelectedValue =
                                                             ImprovementManager.GetSelectedValue(this);
@@ -9288,11 +9288,11 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
                                                                 objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                                await objCyberware.GetRatingAsync(token)
+                                                                await objCyberware.GetRatingAsync(t1)
                                                                     .ConfigureAwait(false),
                                                                 await objCyberware
-                                                                      .GetCurrentDisplayNameShortAsync(token)
-                                                                      .ConfigureAwait(false), token: token)
+                                                                      .GetCurrentDisplayNameShortAsync(t1)
+                                                                      .ConfigureAwait(false), token: t1)
                                                             .ConfigureAwait(false);
                                                         string strSelectedValue = ImprovementManager.GetSelectedValue(this);
                                                         if (!string.IsNullOrEmpty(strSelectedValue) &&
@@ -9300,9 +9300,9 @@ namespace Chummer
                                                             objCyberware.Extra = strSelectedValue;
                                                     }
 
-                                                    if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                    if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(t1).ConfigureAwait(false))
                                                     {
-                                                        await objCyberware.ChangeModularEquipAsync(false, token: token)
+                                                        await objCyberware.ChangeModularEquipAsync(false, token: t1)
                                                                           .ConfigureAwait(false);
                                                     }
                                                     else if (objCyberware.PairBonus != null)
@@ -9335,10 +9335,10 @@ namespace Chummer
                                                               x => objCyberware.IncludePair.Contains(x.Name) &&
                                                                    x.Extra == objCyberware.Extra &&
                                                                    x.IsModularCurrentlyEquipped, token).ToList()
-                                        : await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(x => x.GetChildrenAsync(token),
-                                                                         async x => objCyberware.IncludePair.Contains(x.Name)
+                                        : await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync((x, t) => x.GetChildrenAsync(t),
+                                                                         async (x, t) => objCyberware.IncludePair.Contains(x.Name)
                                                                               && x.Extra == objCyberware.Extra
-                                                                              && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                                                              && await x.GetIsModularCurrentlyEquippedAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                     if (!string.IsNullOrEmpty(objCyberware.Location) &&
                                         objCyberware.IncludePair.All(x => x == objCyberware.Name))
@@ -10808,12 +10808,12 @@ namespace Chummer
                                         if (blnSync)
                                         {
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            InitiationGrades.ForEach(objInitiationGrade =>
+                                            InitiationGrades.ForEach((objInitiationGrade, t) =>
                                             {
                                                 if (!objInitiationGrade.Technomancer
                                                     || objInitiationGrade.Grade.DivAwayFromZero(2) >
                                                     objCyberadeptImprovement.Value
-                                                    || Metamagics.Any(x => x.Grade == objInitiationGrade.Grade, token)
+                                                    || Metamagics.Any(x => x.Grade == objInitiationGrade.Grade, t)
                                                     || lstCyberadeptSweepGrades.TrueForAll(x =>
                                                             x.ImproveSource != Improvement.ImprovementSource
                                                                 .CyberadeptDaemon
@@ -10826,13 +10826,13 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            await InitiationGrades.ForEachAsync(async objInitiationGrade =>
+                                            await InitiationGrades.ForEachAsync(async (objInitiationGrade, t) =>
                                             {
                                                 if (!objInitiationGrade.Technomancer
                                                     || objInitiationGrade.Grade.DivAwayFromZero(2) >
                                                     objCyberadeptImprovement.Value
                                                     || await Metamagics.AnyAsync(
-                                                        x => x.Grade == objInitiationGrade.Grade, token).ConfigureAwait(false)
+                                                        x => x.Grade == objInitiationGrade.Grade, t).ConfigureAwait(false)
                                                     || lstCyberadeptSweepGrades.TrueForAll(x =>
                                                         x.ImproveSource != Improvement.ImprovementSource
                                                             .CyberadeptDaemon
@@ -10925,7 +10925,7 @@ namespace Chummer
                                 else if (!await GetCreatedAsync(token).ConfigureAwait(false))
                                 {
                                     await AttributeSection.AllAttributes
-                                        .ForEachAsync(async x => await x.DoBaseFixAsync(token: token).ConfigureAwait(false),
+                                        .ForEachAsync(async (x, t) => await x.DoBaseFixAsync(token: t).ConfigureAwait(false),
                                             token).ConfigureAwait(false);
                                 }
                             }
@@ -10956,23 +10956,23 @@ namespace Chummer
                                     SkillsSection objSkillsSection = await GetSkillsSectionAsync(token).ConfigureAwait(false);
                                     await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
                                         .ForEachWithSideEffectsAsync(
-                                            async x =>
+                                            async (x, t) =>
                                             {
                                                 ThreadSafeObservableCollection<SkillSpecialization> lstSpecs =
-                                                    await x.GetSpecializationsAsync(token).ConfigureAwait(false);
-                                                if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 &&
-                                                    !await x.GetCanHaveSpecsAsync(token).ConfigureAwait(false))
-                                                    await lstSpecs.ClearAsync(token).ConfigureAwait(false);
+                                                    await x.GetSpecializationsAsync(t).ConfigureAwait(false);
+                                                if (await lstSpecs.GetCountAsync(t).ConfigureAwait(false) > 0 &&
+                                                    !await x.GetCanHaveSpecsAsync(t).ConfigureAwait(false))
+                                                    await lstSpecs.ClearAsync(t).ConfigureAwait(false);
                                             }, token).ConfigureAwait(false);
                                     await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
                                         .ForEachWithSideEffectsAsync(
-                                            async x =>
+                                            async (x, t) =>
                                             {
                                                 ThreadSafeObservableCollection<SkillSpecialization> lstSpecs =
-                                                    await x.GetSpecializationsAsync(token).ConfigureAwait(false);
-                                                if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 &&
-                                                    !await x.GetCanHaveSpecsAsync(token).ConfigureAwait(false))
-                                                    await lstSpecs.ClearAsync(token).ConfigureAwait(false);
+                                                    await x.GetSpecializationsAsync(t).ConfigureAwait(false);
+                                                if (await lstSpecs.GetCountAsync(t).ConfigureAwait(false) > 0 &&
+                                                    !await x.GetCanHaveSpecsAsync(t).ConfigureAwait(false))
+                                                    await lstSpecs.ClearAsync(t).ConfigureAwait(false);
                                             }, token).ConfigureAwait(false);
                                 }
                             }
@@ -15016,7 +15016,7 @@ namespace Chummer
                                 }
 
                                 foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                                             x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
+                                             (x, t) => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, t), token))
                                 {
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                     {
@@ -15050,7 +15050,7 @@ namespace Chummer
                                 foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                                 {
                                     foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                                 x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
+                                                 (x, t) => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, t), token))
                                     {
                                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                         {
@@ -15114,7 +15114,7 @@ namespace Chummer
                                     foreach (VehicleMod objVehicleMod in objMount.Mods)
                                     {
                                         foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                                     x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token), token))
+                                                     (x, t) => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, t), token))
                                         {
                                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                             {
@@ -15475,7 +15475,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.Cyberware:
                         {
                             string strWareReturn = string.Empty;
-                            Cyberware objCyberware = await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token),
+                            Cyberware objCyberware = await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync((x, t) => x.GetChildrenAsync(t),
                                 x => x.InternalId == strImprovedSourceName
                                      && x.SourceType == eSource, token).ConfigureAwait(false);
                             if (objCyberware != null)
@@ -15500,7 +15500,7 @@ namespace Chummer
                                 await objVehicle.Mods.ForEachWithBreakAsync(async (objVehicleMod, t2) =>
                                 {
                                     objCyberware = await objVehicleMod.Cyberware.DeepFirstOrDefaultAsync(
-                                        x => x.GetChildrenAsync(t2),
+                                        (x, t3) => x.GetChildrenAsync(t3),
                                         x => x.InternalId == strImprovedSourceName, t2).ConfigureAwait(false);
                                     if (objCyberware != null)
                                     {
@@ -15538,7 +15538,7 @@ namespace Chummer
                                     await objMount.Mods.ForEachWithBreakAsync(async (objVehicleMod, t3) =>
                                     {
                                         objCyberware = await objVehicleMod.Cyberware.DeepFirstOrDefaultAsync(
-                                            x => x.GetChildrenAsync(t3),
+                                            (x, t4) => x.GetChildrenAsync(t4),
                                             x => x.InternalId == strImprovedSourceName, t3).ConfigureAwait(false);
                                         if (objCyberware != null)
                                         {
@@ -15725,10 +15725,10 @@ namespace Chummer
                                 }
 
                                 foreach (Weapon objWeapon in await objVehicle.Weapons.DeepWhereAsync(x => x.Children,
-                                             x => x.WeaponAccessories.AnyAsync(
-                                                 async (y, t) =>
-                                                     await y.GearChildren.GetCountAsync(t).ConfigureAwait(false) > 0,
-                                                 t1),
+                                             (x, t2) => x.WeaponAccessories.AnyAsync(
+                                                 async (y, t3) =>
+                                                     await y.GearChildren.GetCountAsync(t3).ConfigureAwait(false) > 0,
+                                                 t2),
                                              t1).ConfigureAwait(false))
                                 {
                                     await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objAccessory, t2) =>
@@ -15782,9 +15782,9 @@ namespace Chummer
                                 {
                                     foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
                                                  x => x.Children,
-                                                 x => x.WeaponAccessories.AnyAsync(
-                                                     async (y, t) => await y.GearChildren.GetCountAsync(t)
-                                                         .ConfigureAwait(false) > 0, t2),
+                                                 (x, t3) => x.WeaponAccessories.AnyAsync(
+                                                     async (y, t4) => await y.GearChildren.GetCountAsync(t4)
+                                                         .ConfigureAwait(false) > 0, t3),
                                                  t2).ConfigureAwait(false))
                                     {
                                         await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objAccessory, t3) =>
@@ -15844,9 +15844,9 @@ namespace Chummer
                                     }
 
                                     foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
-                                                 x => x.GetChildrenAsync(t2),
-                                                 async x =>
-                                                     await (await x.GetGearChildrenAsync(t2).ConfigureAwait(false)).GetCountAsync(t2).ConfigureAwait(false) > 0,
+                                                 (x, t3) => x.GetChildrenAsync(t3),
+                                                 async (x, t3) =>
+                                                     await (await x.GetGearChildrenAsync(t3).ConfigureAwait(false)).GetCountAsync(t3).ConfigureAwait(false) > 0,
                                                  t2).ConfigureAwait(false))
                                     {
                                         objReturnGear = await objCyberware.GearChildren.DeepFirstOrDefaultAsync(
@@ -15902,8 +15902,8 @@ namespace Chummer
                                     {
                                         foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
                                                          x => x.Children,
-                                                         x => x.WeaponAccessories.AnyAsync(
-                                                             y => y.GearChildren.Count > 0, t3), t3)
+                                                         (x, t4) => x.WeaponAccessories.AnyAsync(
+                                                             y => y.GearChildren.Count > 0, t4), t3)
                                                      .ConfigureAwait(false))
                                         {
                                             await objWeapon.WeaponAccessories.ForEachWithBreakAsync(
@@ -15974,8 +15974,8 @@ namespace Chummer
                                         }
 
                                         foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
-                                                     x => x.GetChildrenAsync(t3),
-                                                     async x => await (await x.GetGearChildrenAsync(t3).ConfigureAwait(false)).GetCountAsync(t3).ConfigureAwait(false) > 0, t3).ConfigureAwait(false))
+                                                     (x, t4) => x.GetChildrenAsync(t4),
+                                                     async (x, t4) => await (await x.GetGearChildrenAsync(t4).ConfigureAwait(false)).GetCountAsync(t4).ConfigureAwait(false) > 0, t3).ConfigureAwait(false))
                                         {
                                             objReturnGear = await (await objCyberware.GetGearChildrenAsync(t3).ConfigureAwait(false)).DeepFirstOrDefaultAsync(
                                                 x => x.Children,
@@ -17144,10 +17144,10 @@ namespace Chummer
                         // This is where "Talent" qualities like Adept and Technomancer get added in
                         int intTalentPriorityQualitiesKarma
                             = await (await GetQualitiesAsync(token).ConfigureAwait(false)).SumAsync(
-                                objQuality => objQuality.OriginSource == QualitySource.Heritage, async objQuality =>
+                                objQuality => objQuality.OriginSource == QualitySource.Heritage, async (objQuality, t) =>
                                 {
                                     XPathNavigator xmlQualityNode
-                                        = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                        = await objQuality.GetNodeXPathAsync(token: t).ConfigureAwait(false);
                                     if (xmlQualityNode == null)
                                         return 0;
                                     int intLoopKarma = 0;
@@ -41579,11 +41579,11 @@ namespace Chummer
                     {
                         int intTempAGI = int.MaxValue;
                         int intLegs = await (await GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
-                            x => x.LimbSlot == "leg", async objCyber =>
+                            x => x.LimbSlot == "leg", async (objCyber, t) =>
                             {
                                 intTempAGI = Math.Min(intTempAGI,
-                                    await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
-                                return await objCyber.GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                    await objCyber.GetAttributeTotalValueAsync("AGI", t).ConfigureAwait(false));
+                                return await objCyber.GetLimbSlotCountAsync(t).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
 
                         if (intTempAGI != int.MaxValue && intLegs >= 2)

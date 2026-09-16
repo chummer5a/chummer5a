@@ -1111,7 +1111,7 @@ namespace Chummer
                             while (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
-                                lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop), objBreakToken));
+                                lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop), token));
                                 if (++i == intBufferSize)
                                 {
                                     if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
@@ -1453,7 +1453,616 @@ namespace Chummer
                         while (objEnumerator.MoveNext())
                         {
                             token.ThrowIfCancellationRequested();
-                            lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop), objBreakToken));
+                            lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop), token));
+                            if (++i == intBufferSize)
+                            {
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                            lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                    }
+                                    return lstReturn;
+                                }
+                                else
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                }
+                            }
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
+                        }
+
+                        return lstReturn;
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachAsync<TSource>(IEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, CancellationToken, Task> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator<TSource> objEnumerator = lstItems.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        int intBufferSize = Utils.MaxParallelBatchSize;
+                        if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
+                            intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int i = 0;
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token));
+                                if (++i == intBufferSize)
+                                {
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                        return;
+                                    lstBuffer.Clear();
+                                    i = 0;
+                                }
+                            }
+
+                            if (i > 0)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDisposable)
+                    objDisposable.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachAsync(IEnumerable lstItems, Func<object, CancellationTokenSource, CancellationToken, Task> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator objEnumerator = lstItems.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        int intBufferSize = Utils.MaxParallelBatchSize;
+                        if (lstItems is ICollection lstItemsCollection)
+                            intBufferSize = Math.Min(lstItemsCollection.Count, intBufferSize);
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int i = 0;
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token));
+                                if (++i == intBufferSize)
+                                {
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                        return;
+                                    lstBuffer.Clear();
+                                    i = 0;
+                                }
+                            }
+
+                            if (i > 0)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDisposable)
+                    objDisposable.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachAsync<TSource>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, CancellationToken, Task> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intBufferSize = Utils.MaxParallelBatchSize;
+                if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
+                    intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int i = 0;
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token));
+                                if (++i == intBufferSize)
+                                {
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                        return;
+                                    lstBuffer.Clear();
+                                    i = 0;
+                                }
+                            }
+
+                            // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                            if (i > 0)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachAsync<TSource>(IAsyncEnumerable<TSource> lstItems, Action<TSource, CancellationTokenSource, CancellationToken> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intBufferSize = Utils.MaxParallelBatchSize;
+                if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
+                    intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int i = 0;
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token), token));
+                                if (++i == intBufferSize)
+                                {
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                        return;
+                                    lstBuffer.Clear();
+                                    i = 0;
+                                }
+                            }
+
+                            // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                            if (i > 0)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator<TSource> objEnumerator = lstItems.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        List<TResult> lstReturn;
+                        int intBufferSize = Utils.MaxParallelBatchSize;
+                        if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
+                        {
+                            lstReturn = new List<TResult>(lstItemsCollection.Count);
+                            intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        }
+                        else
+                            lstReturn = new List<TResult>(intBufferSize);
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token));
+                            if (++i == intBufferSize)
+                            {
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                            lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                    }
+                                }
+                                else
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                }
+                            }
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
+                        }
+                        return lstReturn;
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
+        public static async Task<List<TResult>> ForEachAsync<TResult>(IEnumerable lstItems, Func<object, CancellationTokenSource, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator objEnumerator = lstItems.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        List<TResult> lstReturn;
+                        int intBufferSize = Utils.MaxParallelBatchSize;
+                        if (lstItems is ICollection lstItemsCollection)
+                        {
+                            lstReturn = new List<TResult>(lstItemsCollection.Count);
+                            intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        }
+                        else
+                            lstReturn = new List<TResult>(intBufferSize);
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
+                        {
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token));
+                            if (++i == intBufferSize)
+                            {
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                            lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                    }
+                                    return lstReturn;
+                                }
+                                else
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                }
+                            }
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
+                        }
+                        return lstReturn;
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDisposable)
+                    objDisposable.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    token.ThrowIfCancellationRequested();
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        List<TResult> lstReturn;
+                        int intBufferSize = Utils.MaxParallelBatchSize;
+                        if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
+                        {
+                            intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
+                            lstReturn = new List<TResult>(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false));
+                        }
+                        else
+                            lstReturn = new List<TResult>(intBufferSize);
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token));
+                            if (++i == intBufferSize)
+                            {
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                            lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                    }
+                                    return lstReturn;
+                                }
+                                else
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+
+                        // Keep this last part inside the bloc before enumerator is disposed because we want to maintain the read lock on collections that have one until the parallel methods have completed
+                        if (i > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                }
+                            }
+                            else
+                            {
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
+                        }
+                        return lstReturn;
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.ForEach"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>..
+        /// </summary>
+        /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, CancellationToken, TResult> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
+            IEnumerator<TSource> objEnumerator = await lstItems.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        List<TResult> lstReturn;
+                        int intBufferSize = Utils.MaxParallelBatchSize;
+                        if (lstItems is IAsyncReadOnlyCollection<TSource> lstItemsCollection)
+                        {
+                            intBufferSize = Math.Min(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false), intBufferSize);
+                            lstReturn = new List<TResult>(await lstItemsCollection.GetCountAsync(token).ConfigureAwait(false));
+                        }
+                        else
+                            lstReturn = new List<TResult>(intBufferSize);
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        token.ThrowIfCancellationRequested();
+                        int i = 0;
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            lstBuffer.Add(Task.Run(() => funcCodeToRunWithPotentialBreak(objEnumerator.Current, objBreakLoop, token), token));
                             if (++i == intBufferSize)
                             {
                                 Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
@@ -1629,6 +2238,58 @@ namespace Chummer
                             {
                                 innerToken.ThrowIfCancellationRequested();
                                 lstBuffer.Add(funcCodeToRunWithPotentialBreak(j, objBreakLoop));
+                                if (++i == intBufferSize)
+                                {
+                                    if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                        return;
+                                    lstBuffer.Clear();
+                                    i = 0;
+                                }
+                            }
+                            if (i > 0)
+                            {
+                                innerToken.ThrowIfCancellationRequested();
+                                await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
+        /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task ForAsync(int intLowerBound, int intUpperBound, Func<int, CancellationTokenSource, CancellationToken, Task> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            int intLoopLength = intUpperBound - intLowerBound;
+            if (intLoopLength <= 0)
+                return Task.CompletedTask;
+            return Inner(token);
+            async Task Inner(CancellationToken innerToken)
+            {
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        int intBufferSize = Math.Min(intLoopLength, Utils.MaxParallelBatchSize);
+                        using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            int i = 0;
+                            for (int j = intLowerBound; j < intUpperBound; ++j)
+                            {
+                                innerToken.ThrowIfCancellationRequested();
+                                lstBuffer.Add(funcCodeToRunWithPotentialBreak(j, objBreakLoop, innerToken));
                                 if (++i == intBufferSize)
                                 {
                                     if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
@@ -2025,6 +2686,86 @@ namespace Chummer
                         {
                             innerToken.ThrowIfCancellationRequested();
                             lstBuffer.Add(funcCodeToRunWithPotentialBreak(j, objBreakLoop));
+                            if (++i == intBufferSize)
+                            {
+                                Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);
+                                if (await Task.WhenAny(tskEnsemble, objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                                {
+                                    innerToken.ThrowIfCancellationRequested();
+                                    foreach (Task<TResult> tskLoop in lstBuffer)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                            lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                    }
+                                    return lstReturn;
+                                }
+                                else
+                                {
+                                    innerToken.ThrowIfCancellationRequested();
+                                    lstReturn.AddRange(await tskEnsemble.ConfigureAwait(false));
+                                }
+                                lstBuffer.Clear();
+                                i = 0;
+                            }
+                        }
+                        if (i > 0)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await Task.WhenAny(Task.WhenAll(lstBuffer), objBreakTokenTask).ConfigureAwait(false) == objBreakTokenTask)
+                            {
+                                innerToken.ThrowIfCancellationRequested();
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                {
+                                    if (!tskLoop.IsCanceled)
+                                        lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                                }
+                            }
+                            else
+                            {
+                                foreach (Task<TResult> tskLoop in lstBuffer)
+                                    lstReturn.Add(await tskLoop.ConfigureAwait(false));
+                            }
+                        }
+                        return lstReturn;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to process a batch of asynchronous method calls in parallel similar to <see cref="Parallel.For"/> while respecting <see cref="Utils.MaxParallelBatchSize"/>.
+        /// </summary>
+        /// <param name="intLowerBound">Starting value of the iterating variable (inclusive).</param>
+        /// <param name="intUpperBound">Terminating value of the iterating variable (exclusive).</param>
+        /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Array of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run from <paramref name="intLowerBound"/> (inclusive) to <paramref name="intUpperBound"/> (exclusive).</returns>
+        public static Task<List<TResult>> ForAsync<TResult>(int intLowerBound, int intUpperBound, Func<int, CancellationTokenSource, CancellationToken, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<List<TResult>>(token);
+            int intReturnLength = intUpperBound - intLowerBound;
+            if (intReturnLength <= 0)
+                return Task.FromResult(new List<TResult>());
+            return Inner(token);
+            async Task<List<TResult>> Inner(CancellationToken innerToken)
+            {
+                List<TResult> lstReturn = new List<TResult>(intReturnLength);
+                innerToken.ThrowIfCancellationRequested();
+                using (CancellationTokenSource objBreakLoop = new CancellationTokenSource())
+                {
+                    CancellationToken objBreakToken = objBreakLoop.Token;
+                    using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(objBreakToken))
+                    {
+                        Task objBreakTokenTask = objBreakTokenTaskSource.Task;
+                        int intBufferSize = Math.Min(intReturnLength, Utils.MaxParallelBatchSize);
+                        List<Task<TResult>> lstBuffer = new List<Task<TResult>>(intBufferSize);
+                        innerToken.ThrowIfCancellationRequested();
+                        int i = 0;
+                        for (int j = intLowerBound; j < intUpperBound; ++j)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            lstBuffer.Add(funcCodeToRunWithPotentialBreak(j, objBreakLoop, innerToken));
                             if (++i == intBufferSize)
                             {
                                 Task<TResult[]> tskEnsemble = Task.WhenAll(lstBuffer);

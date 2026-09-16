@@ -368,14 +368,14 @@ namespace Chummer.Backend.Equipment
                                                                             || !string.IsNullOrEmpty(objNewItem.Weight)
                                                                             || objNewItem.GearChildren.DeepAny(
                                                                                 x => x.Children,
-                                                                                x => !string.IsNullOrEmpty(x.Weight))
+                                                                                x => !string.IsNullOrEmpty(x.Weight), token)
                                                                             || objNewItem.Children.DeepAny(
                                                                                 x => x.Children,
                                                                                 y => !string.IsNullOrEmpty(y.Weight)
                                                                                     || y.GearChildren.DeepAny(
                                                                                         x => x.Children,
                                                                                         x => !string
-                                                                                            .IsNullOrEmpty(x.Weight)))))
+                                                                                            .IsNullOrEmpty(x.Weight)), token)))
                                             blnDoEncumbranceRefresh = true;
                                         lstImprovementSourcesToProcess.Add(objNewItem);
                                     }
@@ -427,14 +427,14 @@ namespace Chummer.Backend.Equipment
                                                                         || !string.IsNullOrEmpty(objOldItem.Weight)
                                                                         || objOldItem.GearChildren.DeepAny(
                                                                             x => x.Children,
-                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                            x => !string.IsNullOrEmpty(x.Weight), token)
                                                                         || objOldItem.Children.DeepAny(
                                                                             x => x.Children,
-                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                            (y, t) => !string.IsNullOrEmpty(y.Weight)
                                                                                     || y.GearChildren.DeepAny(
                                                                                         x => x.Children,
                                                                                         x => !string
-                                                                                            .IsNullOrEmpty(x.Weight)))))
+                                                                                            .IsNullOrEmpty(x.Weight), t), token)))
                                     {
                                         blnDoEncumbranceRefresh = true;
                                     }
@@ -493,14 +493,14 @@ namespace Chummer.Backend.Equipment
                                                                         || !string.IsNullOrEmpty(objOldItem.Weight)
                                                                         || objOldItem.GearChildren.DeepAny(
                                                                             x => x.Children,
-                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                            x => !string.IsNullOrEmpty(x.Weight), token)
                                                                         || objOldItem.Children.DeepAny(
                                                                             x => x.Children,
-                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                            (y, t) => !string.IsNullOrEmpty(y.Weight)
                                                                                     || y.GearChildren.DeepAny(
                                                                                         x => x.Children,
                                                                                         x => !string
-                                                                                            .IsNullOrEmpty(x.Weight)))))
+                                                                                            .IsNullOrEmpty(x.Weight), t), token)))
                                     {
                                         blnDoEncumbranceRefresh = true;
                                     }
@@ -545,14 +545,14 @@ namespace Chummer.Backend.Equipment
                                                                         || !string.IsNullOrEmpty(objNewItem.Weight)
                                                                         || objNewItem.GearChildren.DeepAny(
                                                                             x => x.Children,
-                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                            x => !string.IsNullOrEmpty(x.Weight), token)
                                                                         || objNewItem.Children.DeepAny(
                                                                             x => x.Children,
-                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                            (y, t) => !string.IsNullOrEmpty(y.Weight)
                                                                                 || y.GearChildren.DeepAny(
                                                                                     x => x.Children,
                                                                                     x => !string
-                                                                                        .IsNullOrEmpty(x.Weight)))))
+                                                                                        .IsNullOrEmpty(x.Weight), t), token)))
                                         blnDoEncumbranceRefresh = true;
                                     lstImprovementSourcesToProcess.Add(objNewItem);
                                 }
@@ -1431,9 +1431,9 @@ namespace Chummer.Backend.Equipment
                                 ? _objCharacter.Cyberware.DeepWhere(x => x.Children,
                                     x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
                                          x.IsModularCurrentlyEquipped, token).ToList()
-                                : await _objCharacter.Cyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
-                                    async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                               await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                : await _objCharacter.Cyberware.DeepWhereAsync((x, t) => x.GetChildrenAsync(t),
+                                    async (x, t) => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                               await x.GetIsModularCurrentlyEquippedAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
@@ -2984,9 +2984,9 @@ namespace Chummer.Backend.Equipment
                                 else
                                 {
                                     lstPairableCyberwares = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                        x => x.GetChildrenAsync(token),
-                                        async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                                   await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                        (x, t) => x.GetChildrenAsync(t),
+                                        async (x, t) => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                                   await x.GetIsModularCurrentlyEquippedAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                 }
                                 int intCount = lstPairableCyberwares.Count;
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
@@ -4948,19 +4948,19 @@ namespace Chummer.Backend.Equipment
                             List<Cyberware> lstPairableCyberwares
                                 = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                                     .DeepWhereAsync(
-                                        x => x.GetChildrenAsync(token),
-                                        async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                        (x, t) => x.GetChildrenAsync(t),
+                                        async (x, t) => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
                                                                              && x.Extra == Extra &&
                                                                              await x.GetIsModularCurrentlyEquippedAsync(
-                                                                                     token)
+                                                                                     t)
                                                                                  .ConfigureAwait(false) && x.WirelessOn,
                                         token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             bool blnWirelessPairReplaceModeAll =
                                 WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace"
-                                && lstPairableCyberwares.All(x =>
+                                && lstPairableCyberwares.All((x, t) =>
                                     !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
-                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace");
+                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", t)?.Value == "replace", token);
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
                             {
@@ -5088,19 +5088,19 @@ namespace Chummer.Backend.Equipment
                             List<Cyberware> lstPairableCyberwares
                                 = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                                     .DeepWhereAsync(
-                                        x => x.GetChildrenAsync(token),
-                                        async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                                        (x, t) => x.GetChildrenAsync(t),
+                                        async (x, t) => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
                                                                              && x.Extra == Extra &&
                                                                              await x.GetIsModularCurrentlyEquippedAsync(
-                                                                                     token)
+                                                                                     t)
                                                                                  .ConfigureAwait(false) && x.WirelessOn,
                                         token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             bool blnWirelessPairReplaceModeAll =
                                 WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace"
-                                && lstPairableCyberwares.All(x =>
+                                && lstPairableCyberwares.All((x, t) =>
                                     !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
-                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace");
+                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", t)?.Value == "replace", token);
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
                             {
@@ -5408,10 +5408,10 @@ namespace Chummer.Backend.Equipment
                         // This cyberware should not be included in the count to make things easier.
                         List<Cyberware> lstPairableCyberwares
                             = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                x => x.GetChildrenAsync(token),
-                                async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                (x, t) => x.GetChildrenAsync(t),
+                                async (x, t) => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
                                                                      && x.Extra == Extra &&
-                                                                     await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                     await x.GetIsModularCurrentlyEquippedAsync(t)
                                                                             .ConfigureAwait(false),
                                 token).ConfigureAwait(false);
                         int intCount = lstPairableCyberwares.Count;
@@ -5465,10 +5465,10 @@ namespace Chummer.Backend.Equipment
                         // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
                         List<Cyberware> lstPairableCyberwares
                             = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                x => x.GetChildrenAsync(token),
-                                async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                                (x, t) => x.GetChildrenAsync(t),
+                                async (x, t) => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
                                                                      && x.Extra == Extra &&
-                                                                     await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                     await x.GetIsModularCurrentlyEquippedAsync(t)
                                                                             .ConfigureAwait(false),
                                 token).ConfigureAwait(false);
                         int intCount = lstPairableCyberwares.Count;
@@ -5524,17 +5524,17 @@ namespace Chummer.Backend.Equipment
                 if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
                     && (!string.IsNullOrEmpty(Weight)
                         || await (await GetGearChildrenAsync(token).ConfigureAwait(false)).DeepAnyAsync(
-                            async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                            async (x, t) => await x.Children.ToListAsync(y => y.Equipped, t).ConfigureAwait(false),
                             x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token).ConfigureAwait(false)
-                        || await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepAnyAsync(x => x.GetChildrenAsync(token),
-                                async y =>
+                        || await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepAnyAsync((x, t) => x.GetChildrenAsync(t),
+                                async (y, t) =>
                                 {
                                     if (!string.IsNullOrEmpty(y.Weight))
                                         return true;
-                                    TaggedObservableCollection<Gear> lstGearChildren = await y.GetGearChildrenAsync(token).ConfigureAwait(false);
+                                    TaggedObservableCollection<Gear> lstGearChildren = await y.GetGearChildrenAsync(t).ConfigureAwait(false);
                                     return await lstGearChildren.DeepAnyAsync(
                                             x => x.Children.Where(z => z.Equipped),
-                                            x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token)
+                                            x => x.Equipped && !string.IsNullOrEmpty(x.Weight), t)
                                         .ConfigureAwait(false);
                                 },
                                 token)
@@ -6066,8 +6066,8 @@ namespace Chummer.Backend.Equipment
                                     List<Cyberware> lstPairableCyberwares = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                                         .DeepWhereAsync(
                                             x => x.Children,
-                                            async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                                       await x.GetIsModularCurrentlyEquippedAsync(token)
+                                            async (x, t) => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                                       await x.GetIsModularCurrentlyEquippedAsync(t)
                                                            .ConfigureAwait(false), token).ConfigureAwait(false);
                                     int intCount = lstPairableCyberwares.Count;
                                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
@@ -12373,15 +12373,15 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 // Unequip all modular children first so that we don't delete them
                 Cyberware objModularChild
-                    = await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token), async x => !string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
+                    = await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync((x, t) => x.GetChildrenAsync(t), async (x, t) => !string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false)), token).ConfigureAwait(false);
                 while (objModularChild != null)
                 {
                     await (await GetChildrenAsync(token).ConfigureAwait(false)).RemoveAsync(objModularChild, token).ConfigureAwait(false);
                     await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objModularChild, token).ConfigureAwait(false);
                     await objModularChild.ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
                     objModularChild
-                        = await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token),
-                            async x => !string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
+                        = await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepFirstOrDefaultAsync((x, t) => x.GetChildrenAsync(t),
+                            async (x, t) => !string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false)), token).ConfigureAwait(false);
                 }
 
                 // Remove the cyberware from the actual parent
@@ -12497,10 +12497,10 @@ namespace Chummer.Backend.Equipment
                     // This cyberware should not be included in the count to make things easier.
                     List<Cyberware> lstPairableCyberwares
                         = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                            x => x.GetChildrenAsync(token),
-                            async x => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
+                            (x, t) => x.GetChildrenAsync(t),
+                            async (x, t) => !ReferenceEquals(x, this) && IncludePair.Contains(x.Name)
                                                                  && x.Extra == Extra &&
-                                                                 await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                 await x.GetIsModularCurrentlyEquippedAsync(t)
                                                                         .ConfigureAwait(false),
                             token).ConfigureAwait(false);
                     int intCount = lstPairableCyberwares.Count;
@@ -12556,10 +12556,10 @@ namespace Chummer.Backend.Equipment
                     // This cyberware should not be included in the count to make things easier.
                     List<Cyberware> lstPairableCyberwares
                         = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                            x => x.GetChildrenAsync(token),
-                            async x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
+                            (x, t) => x.GetChildrenAsync(t),
+                            async (x, t) => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name)
                                                                  && x.Extra == Extra &&
-                                                                 await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                                 await x.GetIsModularCurrentlyEquippedAsync(t)
                                                                         .ConfigureAwait(false),
                             token).ConfigureAwait(false);
                     int intCount = lstPairableCyberwares.Count;
@@ -14255,7 +14255,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                         setHasMounts.Add(strLoopHasModularMount);
                     foreach (Cyberware objLoopCyberware in await (await GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
-                                 x => x.GetChildrenAsync(token), async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false))
+                                 (x, t) => x.GetChildrenAsync(t), async (x, t) => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false)), token: token).ConfigureAwait(false))
                     {
                         foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(
                                      ','))

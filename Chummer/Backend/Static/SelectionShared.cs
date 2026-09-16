@@ -2128,16 +2128,16 @@ namespace Chummer
                                 {
                                     await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
                                         .ForEachWithBreakAsync(
-                                            async objGroup =>
+                                            async (objGroup, t) =>
                                             {
-                                                if (await objGroup.GetDictionaryKeyAsync(token).ConfigureAwait(false) !=
+                                                if (await objGroup.GetDictionaryKeyAsync(t).ConfigureAwait(false) !=
                                                     strLoop
                                                     && objGroup.SourceIDString != strLoop)
                                                     return true;
                                                 if (blnShowMessage)
-                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token)
+                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(t)
                                                             .ConfigureAwait(false), ',', strSpace);
-                                                intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
+                                                intTotal += await objGroup.GetRatingAsync(t).ConfigureAwait(false);
                                                 return false;
                                             }, token).ConfigureAwait(false);
                                 }
@@ -2148,16 +2148,16 @@ namespace Chummer
                                 {
                                     await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
                                         .ForEachWithBreakAsync(
-                                            async objGroup =>
+                                            async (objGroup, t) =>
                                             {
-                                                if (await objGroup.GetDictionaryKeyAsync(token).ConfigureAwait(false) !=
+                                                if (await objGroup.GetDictionaryKeyAsync(t).ConfigureAwait(false) !=
                                                     strLoop
                                                     && objGroup.SourceIDString != strLoop)
                                                     return true;
                                                 if (blnShowMessage)
-                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(token)
+                                                    sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(t)
                                                             .ConfigureAwait(false), ',', strSpace);
-                                                intTotal += await objGroup.GetRatingAsync(token).ConfigureAwait(false);
+                                                intTotal += await objGroup.GetRatingAsync(t).ConfigureAwait(false);
                                                 return false;
                                             }, token).ConfigureAwait(false);
                                 }
@@ -2222,15 +2222,15 @@ namespace Chummer
                                 {
                                     await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false))
                                         .ForEachWithBreakAsync(
-                                            async objGroup =>
+                                            async (objGroup, t) =>
                                             {
                                                 if (objGroup.Name == strLoop)
                                                 {
                                                     if (blnShowMessage)
                                                         sbdOutput.Append(await objGroup
-                                                                .GetCurrentDisplayNameAsync(token)
+                                                                .GetCurrentDisplayNameAsync(t)
                                                                 .ConfigureAwait(false), ',', strSpace);
-                                                    intTotal += await objGroup.GetRatingAsync(token)
+                                                    intTotal += await objGroup.GetRatingAsync(t)
                                                         .ConfigureAwait(false);
                                                     return false;
                                                 }
@@ -2278,17 +2278,17 @@ namespace Chummer
                                      .ConfigureAwait(false)).GetAllDescendantsAsync(
                                      x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
 
-                        await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objVehicle =>
+                        await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async (objVehicle, t1) =>
                         {
                             lstWeapons.AddRange(await objVehicle.Weapons
-                                            .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token)
+                                            .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, t1)
                                             .ConfigureAwait(false));
 
-                            await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                            await objVehicle.WeaponMounts.ForEachAsync(async (objMount, t2) =>
                             {
                                 lstWeapons.AddRange(await objMount.Weapons.GetAllDescendantsAsync(
-                                                x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
-                            }, token).ConfigureAwait(false);
+                                                x => x.UnderbarrelWeapons, t2).ConfigureAwait(false));
+                            }, t1).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                         foreach (Weapon objWeapon in lstWeapons)
                             intMods += await objWeapon.WeaponAccessories.CountAsync(x => x.SpecialModification, token).ConfigureAwait(false);
@@ -3297,9 +3297,9 @@ namespace Chummer
             }
 
             int intAsyncMatchCount = await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                .DeepCountAsync(x => x.GetChildrenAsync(token), async objCyberware =>
+                .DeepCountAsync((x, t) => x.GetChildrenAsync(t), async (objCyberware, t) =>
                         await InstalledCyberwareMatchesRequirementAsync(objCyberware, strNodeInnerText,
-                            strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, false, token)
+                            strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, false, t)
                             .ConfigureAwait(false),
                     token).ConfigureAwait(false);
             return new ValueTuple<bool, string>(intAsyncMatchCount >= intCount, strName);

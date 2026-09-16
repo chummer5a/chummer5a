@@ -955,8 +955,8 @@ namespace Chummer.Backend.Skills
                     else
                     {
                         int intHigh = await SkillList.MaxAsync(
-                            async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
-                                       await x.GetFreeBaseAsync(token).ConfigureAwait(false),
+                            async (x, t) => await x.GetBasePointsAsync(t).ConfigureAwait(false) +
+                                       await x.GetFreeBaseAsync(t).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
 
                         _intCachedKarmaUnbroken
@@ -2418,17 +2418,9 @@ namespace Chummer.Backend.Skills
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                             .ConfigureAwait(false);
-                        string strConjunction = "," + strSpace;
                         sbdTooltip.Append(await LanguageManager.GetStringAsync("Tip_SkillGroup_Skills", token: token).ConfigureAwait(false), strSpace);
-                        bool blnAddConjunction = false;
-                        foreach (Skill objSkill in SkillList)
-                        {
-                            if (blnAddConjunction)
-                                sbdTooltip.Append(strConjunction);
-                            else
-                                blnAddConjunction = true;
-                            sbdTooltip.Append(await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                        }
+                        await sbdTooltip.AppendJoinAsync("," + strSpace,
+                            SkillList.Select((x, t) => x.GetCurrentDisplayNameAsync(t), token), token);
                         sbdTooltip.AppendLine();
 
                         if (await GetIsDisabledAsync(token).ConfigureAwait(false))
