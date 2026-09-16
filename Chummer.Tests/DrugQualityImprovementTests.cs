@@ -43,7 +43,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                     try
@@ -61,6 +62,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -84,7 +89,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                     try
@@ -109,6 +115,10 @@ namespace Chummer.Tests
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
                 }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -131,7 +141,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                     await objDrug.GenerateImprovement(token).ConfigureAwait(false);
@@ -148,6 +159,10 @@ namespace Chummer.Tests
                     Assert.IsFalse(await objCharacter.Improvements.AnyAsync(x =>
                         x.ImproveSource == Improvement.ImprovementSource.Drug
                         && x.CustomGroup == DrugName, token).ConfigureAwait(false));
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -171,7 +186,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, 3, token).ConfigureAwait(false);
                     try
@@ -203,6 +219,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

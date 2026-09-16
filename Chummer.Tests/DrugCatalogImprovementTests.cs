@@ -43,7 +43,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, BlissCatalogId, null, token: token)
                         .ConfigureAwait(false);
@@ -74,6 +75,10 @@ namespace Chummer.Tests
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
                 }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -96,7 +101,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, BlissCatalogId, null, token: token)
                         .ConfigureAwait(false);
@@ -116,6 +122,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -137,13 +147,18 @@ namespace Chummer.Tests
         {
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, BlissCatalogId, null, token: TestContext.CancellationToken)
                         .ConfigureAwait(false);
                     Assert.IsNotNull(objDrug);
                     Assert.AreEqual(0, objDrug.Components.Count);
                     Assert.AreEqual(15m, objDrug.Cost);
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -165,7 +180,8 @@ namespace Chummer.Tests
         {
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, BlissCatalogId, null, token: TestContext.CancellationToken)
                         .ConfigureAwait(false);
@@ -177,6 +193,10 @@ namespace Chummer.Tests
 
                     Assert.AreEqual(13.5m, objDrug.Cost);
                     Assert.IsFalse(objDrug.Stolen);
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -200,7 +220,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, DownerBtlCatalogId, null, token: token)
                         .ConfigureAwait(false);
@@ -224,6 +245,10 @@ namespace Chummer.Tests
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
                 }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -246,7 +271,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, InfiltratorBtlCatalogId, null, token: token)
                         .ConfigureAwait(false);
@@ -268,6 +294,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -291,7 +321,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     const string CramCatalogId = "8dc829b9-8b94-4510-ab1a-2305cbad69c9";
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, CramCatalogId, null, token: token)
@@ -320,6 +351,10 @@ namespace Chummer.Tests
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
                 }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (Exception ex)
             {
@@ -342,7 +377,8 @@ namespace Chummer.Tests
             token.ThrowIfCancellationRequested();
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     Drug objDrug = await Drug.CreateFromCatalogAsync(objCharacter, BlissCatalogId, null, token: token)
@@ -367,6 +403,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

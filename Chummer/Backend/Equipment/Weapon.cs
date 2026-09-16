@@ -6213,8 +6213,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/> and <paramref name="strMode2"/>. Uses current UI language if unset.</param>
         public bool AllowModes(string strLanguage, string strMode1, string strMode2)
         {
             if (string.IsNullOrEmpty(strLanguage))
@@ -6231,8 +6232,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/>, <paramref name="strMode2"/>, and <paramref name="strMode3"/>. Uses current UI language if unset.</param>
         public bool AllowModes(string strLanguage, string strMode1, string strMode2, string strMode3)
         {
             if (string.IsNullOrEmpty(strLanguage))
@@ -6250,8 +6253,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
+        /// <param name="strMode4">Fourth firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/>, <paramref name="strMode2"/>, <paramref name="strMode3"/>, and <paramref name="strMode4"/>. Uses current UI language if unset.</param>
         public bool AllowModes(string strLanguage, string strMode1, string strMode2, string strMode3, string strMode4)
         {
             if (string.IsNullOrEmpty(strLanguage))
@@ -6311,8 +6317,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
-        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/> and <paramref name="strMode2"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
         public Task<bool> AllowModesAsync(string strLanguage, string strMode1, string strMode2)
         {
             return AllowModesAsync(strLanguage, CancellationToken.None, strMode1, strMode2);
@@ -6321,8 +6328,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
-        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/>, <paramref name="strMode2"/>, and <paramref name="strMode3"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
         public Task<bool> AllowModesAsync(string strLanguage, string strMode1, string strMode2, string strMode3)
         {
             return AllowModesAsync(strLanguage, CancellationToken.None, strMode1, strMode2, strMode3);
@@ -6331,8 +6340,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
-        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/>, <paramref name="strMode2"/>, <paramref name="strMode3"/>, and <paramref name="strMode4"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
+        /// <param name="strMode4">Fourth firing mode to find.</param>
         public Task<bool> AllowModesAsync(string strLanguage, string strMode1, string strMode2, string strMode3, string strMode4)
         {
             return AllowModesAsync(strLanguage, CancellationToken.None, strMode1, strMode2, strMode3, strMode4);
@@ -6351,7 +6363,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task<bool> AllowModesAsync(CancellationToken token, string strMode1, string strMode2)
         {
@@ -6361,7 +6374,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task<bool> AllowModesAsync(CancellationToken token, string strMode1, string strMode2, string strMode3)
         {
@@ -6371,7 +6386,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
+        /// <param name="strMode4">Fourth firing mode to find.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task<bool> AllowModesAsync(CancellationToken token, string strMode1, string strMode2, string strMode3, string strMode4)
         {
@@ -6402,7 +6420,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/> and <paramref name="strMode2"/>. Uses current UI language if unset.</param>
         public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, string strMode1, string strMode2)
         {
             token.ThrowIfCancellationRequested();
@@ -6420,8 +6440,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/>, <paramref name="strMode2"/> and <paramref name="strMode3"/>. Uses current UI language if unset.</param>
         public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, string strMode1, string strMode2, string strMode3)
         {
             token.ThrowIfCancellationRequested();
@@ -6440,8 +6462,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Determine if the Weapon is capable of firing in one of a set of particular modes.
         /// </summary>
-        /// <param name="astrModes">Firing modes to find.</param>
-        /// <param name="strLanguage">Language of <paramref name="astrModes"/>. Uses current UI language if unset.</param>
+        /// <param name="strMode1">First firing mode to find.</param>
+        /// <param name="strMode2">Second firing mode to find.</param>
+        /// <param name="strMode3">Third firing mode to find.</param>
+        /// <param name="strMode4">Fourth firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strMode1"/>, <paramref name="strMode2"/>, <paramref name="strMode3"/>, and <paramref name="strMode4"/>. Uses current UI language if unset.</param>
         public async Task<bool> AllowModesAsync(string strLanguage, CancellationToken token, string strMode1, string strMode2, string strMode3, string strMode4)
         {
             token.ThrowIfCancellationRequested();

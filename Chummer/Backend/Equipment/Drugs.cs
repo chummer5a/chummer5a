@@ -712,19 +712,18 @@ namespace Chummer.Backend.Equipment
                 dicDrugCategoryByInternalId, token).ConfigureAwait(false);
         }
 
-        private static async Task AddNestedDrugCategoriesToLookupAsync(
+        private static Task AddNestedDrugCategoriesToLookupAsync(
             ThreadSafeObservableCollection<Cyberware> lstWare,
             IDictionary<string, string> dicDrugCategoryByInternalId, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
-            await lstWare.ForEachAsync(async (objWare, t) =>
+            return lstWare.ForEachAsync(async (objWare, t) =>
             {
                 await (await objWare.GetDrugChildrenAsync(t).ConfigureAwait(false))
                     .ForEachAsync(x => dicDrugCategoryByInternalId[x.InternalId] = x.Category ?? string.Empty, t).ConfigureAwait(false);
                 await AddNestedDrugCategoriesToLookupAsync(
                     await objWare.GetChildrenAsync(t).ConfigureAwait(false),
                     dicDrugCategoryByInternalId, t).ConfigureAwait(false);
-            }, token).ConfigureAwait(false);
+            }, token);
         }
 
         /// <summary>
@@ -2467,18 +2466,20 @@ namespace Chummer.Backend.Equipment
         /// <returns>A new component with a new instance id and copied effects.</returns>
         public DrugComponent Clone()
         {
-            DrugComponent objCopy = new DrugComponent(_objCharacter);
-            objCopy._guiSourceID = _guiSourceID;
-            objCopy._strName = _strName;
-            objCopy._strCategory = _strCategory;
-            objCopy._strAvailability = _strAvailability;
-            objCopy._intLevel = _intLevel;
-            objCopy._intLimit = _intLimit;
-            objCopy._strSource = _strSource;
-            objCopy._strPage = _strPage;
-            objCopy._strCost = _strCost;
-            objCopy._intAddictionThreshold = _intAddictionThreshold;
-            objCopy._intAddictionRating = _intAddictionRating;
+            DrugComponent objCopy = new DrugComponent(_objCharacter)
+            {
+                _guiSourceID = _guiSourceID,
+                _strName = _strName,
+                _strCategory = _strCategory,
+                _strAvailability = _strAvailability,
+                _intLevel = _intLevel,
+                _intLimit = _intLimit,
+                _strSource = _strSource,
+                _strPage = _strPage,
+                _strCost = _strCost,
+                _intAddictionThreshold = _intAddictionThreshold,
+                _intAddictionRating = _intAddictionRating
+            };
             foreach (DrugEffect objEffect in DrugEffects)
                 objCopy.DrugEffects.Add(objEffect.Clone());
             return objCopy;

@@ -591,8 +591,8 @@ namespace Chummer
                         string strValueBPHalved = (decValueBP / 2).ToString(GlobalSettings.InvariantCultureInfo);
                         sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ", strValueBP,
                             " or (not(nolevels) and limit != 'False' and (karma mod ", strValueBP,
-                            ") = 0 and karma * karma * limit <= karma * ", strValueBP,
-                            "))) or (not(doublecareer = 'False') and (karma = ", strValueBPHalved,
+                            ") = 0 and karma * karma * limit <= karma * ", strValueBP)
+                            .Append("))) or (not(doublecareer = 'False') and (karma = ", strValueBPHalved,
                             " or (not(nolevels) and limit != 'False' and (karma mod ", strValueBPHalved,
                             ") = 0 and karma * karma * limit <= karma * ", strValueBPHalved, "))))");
                     }
