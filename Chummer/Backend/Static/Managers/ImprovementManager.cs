@@ -1818,9 +1818,9 @@ namespace Chummer
                                             else
                                             {
                                                 await objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(
-                                                    async objKnowledgeSkill =>
+                                                    async (objKnowledgeSkill, t) =>
                                                     {
-                                                        string strName = await objKnowledgeSkill.GetNameAsync(token).ConfigureAwait(false);
+                                                        string strName = await objKnowledgeSkill.GetNameAsync(t).ConfigureAwait(false);
                                                         if (setAllowedCategories?.Contains(objKnowledgeSkill
                                                                 .SkillCategory) !=
                                                             false
@@ -1831,18 +1831,18 @@ namespace Chummer
                                                             setAllowedNames?.Contains(strName) !=
                                                             false &&
                                                             setAllowedLinkedAttributes?.Contains(
-                                                                await objKnowledgeSkill.GetAttributeAsync(token).ConfigureAwait(false))
+                                                                await objKnowledgeSkill.GetAttributeAsync(t).ConfigureAwait(false))
                                                             != false)
                                                         {
                                                             int intSkillRating =
-                                                                await objKnowledgeSkill.GetRatingAsync(token).ConfigureAwait(false);
+                                                                await objKnowledgeSkill.GetRatingAsync(t).ConfigureAwait(false);
                                                             if (intSkillRating >= intMinimumRating &&
                                                                 intRating < intMaximumRating)
                                                             {
                                                                 lstDropdownItems.Add(
                                                                     new ListItem(strName,
                                                                         await objKnowledgeSkill
-                                                                            .GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                                                                            .GetCurrentDisplayNameAsync(t).ConfigureAwait(false)));
                                                             }
                                                         }
 
@@ -3296,13 +3296,13 @@ namespace Chummer
                             }
                             else
                             {
-                                await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(async objKnowledgeSkill =>
+                                await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(async (objKnowledgeSkill, t) =>
                                 {
                                     if (!await objCharacter.SkillsSection.KnowledgeSkills
-                                                           .ContainsAsync(objKnowledgeSkill, token)
+                                                           .ContainsAsync(objKnowledgeSkill, t)
                                                            .ConfigureAwait(false))
                                         await objCharacter.SkillsSection.KnowledgeSkills
-                                                          .AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                                                          .AddAsync(objKnowledgeSkill, t).ConfigureAwait(false);
                                 }, token).ConfigureAwait(false);
                             }
 
@@ -3327,15 +3327,15 @@ namespace Chummer
                                 else
                                 {
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
-                                        async objKnowledgeSkill =>
+                                        async (objKnowledgeSkill, t) =>
                                         {
                                             if (objKnowledgeSkill.InternalId == strImprovedName
                                                 && !await objCharacter.SkillsSection.KnowledgeSkills
-                                                                      .ContainsAsync(objKnowledgeSkill, token)
+                                                                      .ContainsAsync(objKnowledgeSkill, t)
                                                                       .ConfigureAwait(false))
                                             {
                                                 await objCharacter.SkillsSection.KnowledgeSkills
-                                                                  .AddAsync(objKnowledgeSkill, token)
+                                                                  .AddAsync(objKnowledgeSkill, t)
                                                                   .ConfigureAwait(false);
                                             }
                                         }, token).ConfigureAwait(false);
@@ -3723,7 +3723,7 @@ namespace Chummer
                                 if (blnSync)
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    objMartialArt.Techniques.ForEach(objTechnique =>
+                                    objMartialArt.Techniques.ForEach((objTechnique, t) =>
                                     {
                                         string strTechniqueId = objTechnique.InternalId;
                                         EnableImprovements(objCharacter,
@@ -3731,12 +3731,12 @@ namespace Chummer
                                                                x => x.ImproveSource == Improvement.ImprovementSource
                                                                         .MartialArtTechnique
                                                                     && x.SourceName == strTechniqueId && x.Enabled),
-                                                           token);
+                                                           t);
                                     }, token: token);
                                 }
                                 else
                                 {
-                                    await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
+                                    await objMartialArt.Techniques.ForEachAsync(async (objTechnique, t) =>
                                     {
                                         string strTechniqueId = objTechnique.InternalId;
                                         await EnableImprovementsAsync(objCharacter,
@@ -3745,8 +3745,8 @@ namespace Chummer
                                                                                   == Improvement.ImprovementSource
                                                                                       .MartialArtTechnique
                                                                                   && x.SourceName == strTechniqueId
-                                                                                  && x.Enabled, token: token)
-                                                                          .ConfigureAwait(false), token)
+                                                                                  && x.Enabled, token: t)
+                                                                          .ConfigureAwait(false), t)
                                             .ConfigureAwait(false);
                                     }, token: token).ConfigureAwait(false);
                                 }
@@ -4032,8 +4032,8 @@ namespace Chummer
                                 else
                                 {
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
-                                        objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
-                                                                         .RemoveAsync(objKnowledgeSkill, token)
+                                        (objKnowledgeSkill, t) => objCharacter.SkillsSection.KnowledgeSkills
+                                                                         .RemoveAsync(objKnowledgeSkill, t)
                                                                          , token: token).ConfigureAwait(false);
                                 }
                             }
@@ -4446,7 +4446,7 @@ namespace Chummer
                                 if (blnSync)
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    objMartialArt.Techniques.ForEach(objTechnique =>
+                                    objMartialArt.Techniques.ForEach((objTechnique, t) =>
                                     {
                                         string strTechniqueId = objTechnique.InternalId;
                                         DisableImprovements(objCharacter,
@@ -4454,12 +4454,12 @@ namespace Chummer
                                                                 x => x.ImproveSource == Improvement.ImprovementSource
                                                                          .MartialArtTechnique
                                                                      && x.SourceName == strTechniqueId && x.Enabled),
-                                                            token);
+                                                            t);
                                     }, token: token);
                                 }
                                 else
                                 {
-                                    await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
+                                    await objMartialArt.Techniques.ForEachAsync(async (objTechnique, t) =>
                                     {
                                         string strTechniqueId = objTechnique.InternalId;
                                         await DisableImprovementsAsync(objCharacter,
@@ -4468,8 +4468,8 @@ namespace Chummer
                                                                                    == Improvement.ImprovementSource
                                                                                        .MartialArtTechnique
                                                                                    && x.SourceName == strTechniqueId
-                                                                                   && x.Enabled, token: token)
-                                                                           .ConfigureAwait(false), token)
+                                                                                   && x.Enabled, token: t)
+                                                                           .ConfigureAwait(false), t)
                                             .ConfigureAwait(false);
                                     }, token: token).ConfigureAwait(false);
                                 }
@@ -5402,8 +5402,8 @@ namespace Chummer
                                 else
                                 {
                                     await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
-                                        objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
-                                                                         .RemoveAsync(objKnowledgeSkill, token)
+                                        (objKnowledgeSkill, t) => objCharacter.SkillsSection.KnowledgeSkills
+                                                                         .RemoveAsync(objKnowledgeSkill, t)
                                                                          , token).ConfigureAwait(false);
                                 }
                             }
@@ -7594,12 +7594,20 @@ namespace Chummer
         /// <summary>
         /// Compares two values for ordering operations.
         /// </summary>
+        private static int CompareValues(IComparable value1, IComparable value2)
+        {
+            return value1.CompareTo(value2);
+        }
+
+        /// <summary>
+        /// Compares two values for ordering operations.
+        /// </summary>
         private static int CompareValues(object value1, object value2)
         {
             if (value1 is IComparable comparable1 && value2 is IComparable comparable2)
-                return comparable1.CompareTo(comparable2);
+                return CompareValues(comparable1, comparable2);
 
-            return string.Compare(value1.ToString(), value2.ToString(), StringComparison.Ordinal);
+            return string.CompareOrdinal(value1.ToString(), value2.ToString());
         }
 
         /// <summary>

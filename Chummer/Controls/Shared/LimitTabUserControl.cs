@@ -213,37 +213,37 @@ namespace Chummer.UI.Shared
                     default:
                     {
                         // the limit modifier has a source
-                        await _objCharacter.Improvements.ForEachAsync(async objImprovement =>
+                        await _objCharacter.Improvements.ForEachAsync(async (objImprovement, t) =>
                         {
                             if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                                 objImprovement.SourceName != objSelectedNodeTag.ToString())
                                 return;
-                            string strNotes = await objImprovement.GetNotesAsync(_objMyToken).ConfigureAwait(false);
-                            Color objColor = await objImprovement.GetNotesColorAsync(_objMyToken).ConfigureAwait(false);
+                            string strNotes = await objImprovement.GetNotesAsync(t).ConfigureAwait(false);
+                            Color objColor = await objImprovement.GetNotesColorAsync(t).ConfigureAwait(false);
                             using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
                                        .GetAsync(() => new EditNotes(
                                            strNotes,
-                                           objColor), _objMyToken)
+                                           objColor), t)
                                        .ConfigureAwait(false))
                             {
-                                if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, _objMyToken)
+                                if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, t)
                                         .ConfigureAwait(false)
                                     != DialogResult.OK)
                                     return;
 
-                                await objImprovement.SetNotesAsync(frmItemNotes.MyForm.Notes, _objMyToken).ConfigureAwait(false);
-                                await objImprovement.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, _objMyToken).ConfigureAwait(false);
+                                await objImprovement.SetNotesAsync(frmItemNotes.MyForm.Notes, t).ConfigureAwait(false);
+                                await objImprovement.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, t).ConfigureAwait(false);
                             }
 
-                            strNotes = (await objImprovement.GetNotesAsync(_objMyToken).ConfigureAwait(false)).WordWrap();
-                            objColor = await objImprovement.GetPreferredColorAsync(_objMyToken).ConfigureAwait(false);
+                            strNotes = (await objImprovement.GetNotesAsync(t).ConfigureAwait(false)).WordWrap();
+                            objColor = await objImprovement.GetPreferredColorAsync(t).ConfigureAwait(false);
                             await treLimit.DoThreadSafeAsync(() =>
                             {
                                 objSelectedNode.ForeColor = objColor;
                                 objSelectedNode.ToolTipText = strNotes;
-                            }, token: _objMyToken).ConfigureAwait(false);
+                            }, token: t).ConfigureAwait(false);
                             if (MakeDirty != null)
-                                await MakeDirty.Invoke(this, EventArgs.Empty, _objMyToken).ConfigureAwait(false);
+                                await MakeDirty.Invoke(this, EventArgs.Empty, t).ConfigureAwait(false);
                         }, token: _objMyToken).ConfigureAwait(false);
 
                         break;

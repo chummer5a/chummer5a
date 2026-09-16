@@ -140,10 +140,10 @@ namespace Chummer
                         Tag = "Node_AdditionalMods",
                         Text = await LanguageManager.GetStringAsync("Node_AdditionalMods", token: _objGenericToken).ConfigureAwait(false)
                     };
-                    await _objMount.Mods.ForEachAsync(async objMod =>
+                    await _objMount.Mods.ForEachAsync(async (objMod, t) =>
                     {
                         TreeNode objLoopNode =
-                            await objMod.CreateTreeNode(null, null, null, null, null, null, _objGenericToken).ConfigureAwait(false);
+                            await objMod.CreateTreeNode(null, null, null, null, null, null, t).ConfigureAwait(false);
                         if (objLoopNode != null)
                             objModsParentNode.Nodes.Add(objLoopNode);
                     }, _objGenericToken).ConfigureAwait(false);
