@@ -1645,7 +1645,15 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
                     s_xmlClipboard.RemoveAll();
-                    s_xmlClipboard.ImportNode(value, true);
+                    if (value is XmlDocument docValue)
+                    {
+                        foreach (XmlNode xmlLoop in docValue.ChildNodes)
+                        {
+                            s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(xmlLoop, true));
+                        }
+                    }
+                    else
+                        s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(value, true));
 
                     if (ClipboardChangedAsync != null)
                         Utils.SafelyRunSynchronously(t => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), t), token);
@@ -1703,7 +1711,15 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
                     s_xmlClipboard.RemoveAll();
-                    s_xmlClipboard.ImportNode(value, true);
+                    if (value is XmlDocument docValue)
+                    {
+                        foreach (XmlNode xmlLoop in docValue.ChildNodes)
+                        {
+                            s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(xmlLoop, true));
+                        }
+                    }
+                    else
+                        s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(value, true));
 
                     if (ClipboardChangedAsync != null)
                         await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);
