@@ -1643,7 +1643,7 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strFilter))
                                     {
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                            "/chummer/" + objNode.Name + "/" + objType.Name + "[" + strFilter + "]");
+                                            "/chummer/".ConcatFast(objNode.Name, "/", objType.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                         {
                                             objItem.InnerXml = objType.InnerXmlViaPool(token);
@@ -1737,8 +1737,8 @@ namespace Chummer
                                         }
                                         token.ThrowIfCancellationRequested();
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
-                                            ? "/chummer/" + objParentNode.Name + "/" + objChild.Name + "[" + strFilter + "]"
-                                            : "/chummer/" + objParentNode.Name + "[" + strParentNodeFilter + "]/" + objChild.Name + "[" + strFilter + "]");
+                                            ? "/chummer/".ConcatFast(objParentNode.Name, "/", objChild.Name, "[", strFilter, "]")
+                                            : "/chummer/".ConcatFast(objParentNode.Name, "[", strParentNodeFilter, "]/", objChild.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                             lstDelete.Add(objChild);
                                     }
@@ -1956,7 +1956,7 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                            "/chummer/" + objNode.Name + "/" + objType.Name + "[" + strFilter + "]");
+                                            "/chummer/".ConcatFast(objNode.Name, "/", objType.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                         {
                                             objItem.InnerXml = objType.InnerXmlViaPool(token);
@@ -2052,8 +2052,8 @@ namespace Chummer
                                         }
                                         token.ThrowIfCancellationRequested();
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
-                                            ? "/chummer/" + objParentNode.Name + "/" + objChild.Name + "[" + strFilter + "]"
-                                            : "/chummer/" + objParentNode.Name + "[" + strParentNodeFilter + "]/" + objChild.Name + "[" + strFilter + "]");
+                                            ? "/chummer/".ConcatFast(objParentNode.Name, "/", objChild.Name, "[", strFilter, "]")
+                                            : "/chummer/".ConcatFast(objParentNode.Name, "[", strParentNodeFilter, "]/", objChild.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                             lstDelete.Add(objChild);
                                     }
@@ -3158,10 +3158,10 @@ namespace Chummer
                                                                 .SelectSingleNodeAndCacheExpression("name", token: token).Value;
                                                         XPathNavigator objTranslate =
                                                             objLanguageRoot.SelectSingleNode(
-                                                                "metatypes/metatype[name = "
-                                                                + strChildNameElement.CleanXPath()
-                                                                + "]/metavariants/metavariant[name = "
-                                                                + strMetavariantName.CleanXPath() + "]");
+                                                                "metatypes/metatype[name = ".ConcatFast(
+                                                                strChildNameElement.CleanXPath(),
+                                                                "]/metavariants/metavariant[name = ",
+                                                                strMetavariantName.CleanXPath(), "]"));
                                                         if (objTranslate != null)
                                                         {
                                                             bool blnTranslate
@@ -3357,8 +3357,8 @@ namespace Chummer
                                     {
                                         string strChildName = objChild.Name;
                                         XPathNavigator objNode = objEnglishRoot.SelectSingleNode(
-                                            "/chummer/" + objType.Name + "/" + strChildName + "[name = "
-                                            + strChildNameElement.CleanXPath() + "]");
+                                            "/chummer/".ConcatFast(objType.Name, "/", strChildName, "[name = ",
+                                            strChildNameElement.CleanXPath(), "]"));
                                         if (objNode == null)
                                         {
                                             // <noentry>

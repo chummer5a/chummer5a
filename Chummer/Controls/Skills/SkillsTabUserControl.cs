@@ -796,8 +796,8 @@ namespace Chummer.UI.Skills
                                     return 1;
                                 if (intRightSpecsCount == 0)
                                     return -1;
-                                int intLeftMax = await lstLeftSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
-                                int intRightMax = await lstRightSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
+                                int intLeftMax = await lstLeftSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
+                                int intRightMax = await lstRightSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
                                 if (intRightMax > intLeftMax)
                                     return 1;
                                 if (intRightMax < intLeftMax)
@@ -859,8 +859,8 @@ namespace Chummer.UI.Skills
                                     return -1;
                                 if (intRightSpecsCount == 0)
                                     return 1;
-                                int intLeftMax = await lstLeftSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
-                                int intRightMax = await lstRightSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
+                                int intLeftMax = await lstLeftSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
+                                int intRightMax = await lstRightSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
                                 if (intRightMax > intLeftMax)
                                     return -1;
                                 if (intRightMax < intLeftMax)

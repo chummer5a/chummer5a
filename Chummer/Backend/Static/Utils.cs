@@ -1129,7 +1129,13 @@ namespace Chummer
         public static Task StartStaTask(Action func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<bool>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(() =>
@@ -1167,7 +1173,13 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<T>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<T>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(() =>
@@ -1203,7 +1215,13 @@ namespace Chummer
         public static Task StartStaTask(Task func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<bool>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(RunFunction);
@@ -1242,7 +1260,13 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<T>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<T>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(RunFunction);
