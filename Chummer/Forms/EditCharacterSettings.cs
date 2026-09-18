@@ -2040,6 +2040,10 @@ namespace Chummer
 
         private async Task SetToolTips(CancellationToken token = default)
         {
+            await lblGameplayOptionName
+                  .SetToolTipTextAsync(
+                      (await LanguageManager.GetStringAsync("Tip_GameplayOptionName", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkUnarmedSkillImprovements
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements", token: token)

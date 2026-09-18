@@ -50,7 +50,7 @@ namespace Chummer.UI.Attributes
             this.lblName.TabIndex = 71;
             this.lblName.Text = "Attrib (ATT)";
             this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblName.ToolTipText = null;
+            this.lblName.ToolTipText = "";
             // 
             // flpRight
             // 
@@ -79,7 +79,7 @@ namespace Chummer.UI.Attributes
             this.lblLimits.TabIndex = 72;
             this.lblLimits.Text = "00 / 00 (00)";
             this.lblLimits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblLimits.ToolTipText = null;
+            this.lblLimits.ToolTipText = "";
             // 
             // lblValue
             // 
@@ -94,7 +94,7 @@ namespace Chummer.UI.Attributes
             this.lblValue.TabIndex = 74;
             this.lblValue.Text = "00 (00)";
             this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblValue.ToolTipText = null;
+            this.lblValue.ToolTipText = "";
             // 
             // tlpMain
             // 

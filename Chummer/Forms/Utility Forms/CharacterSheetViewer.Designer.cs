@@ -82,7 +82,7 @@ namespace Chummer
             this.tsSaveAsXml,
             this.tsSaveAsHtml});
             this.cmsSaveButton.Name = "cmsPrintButton";
-            this.cmsSaveButton.Size = new System.Drawing.Size(148, 48);
+            this.cmsSaveButton.Size = new System.Drawing.Size(149, 48);
             // 
             // tsSaveAsXml
             // 
@@ -95,7 +95,7 @@ namespace Chummer
             this.tsSaveAsXml.ImageDpi384 = global::Chummer.Properties.Resources.xml_go_64;
             this.tsSaveAsXml.ImageDpi96 = global::Chummer.Properties.Resources.xml_go_16;
             this.tsSaveAsXml.Name = "tsSaveAsXml";
-            this.tsSaveAsXml.Size = new System.Drawing.Size(147, 22);
+            this.tsSaveAsXml.Size = new System.Drawing.Size(148, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
             this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
@@ -111,7 +111,7 @@ namespace Chummer
             this.tsSaveAsHtml.ImageDpi384 = global::Chummer.Properties.Resources.html_go_64;
             this.tsSaveAsHtml.ImageDpi96 = global::Chummer.Properties.Resources.html_go_16;
             this.tsSaveAsHtml.Name = "tsSaveAsHtml";
-            this.tsSaveAsHtml.Size = new System.Drawing.Size(147, 22);
+            this.tsSaveAsHtml.Size = new System.Drawing.Size(148, 22);
             this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
             this.tsSaveAsHtml.Text = "Save as &HTML";
             this.tsSaveAsHtml.Click += new System.EventHandler(this.tsSaveAsHTML_Click);
@@ -250,7 +250,14 @@ namespace Chummer
             this.cmdSaveAsPdf.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAsPdf.ContextMenuStrip = this.cmsSaveButton;
             this.cmdSaveAsPdf.Enabled = false;
+            this.cmdSaveAsPdf.Image = null;
             this.cmdSaveAsPdf.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cmdSaveAsPdf.ImageDpi120 = null;
+            this.cmdSaveAsPdf.ImageDpi144 = null;
+            this.cmdSaveAsPdf.ImageDpi192 = null;
+            this.cmdSaveAsPdf.ImageDpi288 = null;
+            this.cmdSaveAsPdf.ImageDpi384 = null;
+            this.cmdSaveAsPdf.ImageDpi96 = null;
             this.cmdSaveAsPdf.Location = new System.Drawing.Point(107, 3);
             this.cmdSaveAsPdf.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSaveAsPdf.Name = "cmdSaveAsPdf";
@@ -260,6 +267,7 @@ namespace Chummer
             this.cmdSaveAsPdf.TabIndex = 1;
             this.cmdSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
             this.cmdSaveAsPdf.Text = "&Save as PDF";
+            this.cmdSaveAsPdf.ToolTipText = "";
             this.cmdSaveAsPdf.UseVisualStyleBackColor = true;
             this.cmdSaveAsPdf.Click += new System.EventHandler(this.cmdSaveAsPdf_Click);
             // 
@@ -270,6 +278,13 @@ namespace Chummer
             this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
             this.cmdPrint.Enabled = false;
+            this.cmdPrint.Image = null;
+            this.cmdPrint.ImageDpi120 = null;
+            this.cmdPrint.ImageDpi144 = null;
+            this.cmdPrint.ImageDpi192 = null;
+            this.cmdPrint.ImageDpi288 = null;
+            this.cmdPrint.ImageDpi384 = null;
+            this.cmdPrint.ImageDpi96 = null;
             this.cmdPrint.Location = new System.Drawing.Point(3, 3);
             this.cmdPrint.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdPrint.Name = "cmdPrint";
@@ -279,6 +294,7 @@ namespace Chummer
             this.cmdPrint.TabIndex = 103;
             this.cmdPrint.Tag = "Menu_FilePrint";
             this.cmdPrint.Text = "&Print";
+            this.cmdPrint.ToolTipText = "";
             this.cmdPrint.UseVisualStyleBackColor = true;
             this.cmdPrint.Click += new System.EventHandler(this.cmdPrint_Click);
             // 

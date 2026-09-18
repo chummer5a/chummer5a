@@ -55,7 +55,7 @@ namespace Chummer
             this.webNotes.Location = new System.Drawing.Point(3, 3);
             this.webNotes.MinimumSize = new System.Drawing.Size(20, 20);
             this.webNotes.Name = "webNotes";
-            this.webNotes.Size = new System.Drawing.Size(760, 475);
+            this.webNotes.Size = new System.Drawing.Size(760, 483);
             this.webNotes.TabIndex = 0;
             this.webNotes.WebBrowserShortcutsEnabled = false;
             // 
@@ -65,7 +65,7 @@ namespace Chummer
             this.cmdUpdate.AutoSize = true;
             this.cmdUpdate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdUpdate.Enabled = false;
-            this.cmdUpdate.Location = new System.Drawing.Point(3, 7);
+            this.cmdUpdate.Location = new System.Drawing.Point(3, 3);
             this.cmdUpdate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdUpdate.Name = "cmdUpdate";
             this.cmdUpdate.Size = new System.Drawing.Size(80, 23);
@@ -80,7 +80,7 @@ namespace Chummer
             this.pgbOverallProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pgbOverallProgress.Location = new System.Drawing.Point(89, 3);
             this.pgbOverallProgress.Name = "pgbOverallProgress";
-            this.pgbOverallProgress.Size = new System.Drawing.Size(473, 31);
+            this.pgbOverallProgress.Size = new System.Drawing.Size(473, 23);
             this.pgbOverallProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pgbOverallProgress.TabIndex = 2;
             // 
@@ -90,7 +90,7 @@ namespace Chummer
             this.cmdCleanReinstall.AutoSize = true;
             this.cmdCleanReinstall.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCleanReinstall.Enabled = false;
-            this.cmdCleanReinstall.Location = new System.Drawing.Point(676, 7);
+            this.cmdCleanReinstall.Location = new System.Drawing.Point(676, 3);
             this.cmdCleanReinstall.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCleanReinstall.Name = "cmdCleanReinstall";
             this.cmdCleanReinstall.Size = new System.Drawing.Size(87, 23);
@@ -104,7 +104,7 @@ namespace Chummer
             // 
             this.lblUpdaterStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUpdaterStatusLabel.AutoSize = true;
-            this.lblUpdaterStatusLabel.Location = new System.Drawing.Point(3, 487);
+            this.lblUpdaterStatusLabel.Location = new System.Drawing.Point(3, 495);
             this.lblUpdaterStatusLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblUpdaterStatusLabel.Name = "lblUpdaterStatusLabel";
             this.lblUpdaterStatusLabel.Size = new System.Drawing.Size(81, 13);
@@ -117,7 +117,7 @@ namespace Chummer
             // 
             this.lblUpdaterStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblUpdaterStatus.AutoSize = true;
-            this.lblUpdaterStatus.Location = new System.Drawing.Point(90, 487);
+            this.lblUpdaterStatus.Location = new System.Drawing.Point(90, 495);
             this.lblUpdaterStatus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblUpdaterStatus.Name = "lblUpdaterStatus";
             this.lblUpdaterStatus.Size = new System.Drawing.Size(119, 13);
@@ -132,7 +132,7 @@ namespace Chummer
             this.cmdRestart.AutoSize = true;
             this.cmdRestart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestart.Enabled = false;
-            this.cmdRestart.Location = new System.Drawing.Point(568, 7);
+            this.cmdRestart.Location = new System.Drawing.Point(568, 3);
             this.cmdRestart.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestart.Name = "cmdRestart";
             this.cmdRestart.Size = new System.Drawing.Size(102, 23);
@@ -179,12 +179,12 @@ namespace Chummer
             this.tlpBottom.Controls.Add(this.cmdUpdate, 0, 0);
             this.tlpBottom.Controls.Add(this.cmdCleanReinstall, 3, 0);
             this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tlpBottom.Location = new System.Drawing.Point(0, 506);
+            this.tlpBottom.Location = new System.Drawing.Point(0, 514);
             this.tlpBottom.Margin = new System.Windows.Forms.Padding(0);
             this.tlpBottom.Name = "tlpBottom";
             this.tlpBottom.RowCount = 1;
             this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBottom.Size = new System.Drawing.Size(766, 37);
+            this.tlpBottom.Size = new System.Drawing.Size(766, 29);
             this.tlpBottom.TabIndex = 107;
             // 
             // ChummerUpdater

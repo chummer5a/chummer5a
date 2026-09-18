@@ -100,6 +100,7 @@ namespace Chummer
             this.chkIgnoreRules.TabIndex = 5;
             this.chkIgnoreRules.Tag = "Checkbox_SelectBP_IgnoreRules";
             this.chkIgnoreRules.Text = "Ignore Character Creation Rules";
+            this.chkIgnoreRules.ToolTipText = "";
             this.chkIgnoreRules.UseVisualStyleBackColor = true;
             // 
             // lblMaxAvailLabel
@@ -516,6 +517,11 @@ namespace Chummer
             this.nudMaxAvail.Name = "nudMaxAvail";
             this.nudMaxAvail.Size = new System.Drawing.Size(120, 20);
             this.nudMaxAvail.TabIndex = 0;
+            this.nudMaxAvail.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // cboGamePlay
             // 
