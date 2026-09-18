@@ -54715,23 +54715,22 @@ namespace Chummer
         {
             get
             {
+                string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
                     if (PositiveQualityLimitKarma != PositiveQualityKarma)
                     {
-                        return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                                             PositiveQualityLimitKarma,
-                                             Settings.QualityKarmaLimit,
-                                             LanguageManager.GetString("String_Space"),
-                                             PositiveQualityKarma,
-                                             LanguageManager.GetString("String_Karma"));
+                        return PositiveQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", PositiveQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, LanguageManager.GetString("String_Karma"));
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                                         PositiveQualityLimitKarma,
-                                         Settings.QualityKarmaLimit,
-                                         LanguageManager.GetString("String_Space"),
-                                         LanguageManager.GetString("String_Karma"));
+                    return PositiveQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, LanguageManager.GetString("String_Karma"));
                 }
             }
         }
@@ -54739,6 +54738,7 @@ namespace Chummer
         public async Task<string> GetDisplayPositiveQualityKarmaAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -54748,19 +54748,17 @@ namespace Chummer
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                        intLimitKarma,
-                        intQualityKarmaLimit,
-                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        intQualityKarma,
-                        await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                    return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", intQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
                 }
 
-                return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                    intLimitKarma,
-                    intQualityKarmaLimit,
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
             }
             finally
             {
@@ -54973,19 +54971,17 @@ namespace Chummer
                 {
                     if (NegativeQualityLimitKarma != NegativeQualityKarma)
                     {
-                        return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                                             NegativeQualityLimitKarma,
-                                             Settings.QualityKarmaLimit,
-                                             LanguageManager.GetString("String_Space"),
-                                             NegativeQualityKarma,
-                                             LanguageManager.GetString("String_Karma"));
+                        return NegativeQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", NegativeQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, LanguageManager.GetString("String_Karma"));
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                                         NegativeQualityLimitKarma,
-                                         Settings.QualityKarmaLimit,
-                                         LanguageManager.GetString("String_Space"),
-                                         LanguageManager.GetString("String_Karma"));
+                    return NegativeQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, LanguageManager.GetString("String_Karma"));
                 }
             }
         }
@@ -55002,19 +54998,17 @@ namespace Chummer
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                        intLimitKarma,
-                        intQualityKarmaLimit,
-                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        intQualityKarma,
-                        await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                    return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", intQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
                 }
 
-                return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                    intLimitKarma,
-                    intQualityKarmaLimit,
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
             }
             finally
             {

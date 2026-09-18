@@ -1979,9 +1979,78 @@ namespace Chummer
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.Yes;
         }
 
+        public static Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, Character objCharacter)
+        {
+            return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, objCharacter);
+        }
+
         public static Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
         {
             return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, lstCharacters);
+        }
+
+        public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, Character objCharacter)
+        {
+            objToken.ThrowIfCancellationRequested();
+            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
+            // Write the Character information to a RecyclableMemoryStream so we don't need to create any files.
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+            {
+                bool blnWriterError = false;
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                {
+                    // Begin the document.
+                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                    try
+                    {
+                        // </characters>
+                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken).ConfigureAwait(false);
+                        try
+                        {
+                            if (!objCharacter.IsDisposed)
+                            {
+                                await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken).ConfigureAwait(false);
+                                if (objWriter.WriteState == WriteState.Error)
+                                {
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException(nameof(objWriter));
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            // </characters>
+                            await objCharactersElement.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        // Finish the document and flush the Writer and Stream.
+                        if (objWriter.WriteState == WriteState.Error)
+                        {
+                            objWriter.Close();
+                            blnWriterError = true;
+                        }
+                        else
+                        {
+                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                            await objWriter.FlushAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                if (blnWriterError)
+                    throw new InvalidOperationException();
+
+                objToken.ThrowIfCancellationRequested();
+
+                // Read the stream.
+                objStream.Position = 0;
+                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.UnSafeXmlReaderSettings))
+                    objReturn.Load(objXmlReader);
+            }
+
+            return objReturn;
         }
 
         public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)

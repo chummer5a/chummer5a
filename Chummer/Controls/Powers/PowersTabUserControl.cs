@@ -693,9 +693,9 @@ namespace Chummer.UI.Powers
                             return 0;
                         }
 
-                        string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                            " against another one of Type " + o2.GetType() + " in the ratingColumn." +
-                                            Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                        string strMessage = "Can't sort an Object of Type ".ConcatFast(o1.GetType().ToString(),
+                                            " against another one of Type ", o2.GetType().ToString(), " in the ratingColumn.",
+                                            Environment.NewLine, "Both objects SHOULD be of the type \"Power\".");
                         throw new ArgumentException(strMessage, nameof(o1));
                     }
                 }, MyToken);
@@ -781,10 +781,10 @@ namespace Chummer.UI.Powers
                                 return 0;
                             }
 
-                            string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                                " against another one of Type " + o2.GetType() +
-                                                " in the totalRatingColumn." + Environment.NewLine +
-                                                "Both objects SHOULD be of the type \"Power\".";
+                            string strMessage = "Can't sort an Object of Type ".ConcatFast(o1.GetType().ToString(),
+                                                " against another one of Type ", o2.GetType().ToString(),
+                                                " in the totalRatingColumn.", Environment.NewLine,
+                                                "Both objects SHOULD be of the type \"Power\".");
                             throw new ArgumentException(strMessage, nameof(o1));
                         }
                     }, MyToken);
@@ -983,7 +983,7 @@ namespace Chummer.UI.Powers
                                         string strNotes = await p.GetNotesAsync(t).ConfigureAwait(false);
                                         Color objColor = await p.GetNotesColorAsync(t).ConfigureAwait(false);
                                         using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
-                                                   .GetAsync(() => new EditNotes(strNotes, objColor, t), t)
+                                                   .GetAsync(t2 => new EditNotes(strNotes, objColor, t2), t)
                                                    .ConfigureAwait(false))
                                         {
                                             if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, t)
