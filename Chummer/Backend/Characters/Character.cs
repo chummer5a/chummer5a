@@ -54967,6 +54967,7 @@ namespace Chummer
         {
             get
             {
+                string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
                     if (NegativeQualityLimitKarma != NegativeQualityKarma)
@@ -54989,6 +54990,7 @@ namespace Chummer
         public async Task<string> GetDisplayNegativeQualityKarmaAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
