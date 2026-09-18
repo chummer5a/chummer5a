@@ -58,14 +58,14 @@ namespace Chummer
             this.cboCategory = new Chummer.ElasticComboBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.tlpTopRight.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstSpells
@@ -424,6 +424,8 @@ namespace Chummer
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -440,26 +442,6 @@ namespace Chummer
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 394);
             this.tableLayoutPanel2.TabIndex = 39;
-            // 
-            // tlpButtons
-            // 
-            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpButtons.AutoSize = true;
-            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpButtons.ColumnCount = 3;
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
-            this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(348, 394);
-            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpButtons.Name = "tlpButtons";
-            this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(258, 29);
-            this.tlpButtons.TabIndex = 40;
             // 
             // tlpRight
             // 
@@ -524,6 +506,26 @@ namespace Chummer
             this.tlpTopRight.Size = new System.Drawing.Size(303, 26);
             this.tlpTopRight.TabIndex = 42;
             // 
+            // tlpButtons
+            // 
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 3;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(348, 394);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(258, 29);
+            this.tlpButtons.TabIndex = 40;
+            // 
             // SelectSpell
             // 
             this.AcceptButton = this.cmdOK;
@@ -547,12 +549,12 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.tlpButtons.ResumeLayout(false);
-            this.tlpButtons.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
             this.tlpTopRight.ResumeLayout(false);
             this.tlpTopRight.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

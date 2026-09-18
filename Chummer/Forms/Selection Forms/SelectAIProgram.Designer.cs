@@ -136,6 +136,8 @@ namespace Chummer
             // 
             // tlpLeft
             // 
+            this.tlpLeft.AutoSize = true;
+            this.tlpLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpLeft.ColumnCount = 2;
             this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));

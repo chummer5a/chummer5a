@@ -740,9 +740,6 @@ namespace Chummer
             await gpbEssenceFilter.DoThreadSafeAsync(x => x.Text = strEssenceFilterText, token).ConfigureAwait(false);
 
             // Show/hide essence controls
-            await lblMinimumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
-            await lblMaximumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
-            await lblExactEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
             await nudMinimumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
             await nudMaximumEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
             await nudExactEssence.DoThreadSafeAsync(x => x.Visible = _blnFilterEssence, token).ConfigureAwait(false);
@@ -750,9 +747,6 @@ namespace Chummer
 
             // Show/hide capacity controls
             bool blnFilterCapacity = !_blnFilterEssence;
-            await lblCapacityFilterMinimum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
-            await lblCapacityFilterMaximum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
-            await lblCapacityFilterExact.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
             await nudCapacityFilterMinimum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
             await nudCapacityFilterMaximum.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
             await nudCapacityFilterExact.DoThreadSafeAsync(x => x.Visible = blnFilterCapacity, token).ConfigureAwait(false);
