@@ -1543,8 +1543,8 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.OpenCharacterList(lstCharacters, blnIncludeInMru, token);
-            return TaskExtensions.RunWithoutEC(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterList(lstCharacters, blnIncludeInMru, token)), token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterList(lstCharacters, blnIncludeInMru, t)), token);
         }
 
         public static Task<bool> SwitchToOpenPrintCharacter(Character objCharacter, CancellationToken token = default)
@@ -1579,8 +1579,8 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token);
-            return TaskExtensions.RunWithoutEC(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token)), token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, t)), token);
         }
 
         public static Task<bool> SwitchToOpenExportCharacter(Character objCharacter, CancellationToken token = default)
@@ -1615,8 +1615,8 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token);
-            return TaskExtensions.RunWithoutEC(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token)), token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, t)), token);
         }
 
         public static LoadingBar TopMostLoadingBar => s_frmTopMostLoadingBar;

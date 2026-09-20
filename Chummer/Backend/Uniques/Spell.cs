@@ -1548,9 +1548,11 @@ namespace Chummer
                             if (BarehandedAdept)
                                 strReturn = "2 * (" + strReturn + ")";
                         }
-                        else
-                            strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
-                                                  BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                        {
+                            strReturn = "F" + intDrainDv.ToString("+0;-0;", GlobalSettings.InvariantCultureInfo);
+                            if (BarehandedAdept)
+                                strReturn = "2 * (" + strReturn + ")";
+                        }
                     }
                     else if (!string.IsNullOrEmpty(strToAppend))
                     {
@@ -1655,8 +1657,11 @@ namespace Chummer
                             strReturn = "2 * (" + strReturn + ")";
                     }
                     else
-                        strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
-                                              BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                    {
+                        strReturn = "F" + intDrainDv.ToString("+0;-0;", GlobalSettings.InvariantCultureInfo);
+                        if (BarehandedAdept)
+                            strReturn = "2 * (" + strReturn + ")";
+                    }
                 }
                 else if (!string.IsNullOrEmpty(strToAppend))
                 {

@@ -589,10 +589,12 @@ namespace Chummer
 
             uint result = 0;
             uint count = 0;
-            Parallel.ForEach(values, () => new ValueTuple<uint, uint>(0, 0), (i, state, local) =>
+            ParallelOptions objOptions = new ParallelOptions
             {
-                if (token.IsCancellationRequested)
-                    state.Stop();
+                CancellationToken = token
+            };
+            Parallel.ForEach(values, objOptions, () => new ValueTuple<uint, uint>(0, 0), (i, state, local) =>
+            {
                 unchecked
                 {
                     return state.IsStopped ? local : new ValueTuple<uint, uint>(local.Item1 + (uint)(i?.GetHashCode() ?? 0), local.Item2 + 1u);
@@ -622,10 +624,12 @@ namespace Chummer
 
             uint result = 0;
             uint count = 0;
-            Parallel.ForEach(values, () => new ValueTuple<uint, uint>(0, 0), (i, state, local) =>
+            ParallelOptions objOptions = new ParallelOptions
             {
-                if (token.IsCancellationRequested)
-                    state.Stop();
+                CancellationToken = token
+            };
+            Parallel.ForEach(values, objOptions, () => new ValueTuple<uint, uint>(0, 0), (i, state, local) =>
+            {
                 unchecked
                 {
                     return state.IsStopped ? local : new ValueTuple<uint, uint>(local.Item1 + (uint)comparer.GetHashCode(i), local.Item2 + 1u);
@@ -650,10 +654,12 @@ namespace Chummer
 
             uint result = 0;
             int count = values.Count;
-            Parallel.For(0, count, () => 0u, (i, state, local) =>
+            ParallelOptions objOptions = new ParallelOptions
             {
-                if (token.IsCancellationRequested)
-                    state.Stop();
+                CancellationToken = token
+            };
+            Parallel.For(0, count, objOptions, () => 0u, (i, state, local) =>
+            {
                 unchecked
                 {
                     return state.IsStopped ? local : local + (uint)(values.ElementAtBetter(i)?.GetHashCode() ?? 0);
@@ -679,10 +685,12 @@ namespace Chummer
 
             uint result = 0;
             int count = values.Count;
-            Parallel.For(0, count, () => 0u, (i, state, local) =>
+            ParallelOptions objOptions = new ParallelOptions
             {
-                if (token.IsCancellationRequested)
-                    state.Stop();
+                CancellationToken = token
+            };
+            Parallel.For(0, count, objOptions, () => 0u, (i, state, local) =>
+            {
                 unchecked
                 {
                     return state.IsStopped ? local : local + (uint)comparer.GetHashCode(values.ElementAtBetter(i));

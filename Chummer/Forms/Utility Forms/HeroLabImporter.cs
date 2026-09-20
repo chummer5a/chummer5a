@@ -113,19 +113,19 @@ namespace Chummer
                             // If we run into any problems loading the character cache, fail out early.
                             try
                             {
-                                await TaskExtensions.RunWithoutEC(() =>
+                                await TaskExtensions.RunWithoutEC(t =>
                                 {
                                     XPathDocument xmlSourceDoc;
                                     using (Stream objStream = objEntry.Open())
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         using (StreamReader sr = new StreamReader(objStream, true))
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            t.ThrowIfCancellationRequested();
                                             using (XmlReader objXmlReader
                                                    = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
                                             {
-                                                token.ThrowIfCancellationRequested();
+                                                t.ThrowIfCancellationRequested();
                                                 xmlSourceDoc = new XPathDocument(objXmlReader);
                                             }
                                         }

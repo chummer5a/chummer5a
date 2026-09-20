@@ -1144,8 +1144,8 @@ namespace Chummer
         public bool Equals(DirectoryDependency other)
         {
             return Name == other.Name && UniqueIdentifier.Equals(other.UniqueIdentifier)
-                                      && Equals(MinimumVersion, other.MinimumVersion)
-                                      && Equals(MaximumVersion, other.MaximumVersion);
+                                      && MinimumVersion.Equals(other.MinimumVersion)
+                                      && MaximumVersion.Equals(other.MaximumVersion);
         }
 
         /// <inheritdoc />

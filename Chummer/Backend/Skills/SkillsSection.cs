@@ -2524,11 +2524,11 @@ namespace Chummer.Backend.Skills
                             if (blnSync)
                             {
                                 // ReSharper disable MethodHasAsyncOverload
-                                Utils.RunWithoutThreadLock(token,
+                                Utils.RunWithoutThreadLock(
                                     () => _lstSkills.Sort(CompareSkills),
                                     () => _lstKnowledgeSkills.Sort(CompareSkills),
                                     () => _lstKnowsoftSkills.Sort(CompareSkills),
-                                    () => _lstSkillGroups.Sort(CompareSkillGroups));
+                                    () => _lstSkillGroups.Sort(CompareSkillGroups), token);
                                 // ReSharper restore MethodHasAsyncOverload
                             }
                             else

@@ -962,7 +962,11 @@ namespace Chummer
                         strDv = "2 * (" + strDv + ")";
                 }
                 else
-                    strDv = string.Format(GlobalSettings.CultureInfo, blnBarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", intDrainDv);
+                {
+                    strDv = "F" + intDrainDv.ToString("+0;-0;", GlobalSettings.InvariantCultureInfo);
+                    if (blnBarehandedAdept)
+                        strDv = "2 * (" + strDv + ")";
+                }
             }
             else if (!string.IsNullOrEmpty(strToAppend))
             {

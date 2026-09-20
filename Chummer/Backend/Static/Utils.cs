@@ -852,7 +852,11 @@ namespace Chummer
             {
                 RunWithoutThreadLock(() =>
                 {
-                    Parallel.ForEach(astrFilesToDelete, () => true,
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(astrFilesToDelete, objOptions, () => true,
                                      (strToDelete, x, y) => FileExtensions.SafeDelete(strToDelete, false, intTimeout, token) && y,
                                      blnLoop =>
                                      {
@@ -1756,6 +1760,23 @@ namespace Chummer
         /// </summary>
         /// <param name="func">The code to run.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunInEmptyExecutionContext(Action<CancellationToken> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+            if (s_objEmptyExecutionContext != null)
+                ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), t => func.Invoke((CancellationToken)t),
+                    token);
+            else
+                func.Invoke(token);
+        }
+
+        /// <summary>
+        /// Run some code in a clean (empty) ExecutionContext.
+        /// Useful for weird ExecutionContext flow cases involving async (void) events where AsyncLocals used for locking end up flowing to them when they shouldn't.
+        /// </summary>
+        /// <param name="func">The code to run.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T RunInEmptyExecutionContext<T>(Func<T> func)
         {
             // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
@@ -1768,6 +1789,27 @@ namespace Chummer
             }
 
             return func.Invoke();
+        }
+
+        /// <summary>
+        /// Run some code in a clean (empty) ExecutionContext.
+        /// Useful for weird ExecutionContext flow cases involving async (void) events where AsyncLocals used for locking end up flowing to them when they shouldn't.
+        /// </summary>
+        /// <param name="func">The code to run.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunInEmptyExecutionContext<T>(Func<CancellationToken, T> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+            if (s_objEmptyExecutionContext != null)
+            {
+                T objReturn = default;
+                ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), t => objReturn = func.Invoke((CancellationToken)t),
+                    token);
+                return objReturn;
+            }
+
+            return func.Invoke(token);
         }
 
         // Empty/default Execution Context that we need for e.g. manual calls of Application.DoEvents so that AsyncLocals in events do not flow from values set in main thread
@@ -2336,6 +2378,201 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
+        /// <param name="funcToRun1">First code to execute.</param>
+        /// <param name="funcToRun2">Second code to execute.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun1, Action funcToRun2, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                Action[] afuncToRun = new Action[2]
+                {
+                    funcToRun1,
+                    funcToRun2
+                };
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.Invoke(objOptions, afuncToRun);
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            if (token == CancellationToken.None)
+            {
+                Task objTask = Task.WhenAll(
+                    Task.Run(() => funcToRun1.Invoke(), CancellationToken.None),
+                    Task.Run(() => funcToRun2.Invoke(), CancellationToken.None));
+                while (!objTask.IsCompleted)
+                    SafeSleep(token);
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+            }
+            else
+            {
+                using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(token))
+                {
+                    Task objTask = Task.WhenAny(
+                        Task.WhenAll(
+                            Task.Run(() => funcToRun1.Invoke(), token),
+                            Task.Run(() => funcToRun2.Invoke(), token)),
+                        objBreakTokenTaskSource.Task);
+                    while (!objTask.IsCompleted)
+                        SafeSleep(token);
+                    if (objTask.Exception != null)
+                        throw objTask.Exception;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun1">First code to execute.</param>
+        /// <param name="funcToRun2">Second code to execute.</param>
+        /// <param name="funcToRun3">Third code to execute.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun1, Action funcToRun2, Action funcToRun3, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                Action[] afuncToRun = new Action[3]
+                {
+                    funcToRun1,
+                    funcToRun2,
+                    funcToRun3
+                };
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.Invoke(objOptions, afuncToRun);
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            if (token == CancellationToken.None)
+            {
+                Task objTask = Task.WhenAll(
+                    Task.Run(() => funcToRun1.Invoke(), CancellationToken.None),
+                    Task.Run(() => funcToRun2.Invoke(), CancellationToken.None),
+                    Task.Run(() => funcToRun3.Invoke(), CancellationToken.None));
+                while (!objTask.IsCompleted)
+                    SafeSleep(token);
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+            }
+            else
+            {
+                using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(token))
+                {
+                    Task objTask = Task.WhenAny(
+                        Task.WhenAll(
+                            Task.Run(() => funcToRun1.Invoke(), token),
+                            Task.Run(() => funcToRun2.Invoke(), token),
+                            Task.Run(() => funcToRun3.Invoke(), token)),
+                        objBreakTokenTaskSource.Task);
+                    while (!objTask.IsCompleted)
+                        SafeSleep(token);
+                    if (objTask.Exception != null)
+                        throw objTask.Exception;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun1">First code to execute.</param>
+        /// <param name="funcToRun2">Second code to execute.</param>
+        /// <param name="funcToRun3">Third code to execute.</param>
+        /// <param name="funcToRun4">Fourth code to execute.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun1, Action funcToRun2, Action funcToRun3, Action funcToRun4, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                Action[] afuncToRun = new Action[4]
+                {
+                    funcToRun1,
+                    funcToRun2,
+                    funcToRun3,
+                    funcToRun4
+                };
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.Invoke(objOptions, afuncToRun);
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            if (token == CancellationToken.None)
+            {
+                Task objTask = Task.WhenAll(
+                    Task.Run(() => funcToRun1.Invoke(), CancellationToken.None),
+                    Task.Run(() => funcToRun2.Invoke(), CancellationToken.None),
+                    Task.Run(() => funcToRun3.Invoke(), CancellationToken.None),
+                    Task.Run(() => funcToRun4.Invoke(), CancellationToken.None));
+                while (!objTask.IsCompleted)
+                    SafeSleep(token);
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+            }
+            else
+            {
+                using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(token))
+                {
+                    Task objTask = Task.WhenAny(
+                        Task.WhenAll(
+                            Task.Run(() => funcToRun1.Invoke(), token),
+                            Task.Run(() => funcToRun2.Invoke(), token),
+                            Task.Run(() => funcToRun3.Invoke(), token),
+                            Task.Run(() => funcToRun4.Invoke(), token)),
+                        objBreakTokenTaskSource.Task);
+                    while (!objTask.IsCompleted)
+                        SafeSleep(token);
+                    if (objTask.Exception != null)
+                        throw objTask.Exception;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2377,6 +2614,83 @@ namespace Chummer
                         CancellationToken = token
                     };
                     Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke());
+                    token.ThrowIfCancellationRequested();
+                }, token);
+
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(params Action<CancellationToken>[] afuncToRun)
+        {
+            RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(CancellationToken token, params Action<CancellationToken>[] afuncToRun)
+        {
+            RunWithoutThreadLock(afuncToRun, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(IReadOnlyCollection<Action<CancellationToken>> afuncToRun, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (afuncToRun.Count)
+            {
+                case 0:
+                    return;
+                case 1:
+                    RunWithoutThreadLock(afuncToRun.ElementAtBetter(0), token);
+                    return;
+            }
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                if (token == CancellationToken.None)
+                    Parallel.ForEach(afuncToRun, x => x.Invoke(token));
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke(token));
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            Task objTask = token == CancellationToken.None
+                ? Task.Run(() => Parallel.ForEach(afuncToRun, x => x.Invoke(token)), token)
+                : Task.Run(() =>
+                {
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke(token));
                     token.ThrowIfCancellationRequested();
                 }, token);
 
@@ -2441,6 +2755,17 @@ namespace Chummer
         public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
         {
             return RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(CancellationToken token, params Func<T>[] afuncToRun)
+        {
+            return RunWithoutThreadLock(afuncToRun, token);
         }
 
         /// <summary>

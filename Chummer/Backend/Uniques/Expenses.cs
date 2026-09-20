@@ -570,7 +570,7 @@ namespace Chummer
 
         public int CompareTo(ExpenseLogEntry other)
         {
-            if (Equals(_objCharacter, other._objCharacter))
+            if (ReferenceEquals(_objCharacter, other._objCharacter))
             {
                 int intReturn = Date.CompareTo(other.Date);
                 if (intReturn == 0)

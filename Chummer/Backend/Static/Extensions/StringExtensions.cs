@@ -5220,7 +5220,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// If a string begins with any substrings, the one with which it begins is trimmed out of the string once.
+        /// If a string begins with any of a selection of substrings, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="astrToTrim">Substrings to trim</param>
@@ -5247,6 +5247,106 @@ namespace Chummer
 
                 if (intHowMuchToTrim > 0)
                     return strInput.Substring(intHowMuchToTrim);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of a selection of substrings, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim1">First substring to trim</param>
+        /// <param name="strToTrim2">Second substring to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, string strToTrim1, string strToTrim2)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                if (!string.IsNullOrEmpty(strToTrim1)
+                    && strInput.StartsWith(strToTrim1, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim1.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim2)
+                    && strInput.StartsWith(strToTrim2, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim2.Length);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of a selection of substrings, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim1">First substring to trim</param>
+        /// <param name="strToTrim2">Second substring to trim</param>
+        /// <param name="strToTrim3">Third substring to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, string strToTrim1, string strToTrim2, string strToTrim3)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                if (!string.IsNullOrEmpty(strToTrim1)
+                    && strInput.StartsWith(strToTrim1, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim1.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim2)
+                    && strInput.StartsWith(strToTrim2, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim2.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim3)
+                    && strInput.StartsWith(strToTrim3, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim3.Length);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any of a selection of substrings, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim1">First substring to trim</param>
+        /// <param name="strToTrim2">Second substring to trim</param>
+        /// <param name="strToTrim3">Third substring to trim</param>
+        /// <param name="strToTrim4">Fourth substring to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, string strToTrim1, string strToTrim2, string strToTrim3, string strToTrim4)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                if (!string.IsNullOrEmpty(strToTrim1)
+                    && strInput.StartsWith(strToTrim1, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim1.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim2)
+                    && strInput.StartsWith(strToTrim2, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim2.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim3)
+                    && strInput.StartsWith(strToTrim3, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim3.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim4)
+                    // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
+                    && strInput.StartsWith(strToTrim4, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(strToTrim4.Length);
+                }
             }
 
             return strInput;
@@ -5359,6 +5459,105 @@ namespace Chummer
                                                     || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
             {
                 return strInput.Substring(0, strInput.Length - strToTrim.Length);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with one of some select substrings, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim1">First substring to trim</param>
+        /// <param name="strToTrim2">Second substring to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, string strToTrim1, string strToTrim2)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                if (!string.IsNullOrEmpty(strToTrim1)
+                    && strInput.EndsWith(strToTrim1, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim1.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim2)
+                    && strInput.EndsWith(strToTrim2, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim2.Length);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with one of some select substrings, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim1">First substring to trim</param>
+        /// <param name="strToTrim2">Second substring to trim</param>
+        /// <param name="strToTrim3">Third substring to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, string strToTrim1, string strToTrim2, string strToTrim3)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                if (!string.IsNullOrEmpty(strToTrim1)
+                    && strInput.EndsWith(strToTrim1, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim1.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim2)
+                    && strInput.EndsWith(strToTrim2, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim2.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim3)
+                    && strInput.EndsWith(strToTrim3, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim3.Length);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string ends with one of some select substrings, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim1">First substring to trim</param>
+        /// <param name="strToTrim2">Second substring to trim</param>
+        /// <param name="strToTrim3">Third substring to trim</param>
+        /// <param name="strToTrim4">Fourth substring to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, string strToTrim1, string strToTrim2, string strToTrim3, string strToTrim4)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                if (!string.IsNullOrEmpty(strToTrim1)
+                    && strInput.EndsWith(strToTrim1, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim1.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim2)
+                    && strInput.EndsWith(strToTrim2, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim2.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim3)
+                    && strInput.EndsWith(strToTrim3, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim3.Length);
+                }
+                if (!string.IsNullOrEmpty(strToTrim4)
+                    && strInput.EndsWith(strToTrim4, StringComparison.Ordinal))
+                {
+                    return strInput.Substring(0, strInput.Length - strToTrim4.Length);
+                }
             }
 
             return strInput;
@@ -6472,12 +6671,12 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (string.IsNullOrEmpty(strInput))
                 return Task.FromResult(string.Empty);
-            return TaskExtensions.RunWithoutEC(() =>
+            return TaskExtensions.RunWithoutEC(t =>
             {
                 string strInputTrimmed = strInput.TrimStart();
                 string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal)
-                    ? strInput.StripRichTextFormat(token)
+                    ? strInput.StripRichTextFormat(t)
                     : strInput;
 
                 return strReturn.NormalizeWhiteSpace();

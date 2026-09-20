@@ -20099,7 +20099,11 @@ namespace Chummer
                         {
                             Bitmap[] objMugshotImages = new Bitmap[xmlMugshotsList.Count];
                             token.ThrowIfCancellationRequested();
-                            Parallel.For(0, xmlMugshotsList.Count,
+                            ParallelOptions objOptions = new ParallelOptions
+                            {
+                                CancellationToken = token
+                            };
+                            Parallel.For(0, xmlMugshotsList.Count, objOptions,
                                             i =>
                                             {
                                                 string strLoop = astrMugshotsBase64[i];
@@ -51179,7 +51183,7 @@ namespace Chummer
                                                 if (blnSync)
                                                     DoLoadStatblocks(token);
                                                 else
-                                                    await TaskExtensions.RunWithoutEC(() => DoLoadStatblocks(token), token).ConfigureAwait(false);
+                                                    await TaskExtensions.RunWithoutEC(DoLoadStatblocks, token).ConfigureAwait(false);
                                                 void DoLoadStatblocks(CancellationToken innerToken)
                                                 {
                                                     using (Stream objStream = objEntry.Open())
@@ -51296,7 +51300,7 @@ namespace Chummer
                                                 if (blnSync)
                                                     DoLoadLeads(token);
                                                 else
-                                                    await TaskExtensions.RunWithoutEC(() => DoLoadLeads(token), token).ConfigureAwait(false);
+                                                    await TaskExtensions.RunWithoutEC(DoLoadLeads, token).ConfigureAwait(false);
                                                 void DoLoadLeads(CancellationToken innerToken)
                                                 {
                                                     using (Stream objStream = objEntry.Open())

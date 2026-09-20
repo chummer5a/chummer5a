@@ -29,7 +29,7 @@ namespace Chummer
         /// </summary>
         public static CancellationTokenRegistration RegisterWithoutEC(this CancellationToken token, Action callback)
         {
-            return Utils.RunInEmptyExecutionContext(() => token.Register(callback, false));
+            return Utils.RunInEmptyExecutionContext(t => t.Register(callback, false), token);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Chummer
         /// </summary>
         public static CancellationTokenRegistration RegisterWithoutEC(this CancellationToken token, Action<object> callback, object state)
         {
-            return Utils.RunInEmptyExecutionContext(() => token.Register(callback, state, false));
+            return Utils.RunInEmptyExecutionContext(t => t.Register(callback, state, false), token);
         }
     }
 }

@@ -69,21 +69,21 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<XPathDocument> LoadStandardFromFileAsync(string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
-            return TaskExtensions.RunWithoutEC(() =>
+            return TaskExtensions.RunWithoutEC(t =>
             {
                 using (FileStream objFileStream
                        = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    token.ThrowIfCancellationRequested();
+                    t.ThrowIfCancellationRequested();
                     using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
                     {
-                        token.ThrowIfCancellationRequested();
+                        t.ThrowIfCancellationRequested();
                         using (XmlReader objReader = XmlReader.Create(objStreamReader,
                                                                       blnSafe
                                                                           ? GlobalSettings.SafeXmlReaderSettings
                                                                           : GlobalSettings.UnSafeXmlReaderSettings))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             return new XPathDocument(objReader);
                         }
                     }

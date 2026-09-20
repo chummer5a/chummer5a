@@ -4762,10 +4762,10 @@ namespace Chummer
                             }
 
                             // Refresh Martial Art Techniques.
-                            await CharacterObject.MartialArts.ForEachWithSideEffectsAsync(async objMartialArt =>
+                            await CharacterObject.MartialArts.ForEachWithSideEffectsAsync(async (objMartialArt, t1) =>
                             {
                                 XmlNode objMartialArtNode
-                                    = await objMartialArt.GetNodeAsync(token).ConfigureAwait(false);
+                                    = await objMartialArt.GetNodeAsync(t1).ConfigureAwait(false);
                                 if (objMartialArtNode != null)
                                 {
                                     // We're only re-apply improvements a list of items, not all of them
@@ -4775,45 +4775,45 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.MartialArt,
                                             objMartialArt.InternalId, objMartialArtNode["bonus"], 1,
-                                            await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                            token: token).ConfigureAwait(false);
+                                            await objMartialArt.GetCurrentDisplayNameAsync(t1).ConfigureAwait(false),
+                                            token: t1).ConfigureAwait(false);
                                     }
                                 }
                                 else
                                 {
                                     sbdOutdatedItems.AppendLine(
-                                        await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                        await objMartialArt.GetCurrentDisplayNameAsync(t1).ConfigureAwait(false));
                                 }
 
-                                await objMartialArt.Techniques.ForEachWithSideEffectsAsync(async objTechnique =>
+                                await objMartialArt.Techniques.ForEachWithSideEffectsAsync(async (objTechnique, t2) =>
                                 {
                                     if (lstInternalIdFilter?.Contains(objTechnique.InternalId) == false)
                                         return;
-                                    XmlNode objNode = await objTechnique.GetNodeAsync(token).ConfigureAwait(false);
+                                    XmlNode objNode = await objTechnique.GetNodeAsync(t2).ConfigureAwait(false);
                                     if (objNode != null)
                                     {
                                         if (objNode["bonus"] != null)
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
                                                 objTechnique.InternalId, objNode["bonus"], 1,
-                                                await objTechnique.GetCurrentDisplayNameAsync(token)
+                                                await objTechnique.GetCurrentDisplayNameAsync(t2)
                                                                   .ConfigureAwait(false),
-                                                token: token).ConfigureAwait(false);
+                                                token: t2).ConfigureAwait(false);
                                     }
                                     else
                                     {
                                         sbdOutdatedItems.AppendLine(
-                                            await objTechnique.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                            await objTechnique.GetCurrentDisplayNameAsync(t2).ConfigureAwait(false));
                                     }
-                                }, token).ConfigureAwait(false);
+                                }, t1).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
 
                             // Refresh Spells.
-                            await CharacterObject.Spells.ForEachWithSideEffectsAsync(async objSpell =>
+                            await CharacterObject.Spells.ForEachWithSideEffectsAsync(async (objSpell, t) =>
                             {
                                 if (lstInternalIdFilter?.Contains(objSpell.InternalId) == false)
                                     return;
-                                XmlNode objNode = await objSpell.GetNodeAsync(token).ConfigureAwait(false);
+                                XmlNode objNode = await objSpell.GetNodeAsync(t).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
                                     if (objNode["bonus"] != null)
@@ -4822,36 +4822,36 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId,
                                             objNode["bonus"], 1,
-                                            await objSpell.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                            token: token).ConfigureAwait(false);
+                                            await objSpell.GetCurrentDisplayNameShortAsync(t).ConfigureAwait(false),
+                                            token: t).ConfigureAwait(false);
                                         string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
                                         if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
                                             objSpell.Extra = strSelectedValue;
-                                            string strName = await objSpell.GetCurrentDisplayNameAsync(token)
+                                            string strName = await objSpell.GetCurrentDisplayNameAsync(t)
                                                                            .ConfigureAwait(false);
                                             await treSpells.DoThreadSafeAsync(x =>
                                             {
                                                 TreeNode objSpellNode = x.FindNode(objSpell.InternalId);
                                                 if (objSpellNode != null)
                                                     objSpellNode.Text = strName;
-                                            }, token).ConfigureAwait(false);
+                                            }, t).ConfigureAwait(false);
                                         }
                                     }
                                 }
                                 else
                                 {
                                     sbdOutdatedItems.AppendLine(
-                                        await objSpell.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                        await objSpell.GetCurrentDisplayNameAsync(t).ConfigureAwait(false));
                                 }
                             }, token).ConfigureAwait(false);
 
                             // Refresh Adept Powers.
-                            await CharacterObject.Powers.ForEachWithSideEffectsAsync(async objPower =>
+                            await CharacterObject.Powers.ForEachWithSideEffectsAsync(async (objPower, t) =>
                             {
                                 if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
                                     return;
-                                XmlNode objNode = await objPower.GetNodeAsync(token).ConfigureAwait(false);
+                                XmlNode objNode = await objPower.GetNodeAsync(t).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
                                     objPower.Bonus = objNode["bonus"];
@@ -4861,24 +4861,24 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId,
                                             objPower.Bonus,
-                                            await objPower.GetTotalRatingAsync(token).ConfigureAwait(false),
-                                            await objPower.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                            token: token).ConfigureAwait(false);
+                                            await objPower.GetTotalRatingAsync(t).ConfigureAwait(false),
+                                            await objPower.GetCurrentDisplayNameShortAsync(t).ConfigureAwait(false),
+                                            token: t).ConfigureAwait(false);
                                     }
                                 }
                                 else
                                 {
                                     sbdOutdatedItems.AppendLine(
-                                        await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                        await objPower.GetCurrentDisplayNameAsync(t).ConfigureAwait(false));
                                 }
                             }, token).ConfigureAwait(false);
 
                             // Refresh Complex Forms.
-                            await CharacterObject.ComplexForms.ForEachWithSideEffectsAsync(async objComplexForm =>
+                            await CharacterObject.ComplexForms.ForEachWithSideEffectsAsync(async (objComplexForm, t) =>
                             {
                                 if (lstInternalIdFilter?.Contains(objComplexForm.InternalId) == false)
                                     return;
-                                XmlNode objNode = await objComplexForm.GetNodeAsync(token).ConfigureAwait(false);
+                                XmlNode objNode = await objComplexForm.GetNodeAsync(t).ConfigureAwait(false);
                                 if (objNode != null)
                                 {
                                     if (objNode["bonus"] != null)
@@ -4889,28 +4889,28 @@ namespace Chummer
                                                                     Improvement.ImprovementSource.ComplexForm,
                                                                     objComplexForm.InternalId, objNode["bonus"], 1,
                                                                     await objComplexForm
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
+                                                                          .GetCurrentDisplayNameShortAsync(t)
+                                                                          .ConfigureAwait(false), token: t)
                                                                 .ConfigureAwait(false);
                                         string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
                                         if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
                                             objComplexForm.Extra = strSelectedValue;
-                                            string strName = await objComplexForm.GetCurrentDisplayNameAsync(token)
+                                            string strName = await objComplexForm.GetCurrentDisplayNameAsync(t)
                                                 .ConfigureAwait(false);
                                             await treComplexForms.DoThreadSafeAsync(x =>
                                             {
                                                 TreeNode objCFNode = x.FindNode(objComplexForm.InternalId);
                                                 if (objCFNode != null)
                                                     objCFNode.Text = strName;
-                                            }, token).ConfigureAwait(false);
+                                            }, t).ConfigureAwait(false);
                                         }
                                     }
                                 }
                                 else
                                 {
                                     sbdOutdatedItems.AppendLine(
-                                        await objComplexForm.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                        await objComplexForm.GetCurrentDisplayNameAsync(t).ConfigureAwait(false));
                                 }
                             }, token).ConfigureAwait(false);
 
@@ -5111,9 +5111,9 @@ namespace Chummer
                                 }
 
                                 await objCyberware.GearChildren.ForEachWithSideEffectsAsync(
-                                    objGear => objGear.ReaddImprovements(
+                                    (objGear, t) => objGear.ReaddImprovements(
                                         treCyberware, sbdOutdatedItems, lstInternalIdFilter,
-                                        token: token), token).ConfigureAwait(false);
+                                        token: t), token).ConfigureAwait(false);
                             }
 
                             // Separate Pass for PairBonuses
@@ -5198,12 +5198,12 @@ namespace Chummer
                             }
 
                             // Refresh Armors.
-                            await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
+                            await CharacterObject.Armor.ForEachWithSideEffectsAsync(async (objArmor, t1) =>
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
                                 {
-                                    XmlNode objNode = await objArmor.GetNodeAsync(token).ConfigureAwait(false);
+                                    XmlNode objNode = await objArmor.GetNodeAsync(t1).ConfigureAwait(false);
                                     if (objNode != null)
                                     {
                                         objArmor.Bonus = objNode["bonus"];
@@ -5213,38 +5213,38 @@ namespace Chummer
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.Armor,
                                                 objArmor.InternalId,
-                                                objArmor.Bonus, await objArmor.GetRatingAsync(token).ConfigureAwait(false),
-                                                await objArmor.GetCurrentDisplayNameShortAsync(token)
+                                                objArmor.Bonus, await objArmor.GetRatingAsync(t1).ConfigureAwait(false),
+                                                await objArmor.GetCurrentDisplayNameShortAsync(t1)
                                                               .ConfigureAwait(false),
-                                                token: token).ConfigureAwait(false);
+                                                token: t1).ConfigureAwait(false);
                                             string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
                                             if (!string.IsNullOrEmpty(strSelectedValue))
                                             {
                                                 objArmor.Extra = strSelectedValue;
-                                                string strName = await objArmor.GetCurrentDisplayNameAsync(token)
+                                                string strName = await objArmor.GetCurrentDisplayNameAsync(t1)
                                                                                .ConfigureAwait(false);
                                                 await treArmor.DoThreadSafeAsync(x =>
                                                 {
                                                     TreeNode objArmorNode = x.FindNode(objArmor.InternalId);
                                                     if (objArmorNode != null)
                                                         objArmorNode.Text = strName;
-                                                }, token).ConfigureAwait(false);
+                                                }, t1).ConfigureAwait(false);
                                             }
                                         }
                                     }
                                     else
                                     {
                                         sbdOutdatedItems.AppendLine(
-                                            await objArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                            await objArmor.GetCurrentDisplayNameAsync(t1).ConfigureAwait(false));
                                     }
                                 }
 
-                                await objArmor.ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
+                                await objArmor.ArmorMods.ForEachWithSideEffectsAsync(async (objMod, t2) =>
                                 {
                                     // We're only re-apply improvements a list of items, not all of them
                                     if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
                                     {
-                                        XmlNode objChild = await objMod.GetNodeAsync(token).ConfigureAwait(false);
+                                        XmlNode objChild = await objMod.GetNodeAsync(t2).ConfigureAwait(false);
 
                                         if (objChild != null)
                                         {
@@ -5256,70 +5256,70 @@ namespace Chummer
                                                                             CharacterObject,
                                                                             Improvement.ImprovementSource.ArmorMod,
                                                                             objMod.InternalId, objMod.Bonus,
-                                                                            await objMod.GetRatingAsync(GenericToken).ConfigureAwait(false),
+                                                                            await objMod.GetRatingAsync(t2).ConfigureAwait(false),
                                                                             await objMod
-                                                                                .GetCurrentDisplayNameShortAsync(token)
-                                                                                .ConfigureAwait(false), token: token)
+                                                                                .GetCurrentDisplayNameShortAsync(t2)
+                                                                                .ConfigureAwait(false), token: t2)
                                                                         .ConfigureAwait(false);
                                                 string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
                                                 if (!string.IsNullOrEmpty(strSelectedValue))
                                                 {
                                                     objMod.Extra = strSelectedValue;
-                                                    string strName = await objMod.GetCurrentDisplayNameAsync(token)
+                                                    string strName = await objMod.GetCurrentDisplayNameAsync(t2)
                                                         .ConfigureAwait(false);
                                                     await treArmor.DoThreadSafeAsync(x =>
                                                     {
                                                         TreeNode objPluginNode = x.FindNode(objMod.InternalId);
                                                         if (objPluginNode != null)
                                                             objPluginNode.Text = strName;
-                                                    }, token).ConfigureAwait(false);
+                                                    }, t2).ConfigureAwait(false);
                                                 }
                                             }
                                         }
                                         else
                                         {
                                             sbdOutdatedItems.AppendLine(
-                                                await objMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                                await objMod.GetCurrentDisplayNameAsync(t2).ConfigureAwait(false));
                                         }
                                     }
 
-                                    await objMod.GearChildren.ForEachWithSideEffectsAsync(objGear => objGear
+                                    await objMod.GearChildren.ForEachWithSideEffectsAsync((objGear, t3) => objGear
                                                                                .ReaddImprovements(
                                                                                    treArmor, sbdOutdatedItems,
-                                                                                   lstInternalIdFilter, token: token),
-                                                                           token).ConfigureAwait(false);
-                                }, token).ConfigureAwait(false);
+                                                                                   lstInternalIdFilter, token: t3),
+                                                                           t2).ConfigureAwait(false);
+                                }, t1).ConfigureAwait(false);
 
-                                await objArmor.GearChildren.ForEachWithSideEffectsAsync(objGear => objGear
+                                await objArmor.GearChildren.ForEachWithSideEffectsAsync((objGear, t2) => objGear
                                                                              .ReaddImprovements(
                                                                                  treArmor, sbdOutdatedItems,
-                                                                                 lstInternalIdFilter, token: token),
-                                                                         token).ConfigureAwait(false);
+                                                                                 lstInternalIdFilter, token: t2),
+                                                                         t1).ConfigureAwait(false);
 
-                                await objArmor.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                                await objArmor.RefreshWirelessBonusesAsync(t1).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
 
                             // Refresh Gear.
-                            await CharacterObject.Gear.ForEachWithSideEffectsAsync(async objGear =>
+                            await CharacterObject.Gear.ForEachWithSideEffectsAsync(async (objGear, t) =>
                             {
                                 await objGear
-                                      .ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: token)
+                                      .ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: t)
                                       .ConfigureAwait(false);
-                                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                                await objGear.RefreshWirelessBonusesAsync(t).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
 
                             // Refresh Weapons Gear
-                            await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
+                            await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async (objWeapon, t1) =>
                             {
                                 await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(
-                                                   objAccessory => objAccessory.GearChildren.ForEachWithSideEffectsAsync(objGear =>
+                                                   (objAccessory, t2) => objAccessory.GearChildren.ForEachWithSideEffectsAsync((objGear, t3) =>
                                                        objGear
                                                            .ReaddImprovements(
                                                                treWeapons, sbdOutdatedItems, lstInternalIdFilter,
-                                                               token: token), token), token)
+                                                               token: t3), t2), t1)
                                                .ConfigureAwait(false);
 
-                                await objWeapon.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                                await objWeapon.RefreshWirelessBonusesAsync(t1).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
                         }
                         finally

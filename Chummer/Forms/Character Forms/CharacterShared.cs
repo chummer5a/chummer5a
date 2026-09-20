@@ -12633,7 +12633,7 @@ namespace Chummer
 
                 tskNew = blnAlsoProcessUpdate
                     ? DoUpdateCharacterInfo(objNewToken)
-                    : Utils.RunInEmptyExecutionContext(() => DoUpdateCharacterInfo(objNewToken));
+                    : Utils.RunInEmptyExecutionContext(DoUpdateCharacterInfo, objNewToken);
 
                 if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
                 {

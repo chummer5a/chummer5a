@@ -1150,9 +1150,9 @@ namespace Chummer
                                                             out HashSet<string> setLanguageKeys))
             {
                 // Potentially expensive checks that can (and therefore should) be parallelized.
-                await Task.WhenAll(LoadEnglishStrings(), LoadAltLanguageStrings()).ConfigureAwait(false);
+                await Task.WhenAll(LoadEnglishStrings(token), LoadAltLanguageStrings(token)).ConfigureAwait(false);
 
-                async Task LoadEnglishStrings()
+                async Task LoadEnglishStrings(CancellationToken innerToken)
                 {
                     // Load the English version.
                     string strFilePath
@@ -1161,12 +1161,12 @@ namespace Chummer
                     {
                         XPathDocument objEnglishDocument = await XPathDocumentExtensions
                                                                  .LoadStandardFromFileAsync(
-                                                                     strFilePath, token: token)
+                                                                     strFilePath, token: innerToken)
                                                                  .ConfigureAwait(false);
                         foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
-                                     .SelectAndCacheExpression("/chummer/strings/string", token))
+                                     .SelectAndCacheExpression("/chummer/strings/string", innerToken))
                         {
-                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", innerToken)?.Value;
                             if (!string.IsNullOrEmpty(strKey))
                                 setEnglishKeys.Add(strKey);
                         }
@@ -1181,7 +1181,7 @@ namespace Chummer
                     }
                 }
 
-                async Task LoadAltLanguageStrings()
+                async Task LoadAltLanguageStrings(CancellationToken innerToken)
                 {
                     // Load the selected language version.
                     string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "lang", strLanguage + ".xml");
@@ -1189,12 +1189,12 @@ namespace Chummer
                     {
                         XPathDocument objLanguageDocument = await XPathDocumentExtensions
                                                                   .LoadStandardFromFileAsync(
-                                                                      strLangPath, token: token)
+                                                                      strLangPath, token: innerToken)
                                                                   .ConfigureAwait(false);
                         foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
-                                     .SelectAndCacheExpression("/chummer/strings/string", token))
+                                     .SelectAndCacheExpression("/chummer/strings/string", innerToken))
                         {
-                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", innerToken)?.Value;
                             if (!string.IsNullOrEmpty(strKey))
                                 setLanguageKeys.Add(strKey);
                         }
@@ -1216,20 +1216,22 @@ namespace Chummer
                 {
                     // Potentially expensive checks that can (and therefore should) be parallelized.
                     await Task.WhenAll(
-                        TaskExtensions.RunWithoutEC(() =>
+                        TaskExtensions.RunWithoutEC(t =>
                         {
                             // Check for strings that are in the English file but not in the selected language file.
                             foreach (string strKey in setEnglishKeys)
                             {
+                                t.ThrowIfCancellationRequested();
                                 if (!setLanguageKeys.Contains(strKey))
                                     sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
                             }
                         }, token),
-                        TaskExtensions.RunWithoutEC(() =>
+                        TaskExtensions.RunWithoutEC(t =>
                         {
                             // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
                             foreach (string strKey in setLanguageKeys)
                             {
+                                t.ThrowIfCancellationRequested();
                                 if (!setEnglishKeys.Contains(strKey))
                                     sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
                             }
@@ -1825,7 +1827,11 @@ namespace Chummer
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
                                                 StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
-                                    Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
+                                    ParallelOptions objOptions = new ParallelOptions
+                                    {
+                                        CancellationToken = innerToken
+                                    };
+                                    Parallel.ForEach(lstToSearch, objOptions, () => string.Empty, (objXPathPair, objState, x) =>
                                     {
                                         if (objState.ShouldExitCurrentIteration)
                                             return x;
@@ -2329,7 +2335,11 @@ namespace Chummer
                                 ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
                                                                      StringComparison.OrdinalIgnoreCase))
                                 : aobjPaths;
-                        Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
+                        ParallelOptions objOptions = new ParallelOptions
+                        {
+                            CancellationToken = innerToken
+                        };
+                        Parallel.ForEach(lstToSearch, objOptions, () => string.Empty, (objXPathPair, objState, x) =>
                         {
                             if (objState.ShouldExitCurrentIteration)
                                 return x;

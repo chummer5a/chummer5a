@@ -283,6 +283,74 @@ namespace Chummer
             return -1;
         }
 
+        public static Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, Func<T, CancellationToken, bool> predicate,
+            CancellationToken token = default)
+        {
+            return FindIndexAsync(lstCollection, 0, predicate, token);
+        }
+
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            for (int i = startIndex; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+            {
+                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            int intUpperBounds = count - startIndex;
+            for (int i = startIndex;
+                 i < Math.Min(await lstCollection.GetCountAsync(token).ConfigureAwait(false), intUpperBounds);
+                 ++i)
+            {
+                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
+            Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            return FindIndexAsync(lstCollection, 0, predicate, token);
+        }
+
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            for (int i = startIndex; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            int intUpperBounds = count - startIndex;
+            for (int i = startIndex;
+                 i < Math.Min(await lstCollection.GetCountAsync(token).ConfigureAwait(false), intUpperBounds);
+                 ++i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
         public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
             Predicate<T> predicate, CancellationToken token = default)
         {
@@ -373,6 +441,83 @@ namespace Chummer
                 {
                     return i;
                 }
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
+            Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+            {
+                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            for (int i = startIndex; i >= 0; --i)
+            {
+                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Func<T, CancellationToken, bool> predicate, CancellationToken token = default)
+        {
+            int intLowerBounds = startIndex - count;
+            for (int i = startIndex; i >= Math.Max(0, intLowerBounds); --i)
+            {
+                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection,
+            Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            for (int i = startIndex; i >= 0; --i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public static async Task<int> FindLastIndexAsync<T>(this IAsyncReadOnlyList<T> lstCollection, int startIndex,
+            int count, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            int intLowerBounds = startIndex - count;
+            for (int i = startIndex; i >= Math.Max(0, intLowerBounds); --i)
+            {
+                if (await predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false))
+                    return i;
             }
 
             return -1;

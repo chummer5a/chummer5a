@@ -13944,6 +13944,302 @@ namespace Chummer
             return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
+        public static async Task<int> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = int.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn = Math.Min(intReturn, funcSelector.Invoke(objEnumerator.Current, token));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = int.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn = Math.Min(intReturn, await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> MinAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            int intReturn = int.MaxValue;
+            foreach (T objItem in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                intReturn = Math.Min(intReturn, await funcSelector.Invoke(objItem, token).ConfigureAwait(false));
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> MinAsync<T>(this Task<IEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = long.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn = Math.Min(lngReturn, funcSelector.Invoke(objEnumerator.Current, token));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = long.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn = Math.Min(lngReturn, await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = float.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn = Math.Min(fltReturn, funcSelector.Invoke(objEnumerator.Current, token));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = float.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn = Math.Min(fltReturn, await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = double.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn = Math.Min(dblReturn, funcSelector.Invoke(objEnumerator.Current, token));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = double.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn = Math.Min(dblReturn, await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = decimal.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn = Math.Min(decReturn, funcSelector.Invoke(objEnumerator.Current, token));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> MinAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = decimal.MaxValue;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn = Math.Min(decReturn, await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false));
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> MinAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await MinAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
         public static async Task<int> MinParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

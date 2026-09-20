@@ -3541,10 +3541,10 @@ namespace Chummer.Backend.Skills
                     {
                         int intGroupUpper
                             = await SkillGroupObject.SkillList.MinAsync(
-                                                        async x => await x.GetBaseAsync(token).ConfigureAwait(false) +
-                                                                   await x.GetKarmaAsync(token).ConfigureAwait(false)
+                                                        async (x, t) => await x.GetBaseAsync(t).ConfigureAwait(false) +
+                                                                   await x.GetKarmaAsync(t).ConfigureAwait(false)
                                                                    + await x.RatingModifiersAsync(
-                                                                       await x.GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false),
+                                                                       await x.GetAttributeAsync(t).ConfigureAwait(false), token: t).ConfigureAwait(false),
                                                         token: token)
                                                     .ConfigureAwait(false);
                         int intGroupLower =
@@ -5223,7 +5223,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    int intIndexToReplace = await lstSpecs.FindIndexAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    int intIndexToReplace = await lstSpecs.FindIndexAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                     SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, this, value);
                     try
                     {
@@ -5253,7 +5253,7 @@ namespace Chummer.Backend.Skills
                     }
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace
-                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     if (intIndexToReplace > 0)
                         Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
                     while (intIndexToReplace > 0)
@@ -5262,7 +5262,7 @@ namespace Chummer.Backend.Skills
                         await lstSpecs.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
                         await objToRemove.DisposeAsync().ConfigureAwait(false);
                         intIndexToReplace
-                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
                 finally

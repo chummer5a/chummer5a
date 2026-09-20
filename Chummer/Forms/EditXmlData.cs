@@ -937,7 +937,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         try
                         {
-                            if (await TaskExtensions.RunWithoutEC(() => XmlManager.AmendNodeChildren(xmlTargetDoc, objNode, "/chummer", token: token), token).ConfigureAwait(false))
+                            if (await TaskExtensions.RunWithoutEC(t => XmlManager.AmendNodeChildren(xmlTargetDoc, objNode, "/chummer", token: t), token).ConfigureAwait(false))
                             {
                                 Log.Info("Successfully applied amendment operation to node: " + objNode.Name);
                             }

@@ -1384,7 +1384,7 @@ namespace Chummer.Backend.Equipment
                         else if (blnSync)
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (!GetValidLimbSlot(objXmlCyberware.CreateNavigator()))
+                            if (!GetValidLimbSlot(objXmlCyberware.CreateNavigator(), token))
                                 return;
                         }
                         else if (!await GetValidLimbSlotAsync(objXmlCyberware.CreateNavigator(), token).ConfigureAwait(false))
@@ -1547,10 +1547,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool GetValidLimbSlot(XPathNavigator xpnCyberware)
+        public bool GetValidLimbSlot(XPathNavigator xpnCyberware, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strForcedSide = string.Empty;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
                 if (_strForced == "Right" || _strForced == "Left")
                     strForcedSide = _strForced;
@@ -1587,7 +1588,7 @@ namespace Chummer.Backend.Equipment
                             else
                                 dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
                         }
-                    });
+                    }, token);
 
                     bool blnAllowLeft = true;
                     bool blnAllowRight = true;
@@ -1678,7 +1679,7 @@ namespace Chummer.Backend.Equipment
                                     return _objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount;
                                 });
                             }
-                        });
+                        }, token);
                     // Only one side is allowed.
                     if (blnAllowLeft != blnAllowRight)
                         strForcedSide = blnAllowLeft ? "Left" : "Right";
@@ -1703,8 +1704,9 @@ namespace Chummer.Backend.Equipment
                                        CurrentDisplayNameShort)
                            }))
                     {
+                        token.ThrowIfCancellationRequested();
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickSide.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        if (frmPickSide.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
                             return false;

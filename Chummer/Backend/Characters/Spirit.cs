@@ -3415,7 +3415,11 @@ namespace Chummer
                         {
                             Bitmap[] objMugshotImages = new Bitmap[xmlMugshotsList.Count];
                             token.ThrowIfCancellationRequested();
-                            Parallel.For(0, xmlMugshotsList.Count,
+                            ParallelOptions objOptions = new ParallelOptions
+                            {
+                                CancellationToken = token
+                            };
+                            Parallel.For(0, xmlMugshotsList.Count, objOptions,
                                             i =>
                                             {
                                                 string strLoop = astrMugshotsBase64[i];
