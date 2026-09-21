@@ -2408,31 +2408,13 @@ namespace Chummer
                 return;
             }
 
-            if (token == CancellationToken.None)
-            {
-                Task objTask = Task.WhenAll(
-                    Task.Run(() => funcToRun1.Invoke(), CancellationToken.None),
-                    Task.Run(() => funcToRun2.Invoke(), CancellationToken.None));
-                while (!objTask.IsCompleted)
-                    SafeSleep(token);
-                if (objTask.Exception != null)
-                    throw objTask.Exception;
-            }
-            else
-            {
-                using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(token))
-                {
-                    Task objTask = Task.WhenAny(
-                        Task.WhenAll(
-                            Task.Run(() => funcToRun1.Invoke(), token),
-                            Task.Run(() => funcToRun2.Invoke(), token)),
-                        objBreakTokenTaskSource.Task);
-                    while (!objTask.IsCompleted)
-                        SafeSleep(token);
-                    if (objTask.Exception != null)
-                        throw objTask.Exception;
-                }
-            }
+            Task objTask = Task.WhenAll(
+                Task.Run(() => funcToRun1.Invoke(), token),
+                Task.Run(() => funcToRun2.Invoke(), token));
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -2471,33 +2453,14 @@ namespace Chummer
                 return;
             }
 
-            if (token == CancellationToken.None)
-            {
-                Task objTask = Task.WhenAll(
-                    Task.Run(() => funcToRun1.Invoke(), CancellationToken.None),
-                    Task.Run(() => funcToRun2.Invoke(), CancellationToken.None),
-                    Task.Run(() => funcToRun3.Invoke(), CancellationToken.None));
-                while (!objTask.IsCompleted)
-                    SafeSleep(token);
-                if (objTask.Exception != null)
-                    throw objTask.Exception;
-            }
-            else
-            {
-                using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(token))
-                {
-                    Task objTask = Task.WhenAny(
-                        Task.WhenAll(
-                            Task.Run(() => funcToRun1.Invoke(), token),
-                            Task.Run(() => funcToRun2.Invoke(), token),
-                            Task.Run(() => funcToRun3.Invoke(), token)),
-                        objBreakTokenTaskSource.Task);
-                    while (!objTask.IsCompleted)
-                        SafeSleep(token);
-                    if (objTask.Exception != null)
-                        throw objTask.Exception;
-                }
-            }
+            Task objTask = Task.WhenAll(
+                    Task.Run(() => funcToRun1.Invoke(), token),
+                    Task.Run(() => funcToRun2.Invoke(), token),
+                    Task.Run(() => funcToRun3.Invoke(), token));
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -2538,35 +2501,15 @@ namespace Chummer
                 return;
             }
 
-            if (token == CancellationToken.None)
-            {
-                Task objTask = Task.WhenAll(
-                    Task.Run(() => funcToRun1.Invoke(), CancellationToken.None),
-                    Task.Run(() => funcToRun2.Invoke(), CancellationToken.None),
-                    Task.Run(() => funcToRun3.Invoke(), CancellationToken.None),
-                    Task.Run(() => funcToRun4.Invoke(), CancellationToken.None));
-                while (!objTask.IsCompleted)
-                    SafeSleep(token);
-                if (objTask.Exception != null)
-                    throw objTask.Exception;
-            }
-            else
-            {
-                using (CancellationTokenTaskSource objBreakTokenTaskSource = new CancellationTokenTaskSource(token))
-                {
-                    Task objTask = Task.WhenAny(
-                        Task.WhenAll(
-                            Task.Run(() => funcToRun1.Invoke(), token),
-                            Task.Run(() => funcToRun2.Invoke(), token),
-                            Task.Run(() => funcToRun3.Invoke(), token),
-                            Task.Run(() => funcToRun4.Invoke(), token)),
-                        objBreakTokenTaskSource.Task);
-                    while (!objTask.IsCompleted)
-                        SafeSleep(token);
-                    if (objTask.Exception != null)
-                        throw objTask.Exception;
-                }
-            }
+            Task objTask = Task.WhenAll(
+                Task.Run(() => funcToRun1.Invoke(), token),
+                Task.Run(() => funcToRun2.Invoke(), token),
+                Task.Run(() => funcToRun3.Invoke(), token),
+                Task.Run(() => funcToRun4.Invoke(), token));
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
