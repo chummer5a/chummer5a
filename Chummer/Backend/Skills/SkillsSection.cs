@@ -2881,9 +2881,10 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void UpdateUndoList(XmlDocument xmlSkillOwnerDocument)
+        private void UpdateUndoList(XmlDocument xmlSkillOwnerDocument, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterWriteLock(token))
             {
                 //Hacky way of converting Expense entries to guid based skill identification
                 //specs already did?
@@ -2892,10 +2893,14 @@ namespace Chummer.Backend.Skills
                 ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
                 // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
                 // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-                Utils.RunWithoutThreadLock(
-                    () =>
+                Utils.RunWithoutThreadLock(token,
+                    t =>
                     {
-                        Parallel.ForEach(SkillGroups, x =>
+                        ParallelOptions objOptions = new ParallelOptions
+                        {
+                            CancellationToken = t
+                        };
+                        Parallel.ForEach(SkillGroups, objOptions, x =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             if (x.Rating > 0)
@@ -2903,9 +2908,13 @@ namespace Chummer.Backend.Skills
                                 dicGroups.TryAdd(x.Name, x.Id);
                         });
                     },
-                    () =>
+                    t =>
                     {
-                        Parallel.ForEach(Skills, x =>
+                        ParallelOptions objOptions = new ParallelOptions
+                        {
+                            CancellationToken = t
+                        };
+                        Parallel.ForEach(Skills, objOptions, x =>
                         {
                             if (x.TotalBaseRating > 0)
                                 // ReSharper disable once AccessToDisposedClosure
@@ -2913,18 +2922,19 @@ namespace Chummer.Backend.Skills
                         });
                     },
                     // ReSharper disable once AccessToDisposedClosure
-                    () => KnowledgeSkills.ForEach(x => dicSkills.TryAdd(x.Name, x.Id)));
+                    t => KnowledgeSkills.ForEach(x => dicSkills.TryAdd(x.Name, x.Id), t));
                 using (TemporaryArray<KarmaExpenseType> eYielded = new TemporaryArray<KarmaExpenseType>(KarmaExpenseType.AddSkill,
                         KarmaExpenseType.ImproveSkill))
                 {
-                    UpdateUndoSpecific(dicSkills, eYielded);
+                    UpdateUndoSpecific(dicSkills, eYielded, token);
                 }
                 using (TemporaryArray<KarmaExpenseType> eYielded = KarmaExpenseType.ImproveSkillGroup.YieldAsPooled())
-                    UpdateUndoSpecific(dicGroups, eYielded);
+                    UpdateUndoSpecific(dicGroups, eYielded, token);
 
                 void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
-                    IEnumerable<KarmaExpenseType> typesRequiringConverting)
+                    TemporaryArray<KarmaExpenseType> typesRequiringConverting, CancellationToken innerToken)
                 {
+                    innerToken.ThrowIfCancellationRequested();
                     //Build a crazy xpath to get everything we want to convert
 
                     string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
@@ -2934,17 +2944,19 @@ namespace Chummer.Backend.Skills
                                               x => "karmatype = " + x.ToString().CleanXPath())) +
                                       "]/objectid";
 
+                    innerToken.ThrowIfCancellationRequested();
                     //Find everything
                     XmlNodeList lstNodesToChange = xmlSkillOwnerDocument.SelectNodes(strXPath);
                     if (lstNodesToChange != null)
                     {
                         for (int i = 0; i < lstNodesToChange.Count; i++)
                         {
+                            innerToken.ThrowIfCancellationRequested();
                             XmlNode xmlLoop = lstNodesToChange[i];
                             if (xmlLoop == null)
                                 continue;
                             xmlLoop.InnerText
-                                = map.TryGetValue(xmlLoop.InnerTextViaPool(), out Guid guidLoop)
+                                = map.TryGetValue(xmlLoop.InnerTextViaPool(innerToken), out Guid guidLoop)
                                     ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
                                     : Utils.GuidEmptyString;
                         }

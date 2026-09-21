@@ -5419,13 +5419,14 @@ namespace Chummer
             }
         }
 
+        // Note for the next couple of methods: while it would be easier to do them through generics (i.e., one set of methods that works off of T where T inherits from Skill),
+        // doing so can cause the resulting anonymous functions compiled for their lambda expressions to be unnecessarily complicated.
+        // This setup of separate methods for explicitly Skill and KnowledgeSkill has more boilerplate cleartext code, but results in better compilation-side code.
+
         /// <summary>
         /// Helper method to process skills with comprehensive target checking (async version)
         /// </summary>
-        /// <summary>
-        /// Helper method to process skills with comprehensive target checking (async overload)
-        /// </summary>
-        private static Task ProcessSkillsWithPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        private static Task ProcessSkillsWithPropertyComprehensiveAsync(IAsyncEnumerable<Skill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
             return skills.ForEachAsync(async (objTargetSkill, t) =>
             {
@@ -5468,10 +5469,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Helper method to process skills with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsWithPropertyComprehensiveAsync(IAsyncEnumerable<KnowledgeSkill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
+        {
+            return skills.ForEachAsync(async (objTargetSkill, t) =>
+            {
+                string strKey = await objTargetSkill.GetDictionaryKeyAsync(t).ConfigureAwait(false);
+                string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(t).ConfigureAwait(false);
+
+                // Check against ImprovedName
+                if (strKey == strImprovedName || strImprovedName == objTargetSkill.InternalId || strDisplayName == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strKey == strTarget || strTarget == objTargetSkill.InternalId || strDisplayName == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName != null
+                    && (lstExtraImprovedName.Contains(strKey)
+                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId)
+                        || lstExtraImprovedName.Contains(strDisplayName)))
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget != null
+                    && (lstExtraTarget.Contains(strKey)
+                        || lstExtraTarget.Contains(objTargetSkill.InternalId)
+                        || lstExtraTarget.Contains(strDisplayName)))
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
         /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
         /// </summary>
-        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
-            string strPropertyName, Func<T, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<Skill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
+            string strPropertyName, Func<Skill, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
             return skills.ForEachAsync(objTargetSkill =>
             {
@@ -5509,8 +5555,47 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
         /// </summary>
-        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
-            string strPropertyName, Func<T, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<Skill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<Skill, CancellationToken, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
+        {
+            return skills.ForEachAsync((objTargetSkill, t) =>
+            {
+                string strPropertyValue = propertySelector(objTargetSkill, t);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<Skill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<Skill, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
             return skills.ForEachAsync(async objTargetSkill =>
             {
@@ -5548,8 +5633,164 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
         /// </summary>
-        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
-            string strPropertyName, Func<T, CancellationToken, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<Skill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<Skill, CancellationToken, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
+        {
+            return skills.ForEachAsync(async (objTargetSkill, t) =>
+            {
+                string strPropertyValue = await propertySelector(objTargetSkill, t).ConfigureAwait(false);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<KnowledgeSkill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<KnowledgeSkill, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
+        {
+            return skills.ForEachAsync(objTargetSkill =>
+            {
+                string strPropertyValue = propertySelector(objTargetSkill);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<KnowledgeSkill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<KnowledgeSkill, CancellationToken, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
+        {
+            return skills.ForEachAsync((objTargetSkill, t) =>
+            {
+                string strPropertyValue = propertySelector(objTargetSkill, t);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<KnowledgeSkill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<KnowledgeSkill, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
+        {
+            return skills.ForEachAsync(async objTargetSkill =>
+            {
+                string strPropertyValue = await propertySelector(objTargetSkill).ConfigureAwait(false);
+
+                // Check against ImprovedName
+                if (strPropertyValue == strImprovedName)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against Target
+                if (strPropertyValue == strTarget)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraImprovedName
+                if (lstExtraImprovedName?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                    return;
+                }
+
+                // Check against lstExtraTarget
+                if (lstExtraTarget?.Contains(strPropertyValue) == true)
+                {
+                    lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill, strPropertyName));
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
+        /// </summary>
+        private static Task ProcessSkillsByPropertyComprehensiveAsync(IAsyncEnumerable<KnowledgeSkill> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+            string strPropertyName, Func<KnowledgeSkill, CancellationToken, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
             return skills.ForEachAsync(async (objTargetSkill, t) =>
             {

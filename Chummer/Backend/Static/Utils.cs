@@ -2454,9 +2454,9 @@ namespace Chummer
             }
 
             Task objTask = Task.WhenAll(
-                    Task.Run(() => funcToRun1.Invoke(), token),
-                    Task.Run(() => funcToRun2.Invoke(), token),
-                    Task.Run(() => funcToRun3.Invoke(), token));
+                Task.Run(() => funcToRun1.Invoke(), token),
+                Task.Run(() => funcToRun2.Invoke(), token),
+                Task.Run(() => funcToRun3.Invoke(), token));
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
