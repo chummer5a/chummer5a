@@ -1730,23 +1730,22 @@ namespace Chummer
 
             // Treat everything as being uppercase so the search is case-insensitive.
             // Include Cyrillic characters (а-я, А-Я + extendeds for non-Russian Cyrillic alphabets), Greek characters (α-ω, Α-Ω) for proper search support
-            string strReturn = StringExtensions.ConcatFast("((not(", strTranslateElement, ") and contains(translate(", strNameElement,
-                               // ReSharper disable once StringLiteralTypo
-                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                               strSearchText, ")) or contains(translate(", strTranslateElement,
-                               // ReSharper disable once StringLiteralTypo
-                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                               strSearchText, "))");
+            string strInnerText =
+                // ReSharper disable once StringLiteralTypo
+                string.Concat(",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                    strSearchText, "))");
+            string strReturn = StringExtensions.ConcatFast("((not(", strTranslateElement,
+                ") and contains(translate(", strNameElement, strInnerText,
+                " or contains(translate(", strTranslateElement, strInnerText);
             if (!string.IsNullOrEmpty(strSearchText2))
             {
-                strReturn = StringExtensions.ConcatFast("(", strReturn, " or ((not(", strTranslateElement, ") and contains(translate(",
-                            strNameElement,
-                            // ReSharper disable once StringLiteralTypo
-                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                            strSearchText2, ")) or contains(translate(", strTranslateElement,
-                            // ReSharper disable once StringLiteralTypo
-                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                            strSearchText2, ")))");
+                strInnerText =
+                    // ReSharper disable once StringLiteralTypo
+                    string.Concat(",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                        strSearchText2, "))");
+                strReturn = StringExtensions.ConcatFast('(', StringExtensions.ConcatFast(strReturn, " or ((not(", strTranslateElement,
+                    ") and contains(translate(", strNameElement, strInnerText,
+                    " or contains(translate(", strTranslateElement, strInnerText), ')');
             }
 
             return strReturn;

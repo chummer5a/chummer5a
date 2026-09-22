@@ -179,6 +179,34 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Version of <see cref="string.Concat(string, string, string)"/> for chars that is potentially faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static string ConcatFast(char chr0, string str1, char chr2)
+        {
+            int intLoopLength = str1?.Length ?? 0;
+            if (intLoopLength == 0)
+                return ConcatFast(chr0, chr2);
+            int intNewLength = intLoopLength + 2;
+            if (intNewLength > Utils.MaxStackLimit16BitTypes)
+            {
+                return string.Concat(chr0.ToString(), str1, chr2.ToString());
+            }
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intNewLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                achrNewChars[0] = chr0;
+                fixed (char* src = str1)
+                {
+                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + 1), intNewLength * sizeof(char), intLoopLength * sizeof(char));
+                }
+                achrNewChars[intNewLength - 1] = chr2;
+                return new string(achrNewChars, 0, intNewLength);
+            }
+        }
+
+        /// <summary>
         /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)

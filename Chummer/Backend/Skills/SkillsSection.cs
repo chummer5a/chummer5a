@@ -2275,8 +2275,8 @@ namespace Chummer.Backend.Skills
                                         }
 
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            UpdateUndoList(xmlSkillNode.OwnerDocument);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            UpdateUndoList(xmlSkillNode.OwnerDocument, token);
                                         else
                                             await UpdateUndoListAsync(xmlSkillNode.OwnerDocument, token)
                                                 .ConfigureAwait(false);
