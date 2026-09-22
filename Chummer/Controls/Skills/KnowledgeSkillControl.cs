@@ -346,6 +346,15 @@ namespace Chummer.UI.Skills
                                                                     x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                           ,
                                                                     _objMyToken);
+
+                    bool blnCanHaveSpecs = _objSkill.CanHaveSpecs;
+                    this.DoThreadSafe(x =>
+                    {
+                        if (x.btnAddSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                            x.btnAddSpec.Visible = blnCanHaveSpecs;
+                        if (x.lblSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                            x.lblSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
+                    }, _objMyToken);
                 }
                 else
                 {
@@ -389,6 +398,8 @@ namespace Chummer.UI.Skills
                           || _objCharacter.SkillsSection.HasAvailableNativeLanguageSlots;
                     chkNativeLanguage.DoThreadSafe((x, y) => x.Enabled = blnEnableNative, _objMyToken);
 
+                    bool blnCanHaveSpecs = _objSkill.CanHaveSpecs;
+                    chkKarma.DoThreadSafe(x => x.Enabled = blnCanHaveSpecs, _objMyToken);
                     string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
                     Interlocked.Increment(ref _intUpdatingSpec);
                     try
@@ -404,6 +415,7 @@ namespace Chummer.UI.Skills
                                 if (x.SelectedIndex == -1)
                                     x.Text = strDisplaySpec;
                             }
+                            x.Enabled = blnCanHaveSpecs;
                         }, _objMyToken);
                     }
                     finally
@@ -581,6 +593,15 @@ namespace Chummer.UI.Skills
                                                                 nameof(KnowledgeSkill.AddSpecToolTip),
                                                                 x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                       , token).ConfigureAwait(false);
+
+                bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    if (x.btnAddSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                        x.btnAddSpec.Visible = blnCanHaveSpecs;
+                    if (x.lblSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                        x.lblSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
+                }, token).ConfigureAwait(false);
             }
             else
             {
@@ -628,6 +649,8 @@ namespace Chummer.UI.Skills
                 await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnableNative, token)
                                        .ConfigureAwait(false);
 
+                bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+                await chkKarma.DoThreadSafeAsync(x => x.Enabled = blnCanHaveSpecs , token).ConfigureAwait(false);
                 string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(token)
                                                        .ConfigureAwait(false);
                 Interlocked.Increment(ref _intUpdatingSpec);
@@ -647,6 +670,7 @@ namespace Chummer.UI.Skills
                             if (x.SelectedIndex == -1)
                                 x.Text = strDisplaySpec;
                         }
+                        x.Enabled = blnCanHaveSpecs;
                     }, token: token).ConfigureAwait(false);
                 }
                 finally

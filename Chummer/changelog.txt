@@ -31,6 +31,7 @@ Application:
 - Changing character settings in the Master Index no longer causes the displayed list of items to initially ignore the file and search filters.
 - Fixed a potential crash that could happen when saving a character with non-retroactive Essence modifiers as created.
 - Attempting to copy data no longer causes the program to crash.
+- Fixed a bug allowing skills that should not be able to take specializations being allowed to do so when loading in an existing character save before making any changes to it.
 
 Bioware:
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
