@@ -1364,18 +1364,16 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strTitle = Application.ProductName + strSpace + "-" + strSpace
-                + await LanguageManager.GetStringAsync("String_Version", token: token).ConfigureAwait(false) + strSpace
+            string strTitle = Application.ProductName.ConcatFast(strSpace, "-", strSpace,
+                await LanguageManager.GetStringAsync("String_Version", token: token).ConfigureAwait(false), strSpace,
 #if DEBUG
-                + _strCurrentVersion + " DEBUG BUILD";
+                _strCurrentVersion, " DEBUG BUILD");
 #else
-                + _strCurrentVersion;
-#endif
-#if !DEBUG
+                _strCurrentVersion);
             if (Utils.GitUpdateAvailable > 0)
             {
-                strTitle += strSpace + "-" + strSpace
-                    + StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Update_Available", token: token).ConfigureAwait(false), Utils.CachedGitVersion);
+                strTitle = strTitle.ConcatFast(strSpace, "-", strSpace,
+                    StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Update_Available", token: token).ConfigureAwait(false), Utils.CachedGitVersion.ToString()));
             }
 #endif
             if (CustomDataDirectoryUpdater.HasAnyUpdatesAvailable())
