@@ -35,6 +35,7 @@ Application:
 Bioware:
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
 - Chemical Glands and Expanded Reservoir accept Drugs, Custom Drugs, Toxins, and BTLs through Add Drug; Chemicals/Custom gear still use Add Gear.
+- Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
 
 Vehicles:
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.

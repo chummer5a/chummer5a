@@ -3249,10 +3249,18 @@
       <name>Revitilization</name>
       <limit>False</limit>
       <category>Genetic Restoration</category>
-      <ess>-0.1</ess>
+      <ess>0</ess>
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>110000</cost>
+      <bonus>
+        <!-- Since this only restores lost Essence, it is more correct to have this work by adding an Essence anti-hole than to have a negative Essence cost -->
+        <addware>
+          <id>961eac53-0c43-4b19-8741-2872177a3a4c</id>
+          <type>Cyberware</type>
+          <rating>10</rating>
+        </addware>
+      </bonus>
       <forcegrade>None</forcegrade>
       <isgeneware />
       <source>CF</source>
