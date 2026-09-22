@@ -1172,7 +1172,7 @@ namespace Chummer
                     }
 
                     // Minimum drain of 2
-                    sbdTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token).ConfigureAwait(false), 2);
+                    sbdTip.AppendLine().AppendFastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token).ConfigureAwait(false), 2);
 
                     if (BarehandedAdept)
                     {

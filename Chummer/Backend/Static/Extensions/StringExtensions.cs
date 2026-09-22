@@ -2258,7 +2258,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             strLoop = objEnumerator.Current;
                             if (!string.IsNullOrEmpty(strLoop))
-                                sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                                sbdReturn.Append(strSeparator).Append(strLoop);
                         }
                         token.ThrowIfCancellationRequested();
                         return sbdReturn.ToString();
@@ -6310,6 +6310,568 @@ namespace Chummer
         public static bool IsGuid(this string strGuid)
         {
             return Guid.TryParse(strGuid, out Guid _);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(strFormat, strArg0).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, string strArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(strFormat, strArg0, strArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, string strArg1, string strArg2)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(strFormat, strArg0, strArg1, strArg2).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object, object)"/> using four arguments and minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, string strArg1, string strArg2, string strArg3)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(strFormat, strArg0, strArg1, strArg2, strArg3).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, int intArg0)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, intArg0);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, long lngArg0)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, lngArg0);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, float fltArg0)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, fltArg0);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, double dblArg0)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, dblArg0);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, decimal decArg0)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, decArg0);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, int intArg0, string strArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, intArg0, strArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, int intArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, intArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, int intArg0, int intArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, intArg0, intArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, long lngArg0, string strArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, lngArg0, strArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, long lngArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, lngArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, long lngArg0, long lngArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, lngArg0, lngArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, float fltArg0, string strArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, fltArg0, strArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, float fltArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, fltArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, float fltArg0, float fltArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, fltArg0, fltArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, double dblArg0, string strArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, dblArg0, strArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, double dblArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, dblArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, double dblArg0, double dblArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, dblArg0, dblArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, decimal decArg0, string strArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, decArg0, strArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, decimal decArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, decArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, decimal decArg0, decimal decArg1)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, decArg0, decArg1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, int intArg1, int intArg2)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, intArg1, intArg2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, int intArg0, int intArg1, int intArg2)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, intArg0, intArg1, intArg2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, int intArg0)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, intArg0).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, long lngArg0)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, lngArg0).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, float fltArg0)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, fltArg0).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, double dblArg0)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, dblArg0).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, decimal decArg0)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, decArg0).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, int intArg0, string strArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, intArg0, strArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, int intArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, intArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, int intArg0, int intArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, intArg0, intArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, long lngArg0, string strArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, lngArg0, strArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, long lngArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, lngArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, long lngArg0, long lngArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, lngArg0, lngArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, float fltArg0, string strArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, fltArg0, strArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, float fltArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, fltArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, float fltArg0, float fltArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, fltArg0, fltArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, double dblArg0, string strArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, dblArg0, strArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, double dblArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, dblArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, double dblArg0, double dblArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, dblArg0, dblArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, decimal decArg0, string strArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, decArg0, strArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, decimal decArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, decArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, decimal decArg0, decimal decArg1)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, decArg0, decArg1).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, int intArg1, int intArg2)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, intArg1, intArg2).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, int intArg0, int intArg1, int intArg2)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, intArg0, intArg1, intArg2).ToString();
         }
 
         private static readonly Dictionary<string, string> s_DicLigaturesMap = new Dictionary<string, string>

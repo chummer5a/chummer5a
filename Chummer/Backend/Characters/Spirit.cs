@@ -1407,7 +1407,7 @@ namespace Chummer
                         string strExpression = CharacterObject.ProcessAttributesInXPathForTooltip(
                             CharacterObject.Settings.BoundSpiritExpression);
                         Program.ShowScrollableMessageBox(
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_BoundSpiritLimit"),
                                 strExpression,
                                 CharacterObject.BoundSpiritLimit),
@@ -1498,7 +1498,7 @@ namespace Chummer
                     string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
                         await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await Program.ShowScrollableMessageBoxAsync(
-                        string.Format(GlobalSettings.CultureInfo,
+                        StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token).ConfigureAwait(false),
                             strExpression,
                             await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false)),
@@ -2042,11 +2042,11 @@ namespace Chummer
                             intFetteringCost = EntityType == SpiritType.Spirit
                                 ? Force * CharacterObject.Settings.KarmaSpiritFettering
                                 : Force;
-                            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                            if (!CommonFunctions.ConfirmKarmaExpense(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     LanguageManager.GetString(
                                         "Message_ConfirmKarmaExpenseSpend"),
                                     Name,
-                                    intFetteringCost.ToString(GlobalSettings.CultureInfo))))
+                                    intFetteringCost)))
                             {
                                 return;
                             }
@@ -2224,10 +2224,10 @@ namespace Chummer
                               await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
                                   .GetKarmaSpiritFetteringAsync(token).ConfigureAwait(false)
                             : await GetForceAsync(token).ConfigureAwait(false);
-                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend", token: token).ConfigureAwait(false),
                                 await GetNameAsync(token).ConfigureAwait(false),
-                                intFetteringCost.ToString(GlobalSettings.CultureInfo)), token).ConfigureAwait(false))
+                                intFetteringCost), token).ConfigureAwait(false))
                         {
                             return;
                         }
@@ -2791,7 +2791,7 @@ namespace Chummer
                         if (blnError && blnShowError)
                         {
                             Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                               LanguageManager.GetString("Message_FileNotFound", token: token),
                                               FileName),
                                 LanguageManager.GetString("MessageTitle_FileNotFound", token: token), MessageBoxButtons.OK,
@@ -2904,7 +2904,7 @@ namespace Chummer
                         if (blnError && blnShowError)
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
                                         .ConfigureAwait(false),
                                     strFileName),

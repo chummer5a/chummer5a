@@ -2556,7 +2556,7 @@ namespace Chummer
                                                                                    .ConfigureAwait(false);
                                     DialogResult eResult = await Program.ShowScrollableMessageBoxAsync(
                                         this,
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             await LanguageManager
                                                 .GetStringAsync("Message_UnsavedChanges", token: GenericToken)
                                                 .ConfigureAwait(false),
@@ -2893,7 +2893,7 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, token)
                             .ConfigureAwait(false);
-                        string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                        string strText1 = StringExtensions.FastFormat(await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_InitiationOrdeal", token: token).ConfigureAwait(false),
                             (await CharacterObjectSettings.GetKarmaMAGInitiationOrdealPercentAsync(token).ConfigureAwait(false))
@@ -2901,7 +2901,7 @@ namespace Chummer
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, token)
                             .ConfigureAwait(false);
-                        string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                        string strText2 = StringExtensions.FastFormat(await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_InitiationGroup", token: token).ConfigureAwait(false),
                             (await CharacterObjectSettings.GetKarmaMAGInitiationGroupPercentAsync(token).ConfigureAwait(false))
@@ -2909,7 +2909,7 @@ namespace Chummer
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, token)
                             .ConfigureAwait(false);
-                        string strText3 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                        string strText3 = StringExtensions.FastFormat(await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_InitiationSchooling", token: token)
                                 .ConfigureAwait(false),
@@ -2929,7 +2929,7 @@ namespace Chummer
                             tsMetamagicAddRitual.Visible = true;
                         }, token).ConfigureAwait(false);
                         int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
-                        string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                        string strInitTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Tip_ImproveInitiateGrade", token: token).ConfigureAwait(false),
                             intGrade + 1,
@@ -3011,7 +3011,7 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, token)
                             .ConfigureAwait(false);
-                        string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                        string strText1 = StringExtensions.FastFormat(await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_SubmersionTask", token: token).ConfigureAwait(false),
                             (await CharacterObjectSettings.GetKarmaRESInitiationOrdealPercentAsync(token).ConfigureAwait(false))
@@ -3019,7 +3019,7 @@ namespace Chummer
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, token)
                             .ConfigureAwait(false);
-                        string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                        string strText2 = StringExtensions.FastFormat(await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_NetworkSubmersion", token: token).ConfigureAwait(false),
                             (await CharacterObjectSettings.GetKarmaRESInitiationGroupPercentAsync(token).ConfigureAwait(false))
@@ -3027,7 +3027,7 @@ namespace Chummer
                                     "P", GlobalSettings.CultureInfo));
                         await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, token)
                             .ConfigureAwait(false);
-                        string strText3 = string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                        string strText3 = StringExtensions.FastFormat(await LanguageManager
                                 .GetStringAsync(
                                     "Checkbox_InitiationSchooling", token: token)
                                 .ConfigureAwait(false),
@@ -3048,7 +3048,7 @@ namespace Chummer
                             tsMetamagicAddRitual.Visible = false;
                         }, token).ConfigureAwait(false);
                         int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
-                        string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                        string strInitTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Tip_ImproveSubmersionGrade", token: token).ConfigureAwait(false),
                             intGrade + 1,
@@ -4533,7 +4533,7 @@ namespace Chummer
             // Verify that the user wants to go through with it.
             if (await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager
                             .GetStringAsync("Message_ConfirmReapplySpecificImprovements", token: token)
                             .ConfigureAwait(false), strName),
@@ -6313,7 +6313,7 @@ namespace Chummer
                                 }
 
                                 if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                              string.Format(GlobalSettings.CultureInfo,
+                                                              StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                             await LanguageManager.GetStringAsync(
                                                                                     "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                                                                 .ConfigureAwait(false),
@@ -6321,7 +6321,7 @@ namespace Chummer
                                                                                 .GetCurrentDisplayNameAsync(
                                                                                     GenericToken)
                                                                                 .ConfigureAwait(false),
-                                                                            intSpellKarmaCost.ToString(GlobalSettings.CultureInfo)), token: GenericToken)
+                                                                            intSpellKarmaCost), token: GenericToken)
                                                           .ConfigureAwait(false))
                                 {
                                     await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -6555,15 +6555,14 @@ namespace Chummer
                         throw;
                     }
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                             await LanguageManager.GetStringAsync(
                                                                                     "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                                                                 .ConfigureAwait(false),
                                                                             await objComplexForm
                                                                                 .GetCurrentDisplayNameShortAsync(GenericToken)
                                                                                 .ConfigureAwait(false),
-                                                                            intComplexFormKarmaCost.ToString(
-                                                                                GlobalSettings.CultureInfo)), token: GenericToken)
+                                                                            intComplexFormKarmaCost), token: GenericToken)
                                               .ConfigureAwait(false))
                     {
                         await objComplexForm.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
@@ -7321,10 +7320,8 @@ namespace Chummer
                                                         "String_InitiateGrade",
                                                         token: GenericToken)
                                                     .ConfigureAwait(false),
-                                                (intGrade + 1)
-                                                .ToString(GlobalSettings.CultureInfo),
-                                                intKarmaExpense.ToString(
-                                                    GlobalSettings.CultureInfo),
+                                                intGrade + 1,
+                                                intKarmaExpense,
                                                 10000.ToString(
                                                     await CharacterObjectSettings.GetNuyenFormatAsync(GenericToken).ConfigureAwait(false),
                                                     GlobalSettings.CultureInfo)
@@ -7338,15 +7335,15 @@ namespace Chummer
                                     return;
                             }
                             else if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                         string.Format(GlobalSettings.CultureInfo,
+                                         StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                              await LanguageManager
                                                  .GetStringAsync("Message_ConfirmKarmaExpense", token: GenericToken)
                                                  .ConfigureAwait(false),
                                              await LanguageManager
                                                  .GetStringAsync("String_InitiateGrade", token: GenericToken)
                                                  .ConfigureAwait(false),
-                                             (intGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                             intKarmaExpense.ToString(GlobalSettings.CultureInfo)),
+                                             intGrade + 1,
+                                             intKarmaExpense),
                                          token: GenericToken).ConfigureAwait(false))
                                 return;
 
@@ -7410,12 +7407,11 @@ namespace Chummer
                                 = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
                                     * await CharacterObjectSettings.GetKarmaInitiationAsync(GenericToken).ConfigureAwait(false)) * decMultiplier).StandardRound();
 
-                            string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                            string strInitTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade", token: GenericToken)
                                     .ConfigureAwait(false),
-                                (intGrade + 1).ToString(
-                                    GlobalSettings.CultureInfo),
-                                intAmount.ToString(GlobalSettings.CultureInfo));
+                                intGrade + 1,
+                                intAmount);
                             await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, GenericToken).ConfigureAwait(false);
                         }
                         else if (await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
@@ -7469,7 +7465,7 @@ namespace Chummer
                                 return;
                             }
 
-                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(
+                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(
                                             GlobalSettings.CultureInfo,
                                             await LanguageManager.GetStringAsync(
                                                     "Message_ConfirmKarmaExpense",
@@ -7479,10 +7475,8 @@ namespace Chummer
                                                     "String_SubmersionGrade",
                                                     token: GenericToken)
                                                 .ConfigureAwait(false),
-                                            (intGrade + 1)
-                                            .ToString(GlobalSettings.CultureInfo),
-                                            intKarmaExpense.ToString(
-                                                GlobalSettings.CultureInfo)),
+                                            intGrade + 1,
+                                            intKarmaExpense),
                                         token: GenericToken)
                                     .ConfigureAwait(false))
                                 return;
@@ -7525,12 +7519,11 @@ namespace Chummer
                                 = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
                                     * await CharacterObjectSettings.GetKarmaInitiationAsync(GenericToken).ConfigureAwait(false)) * decMultiplier).StandardRound();
 
-                            string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                            string strInitTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade", token: GenericToken)
                                     .ConfigureAwait(false),
-                                (intGrade + 1).ToString(
-                                    GlobalSettings.CultureInfo),
-                                intAmount.ToString(GlobalSettings.CultureInfo));
+                                intGrade + 1,
+                                intAmount);
                             await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, GenericToken).ConfigureAwait(false);
                         }
                     }
@@ -8004,7 +7997,7 @@ namespace Chummer
                         }
 
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                      string.Format(GlobalSettings.CultureInfo,
+                                                      StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                     await LanguageManager
                                                                           .GetStringAsync(
                                                                               "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
@@ -8012,7 +8005,7 @@ namespace Chummer
                                                                     await objPower
                                                                             .GetCurrentDisplayNameAsync(GenericToken)
                                                                             .ConfigureAwait(false),
-                                                                    objPower.Karma.ToString(GlobalSettings.CultureInfo)), token: GenericToken)
+                                                                    objPower.Karma), token: GenericToken)
                                                   .ConfigureAwait(false))
                             continue;
 
@@ -8110,13 +8103,12 @@ namespace Chummer
 
                 if (objGear.Quantity > decSelectedValue)
                 {
-                    if (!await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
+                    if (!await CommonFunctions.ConfirmDeleteAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                             await LanguageManager.GetStringAsync(
                                                                                     "Message_ReduceQty",
                                                                                     token: GenericToken)
                                                                                 .ConfigureAwait(false),
-                                                                            decSelectedValue.ToString(
-                                                                                GlobalSettings.CultureInfo)), GenericToken)
+                                                                            decSelectedValue), GenericToken)
                                           .ConfigureAwait(false))
                         return;
                     await objGear.SetQuantityAsync(objGear.Quantity - decSelectedValue, GenericToken).ConfigureAwait(false);
@@ -8661,12 +8653,12 @@ namespace Chummer
                 }
 
                 if (!await CommonFunctions
-                           .ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
+                           .ConfirmDeleteAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                              await LanguageManager
                                                                    .GetStringAsync(
                                                                        "Message_ReduceQty", token: GenericToken)
                                                                    .ConfigureAwait(false),
-                                                             decSelectedValue.ToString(GlobalSettings.CultureInfo)), token: GenericToken)
+                                                             decSelectedValue), token: GenericToken)
                            .ConfigureAwait(false))
                     return;
 
@@ -8808,13 +8800,12 @@ namespace Chummer
                                                             await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken)
                                                                 .ConfigureAwait(false);
                                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                                  string.Format(GlobalSettings.CultureInfo,
+                                                                  StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                       await LanguageManager
                                                                             .GetStringAsync(
                                                                                 "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                                                             .ConfigureAwait(false), strDisplayName,
-                                                                      intKarmaCost.ToString(GlobalSettings
-                                                                          .CultureInfo)), token: GenericToken)
+                                                                      intKarmaCost), token: GenericToken)
                                                               .ConfigureAwait(false))
                                         break;
                                 }
@@ -8976,7 +8967,7 @@ namespace Chummer
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 this,
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: GenericToken)
                                         .ConfigureAwait(false),
                                     await objQuality.DisplaySourceNameAsync(GlobalSettings.Language, GenericToken)
@@ -9079,7 +9070,7 @@ namespace Chummer
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 this,
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager
                                         .GetStringAsync("Message_ImprovementQuality", token: token)
                                         .ConfigureAwait(false),
@@ -9118,7 +9109,7 @@ namespace Chummer
                                            .GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
 
                         if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager
                                         .GetStringAsync(
                                             blnCompleteDelete
@@ -9150,7 +9141,7 @@ namespace Chummer
                             }
 
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(intKarmaCost, string.Format(GlobalSettings.CultureInfo,
+                            objExpense.Create(intKarmaCost, StringExtensions.FastFormat(
                                     await LanguageManager
                                         .GetStringAsync(
                                             "String_ExpenseSwapPositiveQuality",
@@ -9206,7 +9197,7 @@ namespace Chummer
                         }
 
                         if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                    string.Format(GlobalSettings.CultureInfo, blnCompleteDelete
+                                    StringExtensions.FastFormat(GlobalSettings.CultureInfo, blnCompleteDelete
                                             ? await LanguageManager
                                                 .GetStringAsync(
                                                     "Message_ConfirmKarmaExpenseRemove", token: token)
@@ -9502,13 +9493,13 @@ namespace Chummer
                                           ?? await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken)
                                               .ConfigureAwait(false);
                                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                string.Format(GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager.GetStringAsync(
                                                             "Message_ConfirmKarmaExpenseSpend",
                                                             token: GenericToken)
                                                         .ConfigureAwait(false),
                                                     strDisplayName,
-                                                    intKarmaCost.ToString(GlobalSettings.CultureInfo)),
+                                                    intKarmaCost),
                                                 token: GenericToken)
                                             .ConfigureAwait(false))
                                     {
@@ -10473,7 +10464,7 @@ namespace Chummer
                                                 .DoThreadSafeFuncAsync(() => objSelectedNode.Text, GenericToken)
                                                 .ConfigureAwait(false);
                 int intKarmaCost;
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                                                       await LanguageManager.GetStringAsync("String_QuickeningKarma", token: GenericToken)
                                                                            .ConfigureAwait(false),
                                                       strSelectedSpell);
@@ -10501,12 +10492,11 @@ namespace Chummer
                     return;
                 }
 
-                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                         await LanguageManager.GetStringAsync(
                                                                                 "Message_ConfirmKarmaExpenseQuickeningMetamagic", token: GenericToken)
                                                                             .ConfigureAwait(false),
-                                                                        intKarmaCost.ToString(
-                                                                            GlobalSettings.CultureInfo),
+                                                                        intKarmaCost,
                                                                         strSelectedSpell), token: GenericToken).ConfigureAwait(false))
                     return;
 
@@ -11286,7 +11276,7 @@ namespace Chummer
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(decCost * -1,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit", token: GenericToken)
+                    StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit", token: GenericToken)
                         .ConfigureAwait(false), strNewName), ExpenseType.Nuyen,
                     DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
@@ -14126,7 +14116,7 @@ namespace Chummer
                             return;
                         }
 
-                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                                 await LanguageManager.GetStringAsync(
                                                                                         "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                                                                     .ConfigureAwait(false),
@@ -14134,7 +14124,7 @@ namespace Chummer
                                                                                     .GetCurrentDisplayNameAsync(
                                                                                         GenericToken)
                                                                                     .ConfigureAwait(false),
-                                                                                intSpellKarmaCost.ToString(GlobalSettings.CultureInfo)), GenericToken)
+                                                                                intSpellKarmaCost), GenericToken)
                                                   .ConfigureAwait(false))
                         {
                             await objSpell.DisposeAsync().ConfigureAwait(false);
@@ -17707,13 +17697,12 @@ namespace Chummer
                                     return;
                                 }
 
-                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(
+                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(
                                             GlobalSettings.CultureInfo,
                                             await LanguageManager.GetStringAsync(
                                                     "Message_ConfirmKarmaExpenseFocus", token: GenericToken)
                                                 .ConfigureAwait(false),
-                                            intKarmaExpense.ToString(
-                                                GlobalSettings.CultureInfo),
+                                            intKarmaExpense,
                                             await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken)
                                                 .ConfigureAwait(false)), token: GenericToken)
                                         .ConfigureAwait(false))
@@ -17862,11 +17851,11 @@ namespace Chummer
                                 }
 
                                 if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                             await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseFocus",
                                                     token: GenericToken)
                                                 .ConfigureAwait(false),
-                                            intKarmaExpense.ToString(GlobalSettings.CultureInfo),
+                                            intKarmaExpense,
                                             await LanguageManager.GetStringAsync("String_StackedFocus",
                                                     token: GenericToken)
                                                 .ConfigureAwait(false)
@@ -18402,9 +18391,8 @@ namespace Chummer
                             .ConfigureAwait(false);
 
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                      string.Format(GlobalSettings.CultureInfo, strMessage,
-                                                                    intKarmaExpense.ToString(GlobalSettings
-                                                                        .CultureInfo)), GenericToken)
+                                                      StringExtensions.FastFormat(GlobalSettings.CultureInfo, strMessage,
+                                                                    intKarmaExpense), GenericToken)
                                                   .ConfigureAwait(false))
                         {
                             IsRefreshing = true;
@@ -18462,9 +18450,8 @@ namespace Chummer
                             .ConfigureAwait(false);
 
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                                      string.Format(GlobalSettings.CultureInfo, strMessage,
-                                                                    intKarmaExpense.ToString(GlobalSettings
-                                                                        .CultureInfo)), token: GenericToken)
+                                                      StringExtensions.FastFormat(GlobalSettings.CultureInfo, strMessage,
+                                                                    intKarmaExpense), token: GenericToken)
                                                   .ConfigureAwait(false))
                         {
                             IsRefreshing = true;
@@ -20289,8 +20276,7 @@ namespace Chummer
 
                     if (objSelectedNodeTag is IHasRating objHasRating)
                     {
-                        string strText = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strText = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Label_RatingFormat", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(
@@ -20710,8 +20696,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objSelectedNodeTag is IHasRating objHasRating)
                     {
-                        string strText = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strText = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Label_RatingFormat", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(
@@ -21004,10 +20989,10 @@ namespace Chummer
                                 bool blnAllowSuppressive = await objWeapon.GetAllowSuppressiveAsync(token).ConfigureAwait(false);
                                 string strSingleShotText
                                     = blnAllowSingleShot
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_SingleShot", token: token).ConfigureAwait(false),
-                                                        objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.SingleShot,
                                                         objWeapon.SingleShot == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -21018,10 +21003,10 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                                 string strShortBurstText
                                     = blnAllowShortBurst
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_ShortBurst", token: token).ConfigureAwait(false),
-                                                        objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.ShortBurst,
                                                         objWeapon.ShortBurst == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -21032,10 +21017,10 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strLongBurstText
                                     = blnAllowLongBurst
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_LongBurst", token: token).ConfigureAwait(false),
-                                                        objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.LongBurst,
                                                         objWeapon.LongBurst == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -21046,10 +21031,10 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strFullBurstText
                                     = blnAllowFullBurst
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_FullBurst", token: token).ConfigureAwait(false),
-                                                        objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.FullBurst,
                                                         objWeapon.FullBurst == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -21060,11 +21045,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strSuppressiveFireText
                                     = blnAllowSuppressive
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                                                  "String_SuppressiveFire", token: token)
                                                                              .ConfigureAwait(false),
-                                                        objWeapon.Suppressive.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.Suppressive,
                                                         objWeapon.Suppressive == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -21106,11 +21091,11 @@ namespace Chummer
                                                     ? "String_ExternalSource"
                                                     : "String_Empty", token: token).ConfigureAwait(false);
                                             if (objWeapon.Clips.Count > 1)
-                                                strAmmoName += strSpace + "(" + string.Format(GlobalSettings.CultureInfo,
+                                                strAmmoName += strSpace + "(" + StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager
                                                             .GetStringAsync("String_SlotNumber", token: token)
                                                             .ConfigureAwait(false),
-                                                    intSlot.ToString(GlobalSettings.CultureInfo)) + ")";
+                                                    intSlot) + ")";
 
                                             string strPlugins = string.Empty;
                                             if (objGear?.Children.Count > 0)
@@ -21798,7 +21783,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objSelectedNodeTag is IHasRating objHasRating)
                     {
-                        string strText = string.Format(GlobalSettings.CultureInfo,
+                        string strText = StringExtensions.FastFormat(
                                                        await LanguageManager
                                                              .GetStringAsync("Label_RatingFormat", token: token)
                                                              .ConfigureAwait(false),
@@ -22400,8 +22385,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objSelectedNodeTag is IHasRating objHasRating)
                     {
-                        string strText = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strText = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Label_RatingFormat", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(
@@ -23870,20 +23854,20 @@ namespace Chummer
 
                     await lblLifestyleCostLabel.DoThreadSafeAsync(x => x.Text = strCostLabelString, token)
                                                .ConfigureAwait(false);
-                    string strMonthsLabel = strIncrementString + string.Format(
+                    string strMonthsLabel = strIncrementString + StringExtensions.FastFormat(
                         GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Label_LifestylePermanent", token: token)
                                              .ConfigureAwait(false),
-                        (await objLifestyle.GetIncrementsRequiredForPermanentAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+                        await objLifestyle.GetIncrementsRequiredForPermanentAsync(token).ConfigureAwait(false));
                     await lblLifestyleMonthsLabel.DoThreadSafeAsync(x => x.Text = strMonthsLabel, token)
                                                  .ConfigureAwait(false);
-                    await cmdIncreaseLifestyleMonths.SetToolTipTextAsync(string.Format(GlobalSettings.CultureInfo,
+                    await cmdIncreaseLifestyleMonths.SetToolTipTextAsync(StringExtensions.FastFormat(
                                                                              await LanguageManager.GetStringAsync(
                                                                                  "Tab_IncreaseLifestyleMonths",
                                                                                  token: token).ConfigureAwait(false),
                                                                              strIncrementString), token)
                                                     .ConfigureAwait(false);
-                    await cmdDecreaseLifestyleMonths.SetToolTipTextAsync(string.Format(GlobalSettings.CultureInfo,
+                    await cmdDecreaseLifestyleMonths.SetToolTipTextAsync(StringExtensions.FastFormat(
                                                                              await LanguageManager.GetStringAsync(
                                                                                  "Tab_DecreaseLifestyleMonths",
                                                                                  token: token).ConfigureAwait(false),
@@ -24066,8 +24050,7 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                     if (objSelectedNodeTag is IHasRating objHasRating)
                     {
-                        string strText = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strText = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Label_RatingFormat", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(
@@ -24799,10 +24782,10 @@ namespace Chummer
                                 bool blnAllowSuppressive = await objWeapon.GetAllowSuppressiveAsync(token).ConfigureAwait(false);
                                 string strSingleShotText
                                     = blnAllowSingleShot
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_SingleShot", token: token).ConfigureAwait(false),
-                                                        objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.SingleShot,
                                                         objWeapon.SingleShot == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -24813,10 +24796,10 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strShortBurstText
                                     = blnAllowShortBurst
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_ShortBurst", token: token).ConfigureAwait(false),
-                                                        objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.ShortBurst,
                                                         objWeapon.ShortBurst == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -24827,10 +24810,10 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strLongBurstText
                                     = blnAllowLongBurst
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_LongBurst", token: token).ConfigureAwait(false),
-                                                        objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.LongBurst,
                                                         objWeapon.LongBurst == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -24841,10 +24824,10 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strFullBurstText
                                     = blnAllowFullBurst
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                             "String_FullBurst", token: token).ConfigureAwait(false),
-                                                        objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.FullBurst,
                                                         objWeapon.FullBurst == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -24855,11 +24838,11 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                                 string strSuppressiveFireText
                                     = blnAllowSuppressive
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
                                                                                  "String_SuppressiveFire", token: token)
                                                                              .ConfigureAwait(false),
-                                                        objWeapon.Suppressive.ToString(GlobalSettings.CultureInfo),
+                                                        objWeapon.Suppressive,
                                                         objWeapon.Suppressive == 1
                                                             ? await LanguageManager.GetStringAsync(
                                                                 "String_Bullet", token: token).ConfigureAwait(false)
@@ -24900,11 +24883,11 @@ namespace Chummer
                                                     ? "String_ExternalSource"
                                                     : "String_Empty", token: token).ConfigureAwait(false);
                                             if (objWeapon.Clips.Count > 1)
-                                                strAmmoName += strSpace + "(" + string.Format(GlobalSettings.CultureInfo,
+                                                strAmmoName += strSpace + "(" + StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager
                                                             .GetStringAsync("String_SlotNumber", token: token)
                                                             .ConfigureAwait(false),
-                                                    intSlot.ToString(GlobalSettings.CultureInfo)) + ")";
+                                                    intSlot) + ")";
 
                                             string strPlugins = string.Empty;
                                             if (objGear?.Children.Count > 0)
@@ -26030,12 +26013,12 @@ namespace Chummer
                                       + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
                                      * decMultiplier).StandardRound();
                         token.ThrowIfCancellationRequested();
-                        strInitTip = string.Format(GlobalSettings.CultureInfo,
+                        strInitTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                    await LanguageManager
                                                          .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
                                                          .ConfigureAwait(false),
-                                                   (intGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                                   intAmount.ToString(GlobalSettings.CultureInfo));
+                                                   intGrade + 1,
+                                                   intAmount);
                     }
                     else
                     {
@@ -26050,12 +26033,12 @@ namespace Chummer
                                       + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
                                      * decMultiplier).StandardRound();
                         token.ThrowIfCancellationRequested();
-                        strInitTip = string.Format(GlobalSettings.CultureInfo,
+                        strInitTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                    await LanguageManager
                                                          .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
                                                          .ConfigureAwait(false),
-                                                   (intGrade + 1).ToString(GlobalSettings.CultureInfo),
-                                                   intAmount.ToString(GlobalSettings.CultureInfo));
+                                                   intGrade + 1,
+                                                   intAmount);
                     }
                 }
                 finally
@@ -26822,13 +26805,13 @@ namespace Chummer
                         return;
                     }
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync(
                                         "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                     .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync(
                                     "String_PowerPoint", token: GenericToken).ConfigureAwait(false),
-                                intKarmaCost.ToString(GlobalSettings.CultureInfo)), GenericToken)
+                                intKarmaCost), GenericToken)
                             .ConfigureAwait(false))
                         return;
 
@@ -26900,20 +26883,20 @@ namespace Chummer
 
                     if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false) && blnPayWithKarma)
                     {
-                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                         await LanguageManager.GetStringAsync(
                                                 "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                             .ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync(
                                                 "String_Metamagic", token: GenericToken)
                                             .ConfigureAwait(false),
-                                        (await CharacterObjectSettings.GetKarmaMetamagicAsync(GenericToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
+                                        await CharacterObjectSettings.GetKarmaMetamagicAsync(GenericToken).ConfigureAwait(false)),
                                     GenericToken)
                                 .ConfigureAwait(false))
                             return;
                     }
                     else if (blnPayWithKarma && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                     string.Format(GlobalSettings.CultureInfo,
+                                     StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          await LanguageManager
                                              .GetStringAsync(
                                                  "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
@@ -26921,7 +26904,7 @@ namespace Chummer
                                          await LanguageManager
                                              .GetStringAsync("String_Echo", token: GenericToken)
                                              .ConfigureAwait(false),
-                                         (await CharacterObjectSettings.GetKarmaMetamagicAsync(GenericToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
+                                         await CharacterObjectSettings.GetKarmaMetamagicAsync(GenericToken).ConfigureAwait(false)),
                                      GenericToken)
                                  .ConfigureAwait(false))
                         return;
@@ -27128,14 +27111,14 @@ namespace Chummer
                             return;
                         }
 
-                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync(
                                             "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                         .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
                                             "String_Enchantment", token: GenericToken)
                                         .ConfigureAwait(false),
-                                    intSpellKarmaCost.ToString(GlobalSettings.CultureInfo)), token: GenericToken)
+                                    intSpellKarmaCost), token: GenericToken)
                                 .ConfigureAwait(false))
                             return;
                     }
@@ -27253,13 +27236,13 @@ namespace Chummer
                             return;
                         }
 
-                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync(
                                             "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                         .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
                                         "String_Ritual", token: GenericToken).ConfigureAwait(false),
-                                    intSpellKarmaCost.ToString(GlobalSettings.CultureInfo)), token: GenericToken)
+                                    intSpellKarmaCost), token: GenericToken)
                                 .ConfigureAwait(false))
                             return;
                     }
@@ -27378,13 +27361,13 @@ namespace Chummer
                         return;
                     }
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync(
                                             "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
                                         .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
                                         "String_Enhancement", token: GenericToken).ConfigureAwait(false),
-                                    (await CharacterObjectSettings.GetKarmaEnhancementAsync(GenericToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
+                                    await CharacterObjectSettings.GetKarmaEnhancementAsync(GenericToken).ConfigureAwait(false)),
                                 token: GenericToken)
                             .ConfigureAwait(false))
                         return;
@@ -27805,7 +27788,7 @@ namespace Chummer
                                     GenericToken);
                             if (xmlSelectText != null)
                             {
-                                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                string strDescription = StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync(
                                             "String_Improvement_SelectText", token: GenericToken)
                                         .ConfigureAwait(false),
@@ -27833,7 +27816,7 @@ namespace Chummer
                                 continue;
 
                             bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
-                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(
+                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(
                                         GlobalSettings.CultureInfo,
                                         await LanguageManager.GetStringAsync(
                                                 "Message_ConfirmKarmaExpenseSpend", token: GenericToken)
@@ -27842,8 +27825,7 @@ namespace Chummer
                                             .GetCurrentDisplayNameShortAsync(
                                                 GenericToken)
                                             .ConfigureAwait(false),
-                                        (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost)
-                                        .ToString(GlobalSettings.CultureInfo)), GenericToken)
+                                        boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost), GenericToken)
                                     .ConfigureAwait(false))
                                 continue;
 
@@ -28337,11 +28319,10 @@ namespace Chummer
 
                         decimal decSelectedValue = frmPickNumber.MyForm.SelectedValue;
 
-                        if (!await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
+                        if (!await CommonFunctions.ConfirmDeleteAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync(
                                         "Message_ReduceQty", token: GenericToken).ConfigureAwait(false),
-                                    decSelectedValue.ToString(
-                                        GlobalSettings.CultureInfo)), token: GenericToken)
+                                    decSelectedValue), token: GenericToken)
                                 .ConfigureAwait(false))
                             return;
 

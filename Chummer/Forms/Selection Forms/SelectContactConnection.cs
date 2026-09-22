@@ -95,10 +95,10 @@ namespace Chummer
             await cboMembership.DoThreadSafeAsync(x =>
             {
                 x.Items.Add("+0: " + strNone);
-                x.Items.Add("+1: " + string.Format(GlobalSettings.CultureInfo, strMembers, "2-19"));
-                x.Items.Add("+2: " + string.Format(GlobalSettings.CultureInfo, strMembers, "20-99"));
-                x.Items.Add("+4: " + string.Format(GlobalSettings.CultureInfo, strMembers, "100-1000"));
-                x.Items.Add("+6: " + string.Format(GlobalSettings.CultureInfo, strMembers, "1000+"));
+                x.Items.Add("+1: " + StringExtensions.FastFormat(strMembers, "2-19"));
+                x.Items.Add("+2: " + StringExtensions.FastFormat(strMembers, "20-99"));
+                x.Items.Add("+4: " + StringExtensions.FastFormat(strMembers, "100-1000"));
+                x.Items.Add("+6: " + StringExtensions.FastFormat(strMembers, "1000+"));
             }).ConfigureAwait(false);
 
             string strAoI1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaDistrict").ConfigureAwait(false);

@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.Extensions.Primitives;
 using NLog;
 
 namespace Chummer
@@ -99,8 +100,9 @@ namespace Chummer
                 sbdLog.AppendLine("Time statistics");
                 foreach (KeyValuePair<string, ValueTuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
                 {
-                    sbdLog.AppendFormat(GlobalSettings.InvariantCultureInfo, "\t{0}({1}) = {2}",
-                                        keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1).AppendLine();
+                    sbdLog.Append('\t', keyValuePair.Key)
+                        .Append('(', keyValuePair.Value.Item2.ToString(GlobalSettings.InvariantCultureInfo), ')')
+                        .AppendLine(" = ", keyValuePair.Value.Item1.ToString());
                 }
 
                 strLog = sbdLog.ToString();

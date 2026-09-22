@@ -192,8 +192,11 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                string msg = string.Format(GlobalSettings.InvariantCultureInfo, "Got an " + e.GetType() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}",
-                    x, y, width, height);
+                string msg = StringExtensions.ConcatFast(
+                    "Got an ", e.GetType().Name, " with these variables in Chummy.cs-DrawEye(): x=", x.ToString(GlobalSettings.InvariantCultureInfo),
+                    ",y=", y.ToString(GlobalSettings.InvariantCultureInfo),
+                    ",width=", width.ToString(GlobalSettings.InvariantCultureInfo),
+                    ",height=", height.ToString(GlobalSettings.InvariantCultureInfo));
                 Log.Warn(e, msg);
             }
         }

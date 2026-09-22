@@ -2480,7 +2480,7 @@ namespace Chummer.Backend.Skills
 
                     if (intRating == int.MaxValue)
                         intRating = 0;
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
                         intRating + 1, UpgradeKarmaCost);
                 }
             }
@@ -2502,7 +2502,7 @@ namespace Chummer.Backend.Skills
 
                 if (intRating == int.MaxValue)
                     intRating = 0;
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                      await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token)
                                                           .ConfigureAwait(false), intRating + 1,
                                      await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false));

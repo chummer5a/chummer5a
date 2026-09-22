@@ -92,7 +92,7 @@ namespace Chummer
             {
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), strFile), token: token).ConfigureAwait(false);
                 return null;
             }
@@ -174,7 +174,7 @@ namespace Chummer
             {
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
                             .ConfigureAwait(false),
                         strFile), token: token).ConfigureAwait(false);
@@ -184,7 +184,7 @@ namespace Chummer
             {
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
                             .ConfigureAwait(false),
                         strFile), token: token).ConfigureAwait(false);

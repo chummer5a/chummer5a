@@ -219,8 +219,10 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strToAppend))
                         strFv += "L" + strToAppend;
+                    else if (intFadingDv == 0)
+                        strFv = "L";
                     else
-                        strFv = string.Format(GlobalSettings.InvariantCultureInfo, "L{0:+0;-0;}", intFadingDv);
+                        strFv = "L" + (intFadingDv > 0 ? "+" + intFadingDv.ToString(GlobalSettings.InvariantCultureInfo) : intFadingDv.ToString(GlobalSettings.InvariantCultureInfo));
                 }
                 else if (!string.IsNullOrEmpty(strToAppend))
                     strFv += strToAppend;

@@ -136,7 +136,7 @@ namespace Chummer
                         0,
                         new ListItem(
                             "JSON",
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                           await LanguageManager
                                                 .GetStringAsync("String_Export_Blank", token: _objGenericToken)
                                                 .ConfigureAwait(false), "JSON")));

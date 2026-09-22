@@ -167,7 +167,7 @@ namespace Chummer
                         int intMaxAvail = await objSettings.GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                         await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                         {
-                            x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                            x.Text = StringExtensions.FastFormat(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                             x.Visible = true;
                             x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                         }, _objGenericToken).ConfigureAwait(false);
@@ -772,7 +772,7 @@ namespace Chummer
                         {
                             // Add after sort so that it's always at the end
                             lstWeapons.Add(new ListItem(string.Empty,
-                                                        string.Format(GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                       await LanguageManager.GetStringAsync(
                                                                           "String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                                       intOverLimit)));

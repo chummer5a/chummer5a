@@ -1061,7 +1061,7 @@ namespace Chummer.UI.Skills
                     else
                         intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager
                             .GetStringAsync(
                                 "Message_ConfirmKarmaExpenseSkillSpecialization", token: _objMyToken)

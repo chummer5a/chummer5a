@@ -4572,7 +4572,7 @@ namespace Chummer.Backend.Skills
                                                            {
                                                                Skill objLoopSkill = GetActiveSkill(strSkillKey, t);
                                                                return objLoopSkill.DisplayName(strLanguage, t)
-                                                                      + string.Format(
+                                                                      + StringExtensions.FastFormat(
                                                                           objCultureInfo, strFormat,
                                                                           dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
                                                                               ? intOverride
@@ -4622,7 +4622,7 @@ namespace Chummer.Backend.Skills
                                               {
                                                   Skill objLoopSkill = GetActiveSkill(strSkillKey, t);
                                                   return objLoopSkill.DisplayName(strLanguage, t)
-                                                         + string.Format(
+                                                         + StringExtensions.FastFormat(
                                                              objCultureInfo, strFormat,
                                                              dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
                                                                  ? intOverride
@@ -4700,7 +4700,7 @@ namespace Chummer.Backend.Skills
                                                            {
                                                                Skill objLoopSkill = await GetActiveSkillAsync(strSkillKey, t2).ConfigureAwait(false);
                                                                return await objLoopSkill.DisplayNameAsync(strLanguage, t2).ConfigureAwait(false)
-                                                                      + string.Format(
+                                                                      + StringExtensions.FastFormat(
                                                                           objCultureInfo, strFormat,
                                                                           dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
                                                                               ? intOverride
@@ -4755,7 +4755,7 @@ namespace Chummer.Backend.Skills
                                               {
                                                   Skill objLoopSkill = await GetActiveSkillAsync(strSkillKey, t2).ConfigureAwait(false);
                                                   return await objLoopSkill.DisplayNameAsync(strLanguage, t2).ConfigureAwait(false)
-                                                         + string.Format(
+                                                         + StringExtensions.FastFormat(
                                                              objCultureInfo, strFormat,
                                                              dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
                                                                  ? intOverride

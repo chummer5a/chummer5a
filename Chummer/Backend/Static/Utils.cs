@@ -482,7 +482,7 @@ namespace Chummer
                 {
                     if (blnShowErrors)
                         Program.ShowScrollableMessageBox(
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                           LanguageManager.GetString("Message_DuplicateFile", token: token), strFile,
                                           strDestinationFolder),
                             LanguageManager.GetString("MessageTitle_DuplicateFile", token: token),
@@ -663,7 +663,7 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 if (Program.ShowScrollableMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_Prompt_Delete_Existing_File",
                                                 token: token), strPath),
@@ -672,7 +672,7 @@ namespace Chummer
                                     return false;
                             }
                             else if (await Program.ShowScrollableMessageBoxAsync(
-                                         string.Format(GlobalSettings.CultureInfo,
+                                         StringExtensions.FastFormat(
                                              await LanguageManager.GetStringAsync(
                                                      "Message_Prompt_Delete_Existing_File", token: token)
                                                  .ConfigureAwait(false), strPath),
@@ -817,7 +817,7 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         if (Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     // ReSharper disable once MethodHasAsyncOverload
                                     LanguageManager.GetString("Message_Prompt_Delete_Existing_File",
                                         token: token), strPath),
@@ -826,7 +826,7 @@ namespace Chummer
                             return false;
                     }
                     else if (await Program.ShowScrollableMessageBoxAsync(
-                                 string.Format(GlobalSettings.CultureInfo,
+                                 StringExtensions.FastFormat(
                                      await LanguageManager.GetStringAsync(
                                              "Message_Prompt_Delete_Existing_File", token: token)
                                          .ConfigureAwait(false), strPath),
@@ -884,21 +884,14 @@ namespace Chummer
         /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
-        /// <param name="objCulture">Culture info to use when displaying any prompts or warnings. If empty, use the culture info of Chummer's current language.</param>
         /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use the language of <paramref name="objCulture"/> (Chummer's current language if that is null).</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask RestartApplication(CultureInfo objCulture = null, string strLanguage = "", string strText = "", CancellationToken token = default)
+        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objCulture == null)
-            {
-                objCulture = GlobalSettings.CultureInfo;
-                if (string.IsNullOrEmpty(strLanguage))
-                    strLanguage = GlobalSettings.Language;
-            }
-            else if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = objCulture.ToString();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
             {
                 string text = await LanguageManager.GetStringAsync(strText, strLanguage, token: token).ConfigureAwait(false);
@@ -940,7 +933,7 @@ namespace Chummer
                                                                             .GetCharacterNameAsync(token)
                                                                             .ConfigureAwait(false);
                         if (await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(objCulture,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync(
                                             "Message_UnsavedChanges", strLanguage,
                                             token: token)

@@ -232,7 +232,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
                                         .ConfigureAwait(false), strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
@@ -708,7 +708,7 @@ namespace Chummer
             if (objXmlMetatype == null)
             {
                 await Program.ShowScrollableMessageBoxAsync(
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_UnknownCritterType", token: token)
                             .ConfigureAwait(false),
                         strCritterName),
@@ -752,8 +752,7 @@ namespace Chummer
                                            await LanguageManager.GetStringAsync("DialogFilter_All", token: token)
                                                .ConfigureAwait(false);
                         string strInputFileName = strCritterName + strSpace + "("
-                                                  + string.Format(
-                                                      GlobalSettings.CultureInfo,
+                                                  + StringExtensions.FastFormat(
                                                       await LanguageManager
                                                           .GetStringAsync("Label_RatingFormat", token: token)
                                                           .ConfigureAwait(false), await LanguageManager

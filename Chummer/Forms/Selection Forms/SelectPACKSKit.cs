@@ -534,7 +534,7 @@ namespace Chummer
                             {
                                 Text = (objXmlLifestyle.SelectSingleNodeAndCacheExpression("translate") ?? objXmlLifestyle.SelectSingleNodeAndCacheExpression("baselifestyle")).Value
                                        + strSpace + objXmlLifestyle.SelectSingleNodeAndCacheExpression("months").Value
-                                       + strSpace + strIncrementString + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent").ConfigureAwait(false), intPermanentAmount.ToString(GlobalSettings.CultureInfo))
+                                       + strSpace + strIncrementString + StringExtensions.FastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent").ConfigureAwait(false), intPermanentAmount)
                             };
                             // Check for Qualities.
                             foreach (XPathNavigator objXmlQuality in objXmlLifestyle.SelectAndCacheExpression("qualities/quality"))
@@ -850,7 +850,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit").ConfigureAwait(false), strSelectedKit),
+            if (await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Message_DeletePACKSKit").ConfigureAwait(false), strSelectedKit),
                     await LanguageManager.GetStringAsync("MessageTitle_Delete").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2).ConfigureAwait(false) == DialogResult.No)
                 return;
 

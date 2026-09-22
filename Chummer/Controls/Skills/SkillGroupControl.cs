@@ -338,7 +338,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
-                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager
                             .GetStringAsync(
                                 "Message_ConfirmKarmaExpense", token: _objMyToken)

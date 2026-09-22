@@ -234,9 +234,9 @@ namespace Chummer
                             sw.TaskEnd("appdomain 2");
 
                             strInfo =
-                                string.Format(GlobalSettings.InvariantCultureInfo,
+                                StringExtensions.FastFormat(
                                     "Application Chummer5a build {0} started at {1} with command line arguments {2}",
-                                    Utils.CurrentChummerVersion, DateTime.UtcNow.ToString(GlobalSettings.InvariantCultureInfo),
+                                    Utils.CurrentChummerVersion.ToString(), DateTime.UtcNow.ToString(GlobalSettings.InvariantCultureInfo),
                                     Environment.CommandLine);
                             sw.TaskEnd("infogen");
 
@@ -1398,7 +1398,7 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 if (ShowScrollableMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_AutosaveFound", token: token),
                                             Path.GetFileName(strFileName),
@@ -1412,7 +1412,7 @@ namespace Chummer
                                 }
                             }
                             else if (await ShowScrollableMessageBoxAsync(
-                                         string.Format(GlobalSettings.CultureInfo,
+                                         StringExtensions.FastFormat(
                                              await LanguageManager
                                                  .GetStringAsync("Message_AutosaveFound", token: token)
                                                  .ConfigureAwait(false),
@@ -1487,7 +1487,7 @@ namespace Chummer
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    ShowScrollableMessageBox(StringExtensions.FastFormat(
                             // ReSharper disable once MethodHasAsyncOverload
                             LanguageManager.GetString("Message_FileNotFound", token: token),
                             strFileName),
@@ -1497,7 +1497,7 @@ namespace Chummer
                 }
                 else
                 {
-                    await ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                    await ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_FileNotFound", token: token)
                                 .ConfigureAwait(false),

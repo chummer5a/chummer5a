@@ -112,7 +112,7 @@ namespace Chummer
                     int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                        x.Text = StringExtensions.FastFormat(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                         x.Visible = true;
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                     }, _objGenericToken).ConfigureAwait(false);
@@ -326,7 +326,7 @@ namespace Chummer
 
                                     string strRatingLabel = xmlArmor["ratinglabel"]?.InnerTextViaPool(token);
                                     strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(
                                             await LanguageManager.GetStringAsync("Label_RatingFormat", token: token)
                                                 .ConfigureAwait(false),
                                             await LanguageManager.GetStringAsync(strRatingLabel, token: token)
@@ -874,7 +874,7 @@ namespace Chummer
                         {
                             // Add after sort so that it's always at the end
                             lstArmors.Add(new ListItem(string.Empty,
-                                                       string.Format(GlobalSettings.CultureInfo,
+                                                       StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                      await LanguageManager.GetStringAsync(
                                                                          "String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                                      intOverLimit)));

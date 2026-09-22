@@ -405,8 +405,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         if (blnSync)
                         {
-                            string strDescription = string.Format(
-                                           GlobalSettings.CultureInfo,
+                            string strDescription = StringExtensions.FastFormat(
                                            LanguageManager.GetString("String_SelectVariableCost", token: token),
                                            CurrentDisplayNameShort);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -430,8 +429,7 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            string strDescription = string.Format(
-                                GlobalSettings.CultureInfo,
+                            string strDescription = StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                             int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
@@ -814,7 +812,7 @@ namespace Chummer.Backend.Equipment
                                 using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(
                                            () => new SelectItem
                                            {
-                                               Description = string.Format(GlobalSettings.CultureInfo,
+                                               Description = StringExtensions.FastFormat(
                                                                            LanguageManager.GetString(
                                                                                "String_Improvement_SelectText"),
                                                                            strFriendlyName)
@@ -1028,7 +1026,7 @@ namespace Chummer.Backend.Equipment
                                 string strFriendlyName = await LanguageManager.GetStringAsync(strChooseGearNodeName, false, token).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = await _objCharacter.TranslateExtraAsync(strChooseGearNodeName, token: token).ConfigureAwait(false);
-                                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                string strDescription = StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync(
                                         "String_Improvement_SelectText", token: token).ConfigureAwait(false),
                                     strFriendlyName);
@@ -5225,7 +5223,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Capacity.Contains('[') && !Capacity.Contains("/["))
                     return CalculatedCapacity;
-                return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                return StringExtensions.FastFormat(LanguageManager.GetString("String_CapacityRemaining"),
                     CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
             }
         }
@@ -5234,7 +5232,7 @@ namespace Chummer.Backend.Equipment
         {
             if (Capacity.Contains('[') && !Capacity.Contains("/["))
                 return await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
-            return string.Format(GlobalSettings.CultureInfo,
+            return StringExtensions.FastFormat(
                 await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
                 await GetCalculatedCapacityAsync(token).ConfigureAwait(false),
                 (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##",
@@ -5302,34 +5300,36 @@ namespace Chummer.Backend.Equipment
         public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
         {
             string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
-            string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            if (!string.IsNullOrEmpty(strQuantity))
-                strReturn = strQuantity + strSpace + strReturn;
-            int intRating = Rating;
-            if (intRating > 0)
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                if (objCulture == null)
-                    objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "("
-                                      + string.Format(
-                                          objCulture, LanguageManager.GetString("Label_RatingFormat", strLanguage),
-                                          LanguageManager.GetString(RatingLabel, strLanguage)) + strSpace
-                                      + intRating.ToString(objCulture) + ")";
+                sbdReturn.Append(DisplayNameShort(strLanguage));
+                if (!string.IsNullOrEmpty(strQuantity))
+                    sbdReturn.Insert(0, strQuantity + strSpace);
+                int intRating = Rating;
+                if (intRating > 0)
+                {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
+                    sbdReturn.Append(strSpace, '(').AppendFastFormat(
+                            LanguageManager.GetString("Label_RatingFormat", strLanguage),
+                            LanguageManager.GetString(RatingLabel, strLanguage))
+                        .Append(strSpace, intRating.ToString(objCulture), ')');
+                }
+                if (!string.IsNullOrEmpty(Extra))
+                    sbdReturn.Append(strSpace, '(').Append(_objCharacter.TranslateExtra(Extra, strLanguage), ')');
+                if (!string.IsNullOrEmpty(GearName))
+                    sbdReturn.Append(strSpace, "(\"", GearName, "\")");
+                if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
+                    sbdReturn.Append(strSpace, '(').Append(LanguageManager.GetString("Label_BondedFoci", strLanguage), ')');
+                if (LoadedIntoClip != null)
+                {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
+                    sbdReturn.Append(strSpace, '(').AppendFastFormat(LanguageManager.GetString("Label_Loaded"), LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage)).Append(')');
+                }
+                return sbdReturn.ToTrimmedString();
             }
-            if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
-            if (!string.IsNullOrEmpty(GearName))
-                strReturn += strSpace + "(\"" + GearName + "\")";
-            if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                strReturn += strSpace + "(" + LanguageManager.GetString("Label_BondedFoci", strLanguage) + ")";
-            if (LoadedIntoClip != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" + string.Format(objCulture, LanguageManager.GetString("Label_Loaded"), LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage)) + ")";
-            }
-            return strReturn;
         }
 
         /// <summary>
@@ -5338,43 +5338,38 @@ namespace Chummer.Backend.Equipment
         public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
         {
             string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
-            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strQuantity))
-                strReturn = strQuantity + strSpace + strReturn;
-            int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-            if (intRating > 0)
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                if (objCulture == null)
-                    objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "("
-                                      + string.Format(
-                                          objCulture,
-                                          await LanguageManager
-                                                .GetStringAsync("Label_RatingFormat", strLanguage, token: token)
-                                                .ConfigureAwait(false),
-                                          await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
-                                                               .ConfigureAwait(false)) + strSpace
-                                      + intRating.ToString(objCulture) + ")";
+                sbdReturn.Append(await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false));
+                if (!string.IsNullOrEmpty(strQuantity))
+                    sbdReturn.Insert(0, strQuantity + strSpace);
+                int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                if (intRating > 0)
+                {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
+                    sbdReturn.Append(strSpace, '(').AppendFastFormat(
+                            await LanguageManager.GetStringAsync("Label_RatingFormat", strLanguage, token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false))
+                        .Append(strSpace, intRating.ToString(objCulture), ')');
+                }
+                if (!string.IsNullOrEmpty(Extra))
+                    sbdReturn.Append(strSpace, '(').Append(await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false), ')');
+                if (!string.IsNullOrEmpty(GearName))
+                    sbdReturn.Append(strSpace, "(\"", GearName, "\")");
+                if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
+                    sbdReturn.Append(strSpace, '(').Append(await LanguageManager.GetStringAsync("Label_BondedFoci", strLanguage, token: token).ConfigureAwait(false), ')');
+                if (LoadedIntoClip != null)
+                {
+                    if (objCulture == null)
+                        objCulture = GlobalSettings.CultureInfo;
+                    sbdReturn.Append(strSpace, '(').AppendFastFormat(
+                        await LanguageManager.GetStringAsync("Label_Loaded", token: token).ConfigureAwait(false),
+                        await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage, token).ConfigureAwait(false)).Append(')');
+                }
+                return sbdReturn.ToTrimmedString();
             }
-            if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
-            if (!string.IsNullOrEmpty(GearName))
-                strReturn += strSpace + "(\"" + GearName + "\")";
-            if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync("Label_BondedFoci", strLanguage, token: token).ConfigureAwait(false) + ")";
-            if (LoadedIntoClip != null)
-            {
-                if (objCulture == null)
-                    objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "("
-                                      + string.Format(
-                                          objCulture,
-                                          await LanguageManager.GetStringAsync("Label_Loaded", token: token).ConfigureAwait(false),
-                                          await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage, token).ConfigureAwait(false))
-                                      + ")";
-            }
-            return strReturn;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);

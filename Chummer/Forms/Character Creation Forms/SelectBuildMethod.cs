@@ -69,7 +69,7 @@ namespace Chummer
                     && eSelectedBuildMethod != _eStartingBuildMethod)
                 {
                     if (await Program.ShowScrollableMessageBoxAsync(this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager
                                     .GetStringAsync("Message_SelectBP_SwitchBuildMethods", token: _objGenericToken)
                                     .ConfigureAwait(false),

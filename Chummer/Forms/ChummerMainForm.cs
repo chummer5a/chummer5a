@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -826,14 +827,14 @@ namespace Chummer
                                                                  != strAutosaveName, _objGenericToken).ConfigureAwait(false))
                                                     {
                                                         if (await Program.ShowScrollableMessageBoxAsync(
-                                                                string.Format(GlobalSettings.CultureInfo,
+                                                                StringExtensions.FastFormat(
                                                                     await LanguageManager.GetStringAsync(
                                                                             "Message_PossibleCrashAutosaveFound",
                                                                             token: _objGenericToken)
                                                                         .ConfigureAwait(false),
                                                                     objMostRecentAutosave.Name,
                                                                     objMostRecentAutosave.LastWriteTimeUtc
-                                                                        .ToLocalTime()),
+                                                                        .ToLocalTime().ToString(GlobalSettings.CultureInfo)),
                                                                 await LanguageManager.GetStringAsync(
                                                                     "MessageTitle_AutosaveFound",
                                                                     token: _objGenericToken).ConfigureAwait(false),
@@ -1374,10 +1375,7 @@ namespace Chummer
             if (Utils.GitUpdateAvailable > 0)
             {
                 strTitle += strSpace + "-" + strSpace
-                    + string.Format(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync("String_Update_Available", token: token)
-                                             .ConfigureAwait(false),
-                        Utils.CachedGitVersion);
+                    + StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Update_Available", token: token).ConfigureAwait(false), Utils.CachedGitVersion);
             }
 #endif
             if (CustomDataDirectoryUpdater.HasAnyUpdatesAvailable())
@@ -2195,12 +2193,23 @@ namespace Chummer
                             {
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false);
                                 string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: _objGenericToken).ConfigureAwait(false);
-                                await objTabPage.DoThreadSafeAsync(
-                                    x => x.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        strSheet,
-                                        StringExtensions.JoinFast("," + strSpace,
-                                                    frmSheetViewer.CharacterObjects.Select(y => y.CharacterName.Trim()))), token: _objGenericToken).ConfigureAwait(false);
+                                string strCharacters;
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCharacters))
+                                {
+                                    string strConjunction = "," + strSpace;
+                                    bool blnAddConjunction = false;
+                                    foreach (Character objLoop in frmSheetViewer.CharacterObjects)
+                                    {
+                                        if (blnAddConjunction)
+                                            sbdCharacters.Append(strConjunction);
+                                        else
+                                            blnAddConjunction = true;
+                                        sbdCharacters.Append(await objLoop.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false));
+                                    }
+                                    strCharacters = sbdCharacters.ToTrimmedString();
+                                }
+                                string strText = StringExtensions.FastFormat(strSheet, strCharacters);
+                                await objTabPage.DoThreadSafeAsync(x => x.Text = strText, token: _objGenericToken).ConfigureAwait(false);
                                 if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                                 {
                                     _mascotChummy.CharacterObject = null;
@@ -2211,11 +2220,11 @@ namespace Chummer
                             case ExportCharacter frmExportCharacter:
                             {
                                 string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken).ConfigureAwait(false);
+                                string strText = StringExtensions.FastFormat(
+                                    strExport,
+                                    (await frmExportCharacter.CharacterObject.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false)).Trim());
                                 await objTabPage.DoThreadSafeAsync(
-                                    x => x.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        strExport,
-                                        frmExportCharacter.CharacterObject.CharacterName.Trim()), token: _objGenericToken).ConfigureAwait(false);
+                                    x => x.Text = strText, token: _objGenericToken).ConfigureAwait(false);
                                 if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                                 {
                                     _mascotChummy.CharacterObject = null;
@@ -2592,15 +2601,14 @@ namespace Chummer
                             case CharacterSheetViewer frmCharacterSheetViewer
                                 when frmCharacterSheetViewer.CharacterObjects.Contains(objCharacter):
                                 objTabPage.Text
-                                    = string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    = StringExtensions.FastFormat(
                                         strSheet,
                                         StringExtensions.JoinFast("," + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
                             case ExportCharacter frmExport when frmExport.CharacterObject == objCharacter:
-                                objTabPage.Text = string.Format(GlobalSettings.CultureInfo, strExport, strCharacterName);
+                                objTabPage.Text = StringExtensions.FastFormat(strExport, strCharacterName);
                                 break;
                         }
                     }
@@ -2637,15 +2645,14 @@ namespace Chummer
                                 break;
                             case CharacterSheetViewer frmCharacterSheetViewer:
                                 objTabPage.Text
-                                    = string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    = StringExtensions.FastFormat(
                                         strSheet.Value,
                                         StringExtensions.JoinFast("," + strSpace.Value,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
                             case ExportCharacter frmExport:
-                                objTabPage.Text = string.Format(GlobalSettings.CultureInfo, strExport.Value, frmExport.CharacterObject.CharacterName);
+                                objTabPage.Text = StringExtensions.FastFormat(strExport.Value, frmExport.CharacterObject.CharacterName);
                                 break;
                             case Form frmOther:
                                 objTabPage.Text = frmOther.Text;
@@ -2686,15 +2693,14 @@ namespace Chummer
                                 break;
                             case CharacterSheetViewer frmCharacterSheetViewer:
                                 objTabPage.Text
-                                    = string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    = StringExtensions.FastFormat(
                                         strSheet,
                                         StringExtensions.JoinFast("," + strSpace,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
                             case ExportCharacter frmExport:
-                                objTabPage.Text = string.Format(GlobalSettings.CultureInfo, strExport, frmExport.CharacterObject.CharacterName);
+                                objTabPage.Text = StringExtensions.FastFormat(strExport, frmExport.CharacterObject.CharacterName);
                                 break;
                             case Form frmOther:
                                 objTabPage.Text = frmOther.Text;
@@ -3563,7 +3569,7 @@ namespace Chummer
                                     continue;
                                 if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        string.Format(GlobalSettings.CultureInfo, strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -3779,7 +3785,7 @@ namespace Chummer
 
                                 if (Program.MyProcess.HandleCount >= 9500
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        string.Format(GlobalSettings.CultureInfo, strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -4014,7 +4020,7 @@ namespace Chummer
                                     continue;
                                 if (Program.MyProcess.HandleCount >= 9500
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        string.Format(GlobalSettings.CultureInfo, strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -4548,13 +4554,12 @@ namespace Chummer
                                             && GlobalSettings.FavoriteCharacters.All(
                                                 x => Path.GetFileNameWithoutExtension(x) != strAutosaveName,
                                                 _objGenericToken)
-                                            && Program.ShowScrollableMessageBox(string.Format(
-                                                    GlobalSettings.CultureInfo,
+                                            && Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                                     LanguageManager.GetString(
                                                         "Message_PossibleCrashAutosaveFound", token: _objGenericToken),
                                                     objMostRecentAutosave.Name,
                                                     objMostRecentAutosave.LastWriteTimeUtc
-                                                        .ToLocalTime()),
+                                                        .ToLocalTime().ToString(GlobalSettings.CultureInfo)),
                                                 LanguageManager.GetString(
                                                     "MessageTitle_AutosaveFound", token: _objGenericToken),
                                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question)

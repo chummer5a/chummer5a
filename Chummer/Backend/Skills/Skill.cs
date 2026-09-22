@@ -5406,7 +5406,7 @@ namespace Chummer.Backend.Skills
 
                 if (att.TotalValue <= 0)
                 {
-                    return strExtraStart + string.Format(GlobalSettings.CultureInfo,
+                    return strExtraStart + StringExtensions.FastFormat(
                         LanguageManager.GetString("Tip_Skill_Zero_Attribute", token: token),
                         att.DisplayNameShort(GlobalSettings.Language));
                 }
@@ -5756,7 +5756,7 @@ namespace Chummer.Backend.Skills
                 int intAttTotalValue = await att.GetTotalValueAsync(token).ConfigureAwait(false);
                 if (intAttTotalValue <= 0)
                 {
-                    return strExtraStart + string.Format(GlobalSettings.CultureInfo,
+                    return strExtraStart + StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Tip_Skill_Zero_Attribute", token: token)
                             .ConfigureAwait(false),
                         await att.DisplayNameShortAsync(GlobalSettings.Language, token).ConfigureAwait(false));
@@ -6144,7 +6144,7 @@ namespace Chummer.Backend.Skills
                     int intCost = UpgradeKarmaCost;
                     return intCost < 0
                         ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
-                        : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
+                        : StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
                                         Rating + 1, intCost);
                 }
             }
@@ -6160,7 +6160,7 @@ namespace Chummer.Backend.Skills
                 return intCost < 0
                     ? await LanguageManager.GetStringAsync("Tip_ImproveItemAtMaximum", token: token)
                                            .ConfigureAwait(false)
-                    : string.Format(GlobalSettings.CultureInfo,
+                    : StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token)
                                                          .ConfigureAwait(false),
                                     await GetRatingAsync(token).ConfigureAwait(false) + 1, intCost);
@@ -6199,7 +6199,7 @@ namespace Chummer.Backend.Skills
                         intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                     else
                         intPrice += decExtraSpecCost.StandardRound(); //Spec
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         LanguageManager.GetString("Tip_Skill_AddSpecialization"), intPrice);
                 }
             }
@@ -6233,7 +6233,7 @@ namespace Chummer.Backend.Skills
                     intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                 else
                     intPrice += decExtraSpecCost.StandardRound(); //Spec
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                      await LanguageManager.GetStringAsync("Tip_Skill_AddSpecialization", token: token)
                                                           .ConfigureAwait(false), intPrice);
             }

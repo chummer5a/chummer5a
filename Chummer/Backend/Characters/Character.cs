@@ -3224,7 +3224,7 @@ namespace Chummer
                     string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_Improvement_SelectText", token: token),
                                        xmlAIProgramData["translate"]?.InnerTextViaPool(token) ?? xmlAIProgramData["name"]?.InnerTextViaPool(token));
                         using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
@@ -4043,7 +4043,7 @@ namespace Chummer
                     if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) !=
                         null && !string.IsNullOrWhiteSpace(strExtra))
                     {
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token)
                                 .ConfigureAwait(false),
                             xmlAIProgramData["translate"]?.InnerTextViaPool(token) ??
@@ -6282,11 +6282,11 @@ namespace Chummer
                                             if (showWarnings)
                                             {
                                                 Program.ShowScrollableMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                                   LanguageManager.GetString(
                                                                       "Message_FailedLoad", token: innerToken),
                                                                   ex.Message),
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                                   LanguageManager.GetString(
                                                                       "MessageTitle_FailedLoad", token: innerToken),
                                                                   ex.Message),
@@ -6352,13 +6352,13 @@ namespace Chummer
                                             if (showWarnings)
                                             {
                                                 await Program.ShowScrollableMessageBoxAsync(
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         await LanguageManager
                                                             .GetStringAsync(
                                                                 "Message_FailedLoad", token: innerToken)
                                                             .ConfigureAwait(false),
                                                         ex.Message),
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         await LanguageManager
                                                             .GetStringAsync(
                                                                 "MessageTitle_FailedLoad", token: innerToken)
@@ -6503,7 +6503,7 @@ namespace Chummer
                                             && objMinimumVersion > Utils.CurrentChummerVersion)
                                         {
                                             Program.ShowMessageBox(
-                                                string.Format(GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(
                                                               blnSync
                                                                   // ReSharper disable once MethodHasAsyncOverload
                                                                   ? LanguageManager.GetString(
@@ -6512,7 +6512,7 @@ namespace Chummer
                                                                           .GetStringAsync(
                                                                               "Message_OlderThanChummerSaveMinimumVersion",
                                                                               token: token).ConfigureAwait(false),
-                                                              objMinimumVersion, Utils.CurrentChummerVersion),
+                                                              objMinimumVersion.ToString(), Utils.CurrentChummerVersion.ToString()),
                                                 blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? LanguageManager.GetString(
@@ -6528,15 +6528,15 @@ namespace Chummer
 
                                     if (_verSavedVersion > Utils.CurrentChummerVersion && DialogResult.Yes
                                         != Program.ShowMessageBox(
-                                            string.Format(GlobalSettings.CultureInfo,
+                                            StringExtensions.FastFormat(
                                                           blnSync
                                                               // ReSharper disable once MethodHasAsyncOverload
                                                               ? LanguageManager.GetString("Message_OutdatedChummerSave", token: token)
                                                               : await LanguageManager
                                                                       .GetStringAsync(
                                                                           "Message_OutdatedChummerSave", token: token)
-                                                                      .ConfigureAwait(false), _verSavedVersion,
-                                                          Utils.CurrentChummerVersion),
+                                                                      .ConfigureAwait(false), _verSavedVersion.ToString(),
+                                                          Utils.CurrentChummerVersion.ToString()),
                                             blnSync
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ? LanguageManager.GetString("MessageTitle_OutdatedChummerSave", token: token)
@@ -6874,8 +6874,7 @@ namespace Chummer
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Program.ShowScrollableMessageBox(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
                                                                 "Message_CharacterOptions_CannotLoadSetting",
@@ -6887,8 +6886,7 @@ namespace Chummer
                                                             token: token),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error)
                                                     : await Program.ShowScrollableMessageBoxAsync(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_CannotLoadSetting",
                                                                 token: token).ConfigureAwait(false),
@@ -6970,8 +6968,7 @@ namespace Chummer
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Program.ShowScrollableMessageBox(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
                                                                 "Message_CharacterOptions_DesyncBuildMethod",
@@ -6990,8 +6987,7 @@ namespace Chummer
                                                             token: token),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error)
                                                     : await Program.ShowScrollableMessageBoxAsync(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_DesyncBuildMethod",
                                                                 token: token).ConfigureAwait(false),
@@ -7109,8 +7105,7 @@ namespace Chummer
                                                 DialogResult eShowBPResult = blnSync
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Program.ShowScrollableMessageBox(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
                                                                 "Message_CharacterOptions_DesyncBooksOrCustomData",
@@ -7122,8 +7117,7 @@ namespace Chummer
                                                             token: token),
                                                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
                                                     : await Program.ShowScrollableMessageBoxAsync(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_DesyncBooksOrCustomData",
                                                                 token: token).ConfigureAwait(false),
@@ -7155,8 +7149,7 @@ namespace Chummer
                                             DialogResult eShowBPResult = blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ? Program.ShowScrollableMessageBox(
-                                                    string.Format(
-                                                        GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         LanguageManager.GetString(
                                                             "Message_CharacterOptions_DesyncFromHashCode",
@@ -7168,8 +7161,7 @@ namespace Chummer
                                                         token: token),
                                                     MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
                                                 : await Program.ShowScrollableMessageBoxAsync(
-                                                    string.Format(
-                                                        GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         await LanguageManager.GetStringAsync(
                                                             "Message_CharacterOptions_DesyncFromHashCode",
                                                             token: token).ConfigureAwait(false),
@@ -29068,9 +29060,9 @@ namespace Chummer
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
             using (LockObject.EnterReadLock())
-                return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguage),
-                                     InitiativeValue.ToString(objCulture),
-                                     InitiativeDice.ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, LanguageManager.GetString("String_Initiative", strLanguage),
+                                     InitiativeValue,
+                                     InitiativeDice);
         }
 
         public async Task<string> GetInitiativeAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
@@ -29080,9 +29072,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
-                    (await GetInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
-                    (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
+                    await GetInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29114,8 +29106,8 @@ namespace Chummer
                                    .ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
-                                         strInit, InitiativeDice.ToString(GlobalSettings.CultureInfo));
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                                         strInit, InitiativeDice);
                 }
             }
         }
@@ -29156,9 +29148,9 @@ namespace Chummer
                                .ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false),
-                    strInit, (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+                    strInit, await GetInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29281,9 +29273,9 @@ namespace Chummer
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
             using (LockObject.EnterReadLock())
-                return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
-                                     AstralInitiativeValue.ToString(objCulture),
-                                     AstralInitiativeDice.ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+                                     AstralInitiativeValue,
+                                     AstralInitiativeDice);
         }
 
         public async Task<string> GetAstralInitiativeAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
@@ -29293,9 +29285,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
-                    (await GetAstralInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
-                    (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
+                    await GetAstralInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29319,8 +29311,8 @@ namespace Chummer
                         strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + "("
                                    + (intINTAttributeModifiers + WoundModifier).ToString(GlobalSettings.CultureInfo)
                                    + ")";
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
-                                         strInit, AstralInitiativeDice.ToString(GlobalSettings.CultureInfo));
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                                         strInit, AstralInitiativeDice);
                 }
             }
         }
@@ -29351,11 +29343,10 @@ namespace Chummer
                                (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false),
                     strInit,
-                    (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
-                        .CultureInfo));
+                    await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29447,7 +29438,7 @@ namespace Chummer
         public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
             using (LockObject.EnterReadLock())
-                return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+                return StringExtensions.FastFormat(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                                      MatrixInitiativeValue, MatrixInitiativeDice);
         }
 
@@ -29459,7 +29450,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(objCulture,
+                return StringExtensions.FastFormat(objCulture,
                     await LanguageManager.GetStringAsync("String_Initiative", strLanguageToPrint, token: token)
                         .ConfigureAwait(false),
                     await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
@@ -29528,7 +29519,7 @@ namespace Chummer
                         }
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
                                          strInit, MatrixInitiativeDice);
                 }
             }
@@ -29584,7 +29575,7 @@ namespace Chummer
                     }
                 }
 
-                return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false), strInit, await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false), strInit, await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29758,7 +29749,7 @@ namespace Chummer
                     return GetMatrixInitiative(objCulture, strLanguageToPrint);
                 }
 
-                return string.Format(
+                return StringExtensions.FastFormat(
                     objCulture,
                     LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
                                               strLanguageToPrint),
@@ -29779,7 +29770,7 @@ namespace Chummer
                     return await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
 
-                return string.Format(objCulture,
+                return StringExtensions.FastFormat(objCulture,
                     await LanguageManager
                         .GetStringAsync(
                             await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null
@@ -29829,7 +29820,7 @@ namespace Chummer
                                    + ")";
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString(
                                              ActiveCommlink == null
                                                  ? "String_MatrixInitiativeLong"
@@ -29871,7 +29862,7 @@ namespace Chummer
                     strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync(
                         objActiveCommlink == null
                             ? "String_MatrixInitiativeLong"
@@ -30013,7 +30004,7 @@ namespace Chummer
                     return GetMatrixInitiative(objCulture, strLanguageToPrint);
                 }
 
-                return string.Format(
+                return StringExtensions.FastFormat(
                     objCulture,
                     LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
                                               strLanguageToPrint),
@@ -30034,7 +30025,7 @@ namespace Chummer
                     return await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
 
-                return string.Format(objCulture,
+                return StringExtensions.FastFormat(objCulture,
                     await LanguageManager
                         .GetStringAsync(
                             await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null
@@ -30084,7 +30075,7 @@ namespace Chummer
                                    + ")";
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString(
                                              ActiveCommlink == null
                                                  ? "String_MatrixInitiativeLong"
@@ -30126,7 +30117,7 @@ namespace Chummer
                     strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync(
                         objActiveCommlink == null
                             ? "String_MatrixInitiativeLong"
@@ -30791,7 +30782,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(
                                          LanguageManager.GetString("Label_OtherLiftAndCarryLimitsFormat"),
                                          LiftLimit.ToString(
                                              Settings.WeightFormat, GlobalSettings.CultureInfo),
@@ -30808,7 +30799,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("Label_OtherLiftAndCarryLimitsFormat", token: token).ConfigureAwait(false),
                     LiftLimit.ToString(strFormat, GlobalSettings.CultureInfo),
                     CarryLimit.ToString(strFormat, GlobalSettings.CultureInfo));
@@ -51349,7 +51340,7 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("Message_FailedLoad", token: token),
                                         ex.Message),
@@ -51360,7 +51351,7 @@ namespace Chummer
                             else
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
                                             .ConfigureAwait(false),
                                         ex.Message),
@@ -51757,7 +51748,7 @@ namespace Chummer
                                         // ReSharper disable MethodHasAsyncOverload
                                         // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                         if (Program.ShowScrollableMessageBox(
-                                                string.Format(GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(
                                                     LanguageManager.GetString(
                                                         "Message_MissingGameplayOption", token: token),
                                                     SettingsKey),
@@ -51780,7 +51771,7 @@ namespace Chummer
                                         // ReSharper restore MethodHasAsyncOverload
                                     }
                                     else if (await Program.ShowScrollableMessageBoxAsync(
-                                                 string.Format(GlobalSettings.CultureInfo,
+                                                 StringExtensions.FastFormat(
                                                      await LanguageManager
                                                          .GetStringAsync(
                                                              "Message_MissingGameplayOption", token: token)
@@ -55116,7 +55107,7 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    string strReturn = string.Format(GlobalSettings.CultureInfo,
+                    string strReturn = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         LanguageManager.GetString("Label_MetagenicKarmaValue"), MetagenicPositiveQualityKarma,
                         MetagenicNegativeQualityKarma, MetagenicLimit);
                     if (MetagenicPositiveQualityKarma + MetagenicNegativeQualityKarma == 1)
@@ -55136,7 +55127,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 int intPositive = await GetMetagenicPositiveQualityKarmaAsync(token).ConfigureAwait(false);
                 int intNegative = await GetMetagenicNegativeQualityKarmaAsync(token).ConfigureAwait(false);
-                string strReturn = string.Format(GlobalSettings.CultureInfo,
+                string strReturn = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_MetagenicKarmaValue", token: token)
                         .ConfigureAwait(false), intPositive, intNegative,
                     await GetMetagenicLimitAsync(token).ConfigureAwait(false));

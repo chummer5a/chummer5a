@@ -1863,8 +1863,8 @@ namespace Chummer
                     {
                         string strFileNoPath = Path.GetFileName(strFile);
                         Program.ShowMessageBox(
-                            string.Format(GlobalSettings.CultureInfo, strMessage, strFile, ex.Message),
-                            string.Format(GlobalSettings.CultureInfo, strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error);
+                            StringExtensions.FastFormat(strMessage, strFile, ex.Message),
+                            StringExtensions.FastFormat(strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error);
                     }
                 }
             }
@@ -2177,8 +2177,8 @@ namespace Chummer
                     {
                         string strFileNoPath = Path.GetFileName(strFile);
                         await Program.ShowMessageBoxAsync(
-                            string.Format(GlobalSettings.CultureInfo, strMessage, strFile, ex.Message),
-                            string.Format(GlobalSettings.CultureInfo, strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                            StringExtensions.FastFormat(strMessage, strFile, ex.Message),
+                            StringExtensions.FastFormat(strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     }
                 }
             }

@@ -92,7 +92,7 @@ namespace Chummer
             return default;
         }
 
-        /// <inheritdoc cref="Enumerable.Select{TSource}{TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
+        /// <inheritdoc cref="Enumerable.Select{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
         public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, CancellationToken, TResult> selector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

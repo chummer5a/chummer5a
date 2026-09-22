@@ -2382,7 +2382,7 @@ namespace Chummer.Backend.Attributes
                 using (LockObject.EnterReadLock())
                     return UpgradeKarmaCost < 0
                         ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
-                        : string.Format(
+                        : StringExtensions.FastFormat(
                             GlobalSettings.CultureInfo,
                             LanguageManager.GetString("Tip_ImproveItem"),
                             Value + 1,
@@ -2401,7 +2401,7 @@ namespace Chummer.Backend.Attributes
                 return intUpgradeCost < 0
                     ? await LanguageManager.GetStringAsync("Tip_ImproveItemAtMaximum", token: token)
                         .ConfigureAwait(false)
-                    : string.Format(
+                    : StringExtensions.FastFormat(
                         GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token).ConfigureAwait(false),
                         await GetValueAsync(token).ConfigureAwait(false) + 1,
@@ -2528,10 +2528,9 @@ namespace Chummer.Backend.Attributes
                                                  .Where(
                                                      s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                                     {
-                                        sbdNewModifier.AppendFormat(GlobalSettings.CultureInfo,
-                                                                    "{0}+{0}{1}{0}({2})",
-                                                                    strSpace,
-                                                                    strSourceName, decValue);
+                                        sbdNewModifier.Append(strSpace, '+', strSpace)
+                                            .Append(strSourceName, strSpace)
+                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                     }
 
                                     sbdModifier.Clear();
@@ -2755,10 +2754,9 @@ namespace Chummer.Backend.Attributes
                                                  s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    sbdNewModifier.AppendFormat(GlobalSettings.CultureInfo,
-                                                                "{0}+{0}{1}{0}({2})",
-                                                                strSpace,
-                                                                strSourceName, decValue);
+                                    sbdNewModifier.Append(strSpace, '+', strSpace)
+                                        .Append(strSourceName, strSpace)
+                                        .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                 }
 
                                 sbdModifier.Clear();

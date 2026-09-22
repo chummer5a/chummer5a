@@ -357,10 +357,10 @@ namespace Chummer
             CustomDataUpdateAvailability objAvailability = GetCachedAvailability(objInfo);
             if (!objAvailability.IsUpdateAvailable)
                 return strDisplayName;
-            return string.Format(GlobalSettings.CultureInfo,
+            return StringExtensions.FastFormat(
                 LanguageManager.GetString("String_CustomData_UpdateAvailableInList",
                     strLanguage ?? GlobalSettings.Language),
-                strDisplayName, objAvailability.RemoteVersion);
+                strDisplayName, objAvailability.RemoteVersion.ToString());
         }
 
         /// <summary>
@@ -377,10 +377,10 @@ namespace Chummer
             ValueVersion objLocalVersion = GetEffectiveLocalVersion(objInfo);
             if (!objAvailability.IsUpdateAvailable)
                 return objLocalVersion.ToString();
-            return string.Format(GlobalSettings.CultureInfo,
+            return StringExtensions.FastFormat(
                 LanguageManager.GetString("String_CustomData_RemoteVersionAvailable",
                     strLanguage ?? GlobalSettings.Language),
-                objLocalVersion, objAvailability.RemoteVersion);
+                objLocalVersion.ToString(), objAvailability.RemoteVersion.ToString());
         }
 
         /// <summary>

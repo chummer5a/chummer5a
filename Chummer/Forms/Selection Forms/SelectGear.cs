@@ -139,7 +139,7 @@ namespace Chummer
                     int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                        x.Text = StringExtensions.FastFormat(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                         x.Visible = true;
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                     }, _objGenericToken).ConfigureAwait(false);
@@ -388,7 +388,7 @@ namespace Chummer
 
                             string strRatingLabel = objXmlGear.SelectSingleNodeAndCacheExpression("ratinglabel", token)?.Value;
                             strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
-                                ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
+                                ? StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
                                 : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
                             await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token).ConfigureAwait(false);
@@ -1588,7 +1588,7 @@ namespace Chummer
                     {
                         // Add after sort so that it's always at the end
                         lstGears.Add(new ListItem(string.Empty,
-                                                  string.Format(GlobalSettings.CultureInfo,
+                                                  StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                 await LanguageManager.GetStringAsync(
                                                                     "String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                                 intOverLimit)));

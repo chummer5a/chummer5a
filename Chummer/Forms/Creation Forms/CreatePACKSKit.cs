@@ -83,7 +83,7 @@ namespace Chummer
             {
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName")
                             .ConfigureAwait(false), strName),
                     await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_DuplicateName")
@@ -978,7 +978,7 @@ namespace Chummer
 
             await Program.ShowScrollableMessageBoxAsync(
                 this,
-                string.Format(GlobalSettings.CultureInfo,
+                StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated")
                         .ConfigureAwait(false), strName),
                 await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_SuiteCreated").ConfigureAwait(false),

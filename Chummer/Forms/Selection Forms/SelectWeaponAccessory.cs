@@ -92,7 +92,7 @@ namespace Chummer
                 int intMaxAvail = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMaximumAvailabilityAsync().ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
-                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                    x.Text = StringExtensions.FastFormat(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                     x.Visible = true;
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
@@ -183,7 +183,7 @@ namespace Chummer
                 if (intOverLimit > 0)
                 {
                     // Add after sort so that it's always at the end
-                    lstAccessories.Add(new ListItem(string.Empty, string.Format(
+                    lstAccessories.Add(new ListItem(string.Empty, StringExtensions.FastFormat(
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync("String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                         intOverLimit)));
@@ -191,7 +191,7 @@ namespace Chummer
                 if (intMountRestricted > 0 && !string.IsNullOrEmpty(strSearch))
                 {
                     // Add after sort so that it's always at the end
-                    lstAccessories.Add(new ListItem(string.Empty, string.Format(
+                    lstAccessories.Add(new ListItem(string.Empty, StringExtensions.FastFormat(
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync("String_RestrictedItemsHiddenMount", token: token).ConfigureAwait(false),
                                                         intMountRestricted)));
@@ -689,7 +689,7 @@ namespace Chummer
 
             XPathNavigator xmlAccessoryRatingLabel = xmlAccessory.SelectSingleNodeAndCacheExpression("ratinglabel", token);
             string strRatingLabel = xmlAccessoryRatingLabel != null
-                ? string.Format(GlobalSettings.CultureInfo,
+                ? StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("Label_RatingFormat", token: token)
                                                      .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync(xmlAccessoryRatingLabel.Value, token: token)

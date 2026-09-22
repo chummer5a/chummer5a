@@ -1684,7 +1684,7 @@ namespace Chummer
                         if (intRating + FreeLevels > intTotalMaximum)
                         {
                             sbdModifier.Append(']', strSpace);
-                            return _strCachedTotalRatingToolTip = string.Format(GlobalSettings.CultureInfo,
+                            return _strCachedTotalRatingToolTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Tip_Power_Capped"), sbdModifier.ToString(), intTotalMaximum);
                         }
                         return _strCachedTotalRatingToolTip = sbdModifier.ToString();
@@ -1756,7 +1756,7 @@ namespace Chummer
                     if (intRating + await GetFreeLevelsAsync(token).ConfigureAwait(false) > intTotalMaximum)
                     {
                         sbdModifier.Append(']', strSpace);
-                        return _strCachedTotalRatingToolTip = string.Format(GlobalSettings.CultureInfo,
+                        return _strCachedTotalRatingToolTip = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
                                 .ConfigureAwait(false), sbdModifier.ToString(), intTotalMaximum);
                     }
@@ -2112,7 +2112,7 @@ namespace Chummer
                             int intMaximumLevels = TotalMaximumLevels;
                             if (intMaximumLevels < intRating + intFreeLevels)
                             {
-                                sbdModifier.Append('(').AppendFormat(
+                                sbdModifier.Append('(').AppendFastFormat(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Tip_Power_Capped"),
                                     LanguageManager.GetString("String_Level") + strSpace + "(" +
@@ -2120,7 +2120,7 @@ namespace Chummer
                                     strSpace + (intFreeLevels > 0 ? "-" : "+") + strSpace +
                                     LanguageManager.GetString("Checkbox_Contact_Free") + strSpace +
                                     "(" + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ")",
-                                    intMaximumLevels, ')');
+                                    intMaximumLevels).Append(')');
                             }
                             else
                             {
@@ -2216,7 +2216,7 @@ namespace Chummer
                         int intMaximumLevels = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
                         if (intMaximumLevels < intRating + intFreeLevels)
                         {
-                            sbdModifier.Append('(').AppendFormat(
+                            sbdModifier.Append('(').AppendFastFormat(
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
                                     .ConfigureAwait(false),
@@ -2227,7 +2227,7 @@ namespace Chummer
                                 await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
                                     .ConfigureAwait(false) + strSpace +
                                 "(" + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ")",
-                                intMaximumLevels, ')');
+                                intMaximumLevels).Append(')');
                         }
                         else
                         {

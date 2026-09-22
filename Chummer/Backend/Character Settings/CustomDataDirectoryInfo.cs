@@ -323,8 +323,7 @@ namespace Chummer
 
                                 if (blnMismatch)
                                 {
-                                    sbdReturn.AppendFormat(
-                                            GlobalSettings.CultureInfo,
+                                    sbdReturn.AppendFastFormat(
                                             LanguageManager.GetString("Tooltip_Dependency_VersionMismatch", token: token),
                                             lstEnabledCustomData[0].CurrentDisplayName, dependency.CurrentDisplayName)
                                         .AppendLine();
@@ -351,7 +350,7 @@ namespace Chummer
                                 < lstEnabledCustomDataDirectoryInfos.FindLastIndex(
                                     x => lstEnabledCustomData.Contains(x)))
                             {
-                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder", token: token),
+                                sbdReturn.AppendFastFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder", token: token),
                                     lstEnabledCustomData[0].Name, Name).AppendLine();
                             }
                         }
@@ -424,8 +423,7 @@ namespace Chummer
 
                                 if (blnMismatch)
                                 {
-                                    sbdReturn.AppendFormat(
-                                            GlobalSettings.CultureInfo,
+                                    sbdReturn.AppendFastFormat(
                                             await LanguageManager
                                                 .GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token)
                                                 .ConfigureAwait(false),
@@ -456,8 +454,7 @@ namespace Chummer
                                 < lstEnabledCustomDataDirectoryInfos.FindLastIndex(
                                     x => lstEnabledCustomData.Contains(x)))
                             {
-                                sbdReturn.AppendFormat(
-                                    GlobalSettings.CultureInfo,
+                                sbdReturn.AppendFastFormat(
                                     await LanguageManager
                                         .GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token)
                                         .ConfigureAwait(false),
@@ -541,7 +538,7 @@ namespace Chummer
                         //if the version is within the version range add it to the list.
                         if (objInfoToDisplay != default)
                         {
-                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch", token: token),
+                            sbdReturn.AppendFastFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch", token: token),
                                 objInfoToDisplay.CurrentDisplayName, incompatibility.CurrentDisplayName).AppendLine();
                         }
                     }
@@ -613,8 +610,7 @@ namespace Chummer
                         //if the version is within the version range add it to the list.
                         if (objInfoToDisplay != default)
                         {
-                            sbdReturn.AppendFormat(
-                                GlobalSettings.CultureInfo,
+                            sbdReturn.AppendFastFormat(
                                 await LanguageManager
                                     .GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token)
                                     .ConfigureAwait(false),
@@ -880,7 +876,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     sbdDisplayAuthors.AppendLine(kvp.Value
-                                                     ? string.Format(objCultureInfo, kvp.Key,
+                                                     ? StringExtensions.FastFormat(kvp.Key,
                                                                      LanguageManager.GetString(
                                                                          "String_IsMainAuthor", strLanguage, token: token))
                                                      : kvp.Key);
@@ -899,7 +895,7 @@ namespace Chummer
                 foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
                 {
                     sbdDisplayAuthors.AppendLine(kvp.Value
-                                                     ? string.Format(objCultureInfo, kvp.Key,
+                                                     ? StringExtensions.FastFormat(kvp.Key,
                                                                      await LanguageManager.GetStringAsync(
                                                                          "String_IsMainAuthor", strLanguage,
                                                                          token: token).ConfigureAwait(false))

@@ -486,7 +486,7 @@ namespace Chummer
                                 .GetStringAsync(
                                     "Warning_Update_CouldNotConnect", token: token)
                                 .ConfigureAwait(false)
-                            : string.Format(GlobalSettings.CultureInfo,
+                            : StringExtensions.FastFormat(
                                 await LanguageManager
                                     .GetStringAsync(
                                         "Warning_Update_CouldNotConnectException",
@@ -534,7 +534,7 @@ namespace Chummer
                 if (!SilentMode)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(GlobalSettings.CultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync(
                                     "Warning_Update_CouldNotConnectException",
@@ -560,7 +560,7 @@ namespace Chummer
                 if (!SilentMode)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(GlobalSettings.CultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync(
                                     "Warning_Update_CouldNotConnectException",
@@ -679,8 +679,7 @@ namespace Chummer
                 string strText = string.IsNullOrEmpty(_strExceptionString)
                     ? await LanguageManager.GetStringAsync(
                         "Warning_Update_CouldNotConnect", token: token).ConfigureAwait(false)
-                    : string.Format(
-                        GlobalSettings.CultureInfo,
+                    : StringExtensions.FastFormat(
                         (await LanguageManager.GetStringAsync(
                             "Warning_Update_CouldNotConnectException", token: token).ConfigureAwait(false))
                         .NormalizeWhiteSpace(),
@@ -701,15 +700,15 @@ namespace Chummer
             string strStatusText;
             if (intResult > 0)
             {
-                strStatusText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Update_Available", token: token).ConfigureAwait(false), strLatestVersion) + strSpace +
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Currently_Installed_Version", token: token).ConfigureAwait(false), CurrentVersion);
+                strStatusText = StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Update_Available", token: token).ConfigureAwait(false), strLatestVersion) + strSpace +
+                                StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Currently_Installed_Version", token: token).ConfigureAwait(false), CurrentVersion);
             }
             else
             {
                 strStatusText = await LanguageManager.GetStringAsync("String_Up_To_Date", token: token).ConfigureAwait(false) + strSpace +
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                               await LanguageManager.GetStringAsync("String_Currently_Installed_Version", token: token).ConfigureAwait(false),
-                                              CurrentVersion) + strSpace + string.Format(GlobalSettings.CultureInfo,
+                                              CurrentVersion) + strSpace + StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("String_Latest_Version", token: token).ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(_blnPreferNightly
                                                                              ? "String_Nightly"
@@ -899,14 +898,14 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)), token: token).ConfigureAwait(false);
+                    await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)), token: token).ConfigureAwait(false);
                 return false;
             }
             catch (NotSupportedException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)), token: token).ConfigureAwait(false);
+                    await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)), token: token).ConfigureAwait(false);
                 return false;
             }
             return true;
@@ -1098,7 +1097,7 @@ namespace Chummer
                                 {
                                     await Program.ShowScrollableMessageBoxAsync(
                                         this,
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             await LanguageManager.GetStringAsync(
                                                     "Message_File_Cannot_Be_Accessed",
                                                     token: token)
@@ -1115,7 +1114,7 @@ namespace Chummer
                                 {
                                     await Program.ShowScrollableMessageBoxAsync(
                                         this,
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             await LanguageManager.GetStringAsync(
                                                     "Message_File_Cannot_Be_Accessed",
                                                     token: token)
@@ -1152,7 +1151,7 @@ namespace Chummer
                     {
                         await Program.ShowScrollableMessageBoxAsync(
                             this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager
                                     .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
                                     .ConfigureAwait(false),
@@ -1167,7 +1166,7 @@ namespace Chummer
                     {
                         await Program.ShowScrollableMessageBoxAsync(
                             this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager
                                     .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
                                     .ConfigureAwait(false),
@@ -1360,7 +1359,7 @@ namespace Chummer
                     {
                         await Program.ShowScrollableMessageBoxAsync(
                             this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                         "Warning_Update_CouldNotConnectException",
                                         token: token)

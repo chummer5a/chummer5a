@@ -727,7 +727,7 @@ namespace Chummer
                             if (objCustomDataDirectory.XmlException != default)
                             {
                                 Program.ShowScrollableMessageBox(
-                                    string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                    StringExtensions.FastFormat(LanguageManager.GetString("Message_FailedLoad"),
                                         objCustomDataDirectory.XmlException.Message),
                                     LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
                                         LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
@@ -746,8 +746,7 @@ namespace Chummer
                                         if (objExistingInfo.HasManifest)
                                         {
                                             Program.ShowScrollableMessageBox(
-                                                string.Format(
-                                                    GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
                                                 LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -794,7 +793,7 @@ namespace Chummer
                     if (objCustomDataDirectory.XmlException != default)
                     {
                         Program.ShowScrollableMessageBox(
-                            string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                            StringExtensions.FastFormat(LanguageManager.GetString("Message_FailedLoad"),
                                 objCustomDataDirectory.XmlException.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
                                 LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
@@ -813,8 +812,7 @@ namespace Chummer
                                 if (objExistingInfo.HasManifest)
                                 {
                                     Program.ShowScrollableMessageBox(
-                                        string.Format(
-                                            GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
                                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),

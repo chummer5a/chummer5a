@@ -42,9 +42,10 @@ namespace Chummer
 
         private string DisplayDebug()
         {
-            return string.Format(GlobalSettings.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
-                                 _eImprovementType, _decVal, _intRating, _eImprovementSource, _strSourceName,
-                                 _strImprovedName);
+            return StringExtensions.ConcatFast(
+                _eImprovementType.ToString(),
+                " (", _decVal.ToString(GlobalSettings.InvariantCultureInfo), ", ", _intRating.ToString(GlobalSettings.InvariantCultureInfo),
+                ") 🡐 ", _eImprovementSource.ToString(), ", ", _strSourceName, ", ", _strImprovedName);
         }
 
         public enum ImprovementType

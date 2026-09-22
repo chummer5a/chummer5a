@@ -10487,8 +10487,7 @@ namespace Chummer
                         SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
 
                         if (!await CommonFunctions.ConfirmDeleteAsync(
-                                    string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
                                             token: token).ConfigureAwait(false),
                                         await objSustainedObject.GetCurrentDisplayNameAsync(token)
@@ -11804,7 +11803,7 @@ namespace Chummer
                     await CharacterObjectSettings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
                             .ConfigureAwait(false),
                         strExpression,
@@ -11895,13 +11894,12 @@ namespace Chummer
                     string strFormat = "{0}"
                                        + await LanguageManager.GetStringAsync("String_Space", token: token)
                                            .ConfigureAwait(false) + "({1})|{1}";
-                    string strFilter = string.Format(
-                        GlobalSettings.InvariantCultureInfo,
+                    string strFilter = StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix", token: token)
                             .ConfigureAwait(false) + "({1})|{1}|{0}|" +
                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false),
                         StringExtensions.JoinFast("|",
-                            lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
+                            lstCodecs.Select(codec => StringExtensions.FastFormat(
                                 strFormat, codec.CodecName,
                                 codec.FilenameExtension))),
                         StringExtensions.JoinFast(";", lstCodecs.Select(codec => codec.FilenameExtension)));
@@ -11946,7 +11944,7 @@ namespace Chummer
                             if (!File.Exists(strFileName))
                             {
                                 await Program
-                                    .ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo, strErrorString, strFileName),
+                                    .ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(strErrorString, strFileName),
                                         icon: MessageBoxIcon.Error,
                                         token: token)
                                     .ConfigureAwait(false);
@@ -11968,7 +11966,7 @@ namespace Chummer
                                     {
                                         bmpMugshot = null;
                                         await Program
-                                            .ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo, strFormatErrorString, strFileName),
+                                            .ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(strFormatErrorString, strFileName),
                                                 icon: MessageBoxIcon.Error,
                                                 token: token)
                                             .ConfigureAwait(false);
@@ -13110,7 +13108,7 @@ namespace Chummer
                                 // Create an Expense Log Entry for removing the Obsolete Mod.
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decCost * -1,
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager
                                             .GetStringAsync(
                                                 "String_ExpenseVehicleRetrofit", token: token)

@@ -75,7 +75,7 @@ namespace Chummer
                 {
                     await Program.ShowScrollableMessageBoxAsync(
                         this,
-                        string.Format(GlobalSettings.CultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
                             decNuyenPerBPWtfP.ToString(
                                 await _objCharacterSettings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo)

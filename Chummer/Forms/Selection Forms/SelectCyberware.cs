@@ -201,7 +201,7 @@ namespace Chummer
                     int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                        x.Text = StringExtensions.FastFormat(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                         x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                     }, token: _objGenericToken).ConfigureAwait(false);
                     if (WindowMode == Mode.Bioware)
@@ -636,7 +636,7 @@ namespace Chummer
 
                         string strRatingLabel = xmlCyberware.SelectSingleNodeAndCacheExpression("ratinglabel", token)?.Value;
                         strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
-                            ? string.Format(GlobalSettings.CultureInfo,
+                            ? StringExtensions.FastFormat(
                                             await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
                                             await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
                             : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
@@ -2158,7 +2158,7 @@ namespace Chummer
                         {
                             // Add after sort so that it's always at the end
                             lstCyberwares.Add(new ListItem(string.Empty,
-                                                           string.Format(GlobalSettings.CultureInfo,
+                                                           StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                          await LanguageManager.GetStringAsync(
                                                                                  "String_RestrictedItemsHiddenEssence",
                                                                                  token: token)
@@ -2280,7 +2280,7 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed < decCapacity)
                     {
-                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false),
+                        await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false),
                                 decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo),
                                 decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
                             await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);

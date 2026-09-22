@@ -162,7 +162,7 @@ namespace Chummer
 
             if (_blnDirty)
             {
-                await Utils.RestartApplication(_objSelectedCultureInfo, _strSelectedLanguage, "Message_Options_CloseForms")
+                await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms")
                            .ConfigureAwait(false);
             }
 
@@ -278,7 +278,7 @@ namespace Chummer
                     = Path.Combine(Utils.GetLanguageFolderPath, "results_" + strSelectedLanguage + ".xml");
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
-                    string.Format(_objSelectedCultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_Options_ValidationResults",
                             _strSelectedLanguage).ConfigureAwait(false),
                         strFilePath),
@@ -719,13 +719,12 @@ namespace Chummer
                 if (objNewCustomDataDirectory.XmlException != default)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync(
                                     "Message_FailedLoad", _strSelectedLanguage)
                                 .ConfigureAwait(false),
                             objNewCustomDataDirectory.XmlException.Message),
-                        string.Format(_objSelectedCultureInfo,
                             await LanguageManager
                                 .GetStringAsync(
                                     "MessageTitle_FailedLoad", _strSelectedLanguage)
@@ -733,7 +732,7 @@ namespace Chummer
                             await LanguageManager
                                 .GetStringAsync("String_Space", _strSelectedLanguage)
                                 .ConfigureAwait(false) + objNewCustomDataDirectory.Name
-                            + Path.DirectorySeparatorChar + "manifest.xml"),
+                            + Path.DirectorySeparatorChar + "manifest.xml",
                         MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
                     return;
                 }
@@ -742,8 +741,7 @@ namespace Chummer
                 if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(
-                            _objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Message_Duplicate_CustomDataDirectoryPath",
                                 _strSelectedLanguage).ConfigureAwait(false),
@@ -766,8 +764,7 @@ namespace Chummer
                             if (objExistingInfo.HasManifest)
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync(
                                             "Message_Duplicate_CustomDataDirectory").ConfigureAwait(false),
                                         objExistingInfo.Name, objNewCustomDataDirectory.Name),
@@ -801,8 +798,7 @@ namespace Chummer
                                                              x.CharacterSettingsSaveKey,
                                                              StringComparison.OrdinalIgnoreCase))
                     && await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(
-                            _objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Message_Duplicate_CustomDataDirectoryName",
                                 _strSelectedLanguage).ConfigureAwait(false),
@@ -855,13 +851,12 @@ namespace Chummer
                 if (objNewInfo.XmlException != default)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync(
                                     "Message_FailedLoad", _strSelectedLanguage)
                                 .ConfigureAwait(false),
                             objNewInfo.XmlException.Message),
-                        string.Format(_objSelectedCultureInfo,
                             await LanguageManager
                                 .GetStringAsync(
                                     "MessageTitle_FailedLoad", _strSelectedLanguage)
@@ -869,7 +864,7 @@ namespace Chummer
                             await LanguageManager
                                 .GetStringAsync("String_Space", _strSelectedLanguage)
                                 .ConfigureAwait(false) + objNewInfo.Name
-                            + Path.DirectorySeparatorChar + "manifest.xml"),
+                            + Path.DirectorySeparatorChar + "manifest.xml",
                         MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
                     return;
                 }
@@ -879,8 +874,7 @@ namespace Chummer
                                                               x.CharacterSettingsSaveKey,
                                                               StringComparison.OrdinalIgnoreCase)) &&
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(
-                            _objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Message_Duplicate_CustomDataDirectoryName",
                                 _strSelectedLanguage).ConfigureAwait(false), objNewInfo.Name),
@@ -924,7 +918,7 @@ namespace Chummer
                 catch (Exception ex) when (!(ex is OperationCanceledException))
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_CustomDataDirectory_UpdateFailed", _strSelectedLanguage)
                                 .ConfigureAwait(false),
@@ -941,11 +935,11 @@ namespace Chummer
                 if (objRemoteRelease.Version <= objLocalVersion)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_CustomDataDirectory_AlreadyUpToDate", _strSelectedLanguage)
                                 .ConfigureAwait(false),
-                            objInfoToUpdate.Name, objLocalVersion),
+                            objInfoToUpdate.Name, objLocalVersion.ToString()),
                         await LanguageManager
                             .GetStringAsync("MessageTitle_CustomDataDirectory_AlreadyUpToDate", _strSelectedLanguage)
                             .ConfigureAwait(false),
@@ -954,11 +948,11 @@ namespace Chummer
                 }
 
                 if (await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_CustomDataDirectory_UpdateAvailable", _strSelectedLanguage)
                                 .ConfigureAwait(false),
-                            objInfoToUpdate.Name, objRemoteRelease.Version, objLocalVersion),
+                            objInfoToUpdate.Name, objRemoteRelease.Version.ToString(), objLocalVersion.ToString()),
                         await LanguageManager
                             .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateAvailable", _strSelectedLanguage)
                             .ConfigureAwait(false),
@@ -971,7 +965,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strError))
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_CustomDataDirectory_UpdateFailed", _strSelectedLanguage)
                                 .ConfigureAwait(false),
@@ -990,11 +984,11 @@ namespace Chummer
                 await UpdateCustomDataDirectoryInfoPanelAsync(objUpdatedInfo).ConfigureAwait(false);
                 await UpdateCustomDataTabTitleAsync().ConfigureAwait(false);
                 await Program.ShowScrollableMessageBoxAsync(this,
-                    string.Format(_objSelectedCultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager
                             .GetStringAsync("Message_CustomDataDirectory_UpdateSuccess", _strSelectedLanguage)
                             .ConfigureAwait(false),
-                        objUpdatedInfo.Name, objRemoteRelease.Version),
+                        objUpdatedInfo.Name, objRemoteRelease.Version.ToString()),
                     await LanguageManager
                         .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateSuccess", _strSelectedLanguage)
                         .ConfigureAwait(false),
@@ -1343,8 +1337,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(
-                            _objSelectedCultureInfo,
+                    await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Message_Options_FileIsNotPDF",
                                 _strSelectedLanguage, token: token).ConfigureAwait(false),
@@ -1749,7 +1742,7 @@ namespace Chummer
                         strUpdateLocation, out string strError))
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
-                        string.Format(_objSelectedCultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_CustomDataDirectory_UpdateFailed", _strSelectedLanguage,
                                     token: token).ConfigureAwait(false),
@@ -2469,7 +2462,7 @@ namespace Chummer
         private async Task SetToolTips(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await chkUseLogging.SetToolTipTextAsync(string.Format(_objSelectedCultureInfo,
+            await chkUseLogging.SetToolTipTextAsync(StringExtensions.FastFormat(
                                                                              await LanguageManager.GetStringAsync(
                                                                                      "Tip_Options_TelemetryId",
                                                                                      _strSelectedLanguage, token: token)
@@ -2889,7 +2882,7 @@ namespace Chummer
                             }
                         }
 
-                        string message = string.Format(_objSelectedCultureInfo,
+                        string message = StringExtensions.FastFormat(_objSelectedCultureInfo,
                             await LanguageManager.GetStringAsync(
                                     "Message_FoundPDFsInFolder",
                                     _strSelectedLanguage)
@@ -2992,7 +2985,7 @@ namespace Chummer
                 FileInfo objFileInfo = new FileInfo(strBookFile);
                 string strText = string.IsNullOrEmpty(strProgressBarTextFormat)
                     ? objFileInfo.Name
-                    : string.Format(_objSelectedCultureInfo, strProgressBarTextFormat, objFileInfo.Name);
+                    : StringExtensions.FastFormat(strProgressBarTextFormat, objFileInfo.Name);
                 await frmProgressBar
                       .PerformStepAsync(strText, LoadingBar.ProgressBarTextPatterns.Scanning, innerToken)
                       .ConfigureAwait(false);
