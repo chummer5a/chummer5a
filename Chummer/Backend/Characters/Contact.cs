@@ -3203,7 +3203,7 @@ namespace Chummer
                         if (blnError && blnShowError)
                         {
                             Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                               LanguageManager.GetString("Message_FileNotFound", token: token),
                                               FileName),
                                 LanguageManager.GetString("MessageTitle_FileNotFound", token: token), MessageBoxButtons.OK,
@@ -3315,7 +3315,7 @@ namespace Chummer
                         if (blnError && blnShowError)
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
                                         .ConfigureAwait(false),
                                     FileName),
@@ -3839,7 +3839,11 @@ namespace Chummer
                         {
                             Bitmap[] objMugshotImages = new Bitmap[xmlMugshotsList.Count];
                             token.ThrowIfCancellationRequested();
-                            Parallel.For(0, xmlMugshotsList.Count,
+                            ParallelOptions objOptions = new ParallelOptions
+                            {
+                                CancellationToken = token
+                            };
+                            Parallel.For(0, xmlMugshotsList.Count, objOptions,
                                             i =>
                                             {
                                                 string strLoop = astrMugshotsBase64[i];

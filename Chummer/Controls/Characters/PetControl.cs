@@ -198,7 +198,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
                                         .ConfigureAwait(false), strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
@@ -419,8 +419,8 @@ namespace Chummer
                                     x => !strMetavariantName.Equals(x.Value?.ToString(),
                                                                    StringComparison.OrdinalIgnoreCase))))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
-                                                              string.Format(
-                                                                  GlobalSettings.CultureInfo, strMetavariantFormat,
+                                                              StringExtensions.FastFormat(
+                                                                  strMetavariantFormat,
                                                                   objXmlMetavariantNode
                                                                       .SelectSingleNodeAndCacheExpression("translate", token: token)
                                                                       ?.Value ?? strMetavariantName)));

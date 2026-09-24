@@ -607,8 +607,7 @@ namespace Chummer.Backend.Equipment
 
                         if (blnSync)
                         {
-                            string strDescription = string.Format(
-                                               GlobalSettings.CultureInfo,
+                            string strDescription = StringExtensions.FastFormat(
                                                LanguageManager.GetString("String_SelectVariableCost", token: token),
                                                CurrentDisplayNameShort);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -635,8 +634,7 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            string strDescription = string.Format(
-                                GlobalSettings.CultureInfo,
+                            string strDescription = StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token)
                                     .ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
@@ -7597,7 +7595,7 @@ namespace Chummer.Backend.Equipment
                         // Add in the Recoil Group bonuses.
                         intRCFull += intRecoil;
                         if (blnWithTooltip)
-                            sbdRCTip.Append(strSpace, '+', strSpace).AppendFormat(
+                            sbdRCTip.Append(strSpace, '+', strSpace).AppendFastFormat(
                                 objCulture,
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -9098,7 +9096,7 @@ namespace Chummer.Backend.Equipment
             // Range dice modifiers from data are never positive; bonuses only reduce penalties.
             decModifier = Math.Min(decModifier, 0m);
 
-            return string.Format(GlobalSettings.InvariantCultureInfo,
+            return StringExtensions.FastFormat(GlobalSettings.InvariantCultureInfo,
                 LanguageManager.GetString("Label_Range" + strRange), decModifier.StandardRound());
         }
 
@@ -9151,7 +9149,7 @@ namespace Chummer.Backend.Equipment
             // Range dice modifiers from data are never positive; bonuses only reduce penalties.
             decModifier = Math.Min(decModifier, 0m);
 
-            return string.Format(GlobalSettings.InvariantCultureInfo,
+            return StringExtensions.FastFormat(GlobalSettings.InvariantCultureInfo,
                 await LanguageManager.GetStringAsync("Label_Range" + strRange, token: token).ConfigureAwait(false), decModifier.StandardRound());
         }
 
@@ -9717,11 +9715,11 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                decDicePoolModifier += WeaponAccessories.Sum(a => a.Equipped, a =>
+                decDicePoolModifier += WeaponAccessories.Sum(a => a.Equipped, (a, t) =>
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
-                        string strWeaponBonusPool = a.WirelessWeaponBonus["pool"]?.InnerTextViaPool(token);
+                        string strWeaponBonusPool = a.WirelessWeaponBonus["pool"]?.InnerTextViaPool(t);
                         if (!string.IsNullOrEmpty(strWeaponBonusPool)
                             && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                         {
@@ -9733,7 +9731,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (HasWirelessSmartgun)
                         {
-                            strWeaponBonusPool = a.WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool(token);
+                            strWeaponBonusPool = a.WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool(t);
                             if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
@@ -10509,7 +10507,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strExtra;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
                 {
                     // First look at any changes caused by the weapon being wireless
@@ -10843,9 +10841,9 @@ namespace Chummer.Backend.Equipment
                             decimal decSmartlinkBonus =
                                 ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                             if (decSmartlinkBonus != 0)
-                                sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                    strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"),
-                                    decSmartlinkBonus);
+                                sbdExtra.Append(strSpace, '+', strSpace)
+                                    .Append(LanguageManager.GetString("Tip_Skill_Smartlink"), strSpace)
+                                    .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
                         }
 
                         foreach (Improvement objImprovement in ImprovementManager
@@ -10884,9 +10882,9 @@ namespace Chummer.Backend.Equipment
                                                  Improvement.ImprovementType
                                                      .WeaponSpecificRange, InternalId)))
                         {
-                            sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, _objCharacter.GetObjectName(objImprovement),
-                                objImprovement.Value);
+                            sbdExtra.Append(strSpace, '+', strSpace)
+                                .Append(_objCharacter.GetObjectName(objImprovement), strSpace)
+                                .Append('(', objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                         }
                     }
                     else if (WirelessOn && HasWirelessSmartgun)
@@ -10917,8 +10915,8 @@ namespace Chummer.Backend.Equipment
                                     }
                                     if (!string.IsNullOrEmpty(strBonusName))
                                     {
-                                        sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                            strSpace, strBonusName, 1);
+                                        sbdExtra.Append(strSpace, '+', strSpace)
+                                            .Append(strBonusName, strSpace, "(1)");
                                     }
                                 }
 
@@ -10942,166 +10940,169 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 if (decSmartlinkBonus != 0)
-                                    sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"),
-                                        decSmartlinkBonus);
+                                    sbdExtra.Append(strSpace, '+', strSpace)
+                                        .Append(LanguageManager.GetString("Tip_Skill_Smartlink"), strSpace)
+                                        .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
                                 break;
 
                             case FiringMode.GunneryCommandDevice:
                             case FiringMode.ManualOperation:
                                 if (decSmartlinkBonus != 0)
-                                    sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"),
-                                        decSmartlinkBonus);
+                                    sbdExtra.Append(strSpace, '+', strSpace)
+                                        .Append(LanguageManager.GetString("Tip_Skill_Smartlink"), strSpace)
+                                        .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
                                 break;
                         }
                     }
 
-                    strExtra = sbdExtra.ToString();
-                }
-
-                string strReturn = LanguageManager.GetString("String_Special");
-                switch (FireMode)
-                {
-                    case FiringMode.DogBrain:
+                    switch (FireMode)
                     {
-                        strReturn = LanguageManager.GetString("String_Pilot").ConcatFast(strSpace,
-                            "(", (ParentVehicle?.Pilot ?? 0).ToString(GlobalSettings.CultureInfo), ")");
-                        string strAutosoft = RelevantAutosoft;
-                        string strName = Name;
-                        string strDisplayName = CurrentDisplayName;
-                        Gear objAutosoft = null;
-                        if (_objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
-                        {
-                            objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
-                                x => x.Children.Where(y => y.Equipped),
-                                x => x.Name == strAutosoft && x.Equipped &&
-                                     (x.Extra == strName || x.Extra == strDisplayName));
-                        }
-
-                        if (ParentVehicle != null && objAutosoft == null)
-                        {
-                            objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
-                                x => x.Children.Where(y => y.Equipped),
-                                x => x.Name == strAutosoft && x.Equipped &&
-                                     (x.Extra == strName || x.Extra == strDisplayName));
-                        }
-
-                        if (objAutosoft != null)
-                        {
-                            strReturn += string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, objAutosoft.CurrentDisplayName, objAutosoft.Rating);
-                        }
-                        else
-                        {
-                            strReturn += string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, LanguageManager.GetString("Tip_Skill_Defaulting"), -1);
-                        }
-
-                        strReturn += strExtra;
-                        break;
-                    }
-                    case FiringMode.RemoteOperated:
-                    {
-                        Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                        if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
-                        {
-                            SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
-                            if (spec != null)
+                        case FiringMode.DogBrain:
                             {
-                                int intSpecBonus = spec.SpecializationBonus;
-                                if (intSpecBonus != 0)
-                                    strExtra = string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, spec.CurrentDisplayName, intSpecBonus) + strExtra;
-                            }
-                        }
-
-                        strReturn = objSkill.CompileDicepoolTooltip("LOG", objSkill.CurrentDisplayName + strSpace,
-                            strExtra);
-                        break;
-                    }
-                    case FiringMode.GunneryCommandDevice:
-                    case FiringMode.ManualOperation:
-                    {
-                        Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                        if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
-                        {
-                            SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
-                            if (spec != null)
-                            {
-                                int intSpecBonus = spec.SpecializationBonus;
-                                if (intSpecBonus != 0)
-                                    strExtra = string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, spec.CurrentDisplayName, intSpecBonus) + strExtra;
-                            }
-                        }
-
-                        Cyberware objAttributeSource =
-                            Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute) &&
-                            _objMountedVehicle == null
-                                ? _objCharacter.Cyberware.DeepFindById(ParentID)
-                                : null;
-                        while (objAttributeSource != null &&
-                               objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
-                        {
-                            objAttributeSource = objAttributeSource.Parent;
-                        }
-
-                        strReturn = objSkill.CompileDicepoolTooltip(string.Empty,
-                            objSkill.CurrentDisplayName + strSpace, strExtra,
-                            !Cyberware || _objMountedVehicle != null, objAttributeSource);
-                        break;
-                    }
-                    case FiringMode.Skill:
-                    {
-                        Skill objSkill = Skill;
-                        if (objSkill != null)
-                        {
-                            // If the character has a Specialization, include it in the Dice Pool string.
-                            if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
-                            {
-                                SkillSpecialization spec =
-                                    (objSkill.GetSpecialization(CurrentDisplayNameShort) ??
-                                     objSkill.GetSpecialization(Name) ??
-                                     objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
-                                     objSkill.GetSpecialization(Category)) ?? (objSkill.GetSpecialization(Category.EndsWith('s')
-                                        ? Category.TrimEndOnce('s')
-                                        : Category + "s") ?? (objSkill.GetSpecialization(Spec) ??
-                                                              objSkill.GetSpecialization(Spec2)));
-
-                                if (spec != null)
+                                sbdReturn.Append(LanguageManager.GetString("String_Pilot"), strSpace)
+                                    .Append('(', (ParentVehicle?.Pilot ?? 0).ToString(GlobalSettings.CultureInfo), ')');
+                                string strAutosoft = RelevantAutosoft;
+                                string strName = Name;
+                                string strDisplayName = CurrentDisplayName;
+                                Gear objAutosoft = null;
+                                if (_objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
                                 {
-                                    int intSpecBonus = spec.SpecializationBonus;
-                                    if (intSpecBonus != 0)
-                                        strExtra = string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                            strSpace, spec.CurrentDisplayName, intSpecBonus) + strExtra;
+                                    objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
+                                        x => x.Children.Where(y => y.Equipped),
+                                        x => x.Name == strAutosoft && x.Equipped &&
+                                             (x.Extra == strName || x.Extra == strDisplayName));
                                 }
+
+                                if (ParentVehicle != null && objAutosoft == null)
+                                {
+                                    objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                                        x => x.Children.Where(y => y.Equipped),
+                                        x => x.Name == strAutosoft && x.Equipped &&
+                                             (x.Extra == strName || x.Extra == strDisplayName));
+                                }
+
+                                if (objAutosoft != null)
+                                {
+                                    sbdReturn.Append(strSpace, '+', strSpace)
+                                        .Append(objAutosoft.CurrentDisplayName, strSpace)
+                                        .Append('(', objAutosoft.Rating.ToString(GlobalSettings.CultureInfo), ')');
+                                }
+                                else
+                                {
+                                    sbdReturn.Append(strSpace, '+', strSpace)
+                                        .Append(LanguageManager.GetString("Tip_Skill_Defaulting"), strSpace, "(-1)");
+                                }
+
+                                sbdReturn.Append(sbdExtra.ToTrimmedString());
+                                break;
                             }
-
-                            Cyberware objAttributeSource = null;
-                            if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
+                        case FiringMode.RemoteOperated:
                             {
-                                objAttributeSource =
-                                    _objMountedVehicle?.FindVehicleCyberware(x => x.InternalId == ParentID) ??
-                                    _objCharacter.Cyberware.DeepFindById(ParentID);
+                                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                                if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
+                                {
+                                    SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
+                                    if (spec != null)
+                                    {
+                                        int intSpecBonus = spec.SpecializationBonus;
+                                        if (intSpecBonus != 0)
+                                            sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, spec.CurrentDisplayName,
+                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                    }
+                                }
 
+                                sbdReturn.Append(objSkill.CompileDicepoolTooltip("LOG", objSkill.CurrentDisplayName + strSpace,
+                                    sbdExtra.ToTrimmedString()));
+                                break;
+                            }
+                        case FiringMode.GunneryCommandDevice:
+                        case FiringMode.ManualOperation:
+                            {
+                                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                                if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
+                                {
+                                    SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
+                                    if (spec != null)
+                                    {
+                                        int intSpecBonus = spec.SpecializationBonus;
+                                        if (intSpecBonus != 0)
+                                            sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, spec.CurrentDisplayName,
+                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                    }
+                                }
+
+                                Cyberware objAttributeSource =
+                                    Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute) &&
+                                    _objMountedVehicle == null
+                                        ? _objCharacter.Cyberware.DeepFindById(ParentID)
+                                        : null;
                                 while (objAttributeSource != null &&
                                        objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
                                 {
                                     objAttributeSource = objAttributeSource.Parent;
                                 }
+
+                                sbdReturn.Append(objSkill.CompileDicepoolTooltip(string.Empty,
+                                    objSkill.CurrentDisplayName + strSpace, sbdExtra.ToTrimmedString(),
+                                    !Cyberware || _objMountedVehicle != null, objAttributeSource));
+                                break;
                             }
+                        case FiringMode.Skill:
+                            {
+                                Skill objSkill = Skill;
+                                if (objSkill != null)
+                                {
+                                    // If the character has a Specialization, include it in the Dice Pool string.
+                                    if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                                    {
+                                        SkillSpecialization spec =
+                                            (objSkill.GetSpecialization(CurrentDisplayNameShort) ??
+                                             objSkill.GetSpecialization(Name) ??
+                                             objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
+                                             objSkill.GetSpecialization(Category)) ?? (objSkill.GetSpecialization(Category.EndsWith('s')
+                                                ? Category.TrimEndOnce('s')
+                                                : Category + "s") ?? (objSkill.GetSpecialization(Spec) ??
+                                                                      objSkill.GetSpecialization(Spec2)));
 
-                            strReturn = objSkill.CompileDicepoolTooltip(string.Empty,
-                                objSkill.CurrentDisplayName + strSpace, strExtra, !Cyberware,
-                                objAttributeSource);
-                        }
+                                        if (spec != null)
+                                        {
+                                            int intSpecBonus = spec.SpecializationBonus;
+                                            if (intSpecBonus != 0)
+                                                sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, spec.CurrentDisplayName,
+                                                    strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                        }
+                                    }
 
-                        break;
+                                    Cyberware objAttributeSource = null;
+                                    if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
+                                    {
+                                        objAttributeSource =
+                                            _objMountedVehicle?.FindVehicleCyberware(x => x.InternalId == ParentID) ??
+                                            _objCharacter.Cyberware.DeepFindById(ParentID);
+
+                                        while (objAttributeSource != null &&
+                                               objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
+                                        {
+                                            objAttributeSource = objAttributeSource.Parent;
+                                        }
+                                    }
+
+                                    sbdReturn.Append(objSkill.CompileDicepoolTooltip(string.Empty,
+                                        objSkill.CurrentDisplayName + strSpace, sbdExtra.ToTrimmedString(), !Cyberware,
+                                        objAttributeSource));
+                                }
+                                else
+                                    sbdReturn.Append(LanguageManager.GetString("String_Special"));
+
+                                break;
+                            }
+                        default:
+                            sbdReturn.Append(LanguageManager.GetString("String_Special"));
+                            break;
                     }
-                }
 
-                return strReturn;
+                    return sbdReturn.ToTrimmedString();
+                }
             }
         }
 
@@ -11112,7 +11113,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strExtra;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
             {
                 // First look at any changes caused by the weapon being wireless
@@ -11469,11 +11470,9 @@ namespace Chummer.Backend.Equipment
                                 .ConfigureAwait(false);
                         if (decSmartlinkBonus != 0)
                         {
-                            sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace,
-                                await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
-                                    .ConfigureAwait(false),
-                                decSmartlinkBonus);
+                            sbdExtra.Append(strSpace, '+', strSpace)
+                                .Append(await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token).ConfigureAwait(false), strSpace)
+                                .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
                         }
                     }
 
@@ -11513,10 +11512,9 @@ namespace Chummer.Backend.Equipment
                                          Improvement.ImprovementType
                                              .WeaponSpecificRange, InternalId, token: token).ConfigureAwait(false)))
                     {
-                        sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace,
-                            await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false),
-                            objImprovement.Value);
+                        sbdExtra.Append(strSpace, '+', strSpace)
+                            .Append(await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace)
+                            .Append('(', objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                     }
                 }
                 else if (WirelessOn && HasWirelessSmartgun)
@@ -11553,8 +11551,8 @@ namespace Chummer.Backend.Equipment
                                 }
                                 if (!string.IsNullOrEmpty(strBonusName))
                                 {
-                                    sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, strBonusName, 1);
+                                    sbdExtra.Append(strSpace, '+', strSpace)
+                                        .Append(strBonusName, strSpace, "(1)");
                                 }
                             }
 
@@ -11582,11 +11580,9 @@ namespace Chummer.Backend.Equipment
 
                             if (decSmartlinkBonus != 0)
                             {
-                                sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                    strSpace,
-                                    await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
-                                        .ConfigureAwait(false),
-                                    decSmartlinkBonus);
+                                sbdExtra.Append(strSpace, '+', strSpace)
+                                    .Append(await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token).ConfigureAwait(false), strSpace)
+                                    .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
                             }
 
                             break;
@@ -11595,183 +11591,108 @@ namespace Chummer.Backend.Equipment
                         case FiringMode.ManualOperation:
                             if (decSmartlinkBonus != 0)
                             {
-                                sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                    strSpace,
-                                    await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
-                                        .ConfigureAwait(false),
-                                    decSmartlinkBonus);
+                                sbdExtra.Append(strSpace, '+', strSpace)
+                                    .Append(await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token).ConfigureAwait(false), strSpace)
+                                    .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
                             }
 
                             break;
                     }
                 }
-
-                strExtra = sbdExtra.ToString();
-            }
-
-            string strReturn =
-                await LanguageManager.GetStringAsync("String_Special", token: token).ConfigureAwait(false);
-            switch (FireMode)
-            {
-                case FiringMode.DogBrain:
+                switch (FireMode)
                 {
-                    strReturn = (await LanguageManager.GetStringAsync("String_Pilot", token: token).ConfigureAwait(false)).ConcatFast(strSpace,
-                        "(", (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0).ToString(GlobalSettings.CultureInfo), ")");
-                    string strAutosoft = await GetRelevantAutosoftAsync(token).ConfigureAwait(false);
-                    string strName = Name;
-                    string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                    Gear objAutosoft = null;
-                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
-                    {
-                        objAutosoft = await _objCharacter.Gear.DeepFirstOrDefaultAsync(
-                            async (x, t) => await x.Children.ToListAsync(y => y.Equipped, token: t).ConfigureAwait(false),
-                            x => x.Name == strAutosoft && x.Equipped &&
-                                 (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
-                    }
-                    if (objAutosoft == null && ParentVehicle != null)
-                    {
-                        objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(async (x, t) => await x.Children.ToListAsync(y => y.Equipped, token: t).ConfigureAwait(false),
-                            x => x.Name == strAutosoft && x.Equipped &&
-                                 (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
-                    }
-                    if (objAutosoft != null)
-                    {
-                        strReturn += string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace, await objAutosoft.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                            await objAutosoft.GetRatingAsync(token).ConfigureAwait(false));
-                    }
-                    else
-                    {
-                        strReturn += string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace,
-                            await LanguageManager.GetStringAsync("Tip_Skill_Defaulting", token: token)
-                                .ConfigureAwait(false), -1);
-                    }
-
-                    strReturn += strExtra;
-                    break;
-                }
-                case FiringMode.RemoteOperated:
-                {
-                    Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token)
-                        .ConfigureAwait(false);
-                    if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
-                    {
-                        string strRelevantSpec = await GetRelevantSpecializationAsync(token).ConfigureAwait(false);
-                        if (strRelevantSpec != "None")
+                    case FiringMode.DogBrain:
                         {
-                            SkillSpecialization spec = await objSkill.GetSpecializationAsync(strRelevantSpec, token)
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_Pilot", token: token).ConfigureAwait(false), strSpace)
+                                .Append('(', (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0).ToString(GlobalSettings.CultureInfo), ')');
+                            string strAutosoft = await GetRelevantAutosoftAsync(token).ConfigureAwait(false);
+                            string strName = Name;
+                            string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            Gear objAutosoft = null;
+                            if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                            {
+                                objAutosoft = await _objCharacter.Gear.DeepFirstOrDefaultAsync(
+                                    async (x, t) => await x.Children.ToListAsync(y => y.Equipped, token: t).ConfigureAwait(false),
+                                    x => x.Name == strAutosoft && x.Equipped &&
+                                         (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                            }
+                            if (objAutosoft == null && ParentVehicle != null)
+                            {
+                                objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(async (x, t) => await x.Children.ToListAsync(y => y.Equipped, token: t).ConfigureAwait(false),
+                                    x => x.Name == strAutosoft && x.Equipped &&
+                                         (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                            }
+                            if (objAutosoft != null)
+                            {
+                                sbdReturn.Append(strSpace, '+', strSpace)
+                                    .Append(await objAutosoft.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace)
+                                    .Append('(', (await objAutosoft.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
+                            }
+                            else
+                            {
+                                sbdReturn.Append(strSpace, '+', strSpace)
+                                    .Append(await LanguageManager.GetStringAsync("Tip_Skill_Defaulting", token: token).ConfigureAwait(false), strSpace, "(-1)");
+                            }
+
+                            sbdReturn.Append(sbdExtra.ToTrimmedString());
+                            break;
+                        }
+                    case FiringMode.RemoteOperated:
+                        {
+                            Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token)
                                 .ConfigureAwait(false);
-                            if (spec != null)
+                            if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
-                                int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
-                                if (intSpecBonus != 0)
-                                    strExtra = string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                        intSpecBonus) + strExtra;
-                            }
-                        }
-                    }
-
-                    strReturn = await objSkill.CompileDicepoolTooltipAsync("LOG",
-                        await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace, strExtra,
-                        token: token).ConfigureAwait(false);
-                    break;
-                }
-                case FiringMode.GunneryCommandDevice:
-                case FiringMode.ManualOperation:
-                {
-                    Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token)
-                        .ConfigureAwait(false);
-                    if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
-                    {
-                        string strRelevantSpec = await GetRelevantSpecializationAsync(token).ConfigureAwait(false);
-                        if (strRelevantSpec != "None")
-                        {
-                            SkillSpecialization spec = await objSkill.GetSpecializationAsync(strRelevantSpec, token)
-                                .ConfigureAwait(false);
-                            if (spec != null)
-                            {
-                                int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
-                                if (intSpecBonus != 0)
-                                    strExtra = string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                        intSpecBonus) + strExtra;
-                            }
-                        }
-                    }
-
-                    Cyberware objAttributeSource =
-                        Cyberware &&
-                        Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(await objSkill.GetAttributeAsync(token)
-                            .ConfigureAwait(false)) &&
-                        _objMountedVehicle == null
-                            ? await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token)
-                                .ConfigureAwait(false)
-                            : null;
-                    while (objAttributeSource != null && await objAttributeSource
-                               .GetAttributeTotalValueAsync(
-                                   await objSkill.GetAttributeAsync(token).ConfigureAwait(false), token)
-                               .ConfigureAwait(false) == 0)
-                    {
-                        objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
-                    }
-
-                    strReturn = await objSkill.CompileDicepoolTooltipAsync(string.Empty,
-                        await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace, strExtra,
-                        !Cyberware || _objMountedVehicle != null, objAttributeSource, token).ConfigureAwait(false);
-                    break;
-                }
-                case FiringMode.Skill:
-                {
-                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
-                    if (objSkill != null)
-                    {
-                        // If the character has a Specialization, include it in the Dice Pool string.
-                        if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0 &&
-                            !objSkill.IsExoticSkill)
-                        {
-                            SkillSpecialization spec =
-                                (await objSkill
-                                     .GetSpecializationAsync(
-                                         await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token)
-                                     .ConfigureAwait(false) ??
-                                 await objSkill.GetSpecializationAsync(Name, token).ConfigureAwait(false) ??
-                                 await objSkill
-                                     .GetSpecializationAsync(
-                                         await DisplayCategoryAsync(GlobalSettings.Language, token)
-                                             .ConfigureAwait(false), token).ConfigureAwait(false) ??
-                                 await objSkill.GetSpecializationAsync(Category, token).ConfigureAwait(false)) ??
-                                (await objSkill.GetSpecializationAsync(Category.EndsWith('s')
-                                     ? Category.TrimEndOnce('s')
-                                     : Category + "s", token).ConfigureAwait(false) ??
-                                 (await objSkill.GetSpecializationAsync(Spec, token).ConfigureAwait(false) ??
-                                  await objSkill.GetSpecializationAsync(Spec2, token).ConfigureAwait(false)));
-
-                            if (spec != null)
-                            {
-                                int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
-                                if (intSpecBonus != 0)
-                                    strExtra = string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                        intSpecBonus) + strExtra;
-                            }
-                        }
-
-                        Cyberware objAttributeSource = null;
-                        if (Cyberware &&
-                            Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(
-                                await objSkill.GetAttributeAsync(token).ConfigureAwait(false)))
-                        {
-                            objAttributeSource =
-                                _objMountedVehicle != null
-                                    ? (await _objMountedVehicle.FindVehicleCyberwareAsync(x =>
-                                          x.InternalId == ParentID, token).ConfigureAwait(false)).Item1 ??
-                                      await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token)
-                                          .ConfigureAwait(false)
-                                    : await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token)
+                                string strRelevantSpec = await GetRelevantSpecializationAsync(token).ConfigureAwait(false);
+                                if (strRelevantSpec != "None")
+                                {
+                                    SkillSpecialization spec = await objSkill.GetSpecializationAsync(strRelevantSpec, token)
                                         .ConfigureAwait(false);
+                                    if (spec != null)
+                                    {
+                                        int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                        if (intSpecBonus != 0)
+                                            sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                    }
+                                }
+                            }
 
+                            sbdReturn.Append(await objSkill.CompileDicepoolTooltipAsync("LOG",
+                                await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace, sbdExtra.ToTrimmedString(),
+                                token: token).ConfigureAwait(false));
+                            break;
+                        }
+                    case FiringMode.GunneryCommandDevice:
+                    case FiringMode.ManualOperation:
+                        {
+                            Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token)
+                                .ConfigureAwait(false);
+                            if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
+                            {
+                                string strRelevantSpec = await GetRelevantSpecializationAsync(token).ConfigureAwait(false);
+                                if (strRelevantSpec != "None")
+                                {
+                                    SkillSpecialization spec = await objSkill.GetSpecializationAsync(strRelevantSpec, token)
+                                        .ConfigureAwait(false);
+                                    if (spec != null)
+                                    {
+                                        int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                        if (intSpecBonus != 0)
+                                            sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                    }
+                                }
+                            }
+
+                            Cyberware objAttributeSource =
+                                Cyberware &&
+                                Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(await objSkill.GetAttributeAsync(token)
+                                    .ConfigureAwait(false)) &&
+                                _objMountedVehicle == null
+                                    ? await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token)
+                                        .ConfigureAwait(false)
+                                    : null;
                             while (objAttributeSource != null && await objAttributeSource
                                        .GetAttributeTotalValueAsync(
                                            await objSkill.GetAttributeAsync(token).ConfigureAwait(false), token)
@@ -11779,19 +11700,86 @@ namespace Chummer.Backend.Equipment
                             {
                                 objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                             }
+
+                            sbdReturn.Append(await objSkill.CompileDicepoolTooltipAsync(string.Empty,
+                                await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace, sbdExtra.ToTrimmedString(),
+                                !Cyberware || _objMountedVehicle != null, objAttributeSource, token).ConfigureAwait(false));
+                            break;
                         }
+                    case FiringMode.Skill:
+                        {
+                            Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                            if (objSkill != null)
+                            {
+                                // If the character has a Specialization, include it in the Dice Pool string.
+                                if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                                    !objSkill.IsExoticSkill)
+                                {
+                                    SkillSpecialization spec =
+                                        (await objSkill
+                                             .GetSpecializationAsync(
+                                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token)
+                                             .ConfigureAwait(false) ??
+                                         await objSkill.GetSpecializationAsync(Name, token).ConfigureAwait(false) ??
+                                         await objSkill
+                                             .GetSpecializationAsync(
+                                                 await DisplayCategoryAsync(GlobalSettings.Language, token)
+                                                     .ConfigureAwait(false), token).ConfigureAwait(false) ??
+                                         await objSkill.GetSpecializationAsync(Category, token).ConfigureAwait(false)) ??
+                                        (await objSkill.GetSpecializationAsync(Category.EndsWith('s')
+                                             ? Category.TrimEndOnce('s')
+                                             : Category + "s", token).ConfigureAwait(false) ??
+                                         (await objSkill.GetSpecializationAsync(Spec, token).ConfigureAwait(false) ??
+                                          await objSkill.GetSpecializationAsync(Spec2, token).ConfigureAwait(false)));
 
-                        strReturn = await objSkill.CompileDicepoolTooltipAsync(string.Empty,
-                            await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace, strExtra,
-                            !Cyberware,
-                            objAttributeSource, token).ConfigureAwait(false);
-                    }
+                                    if (spec != null)
+                                    {
+                                        int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                        if (intSpecBonus != 0)
+                                            sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                    }
+                                }
 
-                    break;
+                                Cyberware objAttributeSource = null;
+                                if (Cyberware &&
+                                    Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(
+                                        await objSkill.GetAttributeAsync(token).ConfigureAwait(false)))
+                                {
+                                    objAttributeSource =
+                                        _objMountedVehicle != null
+                                            ? (await _objMountedVehicle.FindVehicleCyberwareAsync(x =>
+                                                  x.InternalId == ParentID, token).ConfigureAwait(false)).Item1 ??
+                                              await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token)
+                                                  .ConfigureAwait(false)
+                                            : await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token)
+                                                .ConfigureAwait(false);
+
+                                    while (objAttributeSource != null && await objAttributeSource
+                                               .GetAttributeTotalValueAsync(
+                                                   await objSkill.GetAttributeAsync(token).ConfigureAwait(false), token)
+                                               .ConfigureAwait(false) == 0)
+                                    {
+                                        objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                                    }
+                                }
+
+                                sbdReturn.Append(await objSkill.CompileDicepoolTooltipAsync(string.Empty,
+                                    await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace, sbdExtra.ToTrimmedString(),
+                                    !Cyberware,
+                                    objAttributeSource, token).ConfigureAwait(false));
+                            }
+                            else
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_Special", token: token).ConfigureAwait(false));
+
+                            break;
+                        }
+                    default:
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("String_Special", token: token).ConfigureAwait(false));
+                        break;
                 }
+                return sbdReturn.ToTrimmedString();
             }
-
-            return strReturn;
         }
 
         /// <summary>
@@ -12844,8 +12832,7 @@ namespace Chummer.Backend.Equipment
                 if (intMaxAmmoCount <= intCurrentAmmoCount)
                     return;
 
-                string strDescription = string.Format(
-                    GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("Message_SelectNumberOfCharges", token: token)
                                          .ConfigureAwait(false),
                     await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
@@ -12929,7 +12916,7 @@ namespace Chummer.Backend.Equipment
                 // Make sure the character has some form of Ammunition for this Weapon.
                 if (lstAmmo.Count == 0)
                 {
-                    await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                    await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_OutOfAmmoType", token: token)
                                 .ConfigureAwait(false),
@@ -13414,7 +13401,7 @@ namespace Chummer.Backend.Equipment
 
                     Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
-                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);
 
                     TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;
@@ -13491,7 +13478,7 @@ namespace Chummer.Backend.Equipment
 
                     Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
-                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty,
+                        objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);
 
                     TaggedObservableCollection<Gear> lstGearChildren = objChild.GearChildren;

@@ -1106,8 +1106,7 @@ namespace Chummer.Backend.Equipment
 
                                 if (blnSync)
                                 {
-                                    string strDescription = string.Format(
-                                                       GlobalSettings.CultureInfo,
+                                    string strDescription = StringExtensions.FastFormat(
                                                        LanguageManager.GetString("String_SelectVariableCost", token: token),
                                                        CurrentDisplayNameShort);
                                     using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -1134,8 +1133,7 @@ namespace Chummer.Backend.Equipment
                                 }
                                 else
                                 {
-                                    string strDescription = string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    string strDescription = StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                                         await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                     int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
@@ -1384,7 +1382,7 @@ namespace Chummer.Backend.Equipment
                         else if (blnSync)
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (!GetValidLimbSlot(objXmlCyberware.CreateNavigator()))
+                            if (!GetValidLimbSlot(objXmlCyberware.CreateNavigator(), token))
                                 return;
                         }
                         else if (!await GetValidLimbSlotAsync(objXmlCyberware.CreateNavigator(), token).ConfigureAwait(false))
@@ -1547,10 +1545,11 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool GetValidLimbSlot(XPathNavigator xpnCyberware)
+        public bool GetValidLimbSlot(XPathNavigator xpnCyberware, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strForcedSide = string.Empty;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
                 if (_strForced == "Right" || _strForced == "Left")
                     strForcedSide = _strForced;
@@ -1587,7 +1586,7 @@ namespace Chummer.Backend.Equipment
                             else
                                 dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
                         }
-                    });
+                    }, token);
 
                     bool blnAllowLeft = true;
                     bool blnAllowRight = true;
@@ -1678,7 +1677,7 @@ namespace Chummer.Backend.Equipment
                                     return _objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount;
                                 });
                             }
-                        });
+                        }, token);
                     // Only one side is allowed.
                     if (blnAllowLeft != blnAllowRight)
                         strForcedSide = blnAllowLeft ? "Left" : "Right";
@@ -1698,13 +1697,14 @@ namespace Chummer.Backend.Equipment
                     using (ThreadSafeForm<SelectSide> frmPickSide = ThreadSafeForm<SelectSide>.Get(() => new SelectSide
                            {
                                Description =
-                                   string.Format(GlobalSettings.CultureInfo,
+                                   StringExtensions.FastFormat(
                                        LanguageManager.GetString("Label_SelectSide"),
                                        CurrentDisplayNameShort)
                            }))
                     {
+                        token.ThrowIfCancellationRequested();
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickSide.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        if (frmPickSide.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
                             return false;
@@ -1856,7 +1856,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    string strDescription = string.Format(GlobalSettings.CultureInfo,
+                    string strDescription = StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Label_SelectSide", token: token).ConfigureAwait(false),
                         await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                     using (ThreadSafeForm<SelectSide> frmPickSide = await ThreadSafeForm<SelectSide>.GetAsync(() =>
@@ -10820,7 +10820,7 @@ namespace Chummer.Backend.Equipment
                             t2 => objChild.GetGradeAsync(t2), token: t1).ConfigureAwait(false);
                         if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
                         {
-                            string strToEvaluate = "(" + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
+                            string strToEvaluate = "(".ConcatFast(decPluginCost.ToString(GlobalSettings.InvariantCultureInfo), ") * ((", strChildCost, ") - 1)");
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, t1).ConfigureAwait(false);
                             if (blnIsSuccess)
                                 decPluginCost = Convert.ToDecimal((double)objProcess);
@@ -10883,7 +10883,7 @@ namespace Chummer.Backend.Equipment
                             t2 => objChild.GetGradeAsync(t2), token: t1).ConfigureAwait(false);
                         if (strChildCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decChildCost))
                         {
-                            string strToEvaluate = "(" + decPluginCost.ToString(GlobalSettings.InvariantCultureInfo) + ") * ((" + strChildCost + ") - 1)";
+                            string strToEvaluate = "(".ConcatFast(decPluginCost.ToString(GlobalSettings.InvariantCultureInfo), ") * ((", strChildCost, ") - 1)");
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strToEvaluate, t1).ConfigureAwait(false);
                             if (blnIsSuccess)
                                 decPluginCost = Convert.ToDecimal((double)objProcess);
@@ -11310,9 +11310,9 @@ namespace Chummer.Backend.Equipment
                     // Get the Cyberware base Capacity.
                     decimal.TryParse(await GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decCapacity);
                     // Run through its Children and deduct the Capacity costs.
-                    decCapacity -= await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChildCyberware =>
+                    decCapacity -= await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async (objChildCyberware, t) =>
                                        // Skip children that are built into the parent
-                                       !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, token).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId, async (objChildCyberware, t) =>
+                                       !await objChildCyberware.PlugsIntoTargetCyberwareAsync(this, t).ConfigureAwait(false) && objChildCyberware.ParentID != InternalId, async (objChildCyberware, t) =>
                                   {
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, t).ConfigureAwait(false);
                                       int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -11359,7 +11359,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Capacity.Contains('[') && !Capacity.Contains("/["))
                         return CalculatedCapacity;
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(
                                          LanguageManager.GetString("String_CapacityRemaining"),
                                          CalculatedCapacity,
                                          CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
@@ -11376,7 +11376,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (Capacity.Contains('[') && !Capacity.Contains("/["))
                     return await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
                     await GetCalculatedCapacityAsync(token).ConfigureAwait(false),
                     (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##", GlobalSettings.CultureInfo));
@@ -11531,7 +11531,7 @@ namespace Chummer.Backend.Equipment
                     if (lstCustomizationWare.Count > 0)
                     {
                         intValue = lstCustomizationWare.Count > 1
-                            ? lstCustomizationWare.Max(s => s.GetRating(true, token))
+                            ? lstCustomizationWare.Max((s, t) => s.GetRating(true, t), token)
                             : lstCustomizationWare[0].GetRating(true, token);
                     }
                 }
@@ -11686,9 +11686,9 @@ namespace Chummer.Backend.Equipment
                 if (await GetInheritAttributesAsync(token).ConfigureAwait(false))
                 {
                     int intAverageAttribute = 0;
-                    int intCyberlimbChildrenNumber = await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async objChild =>
+                    int intCyberlimbChildrenNumber = await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(async (objChild, t) =>
                     {
-                        int intChildTotalValue = await objChild.GetAttributeTotalValueAsync(strAbbrev, token)
+                        int intChildTotalValue = await objChild.GetAttributeTotalValueAsync(strAbbrev, t)
                                                                .ConfigureAwait(false);
                         if (intChildTotalValue <= 0)
                             return 0;
@@ -12988,7 +12988,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
                 Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
+                    this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, y,
                         funcMakeDirty, token: innerToken);
 
                 Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
@@ -12996,7 +12996,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
                 Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.GetCountAsync(innerToken), y,
+                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, t => Children.GetCountAsync(t), y,
                         funcMakeDirty, token: innerToken);
 
                 async Task<int> FuncDrugOffset(CancellationToken innerToken = default)
@@ -13006,7 +13006,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    RefreshChildrenDrugs(treCyberware, cmsCyberware, () => FuncDrugOffset(innerToken), y, innerToken);
+                    RefreshChildrenDrugs(treCyberware, cmsCyberware, t => FuncDrugOffset(t), y, innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
@@ -13058,7 +13058,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
                 Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y,
+                    this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, y,
                         funcMakeDirty, token: innerToken);
 
                 Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
@@ -13066,7 +13066,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
                 Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.GetCountAsync(innerToken), y,
+                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, t => Children.GetCountAsync(t), y,
                         funcMakeDirty, token: innerToken);
 
                 async Task<int> FuncDrugOffset(CancellationToken innerToken = default)
@@ -13076,7 +13076,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    RefreshChildrenDrugs(treCyberware, cmsCyberware, () => FuncDrugOffset(innerToken), y, innerToken);
+                    RefreshChildrenDrugs(treCyberware, cmsCyberware, t => FuncDrugOffset(t), y, innerToken);
 
                 lstChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
                 lstChildren.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
@@ -13110,6 +13110,121 @@ namespace Chummer.Backend.Equipment
                 await lstGearChildren.ForEachWithSideEffectsAsync(
                     (objChild, t) => objChild.SetupChildrenGearsCollectionChangedAsync(false, treCyberware, token: t),
                     token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Minimal tree refresh for DrugChildren. RefreshChildrenGears only accepts Gear.
+        /// </summary>
+        private async Task RefreshChildrenDrugs(TreeView treCyberware, ContextMenuStrip cmsCyberware,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            if (e == null || treCyberware == null)
+                return;
+
+            TreeNode nodParent = await treCyberware.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this), token: token).ConfigureAwait(false);
+            if (nodParent == null)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Drug objDrug in e.OldItems)
+                        {
+                            await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objDrug)?.Remove(), token: token)
+                                .ConfigureAwait(false);
+                        }
+
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strSelectedId
+                            = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
+                              ?? string.Empty;
+                        foreach (Drug objDrug in e.OldItems)
+                        {
+                            await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objDrug)?.Remove(), token: token)
+                                .ConfigureAwait(false);
+                        }
+
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token: token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        string strSelectedId
+                            = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
+                              ?? string.Empty;
+                        await treCyberware.DoThreadSafeAsync(() =>
+                        {
+                            foreach (Drug objDrug in e.OldItems)
+                                nodParent.FindNodeByTag(objDrug)?.Remove();
+                        }, token: token).ConfigureAwait(false);
+                        int intNewIndex = e.NewStartingIndex;
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token: token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        await treCyberware.DoThreadSafeAsync(() =>
+                        {
+                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            {
+                                TreeNode objNode = nodParent.Nodes[i];
+                                if (objNode.Tag is Drug)
+                                    objNode.Remove();
+                            }
+                        }, token: token).ConfigureAwait(false);
+                        break;
+                    }
+            }
+
+            async ValueTask AddDrugToTree(Drug objDrug, int intIndex = -1, bool blnSingleAdd = true, CancellationToken innerToken = default)
+            {
+                TreeNode objNode = await objDrug.CreateTreeNode(innerToken).ConfigureAwait(false);
+                if (objNode == null)
+                    return;
+                objNode.ContextMenuStrip = cmsCyberware;
+                await treCyberware.DoThreadSafeAsync(() =>
+                {
+                    nodParent.Nodes.AddOrInsert(objNode, intIndex);
+                    nodParent.Expand();
+                }, token: innerToken).ConfigureAwait(false);
+                if (blnSingleAdd)
+                    await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = objNode, token: innerToken)
+                        .ConfigureAwait(false);
             }
         }
 
@@ -13191,6 +13306,127 @@ namespace Chummer.Backend.Equipment
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token: token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        await treCyberware.DoThreadSafeAsync(() =>
+                        {
+                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            {
+                                TreeNode objNode = nodParent.Nodes[i];
+                                if (objNode.Tag is Drug)
+                                    objNode.Remove();
+                            }
+                        }, token: token).ConfigureAwait(false);
+                        break;
+                    }
+            }
+
+            async ValueTask AddDrugToTree(Drug objDrug, int intIndex = -1, bool blnSingleAdd = true, CancellationToken innerToken = default)
+            {
+                TreeNode objNode = await objDrug.CreateTreeNode(innerToken).ConfigureAwait(false);
+                if (objNode == null)
+                    return;
+                objNode.ContextMenuStrip = cmsCyberware;
+                await treCyberware.DoThreadSafeAsync(() =>
+                {
+                    nodParent.Nodes.AddOrInsert(objNode, intIndex);
+                    nodParent.Expand();
+                }, token: innerToken).ConfigureAwait(false);
+                if (blnSingleAdd)
+                    await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = objNode, token: innerToken)
+                        .ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Minimal tree refresh for DrugChildren. RefreshChildrenGears only accepts Gear.
+        /// </summary>
+        private async Task RefreshChildrenDrugs(TreeView treCyberware, ContextMenuStrip cmsCyberware,
+            Func<CancellationToken, Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            if (e == null || treCyberware == null)
+                return;
+
+            TreeNode nodParent = await treCyberware.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this), token: token).ConfigureAwait(false);
+            if (nodParent == null)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = e.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += await funcOffset.Invoke(token).ConfigureAwait(false);
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Drug objDrug in e.OldItems)
+                        {
+                            await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objDrug)?.Remove(), token: token)
+                                .ConfigureAwait(false);
+                        }
+
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strSelectedId
+                            = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
+                              ?? string.Empty;
+                        foreach (Drug objDrug in e.OldItems)
+                        {
+                            await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objDrug)?.Remove(), token: token)
+                                .ConfigureAwait(false);
+                        }
+
+                        int intNewIndex = e.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += await funcOffset.Invoke(token).ConfigureAwait(false);
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token: token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        string strSelectedId
+                            = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
+                              ?? string.Empty;
+                        await treCyberware.DoThreadSafeAsync(() =>
+                        {
+                            foreach (Drug objDrug in e.OldItems)
+                                nodParent.FindNodeByTag(objDrug)?.Remove();
+                        }, token: token).ConfigureAwait(false);
+                        int intNewIndex = e.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += await funcOffset.Invoke(token).ConfigureAwait(false);
                         foreach (Drug objDrug in e.NewItems)
                         {
                             await AddDrugToTree(objDrug, intNewIndex, innerToken: token).ConfigureAwait(false);

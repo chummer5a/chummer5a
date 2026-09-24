@@ -249,10 +249,10 @@ namespace Chummer
             this.gpbCostFilter.AutoSize = true;
             this.gpbCostFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbCostFilter.Controls.Add(this.tlpCostFilter);
-            this.gpbCostFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbCostFilter.Dock = System.Windows.Forms.DockStyle.Left;
             this.gpbCostFilter.Location = new System.Drawing.Point(303, 358);
             this.gpbCostFilter.Name = "gpbCostFilter";
-            this.gpbCostFilter.Size = new System.Drawing.Size(446, 94);
+            this.gpbCostFilter.Size = new System.Drawing.Size(146, 94);
             this.gpbCostFilter.TabIndex = 72;
             this.gpbCostFilter.TabStop = false;
             this.gpbCostFilter.Tag = "Label_FilterByCost";
@@ -278,7 +278,7 @@ namespace Chummer
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCostFilter.Size = new System.Drawing.Size(440, 75);
+            this.tlpCostFilter.Size = new System.Drawing.Size(140, 75);
             this.tlpCostFilter.TabIndex = 0;
             // 
             // lblMinimumCost

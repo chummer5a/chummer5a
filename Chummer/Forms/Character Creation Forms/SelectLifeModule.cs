@@ -316,7 +316,7 @@ namespace Chummer
 
             //if (!string.IsNullOrWhiteSpace(_strSearch))
             //{
-            //    strReturn = string.Format("//name[contains(., \"{0}\")]..[", _strSearch);
+            //    strReturn = "//name[contains(., \"" + _strSearch + "\")]..[";
             //    before = true;
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))

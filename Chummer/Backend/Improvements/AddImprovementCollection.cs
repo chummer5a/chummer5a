@@ -606,7 +606,7 @@ namespace Chummer
                            () => new SelectSkillGroup(_objCharacter)
                            {
                                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
+                                   ? StringExtensions.FastFormat(
                                                    LanguageManager.GetString("String_Improvement_SelectSkillGroupName"),
                                                    _strFriendlyName)
                                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
@@ -842,7 +842,7 @@ namespace Chummer
             using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(_objCharacter)
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                           ? string.Format(GlobalSettings.CultureInfo,
+                           ? StringExtensions.FastFormat(
                                LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
                            : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             }))
@@ -956,7 +956,7 @@ namespace Chummer
                                            () => new SelectAttribute(lstAbbrevs.ToArray())
                                            {
                                                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                   ? StringExtensions.FastFormat(
                                                                    LanguageManager.GetString(
                                                                        "String_Improvement_SelectAttributeNamed"),
                                                                    _strFriendlyName)
@@ -1112,7 +1112,7 @@ namespace Chummer
                                () => new SelectAttribute(lstAbbrevs.ToArray())
                                {
                                    Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                       ? string.Format(GlobalSettings.CultureInfo,
+                                       ? StringExtensions.FastFormat(
                                                        LanguageManager.GetString("String_Improvement_SelectAttributeNamed"),
                                                        _strFriendlyName)
                                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
@@ -1209,7 +1209,7 @@ namespace Chummer
             using (ThreadSafeForm<SelectLimit> frmPickLimit = ThreadSafeForm<SelectLimit>.Get(() => new SelectLimit(strLimits.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectLimitNamed"), _strFriendlyName)
+                    ? StringExtensions.FastFormat(LanguageManager.GetString("String_Improvement_SelectLimitNamed"), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectLimit")
             }))
             {
@@ -1335,7 +1335,7 @@ namespace Chummer
                 using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(() => new SelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
+                        ? StringExtensions.FastFormat(LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
                 }))
                 {
@@ -1361,7 +1361,7 @@ namespace Chummer
                            new SelectSkill(_objCharacter)
                            {
                                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
+                                   ? StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
                                        _strFriendlyName)
                                    : LanguageManager.GetString("String_Improvement_SelectSkill")
@@ -1469,7 +1469,7 @@ namespace Chummer
                            new SelectAttribute(lstAbbrevs.ToArray())
                            {
                                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
+                                   ? StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_Improvement_SelectAttributeNamed"),
                                        _strFriendlyName)
                                    : LanguageManager.GetString("String_Improvement_SelectAttribute")
@@ -1497,7 +1497,7 @@ namespace Chummer
                            new SelectSkill(_objCharacter)
                            {
                                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
+                                   ? StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
                                        _strFriendlyName)
                                    : LanguageManager.GetString("String_Improvement_SelectSkill")
@@ -1595,7 +1595,7 @@ namespace Chummer
             {
                 using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                        {
-                           Description = string.Format(GlobalSettings.CultureInfo,
+                           Description = StringExtensions.FastFormat(
                                LanguageManager.GetString("String_Improvement_SelectText"),
                                node["translate"]?.InnerTextViaPool() ?? node["name"]?.InnerTextViaPool())
                        }))
@@ -1644,7 +1644,7 @@ namespace Chummer
             {
                 using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                        {
-                           Description = string.Format(GlobalSettings.CultureInfo,
+                           Description = StringExtensions.FastFormat(
                                LanguageManager.GetString("String_Improvement_SelectText"),
                                node["translate"]?.InnerTextViaPool() ?? node["name"]?.InnerTextViaPool())
                        }))
@@ -1986,7 +1986,7 @@ namespace Chummer
             {
                 using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                        {
-                           Description = string.Format(GlobalSettings.CultureInfo,
+                           Description = StringExtensions.FastFormat(
                                LanguageManager.GetString("String_Improvement_SelectText"),
                                xmlProgram["translate"]?.InnerTextViaPool() ?? xmlProgram["name"]?.InnerTextViaPool())
                        }))
@@ -2052,7 +2052,7 @@ namespace Chummer
             {
                 using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                        {
-                           Description = string.Format(GlobalSettings.CultureInfo,
+                           Description = StringExtensions.FastFormat(
                                LanguageManager.GetString("String_Improvement_SelectText"),
                                xmlProgram["translate"]?.InnerTextViaPool() ?? xmlProgram["name"]?.InnerTextViaPool())
                        }))
@@ -2311,7 +2311,7 @@ namespace Chummer
                                        new SelectAttribute(lstAbbrevs.ToArray())
                                        {
                                            Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                               ? string.Format(GlobalSettings.CultureInfo,
+                                               ? StringExtensions.FastFormat(
                                                                LanguageManager.GetString(
                                                                    "String_Improvement_SelectAttributeNamed"),
                                                                _strFriendlyName)
@@ -3572,7 +3572,7 @@ namespace Chummer
                                 new SelectItem
                                 {
                                     Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                        ? string.Format(GlobalSettings.CultureInfo,
+                                        ? StringExtensions.FastFormat(
                                             LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
                                         : LanguageManager.GetString("Title_SelectWeaponCategory")
                                 }))
@@ -3670,7 +3670,7 @@ namespace Chummer
                 using (ThreadSafeForm<SelectItem> frmPickWeapon = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                        {
                            Description = !string.IsNullOrEmpty(_strFriendlyName)
-                               ? string.Format(GlobalSettings.CultureInfo,
+                               ? StringExtensions.FastFormat(
                                    LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
                                    _strFriendlyName)
                                : LanguageManager.GetString("Title_SelectWeapon")
@@ -3962,7 +3962,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             using (ThreadSafeForm<SelectSide> frmPickSide = ThreadSafeForm<SelectSide>.Get(() => new SelectSide
             {
-                Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectSide"), _strFriendlyName)
+                Description = StringExtensions.FastFormat(LanguageManager.GetString("Label_SelectSide"), _strFriendlyName)
             }))
             {
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -4198,7 +4198,7 @@ namespace Chummer
 
                         if (lstArts.Count == 0)
                         {
-                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                            Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                 LanguageManager.GetString(
                                     "Message_Improvement_EmptySelectionListNamed"),
                                 SourceName));
@@ -4302,7 +4302,7 @@ namespace Chummer
 
                         if (lstMetamagics.Count == 0)
                         {
-                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                            Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                 LanguageManager.GetString(
                                     "Message_Improvement_EmptySelectionListNamed"),
                                 SourceName));
@@ -4416,7 +4416,7 @@ namespace Chummer
 
                         if (lstEchoes.Count == 0)
                         {
-                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                            Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                 LanguageManager.GetString(
                                     "Message_Improvement_EmptySelectionListNamed"),
                                 SourceName));
@@ -5215,7 +5215,7 @@ namespace Chummer
             {
                 using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                 {
-                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+                    Description = StringExtensions.FastFormat(LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 }))
                 {
                     frmPickItem.MyForm.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
@@ -5287,7 +5287,7 @@ namespace Chummer
                 {
                     using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        Description = string.Format(GlobalSettings.CultureInfo,
+                        Description = StringExtensions.FastFormat(
                                                            LanguageManager.GetString("String_Improvement_SelectText"),
                                                            _strFriendlyName)
                     }))
@@ -5347,7 +5347,7 @@ namespace Chummer
                     throw new AbortedException();
                 using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                 {
-                    Description = string.Format(GlobalSettings.CultureInfo,
+                    Description = StringExtensions.FastFormat(
                                                        LanguageManager.GetString("String_Improvement_SelectText"),
                                                        _strFriendlyName)
                 }))
@@ -5388,7 +5388,7 @@ namespace Chummer
                 // Display the Select Item window and record the value that was entered.
                 using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                 {
-                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
+                    Description = StringExtensions.FastFormat(LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 }))
                 {
                     if (!string.IsNullOrEmpty(LimitSelection))
@@ -5431,7 +5431,7 @@ namespace Chummer
                     {
                         if (lstWeapons.Count == 0)
                         {
-                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                            Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                                                  LanguageManager.GetString(
                                                                      "Message_Improvement_EmptySelectionListNamed"),
                                                                  SourceName));
@@ -5440,7 +5440,7 @@ namespace Chummer
 
                         using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                         {
-                            Description = string.Format(GlobalSettings.CultureInfo,
+                            Description = StringExtensions.FastFormat(
                                                                LanguageManager.GetString(
                                                                    "String_Improvement_SelectText"), _strFriendlyName)
                         }))
@@ -5633,7 +5633,7 @@ namespace Chummer
 
                 if (lstItems.Count == 0)
                 {
-                    Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                                                   LanguageManager.GetString(
                                                                       "Message_Improvement_EmptySelectionListNamed"),
                                                                   SourceName));
@@ -5773,7 +5773,7 @@ namespace Chummer
 
                 if (lstQualities.Count == 0)
                 {
-                    Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                                                   LanguageManager.GetString(
                                                                       "Message_Improvement_EmptySelectionListNamed"),
                                                                   SourceName));
@@ -5826,7 +5826,7 @@ namespace Chummer
 
                     if (lstQualities.Count == 0)
                     {
-                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                        Program.ShowScrollableMessageBox(StringExtensions.FastFormat(
                                                              LanguageManager.GetString(
                                                                  "Message_Improvement_EmptySelectionListNamed"),
                                                              SourceName));
@@ -6218,7 +6218,7 @@ namespace Chummer
                         frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
                         frmSelect.MyForm.ForceItem(TakeNextForcedValue());
                         frmSelect.MyForm.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                            ? string.Format(GlobalSettings.CultureInfo,
+                            ? StringExtensions.FastFormat(
                                 LanguageManager.GetString("String_Improvement_SelectSpiritType"),
                                 _strFriendlyName)
                             : LanguageManager.GetString("String_Improvement_SelectSpiritTypeGeneric");

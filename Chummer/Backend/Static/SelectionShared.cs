@@ -232,22 +232,22 @@ namespace Chummer
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     // ReSharper disable once MethodHasAsyncOverload
                                     LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", token: token),
                                     strLocalName),
                                 // ReSharper disable once MethodHasAsyncOverload
-                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                StringExtensions.FastFormat(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_SelectGeneric_ChargenRestriction", token: token)
                                         .ConfigureAwait(false),
                                     strLocalName),
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                StringExtensions.FastFormat(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
@@ -267,22 +267,22 @@ namespace Chummer
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     // ReSharper disable once MethodHasAsyncOverload
                                     LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction", token: token),
                                     strLocalName),
                                 // ReSharper disable once MethodHasAsyncOverload
-                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                StringExtensions.FastFormat(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_SelectGeneric_CareerOnlyRestriction", token: token)
                                         .ConfigureAwait(false),
                                     strLocalName),
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                StringExtensions.FastFormat(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
@@ -300,22 +300,22 @@ namespace Chummer
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     // ReSharper disable once MethodHasAsyncOverload
                                     LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction", token: token),
                                     strLocalName),
                                 // ReSharper disable once MethodHasAsyncOverload
-                                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                StringExtensions.FastFormat(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
                             await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Message_SelectGeneric_PriorityRestriction", token: token)
                                         .ConfigureAwait(false),
                                     strLocalName),
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                StringExtensions.FastFormat(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
@@ -626,22 +626,22 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("Message_SelectGeneric_Limit", token: token),
-                                        strLocalName, intLimit == 0 ? 1 : intLimit),
+                                        strLocalName, (intLimit == 0 ? 1 : intLimit).ToString(GlobalSettings.CultureInfo)),
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", token: token), strLocalName),
+                                    StringExtensions.FastFormat(LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", token: token), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("Message_SelectGeneric_Limit", token: token)
                                             .ConfigureAwait(false),
-                                        strLocalName, intLimit == 0 ? 1 : intLimit),
-                                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Limit", token: token)
+                                        strLocalName, (intLimit == 0 ? 1 : intLimit).ToString(GlobalSettings.CultureInfo)),
+                                    StringExtensions.FastFormat(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Limit", token: token)
                                         .ConfigureAwait(false), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             }
@@ -676,22 +676,22 @@ namespace Chummer
                                 {
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     Program.ShowScrollableMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
                                             strLocalName) + strName,
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                        StringExtensions.FastFormat(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                                 else
                                 {
                                     await Program.ShowScrollableMessageBoxAsync(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
                                                 .ConfigureAwait(false),
                                             strLocalName) + strName,
-                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                        StringExtensions.FastFormat(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                             .ConfigureAwait(false), strLocalName),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                 }
@@ -821,22 +821,22 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("Message_SelectGeneric_Restriction", token: token),
                                         strLocalName) + sbdRequirement.ToString(),
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
+                                    StringExtensions.FastFormat(LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", token: token), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("Message_SelectGeneric_Restriction", token: token)
                                             .ConfigureAwait(false),
                                         strLocalName) + sbdRequirement.ToString(),
-                                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
+                                    StringExtensions.FastFormat(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                         .ConfigureAwait(false), strLocalName),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             }
@@ -999,8 +999,8 @@ namespace Chummer
                 {
                     // Check Career Karma requirement.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + "\t" + string.Format(
-                            GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + StringExtensions.FastFormat(
+                            blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString("Message_SelectQuality_RequireKarma", token: token)
                                 : await LanguageManager.GetStringAsync("Message_SelectQuality_RequireKarma",
@@ -1169,7 +1169,7 @@ namespace Chummer
                 case "depenabled":
                     // Character must be an AI.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + "\t" + string.Format(GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + StringExtensions.FastFormat(blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString(
                                     "Message_SelectGeneric_HaveAttributeEnabled",
@@ -1210,10 +1210,10 @@ namespace Chummer
                                     x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText), x => x.CalculatedESS,
                                     token)
                                 : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
-                                    async x =>
-                                        (await x.GetGradeAsync(token).ConfigureAwait(false)).Name.ContainsAny(
+                                    async (x, t) =>
+                                        (await x.GetGradeAsync(t).ConfigureAwait(false)).Name.ContainsAny(
                                             setEssNodeGradeAttributeText),
-                                    x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
+                                    (x, t) => x.GetCalculatedESSAsync(t), token).ConfigureAwait(false);
                         }
 
                         if (strNodeInnerText.StartsWith('-'))
@@ -1221,7 +1221,7 @@ namespace Chummer
                             // Essence must be less than the value.
                             if (blnShowMessage)
                                 strName = Environment.NewLine + "\t" +
-                                          string.Format(GlobalSettings.CultureInfo, blnSync
+                                          StringExtensions.FastFormat(blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
                                                   ? LanguageManager.GetString(
                                                       "Message_SelectQuality_RequireESSGradeBelow",
@@ -1238,7 +1238,7 @@ namespace Chummer
                         // Essence must be equal to or greater than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + "\t" +
-                                      string.Format(GlobalSettings.CultureInfo, blnSync
+                                      StringExtensions.FastFormat(blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
                                               ? LanguageManager.GetString(
                                                   "Message_SelectQuality_RequireESSAbove",
@@ -1262,7 +1262,7 @@ namespace Chummer
                         // Essence must be less than the value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + "\t" +
-                                      string.Format(GlobalSettings.CultureInfo, blnSync
+                                      StringExtensions.FastFormat(blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
                                               ? LanguageManager.GetString(
                                                   "Message_SelectQuality_RequireESSBelow",
@@ -1278,7 +1278,7 @@ namespace Chummer
                     // Essence must be equal to or greater than the value.
                     if (blnShowMessage)
                         strName = Environment.NewLine + "\t" +
-                                  string.Format(GlobalSettings.CultureInfo, blnSync
+                                  StringExtensions.FastFormat(blnSync
                                           // ReSharper disable once MethodHasAsyncOverload
                                           ? LanguageManager.GetString(
                                               "Message_SelectQuality_RequireESSAbove",
@@ -1575,7 +1575,7 @@ namespace Chummer
                 {
                     // Character must be Awakened.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + "\t" + string.Format(GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + StringExtensions.FastFormat(blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString(
                                     "Message_SelectGeneric_HaveAttributeEnabled",
@@ -1837,7 +1837,7 @@ namespace Chummer
                 case "resenabled":
                     // Character must be Emerged.
                     if (blnShowMessage)
-                        strName = Environment.NewLine + "\t" + string.Format(GlobalSettings.CultureInfo, blnSync
+                        strName = Environment.NewLine + "\t" + StringExtensions.FastFormat(blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString(
                                     "Message_SelectGeneric_HaveAttributeEnabled",
@@ -1880,10 +1880,10 @@ namespace Chummer
                                              StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
                                          && x.TotalBaseRating >= intValue)
                                 : objSkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    x => (string.Equals(x.SourceIDString, strNodeId,
+                                    (x, t) => (string.Equals(x.SourceIDString, strNodeId,
                                              StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                         && x.HasSpecialization(strSpec, token)
-                                         && x.TotalBaseRating >= intValue);
+                                         && x.HasSpecialization(strSpec, t)
+                                         && x.TotalBaseRating >= intValue, token);
                         }
                         else
                         {
@@ -2269,7 +2269,7 @@ namespace Chummer
                                 objCharacter.Vehicles.SelectMany(
                                     y => y.Weapons.Concat(y.WeaponMounts.SelectMany(x => x.Weapons))
                                         .GetAllDescendants(x => x.UnderbarrelWeapons)))
-                            .Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification, token));
+                            .Sum((x, t) => x.WeaponAccessories.Count(y => y.SpecialModification, t), token);
                     }
                     else
                     {

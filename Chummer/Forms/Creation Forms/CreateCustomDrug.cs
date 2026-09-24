@@ -186,7 +186,7 @@ namespace Chummer
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 await Program.ShowScrollableMessageBoxAsync(this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning", token: token).ConfigureAwait(false),
+                    StringExtensions.FastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning", token: token).ConfigureAwait(false),
                         objNodeData.DrugComponent.Limit), token: token).ConfigureAwait(false);
                 return;
             }

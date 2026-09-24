@@ -28,20 +28,42 @@ namespace Chummer
         {
             int intLastIntervalBounds = lstCollection.Count - 1;
             int intBase = 0;
-            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            if (objItem is IComparable<T> objItemCast)
             {
-                int intLoopIndex = intBase + i;
-                int intCompareResult = objItem.CompareTo(lstCollection[intLoopIndex]);
-                if (intCompareResult == 0)
-                    return intLoopIndex;
-                if (intCompareResult > 0)
+                for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
                 {
-                    intBase += intLastIntervalBounds - i;
-                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                    int intLoopIndex = intBase + i;
+                    int intCompareResult = objItemCast.CompareTo(lstCollection[intLoopIndex]);
+                    if (intCompareResult == 0)
+                        return intLoopIndex;
+                    if (intCompareResult > 0)
+                    {
+                        intBase += intLastIntervalBounds - i;
+                        intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                    }
+                    else
+                    {
+                        intLastIntervalBounds = i;
+                    }
                 }
-                else
+            }
+            else
+            {
+                for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
                 {
-                    intLastIntervalBounds = i;
+                    int intLoopIndex = intBase + i;
+                    int intCompareResult = objItem.CompareTo(lstCollection[intLoopIndex]);
+                    if (intCompareResult == 0)
+                        return intLoopIndex;
+                    if (intCompareResult > 0)
+                    {
+                        intBase += intLastIntervalBounds - i;
+                        intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                    }
+                    else
+                    {
+                        intLastIntervalBounds = i;
+                    }
                 }
             }
 
@@ -164,11 +186,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (objItem == null)
                 throw new ArgumentNullException(nameof(objItem));
-            for (int i = lstCollection.Count - 1; i >= 0; --i)
+            if (objItem is IEquatable<T> objItemCast)
             {
-                if (lstCollection[i].Equals(objItem))
+                for (int i = lstCollection.Count - 1; i >= 0; --i)
                 {
-                    return i;
+                    if (objItemCast.Equals(lstCollection[i]))
+                    {
+                        return i;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = lstCollection.Count - 1; i >= 0; --i)
+                {
+                    if (objItem.Equals(lstCollection[i]))
+                    {
+                        return i;
+                    }
                 }
             }
 
@@ -181,11 +216,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (objItem == null)
                 throw new ArgumentNullException(nameof(objItem));
-            for (int i = 0; i < lstCollection.Count; ++i)
+            if (objItem is IEquatable<T> objItemCast)
             {
-                if (lstCollection[i].Equals(objItem))
+                for (int i = 0; i < lstCollection.Count; ++i)
                 {
-                    return i;
+                    if (objItemCast.Equals(lstCollection[i]))
+                    {
+                        return i;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < lstCollection.Count; ++i)
+                {
+                    if (objItem.Equals(lstCollection[i]))
+                    {
+                        return i;
+                    }
                 }
             }
 

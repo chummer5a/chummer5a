@@ -225,6 +225,11 @@ namespace Chummer
             this.nudGremlins.Name = "nudGremlins";
             this.nudGremlins.Size = new System.Drawing.Size(41, 20);
             this.nudGremlins.TabIndex = 7;
+            this.nudGremlins.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // lblGremlins
             // 
@@ -256,6 +261,11 @@ namespace Chummer
             this.nudThreshold.Name = "nudThreshold";
             this.nudThreshold.Size = new System.Drawing.Size(41, 20);
             this.nudThreshold.TabIndex = 14;
+            this.nudThreshold.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // chkRuleOf6
             // 
@@ -269,6 +279,7 @@ namespace Chummer
             this.chkRuleOf6.TabIndex = 4;
             this.chkRuleOf6.Tag = "Checkbox_DiceRoller_RuleOfSix";
             this.chkRuleOf6.Text = "using Rule of 6";
+            this.chkRuleOf6.ToolTipText = "";
             this.chkRuleOf6.UseVisualStyleBackColor = true;
             // 
             // lblThreshold
@@ -295,6 +306,7 @@ namespace Chummer
             this.chkCinematicGameplay.TabIndex = 5;
             this.chkCinematicGameplay.Tag = "Checkbox_DiceRoller_CinematicGameplay";
             this.chkCinematicGameplay.Text = "Hit on 4, 5, or 6";
+            this.chkCinematicGameplay.ToolTipText = "";
             this.chkCinematicGameplay.UseVisualStyleBackColor = true;
             // 
             // chkRushJob
@@ -309,6 +321,7 @@ namespace Chummer
             this.chkRushJob.TabIndex = 12;
             this.chkRushJob.Tag = "Checkbox_DiceRoller_RushedJob";
             this.chkRushJob.Text = "Rushed Job (Glitch on 1 or 2)";
+            this.chkRushJob.ToolTipText = "";
             this.chkRushJob.UseVisualStyleBackColor = true;
             // 
             // tlpTopBar
@@ -318,7 +331,7 @@ namespace Chummer
             this.tlpTopBar.ColumnCount = 2;
             this.tlpMain.SetColumnSpan(this.tlpTopBar, 3);
             this.tlpTopBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpTopBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTopBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpTopBar.Controls.Add(this.flpRollParameters, 0, 0);
             this.tlpTopBar.Controls.Add(this.flpRollControls, 1, 0);
             this.tlpTopBar.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -332,14 +345,13 @@ namespace Chummer
             // 
             // flpRollParameters
             // 
-            this.flpRollParameters.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flpRollParameters.AutoSize = true;
             this.flpRollParameters.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpRollParameters.Controls.Add(this.lblRoll);
             this.flpRollParameters.Controls.Add(this.nudDice);
             this.flpRollParameters.Controls.Add(this.lblD6);
             this.flpRollParameters.Controls.Add(this.flowLayoutPanel2);
-            this.flpRollParameters.Location = new System.Drawing.Point(0, 1);
+            this.flpRollParameters.Location = new System.Drawing.Point(0, 0);
             this.flpRollParameters.Margin = new System.Windows.Forms.Padding(0);
             this.flpRollParameters.Name = "flpRollParameters";
             this.flpRollParameters.Size = new System.Drawing.Size(111, 26);
@@ -399,6 +411,7 @@ namespace Chummer
             this.chkVariableGlitch.TabIndex = 18;
             this.chkVariableGlitch.Tag = "Checkbox_DiceRoller_VariableGlitch";
             this.chkVariableGlitch.Text = "Glitch on More 1\'s than Hits, Not Half Dicepool";
+            this.chkVariableGlitch.ToolTipText = "";
             this.chkVariableGlitch.UseVisualStyleBackColor = true;
             // 
             // chkBubbleDie
@@ -413,6 +426,7 @@ namespace Chummer
             this.chkBubbleDie.TabIndex = 15;
             this.chkBubbleDie.Tag = "Checkbox_DiceRoller_BubbleDie";
             this.chkBubbleDie.Text = "Bubble Die (Fix Even Dicepool Glitch Chances)";
+            this.chkBubbleDie.ToolTipText = "";
             this.chkBubbleDie.UseVisualStyleBackColor = true;
             // 
             // pnlResults

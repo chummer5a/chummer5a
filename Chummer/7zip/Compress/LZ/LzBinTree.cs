@@ -710,6 +710,25 @@ namespace SevenZip.Compression.LZ
             });
         }
 
+        private static void NormalizeLinksParallel(uint[] items, int numItems, uint subValue, CancellationToken token)
+        {
+            ParallelOptions objOptions = new ParallelOptions
+            {
+                CancellationToken = token
+            };
+            Parallel.For(0, numItems, objOptions, i =>
+            {
+                unchecked
+                {
+                    ref uint value = ref items[i];
+                    if (value <= subValue)
+                        value = kEmptyHashValue;
+                    else
+                        value -= subValue;
+                }
+            });
+        }
+
         private void Normalize()
         {
             unchecked
@@ -721,16 +740,16 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        private void NormalizeParallel()
+        private void NormalizeParallel(CancellationToken token = default)
         {
             unchecked
             {
                 int subValue = _pos - _cyclicBufferSize;
                 Chummer.Utils.RunWithoutThreadLock(
-                    () => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue),
-                    () => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue),
-                    () => ReduceOffsets(subValue)
-                );
+                    () => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue, token),
+                    () => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue, token),
+                    () => ReduceOffsets(subValue),
+                token);
             }
         }
 
@@ -742,8 +761,8 @@ namespace SevenZip.Compression.LZ
             {
                 int subValue = _pos - _cyclicBufferSize;
                 return Task.WhenAll(
-                    Chummer.TaskExtensions.RunWithoutEC(() => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue), token),
-                    Chummer.TaskExtensions.RunWithoutEC(() => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue), token),
+                    Chummer.TaskExtensions.RunWithoutEC(t => NormalizeLinksParallel(_son, _cyclicBufferSize * 2, (uint)subValue, t), token),
+                    Chummer.TaskExtensions.RunWithoutEC(t => NormalizeLinksParallel(_hash, (int)_hashSizeSum, (uint)subValue, t), token),
                     Chummer.TaskExtensions.RunWithoutEC(() => ReduceOffsets(subValue), token)
                 );
             }

@@ -559,7 +559,7 @@ namespace Chummer.UI.Attributes
                             return;
                         }
 
-                        string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                        string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager
                                 .GetStringAsync("Message_ConfirmKarmaExpense", token: _objMyToken)
                                 .ConfigureAwait(false),
@@ -788,7 +788,7 @@ namespace Chummer.UI.Attributes
                     return true;
 
                 await Program.ShowScrollableMessageBoxAsync(
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token)
                             .ConfigureAwait(false),
                         await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)),

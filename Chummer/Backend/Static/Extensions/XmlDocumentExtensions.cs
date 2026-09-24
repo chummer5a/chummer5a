@@ -404,22 +404,22 @@ namespace Chummer
         {
             return xmlDocument == null
                 ? Task.FromResult<XPathNavigator>(null)
-                : TaskExtensions.RunWithoutEC(() =>
+                : TaskExtensions.RunWithoutEC(t =>
                 {
                     using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        token.ThrowIfCancellationRequested();
+                        t.ThrowIfCancellationRequested();
                         xmlDocument.Save(objMemoryStream);
-                        token.ThrowIfCancellationRequested();
+                        t.ThrowIfCancellationRequested();
                         objMemoryStream.Seek(0, SeekOrigin.Begin);
-                        token.ThrowIfCancellationRequested();
+                        t.ThrowIfCancellationRequested();
                         //TODO: Should probably be using GlobalSettings.SafeXmlReaderSettings here but it has some issues.
                         using (XmlReader objXmlReader
                                = XmlReader.Create(objMemoryStream, GlobalSettings.UnSafeXmlReaderSettings))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             XPathDocument objReturn = new XPathDocument(objXmlReader);
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             return objReturn.CreateNavigator();
                         }
                     }

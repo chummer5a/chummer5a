@@ -231,7 +231,7 @@ namespace Chummer
                                                 try
                                                 {
                                                     await Program.ShowScrollableMessageBoxAsync(this,
-                                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorSaving", token: objNewSourceToken).ConfigureAwait(false), ex.Message),
+                                                        StringExtensions.FastFormat(await LanguageManager.GetStringAsync("XmlEditor_ErrorSaving", token: objNewSourceToken).ConfigureAwait(false), ex.Message),
                                                         await LanguageManager.GetStringAsync("XmlEditor_Error_SavingAmendment", token: objNewSourceToken).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: objNewSourceToken).ConfigureAwait(false);
                                                 }
                                                 catch (OperationCanceledException)
@@ -347,7 +347,7 @@ namespace Chummer
                     string strFilePath = Path.Combine(Utils.GetDataFolderPath, strSelectedFile);
                     if (!File.Exists(strFilePath))
                     {
-                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_FileNotFound", token: token).ConfigureAwait(false), strFilePath), await LanguageManager.GetStringAsync("XmlEditor_FileNotFoundTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("XmlEditor_FileNotFound", token: token).ConfigureAwait(false), strFilePath), await LanguageManager.GetStringAsync("XmlEditor_FileNotFoundTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         return;
                     }
 
@@ -357,7 +357,7 @@ namespace Chummer
                     string strText = await FormatXml(_strBaseXmlContent, token).ConfigureAwait(false);
                     string strTemplate = await GetAmendmentTemplate(token).ConfigureAwait(false);
                     string strDiffPreviewText = await LanguageManager.GetStringAsync("XmlEditor_LoadInstructions", token: token).ConfigureAwait(false);
-                    string strTitle = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Title", token: token).ConfigureAwait(false), strSelectedFile);
+                    string strTitle = StringExtensions.FastFormat(await LanguageManager.GetStringAsync("XmlEditor_Title", token: token).ConfigureAwait(false), strSelectedFile);
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
@@ -419,7 +419,7 @@ namespace Chummer
                     }
                     catch (XmlException ex)
                     {
-                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_InvalidXml", token: token).ConfigureAwait(false), ex.Message), await LanguageManager.GetStringAsync("XmlEditor_InvalidXmlTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("XmlEditor_InvalidXml", token: token).ConfigureAwait(false), ex.Message), await LanguageManager.GetStringAsync("XmlEditor_InvalidXmlTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         return;
                     }
 
@@ -552,7 +552,7 @@ namespace Chummer
             {
                 ex = ex.Demystify();
                 Log.Error(ex, await LanguageManager.GetStringAsync("XmlEditor_Error_UpdatingDiff", token: token).ConfigureAwait(false));
-                string strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorGeneratingDiff", token: token).ConfigureAwait(false), ex.Message);
+                string strText = StringExtensions.FastFormat(await LanguageManager.GetStringAsync("XmlEditor_ErrorGeneratingDiff", token: token).ConfigureAwait(false), ex.Message);
                 await txtDiffPreview.DoThreadSafeAsync(x =>
                 {
                     x.Text = strText;
@@ -590,7 +590,7 @@ namespace Chummer
             {
                 ex = ex.Demystify();
                 Log.Error(ex, "Error generating clean diff");
-                return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorGeneratingCleanDiff", token: token).ConfigureAwait(false), ex.Message);
+                return StringExtensions.FastFormat(await LanguageManager.GetStringAsync("XmlEditor_ErrorGeneratingCleanDiff", token: token).ConfigureAwait(false), ex.Message);
             }
         }
 
@@ -606,7 +606,7 @@ namespace Chummer
             {
                 ex = ex.Demystify();
                 Log.Error(ex, "Error comparing XML documents");
-                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorComparingDocuments", token: token).ConfigureAwait(false), ex.Message).AppendLine();
+                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_ErrorComparingDocuments", token: token).ConfigureAwait(false), ex.Message).AppendLine();
             }
             return false;
         }
@@ -626,7 +626,7 @@ namespace Chummer
                 if (objBaseNode == null)
                 {
                     blnReturn = true;
-                    sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strNodePath).AppendLine();
+                    sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                     sbdOutput.AppendLine("  ", await FormatXmlNode(objResultNode, token).ConfigureAwait(false));
                     return true;
                 }
@@ -635,7 +635,7 @@ namespace Chummer
                 if (objResultNode == null)
                 {
                     blnReturn = true;
-                    sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strNodePath).AppendLine();
+                    sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strNodePath).AppendLine();
                     sbdOutput.AppendLine("  ", await FormatXmlNode(objBaseNode, token).ConfigureAwait(false));
                     return true;
                 }
@@ -646,9 +646,9 @@ namespace Chummer
                     if (!string.Equals(objBaseNode.Value, objResultNode.Value, StringComparison.Ordinal))
                     {
                         blnReturn = true;
-                        sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                        sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), FormatXmlNode(objBaseNode, token)).AppendLine();
-                        sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), FormatXmlNode(objResultNode, token)).AppendLine();
+                        sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
+                        sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), await FormatXmlNode(objBaseNode, token).ConfigureAwait(false)).AppendLine();
+                        sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), await FormatXmlNode(objResultNode, token).ConfigureAwait(false)).AppendLine();
                         return true;
                     }
                     return false;
@@ -689,21 +689,21 @@ namespace Chummer
                             if (!resultAttribs.TryGetValue(kvp.Key, out string value) || !resultAttribs.Remove(kvp.Key))
                             {
                                 blnReturn = true;
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_RemovedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_RemovedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
                             }
                             else if (!string.Equals(value, kvp.Value, StringComparison.Ordinal))
                             {
                                 blnReturn = true;
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ModifiedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key).AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + kvp.Value + "\"").AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + value + "\"").AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_ModifiedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key).AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + kvp.Value + "\"").AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + value + "\"").AppendLine();
                             }
                         }
 
                         blnReturn = blnReturn || resultAttribs.Count > 0;
                         foreach (KeyValuePair<string, string> kvp in resultAttribs)
                         {
-                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_AddedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
+                            sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_AddedAttribute", token: token).ConfigureAwait(false), strNodePath, kvp.Key, kvp.Value).AppendLine();
                         }
                     }
 
@@ -730,9 +730,9 @@ namespace Chummer
                             if (!string.Equals(strBaseText, strResultText, StringComparison.Ordinal))
                             {
                                 blnReturn = true;
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + strBaseText + "\"").AppendLine();
-                                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + strResultText + "\"").AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_Modified", token: token).ConfigureAwait(false), strNodePath).AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_OldValue", token: token).ConfigureAwait(false), "\"" + strBaseText + "\"").AppendLine();
+                                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_NewValue", token: token).ConfigureAwait(false), "\"" + strResultText + "\"").AppendLine();
                             }
                         }
                     }
@@ -749,7 +749,7 @@ namespace Chummer
                         {
                             blnReturn = true;
                             string strChildPath = GetNodePath(kvp.Value, strNodePath);
-                            sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strChildPath).AppendLine();
+                            sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_Added", token: token).ConfigureAwait(false), strChildPath).AppendLine();
                             sbdOutput.AppendLine("  ", await FormatXmlNode(kvp.Value, token).ConfigureAwait(false));
                         }
                         else
@@ -762,7 +762,7 @@ namespace Chummer
                     foreach (XmlNode xmlLoopNode in baseGroups.Values)
                     {
                         string strChildPath = GetNodePath(xmlLoopNode, strNodePath);
-                        sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
+                        sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_Removed", token: token).ConfigureAwait(false), strChildPath).AppendLine();
                         sbdOutput.AppendLine("  ", await FormatXmlNode(xmlLoopNode, token).ConfigureAwait(false));
                     }
                 }
@@ -771,7 +771,7 @@ namespace Chummer
             {
                 ex = ex.Demystify();
                 Log.Error(ex, "Error comparing XML nodes");
-                sbdOutput.AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("XmlEditor_ErrorComparingNodes", token: token).ConfigureAwait(false ), strCurrentPath, ex.Message).AppendLine();
+                sbdOutput.AppendFastFormat(await LanguageManager.GetStringAsync("XmlEditor_ErrorComparingNodes", token: token).ConfigureAwait(false ), strCurrentPath, ex.Message).AppendLine();
             }
             return blnReturn;
         }
@@ -937,7 +937,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         try
                         {
-                            if (await TaskExtensions.RunWithoutEC(() => XmlManager.AmendNodeChildren(xmlTargetDoc, objNode, "/chummer", token: token), token).ConfigureAwait(false))
+                            if (await TaskExtensions.RunWithoutEC(t => XmlManager.AmendNodeChildren(xmlTargetDoc, objNode, "/chummer", token: t), token).ConfigureAwait(false))
                             {
                                 Log.Info("Successfully applied amendment operation to node: " + objNode.Name);
                             }

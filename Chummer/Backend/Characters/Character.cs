@@ -3224,7 +3224,7 @@ namespace Chummer
                     string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                     if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_Improvement_SelectText", token: token),
                                        xmlAIProgramData["translate"]?.InnerTextViaPool(token) ?? xmlAIProgramData["name"]?.InnerTextViaPool(token));
                         using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
@@ -4043,7 +4043,7 @@ namespace Chummer
                     if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) !=
                         null && !string.IsNullOrWhiteSpace(strExtra))
                     {
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token)
                                 .ConfigureAwait(false),
                             xmlAIProgramData["translate"]?.InnerTextViaPool(token) ??
@@ -6236,22 +6236,22 @@ namespace Chummer
                         using (Timekeeper.StartSyncron("load_xml", loadActivity))
                         {
                             bool blnKeepLoading = blnSync
-                                ? LoadSaveFileDocument()
-                                : await LoadSaveFileDocumentAsync().ConfigureAwait(false);
+                                ? LoadSaveFileDocument(token)
+                                : await LoadSaveFileDocumentAsync(token).ConfigureAwait(false);
 
-                            bool LoadSaveFileDocument()
+                            bool LoadSaveFileDocument(CancellationToken innerToken)
                             {
                                 bool blnErrorCaught = false;
                                 do
                                 {
                                     try
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        innerToken.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                            objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: token);
+                                            objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: innerToken);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             objXmlDocument.LoadStandardFromLzmaCompressedPatient(
-                                                strFileName, !blnErrorCaught, token: token);
+                                                strFileName, !blnErrorCaught, token: innerToken);
                                         else
                                             throw new InvalidOperationException();
                                         blnErrorCaught = false;
@@ -6266,9 +6266,9 @@ namespace Chummer
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
                                             if (Program.ShowScrollableMessageBox(
-                                                    LanguageManager.GetString("Message_InvalidTextFound", token: token),
+                                                    LanguageManager.GetString("Message_InvalidTextFound", token: innerToken),
                                                     LanguageManager.GetString(
-                                                        "Message_InvalidTextFound_Title", token: token),
+                                                        "Message_InvalidTextFound_Title", token: innerToken),
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                                                 DialogResult.No)
                                             {
@@ -6282,13 +6282,13 @@ namespace Chummer
                                             if (showWarnings)
                                             {
                                                 Program.ShowScrollableMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                                   LanguageManager.GetString(
-                                                                      "Message_FailedLoad", token: token),
+                                                                      "Message_FailedLoad", token: innerToken),
                                                                   ex.Message),
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                                   LanguageManager.GetString(
-                                                                      "MessageTitle_FailedLoad", token: token),
+                                                                      "MessageTitle_FailedLoad", token: innerToken),
                                                                   ex.Message),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                                             }
@@ -6300,24 +6300,24 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator =
-                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character", token);
+                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character", innerToken);
                                 return true;
                             }
 
-                            async Task<bool> LoadSaveFileDocumentAsync()
+                            async Task<bool> LoadSaveFileDocumentAsync(CancellationToken innerToken)
                             {
                                 bool blnErrorCaught = false;
                                 do
                                 {
                                     try
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        innerToken.ThrowIfCancellationRequested();
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardPatientAsync(
-                                                strFileName, !blnErrorCaught, token: token).ConfigureAwait(false);
+                                                strFileName, !blnErrorCaught, token: innerToken).ConfigureAwait(false);
                                         else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardFromLzmaCompressedPatientAsync(
-                                                strFileName, !blnErrorCaught, token: token).ConfigureAwait(false);
+                                                strFileName, !blnErrorCaught, token: innerToken).ConfigureAwait(false);
                                         else
                                             throw new InvalidOperationException();
                                         blnErrorCaught = false;
@@ -6333,13 +6333,13 @@ namespace Chummer
 
                                             if (await Program.ShowScrollableMessageBoxAsync(
                                                     await LanguageManager
-                                                        .GetStringAsync("Message_InvalidTextFound", token: token)
+                                                        .GetStringAsync("Message_InvalidTextFound", token: innerToken)
                                                         .ConfigureAwait(false),
                                                     await LanguageManager
                                                         .GetStringAsync(
-                                                            "Message_InvalidTextFound_Title", token: token)
+                                                            "Message_InvalidTextFound_Title", token: innerToken)
                                                         .ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) ==
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: innerToken).ConfigureAwait(false) ==
                                                 DialogResult.No)
                                             {
                                                 return false;
@@ -6352,19 +6352,19 @@ namespace Chummer
                                             if (showWarnings)
                                             {
                                                 await Program.ShowScrollableMessageBoxAsync(
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         await LanguageManager
                                                             .GetStringAsync(
-                                                                "Message_FailedLoad", token: token)
+                                                                "Message_FailedLoad", token: innerToken)
                                                             .ConfigureAwait(false),
                                                         ex.Message),
-                                                    string.Format(GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         await LanguageManager
                                                             .GetStringAsync(
-                                                                "MessageTitle_FailedLoad", token: token)
+                                                                "MessageTitle_FailedLoad", token: innerToken)
                                                             .ConfigureAwait(false),
                                                         ex.Message),
-                                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: innerToken).ConfigureAwait(false);
                                             }
 
                                             return false;
@@ -6374,8 +6374,8 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator
-                                    = (await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false))
-                                            .SelectSingleNodeAndCacheExpression("/character", token);
+                                    = (await objXmlDocument.GetFastNavigatorAsync(innerToken).ConfigureAwait(false))
+                                            .SelectSingleNodeAndCacheExpression("/character", innerToken);
                                 return true;
                             }
 
@@ -6503,7 +6503,7 @@ namespace Chummer
                                             && objMinimumVersion > Utils.CurrentChummerVersion)
                                         {
                                             Program.ShowMessageBox(
-                                                string.Format(GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(
                                                               blnSync
                                                                   // ReSharper disable once MethodHasAsyncOverload
                                                                   ? LanguageManager.GetString(
@@ -6512,7 +6512,7 @@ namespace Chummer
                                                                           .GetStringAsync(
                                                                               "Message_OlderThanChummerSaveMinimumVersion",
                                                                               token: token).ConfigureAwait(false),
-                                                              objMinimumVersion, Utils.CurrentChummerVersion),
+                                                              objMinimumVersion.ToString(), Utils.CurrentChummerVersion.ToString()),
                                                 blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? LanguageManager.GetString(
@@ -6528,15 +6528,15 @@ namespace Chummer
 
                                     if (_verSavedVersion > Utils.CurrentChummerVersion && DialogResult.Yes
                                         != Program.ShowMessageBox(
-                                            string.Format(GlobalSettings.CultureInfo,
+                                            StringExtensions.FastFormat(
                                                           blnSync
                                                               // ReSharper disable once MethodHasAsyncOverload
                                                               ? LanguageManager.GetString("Message_OutdatedChummerSave", token: token)
                                                               : await LanguageManager
                                                                       .GetStringAsync(
                                                                           "Message_OutdatedChummerSave", token: token)
-                                                                      .ConfigureAwait(false), _verSavedVersion,
-                                                          Utils.CurrentChummerVersion),
+                                                                      .ConfigureAwait(false), _verSavedVersion.ToString(),
+                                                          Utils.CurrentChummerVersion.ToString()),
                                             blnSync
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ? LanguageManager.GetString("MessageTitle_OutdatedChummerSave", token: token)
@@ -6850,7 +6850,7 @@ namespace Chummer
                                         CharacterSettings objHashCodeMatchSettings
                                             = blnSync
                                                 ? SettingsManager.LoadedCharacterSettings.FirstOrDefault(
-                                                    x => x.Value.GetEquatableHashCode(token) == intSettingsHashCode).Value
+                                                    (x, t) => x.Value.GetEquatableHashCode(t) == intSettingsHashCode, token).Value
                                                 : (await (await SettingsManager
                                                                 .GetLoadedCharacterSettingsAsync(token)
                                                                 .ConfigureAwait(false))
@@ -6874,8 +6874,7 @@ namespace Chummer
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Program.ShowScrollableMessageBox(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
                                                                 "Message_CharacterOptions_CannotLoadSetting",
@@ -6887,8 +6886,7 @@ namespace Chummer
                                                             token: token),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error)
                                                     : await Program.ShowScrollableMessageBoxAsync(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_CannotLoadSetting",
                                                                 token: token).ConfigureAwait(false),
@@ -6970,8 +6968,7 @@ namespace Chummer
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Program.ShowScrollableMessageBox(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
                                                                 "Message_CharacterOptions_DesyncBuildMethod",
@@ -6990,8 +6987,7 @@ namespace Chummer
                                                             token: token),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error)
                                                     : await Program.ShowScrollableMessageBoxAsync(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_DesyncBuildMethod",
                                                                 token: token).ConfigureAwait(false),
@@ -7109,8 +7105,7 @@ namespace Chummer
                                                 DialogResult eShowBPResult = blnSync
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? Program.ShowScrollableMessageBox(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
                                                                 "Message_CharacterOptions_DesyncBooksOrCustomData",
@@ -7122,8 +7117,7 @@ namespace Chummer
                                                             token: token),
                                                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
                                                     : await Program.ShowScrollableMessageBoxAsync(
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
+                                                        StringExtensions.FastFormat(
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_DesyncBooksOrCustomData",
                                                                 token: token).ConfigureAwait(false),
@@ -7155,8 +7149,7 @@ namespace Chummer
                                             DialogResult eShowBPResult = blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ? Program.ShowScrollableMessageBox(
-                                                    string.Format(
-                                                        GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         LanguageManager.GetString(
                                                             "Message_CharacterOptions_DesyncFromHashCode",
@@ -7168,8 +7161,7 @@ namespace Chummer
                                                         token: token),
                                                     MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
                                                 : await Program.ShowScrollableMessageBoxAsync(
-                                                    string.Format(
-                                                        GlobalSettings.CultureInfo,
+                                                    StringExtensions.FastFormat(
                                                         await LanguageManager.GetStringAsync(
                                                             "Message_CharacterOptions_DesyncFromHashCode",
                                                             token: token).ConfigureAwait(false),
@@ -16292,7 +16284,7 @@ namespace Chummer
                 {
                     intOldImprovementCount = Improvements.Count;
                     // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
-                    Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)), token);
+                    Improvements.RemoveAll((x, t) => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, t)), token);
                     intNewImprovementCount = Improvements.Count;
                 }
             }
@@ -20099,7 +20091,11 @@ namespace Chummer
                         {
                             Bitmap[] objMugshotImages = new Bitmap[xmlMugshotsList.Count];
                             token.ThrowIfCancellationRequested();
-                            Parallel.For(0, xmlMugshotsList.Count,
+                            ParallelOptions objOptions = new ParallelOptions
+                            {
+                                CancellationToken = token
+                            };
+                            Parallel.For(0, xmlMugshotsList.Count, objOptions,
                                             i =>
                                             {
                                                 string strLoop = astrMugshotsBase64[i];
@@ -27675,22 +27671,22 @@ namespace Chummer
                         await Metamagics.ForEachAsync(async (objMetamagic, t) =>
                         {
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", token) == true)
+                                && objMetamagic.Bonus?.InnerXmlContentContains("Rating", t) == true)
                             {
                                 blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
                                 // ReSharper disable once ForCanBeConvertedToForeach
                                 for (int i = 0;
-                                     i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                     i < await Improvements.GetCountAsync(t).ConfigureAwait(false);
                                      ++i)
                                 {
-                                    Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                    Improvement objImprovement = await Improvements.GetValueAtAsync(i, t)
                                         .ConfigureAwait(false);
                                     if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
                                         == Improvement.ImprovementSource.Echo)
                                     {
                                         blnFoundImprovement = true;
-                                        await objImprovement.SetRatingAsync(value, token).ConfigureAwait(false);
+                                        await objImprovement.SetRatingAsync(value, t).ConfigureAwait(false);
                                     }
                                 }
 
@@ -28341,16 +28337,16 @@ namespace Chummer
                     return decReturn;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedCyberwareEssence = await Cyberware
-                    .SumAsync(async objCyberware =>
+                    .SumAsync(async (objCyberware, t) =>
                         {
-                            if (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) !=
+                            if (await objCyberware.GetSourceTypeAsync(t).ConfigureAwait(false) !=
                                 Improvement.ImprovementSource.Cyberware)
                                 return false;
-                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
+                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(t).ConfigureAwait(false);
                             return !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
                                    && !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                         },
-                        objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                        (objCyberware, t) => objCyberware.GetCalculatedESSAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -28401,16 +28397,16 @@ namespace Chummer
                     return decReturn;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedBiowareEssence = await Cyberware
-                    .SumAsync(async objCyberware =>
+                    .SumAsync(async (objCyberware, t) =>
                         {
-                            if (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) !=
+                            if (await objCyberware.GetSourceTypeAsync(t).ConfigureAwait(false) !=
                                 Improvement.ImprovementSource.Bioware)
                                 return false;
-                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
+                            Guid guiSourceId = await objCyberware.GetSourceIDAsync(t).ConfigureAwait(false);
                             return !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
                                    && !guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                         },
-                        objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                        (objCyberware, t) => objCyberware.GetCalculatedESSAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -28459,12 +28455,12 @@ namespace Chummer
                     return decReturn;
                 // Find the total Essence Cost of all Essence Hole objects.
                 return _decCachedEssenceHole = await Cyberware
-                    .SumAsync(async objCyberware =>
+                    .SumAsync(async (objCyberware, t) =>
                     {
-                        Guid guiSourceId = await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false);
+                        Guid guiSourceId = await objCyberware.GetSourceIDAsync(t).ConfigureAwait(false);
                         return guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
                                || guiSourceId.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
-                    }, objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                    }, (objCyberware, t) => objCyberware.GetCalculatedESSAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -28897,8 +28893,8 @@ namespace Chummer
                 if (!await GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false))
                     return _decCachedPrototypeTranshumanEssenceUsed = 0.0m;
                 return _decCachedPrototypeTranshumanEssenceUsed = await Cyberware
-                    .SumAsync(objCyberware => objCyberware.GetPrototypeTranshumanAsync(token),
-                        objCyberware => objCyberware.GetCalculatedESSPrototypeInvariantAsync(token), token: token)
+                    .SumAsync((objCyberware, t) => objCyberware.GetPrototypeTranshumanAsync(t),
+                        (objCyberware, t) => objCyberware.GetCalculatedESSPrototypeInvariantAsync(t), token: token)
                     .ConfigureAwait(false);
             }
             finally
@@ -29064,9 +29060,9 @@ namespace Chummer
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
             using (LockObject.EnterReadLock())
-                return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguage),
-                                     InitiativeValue.ToString(objCulture),
-                                     InitiativeDice.ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, LanguageManager.GetString("String_Initiative", strLanguage),
+                                     InitiativeValue,
+                                     InitiativeDice);
         }
 
         public async Task<string> GetInitiativeAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
@@ -29076,9 +29072,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
-                    (await GetInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
-                    (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
+                    await GetInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29110,8 +29106,8 @@ namespace Chummer
                                    .ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
-                                         strInit, InitiativeDice.ToString(GlobalSettings.CultureInfo));
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                                         strInit, InitiativeDice);
                 }
             }
         }
@@ -29152,9 +29148,9 @@ namespace Chummer
                                .ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false),
-                    strInit, (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+                    strInit, await GetInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29277,9 +29273,9 @@ namespace Chummer
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
             using (LockObject.EnterReadLock())
-                return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
-                                     AstralInitiativeValue.ToString(objCulture),
-                                     AstralInitiativeDice.ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+                                     AstralInitiativeValue,
+                                     AstralInitiativeDice);
         }
 
         public async Task<string> GetAstralInitiativeAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
@@ -29289,9 +29285,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
-                    (await GetAstralInitiativeValueAsync(token).ConfigureAwait(false)).ToString(objCulture),
-                    (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture));
+                return StringExtensions.FastFormat(objCulture, await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token).ConfigureAwait(false),
+                    await GetAstralInitiativeValueAsync(token).ConfigureAwait(false),
+                    await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29315,8 +29311,8 @@ namespace Chummer
                         strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + "("
                                    + (intINTAttributeModifiers + WoundModifier).ToString(GlobalSettings.CultureInfo)
                                    + ")";
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
-                                         strInit, AstralInitiativeDice.ToString(GlobalSettings.CultureInfo));
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                                         strInit, AstralInitiativeDice);
                 }
             }
         }
@@ -29347,11 +29343,10 @@ namespace Chummer
                                (intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false),
                     strInit,
-                    (await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
-                        .CultureInfo));
+                    await GetAstralInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29443,7 +29438,7 @@ namespace Chummer
         public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
             using (LockObject.EnterReadLock())
-                return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
+                return StringExtensions.FastFormat(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                                      MatrixInitiativeValue, MatrixInitiativeDice);
         }
 
@@ -29455,7 +29450,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(objCulture,
+                return StringExtensions.FastFormat(objCulture,
                     await LanguageManager.GetStringAsync("String_Initiative", strLanguageToPrint, token: token)
                         .ConfigureAwait(false),
                     await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
@@ -29524,7 +29519,7 @@ namespace Chummer
                         }
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Initiative"),
                                          strInit, MatrixInitiativeDice);
                 }
             }
@@ -29580,7 +29575,7 @@ namespace Chummer
                     }
                 }
 
-                return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false), strInit, await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Initiative", token: token).ConfigureAwait(false), strInit, await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -29754,7 +29749,7 @@ namespace Chummer
                     return GetMatrixInitiative(objCulture, strLanguageToPrint);
                 }
 
-                return string.Format(
+                return StringExtensions.FastFormat(
                     objCulture,
                     LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
                                               strLanguageToPrint),
@@ -29775,7 +29770,7 @@ namespace Chummer
                     return await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
 
-                return string.Format(objCulture,
+                return StringExtensions.FastFormat(objCulture,
                     await LanguageManager
                         .GetStringAsync(
                             await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null
@@ -29825,7 +29820,7 @@ namespace Chummer
                                    + ")";
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString(
                                              ActiveCommlink == null
                                                  ? "String_MatrixInitiativeLong"
@@ -29867,7 +29862,7 @@ namespace Chummer
                     strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync(
                         objActiveCommlink == null
                             ? "String_MatrixInitiativeLong"
@@ -30009,7 +30004,7 @@ namespace Chummer
                     return GetMatrixInitiative(objCulture, strLanguageToPrint);
                 }
 
-                return string.Format(
+                return StringExtensions.FastFormat(
                     objCulture,
                     LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative",
                                               strLanguageToPrint),
@@ -30030,7 +30025,7 @@ namespace Chummer
                     return await GetMatrixInitiativeAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
 
-                return string.Format(objCulture,
+                return StringExtensions.FastFormat(objCulture,
                     await LanguageManager
                         .GetStringAsync(
                             await GetActiveCommlinkAsync(token).ConfigureAwait(false) == null
@@ -30080,7 +30075,7 @@ namespace Chummer
                                    + ")";
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString(
                                              ActiveCommlink == null
                                                  ? "String_MatrixInitiativeLong"
@@ -30122,7 +30117,7 @@ namespace Chummer
                     strInit += strSpace + "+" + strSpace + await LanguageManager.GetStringAsync("Tip_Modifiers", token: token).ConfigureAwait(false) + strSpace + "(" + (decFromImprovements + intINTAttributeModifiers + intWoundModifier).ToString(GlobalSettings.CultureInfo) + ")";
                 }
 
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync(
                         objActiveCommlink == null
                             ? "String_MatrixInitiativeLong"
@@ -30787,7 +30782,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(
                                          LanguageManager.GetString("Label_OtherLiftAndCarryLimitsFormat"),
                                          LiftLimit.ToString(
                                              Settings.WeightFormat, GlobalSettings.CultureInfo),
@@ -30804,7 +30799,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strFormat = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("Label_OtherLiftAndCarryLimitsFormat", token: token).ConfigureAwait(false),
                     LiftLimit.ToString(strFormat, GlobalSettings.CultureInfo),
                     CarryLimit.ToString(strFormat, GlobalSettings.CultureInfo));
@@ -37720,7 +37715,7 @@ namespace Chummer
                     + await Weapons.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
                     + await Gear.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
                     + await Cyberware.SumParallelAsync(
-                        x => x.GetIsModularCurrentlyEquippedAsync(token), x => x.TotalWeight, token: token).ConfigureAwait(false);
+                        (x, t) => x.GetIsModularCurrentlyEquippedAsync(t), x => x.TotalWeight, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -42816,27 +42811,27 @@ namespace Chummer
                             LoadDataXPath("weapons.xml", token: token)
                                 .SelectSingleNodeAndCacheExpression("/chummer", token), token));
 
-                        Armor.AsEnumerableWithSideEffects().ForEach(objArmor =>
+                        Armor.AsEnumerableWithSideEffects().ForEach((objArmor, t1) =>
                         {
                             objArmor.DiscountCost
                                 = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
-                            objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                            objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setArmorModBlackMarketMaps.Contains(objMod.Category);
                                 foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
                                 }
-                            }, token);
+                            }, t1);
 
                             foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
@@ -42871,19 +42866,19 @@ namespace Chummer
                                 = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                         }
 
-                        Vehicles.AsEnumerableWithSideEffects().ForEach(objVehicle =>
+                        Vehicles.AsEnumerableWithSideEffects().ForEach((objVehicle, t1) =>
                         {
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
                             foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
 
-                            objVehicle.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                            objVehicle.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
@@ -42891,7 +42886,7 @@ namespace Chummer
                                              .GetAllDescendants(
                                                  x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     if (objCyberware.DiscountCost)
                                     {
                                         objCyberware.DiscountCost
@@ -42904,20 +42899,20 @@ namespace Chummer
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t2.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
                                                                && setGearBlackMarketMaps.Contains(objGear.Category);
                                     }
                                 }
-                            }, token);
+                            }, t1);
 
                             foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = objWeapon.DiscountCost
                                                          && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t2) =>
                                 {
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
@@ -42926,19 +42921,19 @@ namespace Chummer
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t2.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
                                                                && setGearBlackMarketMaps.Contains(objGear.Category);
                                     }
-                                }, token);
+                                }, t1);
                             }
 
-                            objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach(objMount =>
+                            objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach((objMount, t2) =>
                             {
                                 objMount.DiscountCost = objMount.DiscountCost
                                                         && setWeaponMountBlackMarketMaps
                                                             .Contains(objMount.Category);
-                                objMount.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                                objMount.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t3) =>
                                 {
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
@@ -42946,7 +42941,7 @@ namespace Chummer
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t3.ThrowIfCancellationRequested();
                                         if (objCyberware.DiscountCost)
                                         {
                                             objCyberware.DiscountCost
@@ -42959,22 +42954,22 @@ namespace Chummer
                                                      .GetAllDescendants(
                                                          x => x.Children.AsEnumerableWithSideEffects()))
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            t3.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
                                                                    && setGearBlackMarketMaps.Contains(
                                                                        objGear.Category);
                                         }
                                     }
-                                }, token);
+                                }, t2);
 
                                 foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objWeapon.DiscountCost = objWeapon.DiscountCost
                                                              && setWeaponBlackMarketMaps.Contains(
                                                                  objWeapon.Category);
-                                    objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                    objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t3) =>
                                     {
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                     && setWeaponBlackMarketMaps
@@ -42983,14 +42978,14 @@ namespace Chummer
                                                      .GetAllDescendants(
                                                          x => x.Children.AsEnumerableWithSideEffects()))
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            t3.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
                                                                    && setGearBlackMarketMaps.Contains(
                                                                        objGear.Category);
                                         }
-                                    }, token);
+                                    }, t2);
                                 }
-                            }, token);
+                            }, t1);
                         }, token);
 
                         foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects()
@@ -42999,15 +42994,15 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = objWeapon.DiscountCost
                                                      && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t) =>
                             {
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
                                                             && setWeaponBlackMarketMaps
                                                                 .Contains(objWeapon.Category);
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                             x => x.Children, token))
+                                             x => x.Children, t))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
                                 }
@@ -43018,24 +43013,24 @@ namespace Chummer
                 else
                 {
                     // Forcefully disable all Black Market Discounts that don't apply.
-                    Armor.AsEnumerableWithSideEffects().ForEach(objArmor =>
+                    Armor.AsEnumerableWithSideEffects().ForEach((objArmor, t1) =>
                     {
                         objArmor.DiscountCost = false;
-                        objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                        objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                         {
                             objMod.DiscountCost = false;
                             foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t2.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
                             }
-                        }, token);
+                        }, t1);
 
                         foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t1.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
                     }, token);
@@ -43060,93 +43055,93 @@ namespace Chummer
                         objGear.DiscountCost = false;
                     }
 
-                    Vehicles.AsEnumerableWithSideEffects().ForEach(objVehicle =>
+                    Vehicles.AsEnumerableWithSideEffects().ForEach((objVehicle, t1) =>
                     {
                         objVehicle.DiscountCost = false;
                         foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t1.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
 
-                        objVehicle.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                        objVehicle.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t2) =>
                         {
                             objMod.DiscountCost = false;
                             foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(
                                              x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t2.ThrowIfCancellationRequested();
                                 objCyberware.DiscountCost = false;
                                 foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(
                                                  x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
                                 }
                             }
-                        }, token);
+                        }, t1);
 
                         foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
                                      .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
-                            token.ThrowIfCancellationRequested();
+                            t1.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = false;
-                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t2) =>
                             {
                                 objAccessory.DiscountCost = false;
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                             x => x.Children, token))
+                                             x => x.Children, t2))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
                                 }
-                            }, token);
+                            }, t1);
                         }
 
-                        objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach(objMount =>
+                        objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach((objMount, t2) =>
                         {
                             objMount.DiscountCost = false;
-                            objMount.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
+                            objMount.Mods.AsEnumerableWithSideEffects().ForEach((objMod, t3) =>
                             {
                                 objMod.DiscountCost = false;
                                 foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
                                              .GetAllDescendants(
                                                  x => x.Children.AsEnumerableWithSideEffects()))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t3.ThrowIfCancellationRequested();
                                     objCyberware.DiscountCost = false;
                                     foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t3.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
                                     }
                                 }
-                            }, token);
+                            }, t2);
 
                             foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(
                                              x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t2.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = false;
-                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t3) =>
                                 {
                                     objAccessory.DiscountCost = false;
                                     foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
                                                  .GetAllDescendants(
                                                      x => x.Children.AsEnumerableWithSideEffects()))
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t3.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
                                     }
-                                }, token);
+                                }, t2);
                             }
-                        }, token);
+                        }, t1);
                     }, token);
 
                     foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects()
@@ -43154,14 +43149,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         objWeapon.DiscountCost = false;
-                        objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                        objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach((objAccessory, t) =>
                         {
                             objAccessory.DiscountCost = false;
                             foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendants(
                                              x => x.Children.AsEnumerableWithSideEffects()))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
                             }
                         }, token);
@@ -43255,7 +43250,7 @@ namespace Chummer
                                 foreach (Gear objGear in await objMod.GearChildren
                                              .GetAllDescendantsAsync(x => x.Children, t2).ConfigureAwait(false))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t2.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
                                 }
@@ -43264,7 +43259,7 @@ namespace Chummer
                             foreach (Gear objGear in await objArmor.GearChildren
                                          .GetAllDescendantsAsync(x => x.Children, t1).ConfigureAwait(false))
                             {
-                                token.ThrowIfCancellationRequested();
+                                t1.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
@@ -51177,23 +51172,23 @@ namespace Chummer
                                             {
                                                 token.ThrowIfCancellationRequested();
                                                 if (blnSync)
-                                                    DoLoadStatblocks();
+                                                    DoLoadStatblocks(token);
                                                 else
                                                     await TaskExtensions.RunWithoutEC(DoLoadStatblocks, token).ConfigureAwait(false);
-                                                void DoLoadStatblocks()
+                                                void DoLoadStatblocks(CancellationToken innerToken)
                                                 {
                                                     using (Stream objStream = objEntry.Open())
                                                     {
-                                                        token.ThrowIfCancellationRequested();
+                                                        innerToken.ThrowIfCancellationRequested();
                                                         using (StreamReader objStreamReader =
                                                                new StreamReader(objStream, true))
                                                         {
-                                                            token.ThrowIfCancellationRequested();
+                                                            innerToken.ThrowIfCancellationRequested();
                                                             using (XmlReader objReader = XmlReader.Create(
                                                                        objStreamReader,
                                                                        GlobalSettings.SafeXmlReaderSettings))
                                                             {
-                                                                token.ThrowIfCancellationRequested();
+                                                                innerToken.ThrowIfCancellationRequested();
                                                                 XPathDocument xmlSourceDoc
                                                                     = new XPathDocument(objReader);
                                                                 XPathNavigator objDummy
@@ -51294,23 +51289,23 @@ namespace Chummer
                                             {
                                                 token.ThrowIfCancellationRequested();
                                                 if (blnSync)
-                                                    DoLoadLeads();
+                                                    DoLoadLeads(token);
                                                 else
                                                     await TaskExtensions.RunWithoutEC(DoLoadLeads, token).ConfigureAwait(false);
-                                                void DoLoadLeads()
+                                                void DoLoadLeads(CancellationToken innerToken)
                                                 {
                                                     using (Stream objStream = objEntry.Open())
                                                     {
-                                                        token.ThrowIfCancellationRequested();
+                                                        innerToken.ThrowIfCancellationRequested();
                                                         using (StreamReader objStreamReader =
                                                                new StreamReader(objStream, true))
                                                         {
-                                                            token.ThrowIfCancellationRequested();
+                                                            innerToken.ThrowIfCancellationRequested();
                                                             using (XmlReader objReader = XmlReader.Create(
                                                                        objStreamReader,
                                                                        GlobalSettings.SafeXmlReaderSettings))
                                                             {
-                                                                token.ThrowIfCancellationRequested();
+                                                                innerToken.ThrowIfCancellationRequested();
                                                                 XPathDocument xmlSourceDoc
                                                                     = new XPathDocument(objReader);
                                                                 xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
@@ -51345,7 +51340,7 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("Message_FailedLoad", token: token),
                                         ex.Message),
@@ -51356,7 +51351,7 @@ namespace Chummer
                             else
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
-                                    string.Format(GlobalSettings.CultureInfo,
+                                    StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
                                             .ConfigureAwait(false),
                                         ex.Message),
@@ -51753,7 +51748,7 @@ namespace Chummer
                                         // ReSharper disable MethodHasAsyncOverload
                                         // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                         if (Program.ShowScrollableMessageBox(
-                                                string.Format(GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(
                                                     LanguageManager.GetString(
                                                         "Message_MissingGameplayOption", token: token),
                                                     SettingsKey),
@@ -51776,7 +51771,7 @@ namespace Chummer
                                         // ReSharper restore MethodHasAsyncOverload
                                     }
                                     else if (await Program.ShowScrollableMessageBoxAsync(
-                                                 string.Format(GlobalSettings.CultureInfo,
+                                                 StringExtensions.FastFormat(
                                                      await LanguageManager
                                                          .GetStringAsync(
                                                              "Message_MissingGameplayOption", token: token)
@@ -54715,23 +54710,22 @@ namespace Chummer
         {
             get
             {
+                string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
                     if (PositiveQualityLimitKarma != PositiveQualityKarma)
                     {
-                        return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                                             PositiveQualityLimitKarma,
-                                             Settings.QualityKarmaLimit,
-                                             LanguageManager.GetString("String_Space"),
-                                             PositiveQualityKarma,
-                                             LanguageManager.GetString("String_Karma"));
+                        return PositiveQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", PositiveQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, LanguageManager.GetString("String_Karma"));
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                                         PositiveQualityLimitKarma,
-                                         Settings.QualityKarmaLimit,
-                                         LanguageManager.GetString("String_Space"),
-                                         LanguageManager.GetString("String_Karma"));
+                    return PositiveQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, LanguageManager.GetString("String_Karma"));
                 }
             }
         }
@@ -54739,6 +54733,7 @@ namespace Chummer
         public async Task<string> GetDisplayPositiveQualityKarmaAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -54748,19 +54743,17 @@ namespace Chummer
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                        intLimitKarma,
-                        intQualityKarmaLimit,
-                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        intQualityKarma,
-                        await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                    return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", intQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
                 }
 
-                return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                    intLimitKarma,
-                    intQualityKarmaLimit,
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
             }
             finally
             {
@@ -54969,23 +54962,22 @@ namespace Chummer
         {
             get
             {
+                string strSpace = LanguageManager.GetString("String_Space");
                 using (LockObject.EnterReadLock())
                 {
                     if (NegativeQualityLimitKarma != NegativeQualityKarma)
                     {
-                        return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                                             NegativeQualityLimitKarma,
-                                             Settings.QualityKarmaLimit,
-                                             LanguageManager.GetString("String_Space"),
-                                             NegativeQualityKarma,
-                                             LanguageManager.GetString("String_Karma"));
+                        return NegativeQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", NegativeQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, LanguageManager.GetString("String_Karma"));
                     }
 
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                                         NegativeQualityLimitKarma,
-                                         Settings.QualityKarmaLimit,
-                                         LanguageManager.GetString("String_Space"),
-                                         LanguageManager.GetString("String_Karma"));
+                    return NegativeQualityLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", Settings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, LanguageManager.GetString("String_Karma"));
                 }
             }
         }
@@ -54993,6 +54985,7 @@ namespace Chummer
         public async Task<string> GetDisplayNegativeQualityKarmaAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -55002,19 +54995,17 @@ namespace Chummer
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
-                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
-                        intLimitKarma,
-                        intQualityKarmaLimit,
-                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        intQualityKarma,
-                        await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                    return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                            .ConcatFast(
+                                "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                                strSpace, "(", intQualityKarma.ToString(GlobalSettings.CultureInfo), ")",
+                                strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
                 }
 
-                return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                    intLimitKarma,
-                    intQualityKarmaLimit,
-                    await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
+                return intLimitKarma.ToString(GlobalSettings.CultureInfo)
+                        .ConcatFast(
+                            "/", intQualityKarmaLimit.ToString(GlobalSettings.CultureInfo),
+                            strSpace, await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false));
             }
             finally
             {
@@ -55116,7 +55107,7 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    string strReturn = string.Format(GlobalSettings.CultureInfo,
+                    string strReturn = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         LanguageManager.GetString("Label_MetagenicKarmaValue"), MetagenicPositiveQualityKarma,
                         MetagenicNegativeQualityKarma, MetagenicLimit);
                     if (MetagenicPositiveQualityKarma + MetagenicNegativeQualityKarma == 1)
@@ -55136,7 +55127,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 int intPositive = await GetMetagenicPositiveQualityKarmaAsync(token).ConfigureAwait(false);
                 int intNegative = await GetMetagenicNegativeQualityKarmaAsync(token).ConfigureAwait(false);
-                string strReturn = string.Format(GlobalSettings.CultureInfo,
+                string strReturn = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_MetagenicKarmaValue", token: token)
                         .ConfigureAwait(false), intPositive, intNegative,
                     await GetMetagenicLimitAsync(token).ConfigureAwait(false));

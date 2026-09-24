@@ -163,7 +163,7 @@ namespace Chummer
             this.lstGear.FormattingEnabled = true;
             this.lstGear.Location = new System.Drawing.Point(3, 30);
             this.lstGear.Name = "lstGear";
-            this.lstGear.Size = new System.Drawing.Size(300, 510);
+            this.lstGear.Size = new System.Drawing.Size(300, 481);
             this.lstGear.TabIndex = 35;
             this.lstGear.SelectedIndexChanged += new System.EventHandler(this.lstGear_SelectedIndexChanged);
             this.lstGear.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -787,6 +787,8 @@ namespace Chummer
             // 
             // tlpLeft
             // 
+            this.tlpLeft.AutoSize = true;
+            this.tlpLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpLeft.ColumnCount = 2;
             this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());

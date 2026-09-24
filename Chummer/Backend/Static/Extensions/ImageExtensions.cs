@@ -264,15 +264,15 @@ namespace Chummer
             };
             token.ThrowIfCancellationRequested();
 
-            return await TaskExtensions.RunWithoutEC(() =>
+            return await TaskExtensions.RunWithoutEC(t =>
             {
                 try
                 {
                     using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        token.ThrowIfCancellationRequested();
+                        t.ThrowIfCancellationRequested();
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                        token.ThrowIfCancellationRequested();
+                        t.ThrowIfCancellationRequested();
                         objImageStream.Position = 0;
                         return Image.FromStream(objImageStream, true);
                     }

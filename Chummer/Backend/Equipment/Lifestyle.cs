@@ -630,7 +630,7 @@ namespace Chummer.Backend.Equipment
                                         ?? strName));
                             }
 
-                            string strDescription = string.Format(GlobalSettings.CultureInfo, blnSync
+                            string strDescription = StringExtensions.FastFormat(blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetString("String_CannotFindLifestyle", token: token)
                                 : await LanguageManager.GetStringAsync("String_CannotFindLifestyle", token: token).ConfigureAwait(false), _strName);
@@ -3825,10 +3825,10 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
-                                         BaseArea.ToString(GlobalSettings.CultureInfo),
-                                         TotalAreaMaximum.ToString(GlobalSettings.CultureInfo));
+                                         BaseArea,
+                                         TotalAreaMaximum);
                 }
             }
         }
@@ -3839,11 +3839,11 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(
+                return StringExtensions.FastFormat(
                     GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
-                                         .ConfigureAwait(false), BaseArea.ToString(GlobalSettings.CultureInfo),
-                    (await GetTotalAreaMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+                                         .ConfigureAwait(false), BaseArea,
+                    await GetTotalAreaMaximumAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -3857,10 +3857,10 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
-                                         BaseComforts.ToString(GlobalSettings.CultureInfo),
-                                         TotalComfortsMaximum.ToString(GlobalSettings.CultureInfo));
+                                         BaseComforts,
+                                         TotalComfortsMaximum);
                 }
             }
         }
@@ -3871,12 +3871,11 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(
+                return StringExtensions.FastFormat(
                     GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
-                                         .ConfigureAwait(false), BaseComforts.ToString(GlobalSettings.CultureInfo),
-                    (await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false)).ToString(
-                        GlobalSettings.CultureInfo));
+                                         .ConfigureAwait(false), BaseComforts,
+                    await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -3890,10 +3889,10 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
-                                         BaseSecurity.ToString(GlobalSettings.CultureInfo),
-                                         TotalSecurityMaximum.ToString(GlobalSettings.CultureInfo));
+                                         BaseSecurity,
+                                         TotalSecurityMaximum);
                 }
             }
         }
@@ -3904,12 +3903,11 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(
+                return StringExtensions.FastFormat(
                     GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
-                                         .ConfigureAwait(false), BaseSecurity.ToString(GlobalSettings.CultureInfo),
-                    (await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false)).ToString(
-                        GlobalSettings.CultureInfo));
+                                         .ConfigureAwait(false), BaseSecurity,
+                    await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false));
             }
             finally
             {

@@ -207,7 +207,7 @@ namespace Chummer
         {
             // Verify that the user wants to delete this setting
             if (await Program.ShowScrollableMessageBoxAsync(
-                    string.Format(GlobalSettings.CultureInfo,
+                    StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Message_CharacterOptions_ConfirmDelete")
                             .ConfigureAwait(false),
                         await _objReferenceCharacterSettings.GetNameAsync().ConfigureAwait(false)),
@@ -313,8 +313,7 @@ namespace Chummer
                     if (await dicCharacterSettings.AnyAsync(async x => await x.Value.GetNameAsync().ConfigureAwait(false) == strSelectedName).ConfigureAwait(false))
                     {
                         DialogResult eCreateDuplicateSetting = await Program.ShowScrollableMessageBoxAsync(
-                            string.Format(
-                                GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName")
                                     .ConfigureAwait(false),
                                 strSelectedName),
@@ -2040,6 +2039,10 @@ namespace Chummer
 
         private async Task SetToolTips(CancellationToken token = default)
         {
+            await lblGameplayOptionName
+                  .SetToolTipTextAsync(
+                      (await LanguageManager.GetStringAsync("Tip_GameplayOptionName", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
             await chkUnarmedSkillImprovements
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements", token: token)

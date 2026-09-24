@@ -291,8 +291,7 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     if (blnSync)
                     {
-                        string strDescription = string.Format(
-                                       GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_SelectVariableCost", token: token),
                                        CurrentDisplayNameShort);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -316,8 +315,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        string strDescription = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                         int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
@@ -2250,7 +2248,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Capacity.Contains('[') && !Capacity.Contains("/["))
                     return CalculatedCapacity;
-                return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                return StringExtensions.FastFormat(LanguageManager.GetString("String_CapacityRemaining"),
                     CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
             }
         }
@@ -2260,7 +2258,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (Capacity.Contains('[') && !Capacity.Contains("/["))
                 return await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
-            return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
+            return StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
                 await GetCalculatedCapacityAsync(token).ConfigureAwait(false), (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##", GlobalSettings.CultureInfo));
         }
 

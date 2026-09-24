@@ -940,8 +940,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    string strMetamagicSkillSelection = string.Format(
-                                        GlobalSettings.CultureInfo,
+                                    string strMetamagicSkillSelection = StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync("String_MetamagicSkillBase", token: token)
                                                              .ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("String_MetamagicSkills", token: token)
@@ -955,10 +954,11 @@ namespace Chummer
                                           ?.Value;
                                     string strMetamagicSkillType = await LanguageManager.GetStringAsync(
                                         "String_MetamagicSkillType_" + strSkillType, token: token).ConfigureAwait(false);
+                                    string strText = StringExtensions.FastFormat(strMetamagicSkillSelection,
+                                                               strSkillCount, strMetamagicSkillType, strSkillVal);
                                     await lblMetatypeSkillSelection.DoThreadSafeAsync(x =>
                                     {
-                                        x.Text = string.Format(GlobalSettings.CultureInfo, strMetamagicSkillSelection,
-                                                               strSkillCount, strMetamagicSkillType, strSkillVal);
+                                        x.Text = strText;
                                         x.Visible = true;
                                     }, token).ConfigureAwait(false);
                                 }
@@ -1400,11 +1400,11 @@ namespace Chummer
                         .GetSumtoTenAsync(token).ConfigureAwait(false);
                     if (intSumToTen != intOldSumToTen)
                     {
-                        await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                        await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_SumtoTen", token: token).ConfigureAwait(false),
-                            intOldSumToTen.ToString(GlobalSettings.CultureInfo),
-                            intSumToTen.ToString(GlobalSettings.CultureInfo)), token: token).ConfigureAwait(false);
+                            intOldSumToTen,
+                            intSumToTen), token: token).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -2700,56 +2700,56 @@ namespace Chummer
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug = objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                    await lblBOD.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
                     string strMin2 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("agimin", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax2 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("agimax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug2 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("agiaug", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin2, strMax2, strAug2), token).ConfigureAwait(false);
+                    await lblAGI.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin2, strMax2, strAug2), token).ConfigureAwait(false);
                     string strMin3 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("reamin", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax3 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("reamax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug3 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("reaaug", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin3, strMax3, strAug3), token).ConfigureAwait(false);
+                    await lblREA.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin3, strMax3, strAug3), token).ConfigureAwait(false);
                     string strMin4 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("strmin", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax4 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("strmax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug4 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("straug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin4, strMax4, strAug4), token).ConfigureAwait(false);
+                    await lblSTR.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin4, strMax4, strAug4), token).ConfigureAwait(false);
                     string strMin5 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("chamin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax5 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("chamax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug5 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("chaaug", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin5, strMax5, strAug5), token).ConfigureAwait(false);
+                    await lblCHA.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin5, strMax5, strAug5), token).ConfigureAwait(false);
                     string strMin6 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("intmin", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax6 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("intmax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug6 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("intaug", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin6, strMax6, strAug6), token).ConfigureAwait(false);
+                    await lblINT.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin6, strMax6, strAug6), token).ConfigureAwait(false);
                     string strMin7 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("logmin", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax7 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("logmax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug7 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("logaug", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin7, strMax7, strAug7), token).ConfigureAwait(false);
+                    await lblLOG.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin7, strMax7, strAug7), token).ConfigureAwait(false);
                     string strMin8 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilmin", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax8 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilmax", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug8 = objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilaug", token)?.Value
                                      ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin8, strMax8, strAug8), token).ConfigureAwait(false);
+                    await lblWIL.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin8, strMax8, strAug8), token).ConfigureAwait(false);
 
                     string strKarmaText
                         = objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpression("karma", token)?.Value
@@ -2911,56 +2911,56 @@ namespace Chummer
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug = objXmlMetatype.SelectSingleNodeAndCacheExpression("bodaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                    await lblBOD.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
                     string strMin2 = objXmlMetatype.SelectSingleNodeAndCacheExpression("agimin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax2 = objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug2 = objXmlMetatype.SelectSingleNodeAndCacheExpression("agiaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin2, strMax2, strAug2), token).ConfigureAwait(false);
+                    await lblAGI.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin2, strMax2, strAug2), token).ConfigureAwait(false);
                     string strMin3 = objXmlMetatype.SelectSingleNodeAndCacheExpression("reamin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax3 = objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug3 = objXmlMetatype.SelectSingleNodeAndCacheExpression("reaaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin3, strMax3, strAug3), token).ConfigureAwait(false);
+                    await lblREA.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin3, strMax3, strAug3), token).ConfigureAwait(false);
                     string strMin4 = objXmlMetatype.SelectSingleNodeAndCacheExpression("strmin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax4 = objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug4 = objXmlMetatype.SelectSingleNodeAndCacheExpression("straug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin4, strMax4, strAug4), token).ConfigureAwait(false);
+                    await lblSTR.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin4, strMax4, strAug4), token).ConfigureAwait(false);
                     string strMin5 = objXmlMetatype.SelectSingleNodeAndCacheExpression("chamin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax5 = objXmlMetatype.SelectSingleNodeAndCacheExpression("chamax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug5 = objXmlMetatype.SelectSingleNodeAndCacheExpression("chaaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin5, strMax5, strAug5), token).ConfigureAwait(false);
+                    await lblCHA.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin5, strMax5, strAug5), token).ConfigureAwait(false);
                     string strMin6 = objXmlMetatype.SelectSingleNodeAndCacheExpression("intmin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax6 = objXmlMetatype.SelectSingleNodeAndCacheExpression("intmax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug6 = objXmlMetatype.SelectSingleNodeAndCacheExpression("intaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin6, strMax6, strAug6), token).ConfigureAwait(false);
+                    await lblINT.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin6, strMax6, strAug6), token).ConfigureAwait(false);
                     string strMin7 = objXmlMetatype.SelectSingleNodeAndCacheExpression("logmin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax7 = objXmlMetatype.SelectSingleNodeAndCacheExpression("logmax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug7 = objXmlMetatype.SelectSingleNodeAndCacheExpression("logaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin7, strMax7, strAug7), token).ConfigureAwait(false);
+                    await lblLOG.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin7, strMax7, strAug7), token).ConfigureAwait(false);
                     string strMin8 = objXmlMetatype.SelectSingleNodeAndCacheExpression("wilmin", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strMax8 = objXmlMetatype.SelectSingleNodeAndCacheExpression("wilmax", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
                     string strAug8 = objXmlMetatype.SelectSingleNodeAndCacheExpression("wilaug", token)?.Value
                                     ?? 0.ToString(GlobalSettings.CultureInfo);
-                    await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin8, strMax8, strAug8), token).ConfigureAwait(false);
+                    await lblWIL.DoThreadSafeAsync(x => x.Text = StringExtensions.FastFormat(strAttributeFormat, strMin8, strMax8, strAug8), token).ConfigureAwait(false);
 
                     string strKarmaText
                         = objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpression("karma", token)?.Value

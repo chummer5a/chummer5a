@@ -1100,12 +1100,12 @@ namespace Chummer
                 string strBaseLifestyleName
                     = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(strBaseLifestyleName))
-                    strBonusLP = string.Format(GlobalSettings.CultureInfo, strBonusLP, string.Empty);
+                    strBonusLP = StringExtensions.FastFormat(strBonusLP, string.Empty);
                 else
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                            .ConfigureAwait(false);
-                    strBonusLP = string.Format(GlobalSettings.CultureInfo, strBonusLP, strBaseLifestyleName + strSpace);
+                    strBonusLP = StringExtensions.FastFormat(strBonusLP, strBaseLifestyleName + strSpace);
                 }
                 await lblBonusLP.DoThreadSafeAsync(x =>
                 {

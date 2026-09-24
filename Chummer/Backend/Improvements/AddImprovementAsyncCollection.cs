@@ -641,7 +641,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (string.IsNullOrEmpty(strSelect))
             {
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token).ConfigureAwait(false),
                         _strFriendlyName)
                     : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token).ConfigureAwait(false);
@@ -883,7 +883,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 strExclude = bonusNode.Attributes["excludecategory"].InnerTextViaPool(token);
 
             string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                ? string.Format(GlobalSettings.CultureInfo,
+                ? StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token).ConfigureAwait(false), _strFriendlyName)
                 : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token).ConfigureAwait(false);
             using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(_objCharacter)
@@ -996,7 +996,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                             default:
                             {
                                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                                    ? string.Format(GlobalSettings.CultureInfo,
+                                    ? StringExtensions.FastFormat(
                                         await LanguageManager.GetStringAsync(
                                             "String_Improvement_SelectAttributeNamed", token: token).ConfigureAwait(false),
                                         _strFriendlyName)
@@ -1156,7 +1156,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 default:
                 {
                     string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo,
+                        ? StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_Improvement_SelectAttributeNamed",
                                 token: token).ConfigureAwait(false),
                             _strFriendlyName)
@@ -1259,7 +1259,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
             // Display the Select Limit window and record which Limit was selected.
             string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                ? string.Format(GlobalSettings.CultureInfo,
+                ? StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectLimitNamed",
                         token: token).ConfigureAwait(false),
                     _strFriendlyName)
@@ -1389,7 +1389,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("String_Improvement_SelectAttributeNamed",
                             token: token).ConfigureAwait(false),
                         _strFriendlyName)
@@ -1418,7 +1418,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("String_Improvement_SelectSkillNamed",
                             token: token).ConfigureAwait(false),
                         _strFriendlyName)
@@ -1527,7 +1527,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("String_Improvement_SelectAttributeNamed",
                             token: token).ConfigureAwait(false),
                         _strFriendlyName)
@@ -1557,7 +1557,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 // Display the Select Attribute window and record which Skill was selected.
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("String_Improvement_SelectSkillNamed",
                             token: token).ConfigureAwait(false),
                         _strFriendlyName)
@@ -1656,7 +1656,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             XPathNavigator xmlSelectText = node.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     node["translate"]?.InnerTextViaPool(token) ?? node["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
@@ -1707,7 +1707,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             XPathNavigator xmlSelectText = node.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     node["translate"]?.InnerTextViaPool(token) ?? node["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
@@ -2056,7 +2056,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     xmlProgram["translate"]?.InnerTextViaPool(token) ?? xmlProgram["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
@@ -2124,7 +2124,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     xmlProgram["translate"]?.InnerTextViaPool(token) ?? xmlProgram["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
@@ -2395,7 +2395,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     default:
                         {
                             string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalSettings.CultureInfo,
+                                ? StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync(
                                         "String_Improvement_SelectAttributeNamed", token: token).ConfigureAwait(false),
                                     _strFriendlyName)
@@ -3736,7 +3736,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     }
 
                     string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo,
+                        ? StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
                         : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
                     using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
@@ -3837,7 +3837,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                 Weapon objSelectedWeapon;
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync(
                             "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false),
                         _strFriendlyName)
@@ -4151,7 +4151,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strDescription = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_SelectSide", token: token).ConfigureAwait(false), _strFriendlyName);
+            string strDescription = StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Label_SelectSide", token: token).ConfigureAwait(false), _strFriendlyName);
             using (ThreadSafeForm<SelectSide> frmPickSide = await ThreadSafeForm<SelectSide>.GetAsync(() => new SelectSide
                    {
                        Description = strDescription
@@ -4399,7 +4399,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                         if (lstArts.Count == 0)
                         {
-                            await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                            await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                                 SourceName), token: token).ConfigureAwait(false);
@@ -4506,7 +4506,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                         if (lstMetamagics.Count == 0)
                         {
-                            await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                            await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                                 SourceName), token: token).ConfigureAwait(false);
@@ -4622,7 +4622,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                         if (lstEchoes.Count == 0)
                         {
-                            await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                            await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                                 SourceName), token: token).ConfigureAwait(false);
@@ -5502,7 +5502,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             SelectedValue = string.Empty;
             if (nodeList.Count > 0)
             {
-                string strDescription = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false), _strFriendlyName);
+                string strDescription = StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false), _strFriendlyName);
                 using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
                     await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
@@ -5579,7 +5579,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                 if (lstArmors.Count > 0)
                 {
-                    string strDescription = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false), _strFriendlyName);
+                    string strDescription = StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false), _strFriendlyName);
                     using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                     {
                         await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
@@ -5638,7 +5638,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                 if (list.Count == 0)
                     throw new AbortedException();
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     _strFriendlyName);
                 using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
@@ -5679,7 +5679,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 // If the character is null (this is a Vehicle), the user must enter their own string.
                 // Display the Select Item window and record the value that was entered.
-                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                string strDescription = StringExtensions.FastFormat(
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     _strFriendlyName);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
@@ -5727,14 +5727,14 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     {
                         if (lstWeapons.Count == 0)
                         {
-                            await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                            await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                                 SourceName), token: token).ConfigureAwait(false);
                             throw new AbortedException();
                         }
 
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                             _strFriendlyName);
                         using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
@@ -5935,7 +5935,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                 if (lstItems.Count == 0)
                 {
-                    await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                    await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync(
                             "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                         SourceName), token: token).ConfigureAwait(false);
@@ -6078,7 +6078,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                 if (lstQualities.Count == 0)
                 {
-                    await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                    await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync(
                             "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                         SourceName), token: token).ConfigureAwait(false);
@@ -6132,7 +6132,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                     if (lstQualities.Count == 0)
                     {
-                        await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                        await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
                                 "Message_Improvement_EmptySelectionListNamed", token: token).ConfigureAwait(false),
                             SourceName), token: token).ConfigureAwait(false);
@@ -6541,7 +6541,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                         frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
                         frmSelect.MyForm.ForceItem(TakeNextForcedValue());
                         string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                            ? string.Format(GlobalSettings.CultureInfo,
+                            ? StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritType", token: token).ConfigureAwait(false),
                                 _strFriendlyName)
                             : await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritTypeGeneric", token: token).ConfigureAwait(false);

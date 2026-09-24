@@ -30,11 +30,14 @@ Application:
 - Nested gland drugs create a disabled custom improvement group for Improvements-tab activation and Narco, same flow as Drugs-tab doses. The group name includes the parent ware (e.g. `Bliss (Chemical Gland)`) so it does not collide with a Drugs-tab dose of the same drug. Removing the drug or deleting the gland clears those improvements. Characters saved before this change get missing groups created on load.
 - Changing character settings in the Master Index no longer causes the displayed list of items to initially ignore the file and search filters.
 - Fixed a potential crash that could happen when saving a character with non-retroactive Essence modifiers as created.
+- Attempting to copy data no longer causes the program to crash.
+- Fixed a bug allowing skills that should not be able to take specializations being allowed to do so when loading in an existing character save before making any changes to it.
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
 
 Bioware:
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
 - Chemical Glands and Expanded Reservoir accept Drugs, Custom Drugs, Toxins, and BTLs through Add Drug; Chemicals/Custom gear still use Add Gear.
+- Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
 
 Vehicles:
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.

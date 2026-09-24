@@ -110,14 +110,7 @@ namespace Chummer
                 //Otherwise just log it
 #if DEBUG
                 System.Reflection.MethodBase mth = new StackTrace().GetFrame(1).GetMethod();
-                string errorMsg = string.Format
-                    (
-                        GlobalSettings.InvariantCultureInfo,
-                        "Tried to read missing field \"{0}\" in {1}.{2}",
-                        field,
-                        mth.ReflectedType?.Name,
-                        mth
-                    );
+                string errorMsg = "Tried to read missing field \"".ConcatFast(field, "\" in ", mth.ReflectedType?.Name ?? "Unknown", ".", mth.ToString());
 #else
                 string errorMsg = "Tried to read missing field \"" + field + "\"";
 #endif
@@ -162,22 +155,10 @@ namespace Chummer
                 //builds due to inlining
                 System.Reflection.MethodBase mth
                     = new StackTrace().GetFrame(2).GetMethod();
-                string errorMsg = string.Format
-                    (
-                        GlobalSettings.InvariantCultureInfo,
-                        "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
-                        field,
-                        typeof(T),
-                        mth.ReflectedType?.Name
-                    );
+                string strTypeName = typeof(T).Name;
+                string errorMsg = "Tried to read missing field \"".ConcatFast(field, "\" of type \"", strTypeName, "\" in ", strTypeName, ".", mth.ReflectedType?.Name ?? "Unknown");
 #else //So if DEBUG flag is missing we don't reflect info
-                string errorMsg = string.Format
-                    (
-                        GlobalSettings.InvariantCultureInfo,
-                        "Tried to read missing field \"{0}\" of type \"{1}\"",
-                        field,
-                        typeof(T)
-                    );
+                string errorMsg = "Tried to read missing field \"".ConcatFast(field, "\" of type \"", typeof(T).Name, "\"");
 #endif
                 Log.Error(errorMsg);
                 //Assign something

@@ -482,7 +482,7 @@ namespace Chummer
                 {
                     if (blnShowErrors)
                         Program.ShowScrollableMessageBox(
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                           LanguageManager.GetString("Message_DuplicateFile", token: token), strFile,
                                           strDestinationFolder),
                             LanguageManager.GetString("MessageTitle_DuplicateFile", token: token),
@@ -663,7 +663,7 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 if (Program.ShowScrollableMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_Prompt_Delete_Existing_File",
                                                 token: token), strPath),
@@ -672,7 +672,7 @@ namespace Chummer
                                     return false;
                             }
                             else if (await Program.ShowScrollableMessageBoxAsync(
-                                         string.Format(GlobalSettings.CultureInfo,
+                                         StringExtensions.FastFormat(
                                              await LanguageManager.GetStringAsync(
                                                      "Message_Prompt_Delete_Existing_File", token: token)
                                                  .ConfigureAwait(false), strPath),
@@ -817,7 +817,7 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         if (Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(
                                     // ReSharper disable once MethodHasAsyncOverload
                                     LanguageManager.GetString("Message_Prompt_Delete_Existing_File",
                                         token: token), strPath),
@@ -826,7 +826,7 @@ namespace Chummer
                             return false;
                     }
                     else if (await Program.ShowScrollableMessageBoxAsync(
-                                 string.Format(GlobalSettings.CultureInfo,
+                                 StringExtensions.FastFormat(
                                      await LanguageManager.GetStringAsync(
                                              "Message_Prompt_Delete_Existing_File", token: token)
                                          .ConfigureAwait(false), strPath),
@@ -852,7 +852,11 @@ namespace Chummer
             {
                 RunWithoutThreadLock(() =>
                 {
-                    Parallel.ForEach(astrFilesToDelete, () => true,
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(astrFilesToDelete, objOptions, () => true,
                                      (strToDelete, x, y) => FileExtensions.SafeDelete(strToDelete, false, intTimeout, token) && y,
                                      blnLoop =>
                                      {
@@ -880,21 +884,14 @@ namespace Chummer
         /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
-        /// <param name="objCulture">Culture info to use when displaying any prompts or warnings. If empty, use the culture info of Chummer's current language.</param>
         /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use the language of <paramref name="objCulture"/> (Chummer's current language if that is null).</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask RestartApplication(CultureInfo objCulture = null, string strLanguage = "", string strText = "", CancellationToken token = default)
+        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objCulture == null)
-            {
-                objCulture = GlobalSettings.CultureInfo;
-                if (string.IsNullOrEmpty(strLanguage))
-                    strLanguage = GlobalSettings.Language;
-            }
-            else if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = objCulture.ToString();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
             {
                 string text = await LanguageManager.GetStringAsync(strText, strLanguage, token: token).ConfigureAwait(false);
@@ -936,7 +933,7 @@ namespace Chummer
                                                                             .GetCharacterNameAsync(token)
                                                                             .ConfigureAwait(false);
                         if (await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(objCulture,
+                                StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync(
                                             "Message_UnsavedChanges", strLanguage,
                                             token: token)
@@ -1129,7 +1126,13 @@ namespace Chummer
         public static Task StartStaTask(Action func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<bool>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(() =>
@@ -1167,7 +1170,13 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<T>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<T>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(() =>
@@ -1203,7 +1212,13 @@ namespace Chummer
         public static Task StartStaTask(Task func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<bool>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<bool>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(RunFunction);
@@ -1242,7 +1257,13 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Tuple<TaskCompletionSource<T>, CancellationToken> tupArg = new Tuple<TaskCompletionSource<T>, CancellationToken>(tcs, token);
+            bool TryCancelTask(object objInnerArg)
+            {
+                Tuple<TaskCompletionSource<bool>, CancellationToken> tupInnerArg = (Tuple<TaskCompletionSource<bool>, CancellationToken>)objInnerArg;
+                return tupInnerArg.Item1.TrySetCanceled(tupInnerArg.Item2);
+            }
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => TryCancelTask(x), tupArg);
             try
             {
                 Thread thread = new Thread(RunFunction);
@@ -1732,6 +1753,23 @@ namespace Chummer
         /// </summary>
         /// <param name="func">The code to run.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunInEmptyExecutionContext(Action<CancellationToken> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+            if (s_objEmptyExecutionContext != null)
+                ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), t => func.Invoke((CancellationToken)t),
+                    token);
+            else
+                func.Invoke(token);
+        }
+
+        /// <summary>
+        /// Run some code in a clean (empty) ExecutionContext.
+        /// Useful for weird ExecutionContext flow cases involving async (void) events where AsyncLocals used for locking end up flowing to them when they shouldn't.
+        /// </summary>
+        /// <param name="func">The code to run.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T RunInEmptyExecutionContext<T>(Func<T> func)
         {
             // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
@@ -1744,6 +1782,27 @@ namespace Chummer
             }
 
             return func.Invoke();
+        }
+
+        /// <summary>
+        /// Run some code in a clean (empty) ExecutionContext.
+        /// Useful for weird ExecutionContext flow cases involving async (void) events where AsyncLocals used for locking end up flowing to them when they shouldn't.
+        /// </summary>
+        /// <param name="func">The code to run.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunInEmptyExecutionContext<T>(Func<CancellationToken, T> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // ExecutionContext is null if we somehow are suppressing flows the moment we started the program
+            if (s_objEmptyExecutionContext != null)
+            {
+                T objReturn = default;
+                ExecutionContext.Run(s_objEmptyExecutionContext.CreateCopy(), t => objReturn = func.Invoke((CancellationToken)t),
+                    token);
+                return objReturn;
+            }
+
+            return func.Invoke(token);
         }
 
         // Empty/default Execution Context that we need for e.g. manual calls of Application.DoEvents so that AsyncLocals in events do not flow from values set in main thread
@@ -2312,6 +2371,144 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
+        /// <param name="funcToRun1">First code to execute.</param>
+        /// <param name="funcToRun2">Second code to execute.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun1, Action funcToRun2, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                Action[] afuncToRun = new Action[2]
+                {
+                    funcToRun1,
+                    funcToRun2
+                };
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.Invoke(objOptions, afuncToRun);
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            Task objTask = Task.WhenAll(
+                Task.Run(() => funcToRun1.Invoke(), token),
+                Task.Run(() => funcToRun2.Invoke(), token));
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun1">First code to execute.</param>
+        /// <param name="funcToRun2">Second code to execute.</param>
+        /// <param name="funcToRun3">Third code to execute.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun1, Action funcToRun2, Action funcToRun3, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                Action[] afuncToRun = new Action[3]
+                {
+                    funcToRun1,
+                    funcToRun2,
+                    funcToRun3
+                };
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.Invoke(objOptions, afuncToRun);
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            Task objTask = Task.WhenAll(
+                Task.Run(() => funcToRun1.Invoke(), token),
+                Task.Run(() => funcToRun2.Invoke(), token),
+                Task.Run(() => funcToRun3.Invoke(), token));
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun1">First code to execute.</param>
+        /// <param name="funcToRun2">Second code to execute.</param>
+        /// <param name="funcToRun3">Third code to execute.</param>
+        /// <param name="funcToRun4">Fourth code to execute.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun1, Action funcToRun2, Action funcToRun3, Action funcToRun4, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                Action[] afuncToRun = new Action[4]
+                {
+                    funcToRun1,
+                    funcToRun2,
+                    funcToRun3,
+                    funcToRun4
+                };
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.Invoke(objOptions, afuncToRun);
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            Task objTask = Task.WhenAll(
+                Task.Run(() => funcToRun1.Invoke(), token),
+                Task.Run(() => funcToRun2.Invoke(), token),
+                Task.Run(() => funcToRun3.Invoke(), token),
+                Task.Run(() => funcToRun4.Invoke(), token));
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2353,6 +2550,83 @@ namespace Chummer
                         CancellationToken = token
                     };
                     Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke());
+                    token.ThrowIfCancellationRequested();
+                }, token);
+
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(params Action<CancellationToken>[] afuncToRun)
+        {
+            RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(CancellationToken token, params Action<CancellationToken>[] afuncToRun)
+        {
+            RunWithoutThreadLock(afuncToRun, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(IReadOnlyCollection<Action<CancellationToken>> afuncToRun, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (afuncToRun.Count)
+            {
+                case 0:
+                    return;
+                case 1:
+                    RunWithoutThreadLock(afuncToRun.ElementAtBetter(0), token);
+                    return;
+            }
+
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            {
+                if (token == CancellationToken.None)
+                    Parallel.ForEach(afuncToRun, x => x.Invoke(token));
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke(token));
+                    token.ThrowIfCancellationRequested();
+                }
+                return;
+            }
+
+            Task objTask = token == CancellationToken.None
+                ? Task.Run(() => Parallel.ForEach(afuncToRun, x => x.Invoke(token)), token)
+                : Task.Run(() =>
+                {
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(afuncToRun, objOptions, x => x.Invoke(token));
                     token.ThrowIfCancellationRequested();
                 }, token);
 
@@ -2417,6 +2691,17 @@ namespace Chummer
         public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
         {
             return RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(CancellationToken token, params Func<T>[] afuncToRun)
+        {
+            return RunWithoutThreadLock(afuncToRun, token);
         }
 
         /// <summary>

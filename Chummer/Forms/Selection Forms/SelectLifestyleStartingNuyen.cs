@@ -115,7 +115,7 @@ namespace Chummer
                     = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                     .Value as Lifestyle;
                 int intDice = SelectedLifestyle != null ? await SelectedLifestyle.GetDiceAsync(token).ConfigureAwait(false) : 0;
-                string strDice = string.Format(GlobalSettings.CultureInfo,
+                string strDice = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf", token: token).ConfigureAwait(false),
                                                intDice);
                 await lblDice.DoThreadSafeAsync(x => x.Text = strDice, token).ConfigureAwait(false);

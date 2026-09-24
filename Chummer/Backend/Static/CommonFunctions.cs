@@ -1730,23 +1730,22 @@ namespace Chummer
 
             // Treat everything as being uppercase so the search is case-insensitive.
             // Include Cyrillic characters (а-я, А-Я + extendeds for non-Russian Cyrillic alphabets), Greek characters (α-ω, Α-Ω) for proper search support
-            string strReturn = StringExtensions.ConcatFast("((not(", strTranslateElement, ") and contains(translate(", strNameElement,
-                               // ReSharper disable once StringLiteralTypo
-                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                               strSearchText, ")) or contains(translate(", strTranslateElement,
-                               // ReSharper disable once StringLiteralTypo
-                               ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                               strSearchText, "))");
+            string strInnerText =
+                // ReSharper disable once StringLiteralTypo
+                string.Concat(",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                    strSearchText, "))");
+            string strReturn = StringExtensions.ConcatFast("((not(", strTranslateElement,
+                ") and contains(translate(", strNameElement, strInnerText,
+                " or contains(translate(", strTranslateElement, strInnerText);
             if (!string.IsNullOrEmpty(strSearchText2))
             {
-                strReturn = StringExtensions.ConcatFast("(", strReturn, " or ((not(", strTranslateElement, ") and contains(translate(",
-                            strNameElement,
-                            // ReSharper disable once StringLiteralTypo
-                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                            strSearchText2, ")) or contains(translate(", strTranslateElement,
-                            // ReSharper disable once StringLiteralTypo
-                            ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
-                            strSearchText2, ")))");
+                strInnerText =
+                    // ReSharper disable once StringLiteralTypo
+                    string.Concat(",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
+                        strSearchText2, "))");
+                strReturn = StringExtensions.ConcatFast('(', StringExtensions.ConcatFast(strReturn, " or ((not(", strTranslateElement,
+                    ") and contains(translate(", strNameElement, strInnerText,
+                    " or contains(translate(", strTranslateElement, strInnerText), ')');
             }
 
             return strReturn;
@@ -1979,9 +1978,78 @@ namespace Chummer
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.Yes;
         }
 
+        public static Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, Character objCharacter)
+        {
+            return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, objCharacter);
+        }
+
         public static Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
         {
             return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, lstCharacters);
+        }
+
+        public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, Character objCharacter)
+        {
+            objToken.ThrowIfCancellationRequested();
+            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
+            // Write the Character information to a RecyclableMemoryStream so we don't need to create any files.
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+            {
+                bool blnWriterError = false;
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                {
+                    // Begin the document.
+                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                    try
+                    {
+                        // </characters>
+                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken).ConfigureAwait(false);
+                        try
+                        {
+                            if (!objCharacter.IsDisposed)
+                            {
+                                await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken).ConfigureAwait(false);
+                                if (objWriter.WriteState == WriteState.Error)
+                                {
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException(nameof(objWriter));
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            // </characters>
+                            await objCharactersElement.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        // Finish the document and flush the Writer and Stream.
+                        if (objWriter.WriteState == WriteState.Error)
+                        {
+                            objWriter.Close();
+                            blnWriterError = true;
+                        }
+                        else
+                        {
+                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                            await objWriter.FlushAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                if (blnWriterError)
+                    throw new InvalidOperationException();
+
+                objToken.ThrowIfCancellationRequested();
+
+                // Read the stream.
+                objStream.Position = 0;
+                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.UnSafeXmlReaderSettings))
+                    objReturn.Load(objXmlReader);
+            }
+
+            return objReturn;
         }
 
         public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
@@ -2236,7 +2304,7 @@ namespace Chummer
             {
                 if (!blnOpenOptions)
                     return;
-                if (await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
+                if (await Program.ShowScrollableMessageBoxAsync(StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                     return;
                 CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);

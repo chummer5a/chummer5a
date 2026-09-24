@@ -46,7 +46,7 @@ namespace Chummer
                     return;
                 if (this.IsNullOrDisposed())
                     return;
-                string strDisplayText = string.Format(GlobalSettings.CultureInfo,
+                string strDisplayText = StringExtensions.FastFormat(
                     LanguageManager.GetString("String_Loading_Pattern"), value);
                 this.DoThreadSafe(x => x.Text = strDisplayText);
             }
@@ -59,7 +59,7 @@ namespace Chummer
                 return;
             if (this.IsNullOrDisposed())
                 return;
-            string strDisplayText = string.Format(GlobalSettings.CultureInfo,
+            string strDisplayText = StringExtensions.FastFormat(
                 await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token), value);
             await this.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
         }
@@ -127,7 +127,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = LanguageManager.GetString("String_Saving");
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    LanguageManager.GetString("String_Saving_Pattern"),
                                                    strStepName);
                     break;
@@ -135,7 +135,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = LanguageManager.GetString("String_Loading");
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    LanguageManager.GetString("String_Loading_Pattern"),
                                                    strStepName);
                     break;
@@ -143,7 +143,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = LanguageManager.GetString("String_Scanning");
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    LanguageManager.GetString("String_Scanning_Pattern"),
                                                    strStepName);
                     break;
@@ -151,7 +151,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = LanguageManager.GetString("String_Initializing");
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    LanguageManager.GetString("String_Initializing_Pattern"),
                                                    strStepName);
                     break;
@@ -192,7 +192,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = await LanguageManager.GetStringAsync("String_Saving", token: token).ConfigureAwait(false);
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    await LanguageManager.GetStringAsync("String_Saving_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
@@ -200,7 +200,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = await LanguageManager.GetStringAsync("String_Loading", token: token).ConfigureAwait(false);
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
@@ -208,7 +208,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = await LanguageManager.GetStringAsync("String_Scanning", token: token).ConfigureAwait(false);
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    await LanguageManager.GetStringAsync("String_Scanning_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
@@ -216,7 +216,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strStepName))
                         strNewText = await LanguageManager.GetStringAsync("String_Initializing", token: token).ConfigureAwait(false);
                     else
-                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                        strNewText = StringExtensions.FastFormat(
                                                    await LanguageManager.GetStringAsync("String_Initializing_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;

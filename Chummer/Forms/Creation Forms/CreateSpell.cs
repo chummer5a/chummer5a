@@ -912,7 +912,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(x.Text))
                             {
                                 x.Visible = true;
-                                x.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, x.Tag);
+                                x.Text += StringExtensions.FastFormat(strCheckBoxFormat, x.Tag?.ToString() ?? string.Empty);
                             }
                         }, token: token).ConfigureAwait(false);
                         break;
@@ -926,7 +926,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(chkInnerCheckbox.Text))
                                     continue;
                                 chkInnerCheckbox.Visible = true;
-                                chkInnerCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkInnerCheckbox.Tag);
+                                chkInnerCheckbox.Text += StringExtensions.FastFormat(strCheckBoxFormat, chkInnerCheckbox.Tag?.ToString() ?? string.Empty);
                             }
                         }, token: token).ConfigureAwait(false);
                         break;

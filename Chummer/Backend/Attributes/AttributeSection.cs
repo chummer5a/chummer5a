@@ -3166,7 +3166,7 @@ namespace Chummer.Backend.Attributes
                                                           + ")";
                                     }
 
-                                    return string.Format(objCultureInfo,
+                                    return StringExtensions.FastFormat(
                                                          LanguageManager.GetString(
                                                              "String_NaturalAttribute", strLanguage, token: t), strInnerReturn);
                                 }, token: token)
@@ -3183,7 +3183,7 @@ namespace Chummer.Backend.Attributes
                                                           + ")";
                                     }
 
-                                    return string.Format(objCultureInfo,
+                                    return StringExtensions.FastFormat(
                                                          LanguageManager.GetString("String_BaseAttribute", strLanguage, token: t),
                                                          strInnerReturn);
                                 }, token: token)
@@ -3200,7 +3200,7 @@ namespace Chummer.Backend.Attributes
                                                           + ")";
                                     }
 
-                                    return string.Format(objCultureInfo,
+                                    return StringExtensions.FastFormat(
                                         LanguageManager.GetString("String_MinimumAttribute", strLanguage, token: t),
                                         strInnerReturn);
                                 }, token: token)
@@ -3217,7 +3217,7 @@ namespace Chummer.Backend.Attributes
                                                           + ")";
                                     }
 
-                                    return string.Format(objCultureInfo,
+                                    return StringExtensions.FastFormat(
                                         LanguageManager.GetString("String_MaximumAttribute", strLanguage, token: t),
                                         strInnerReturn);
                                 }, token: token);
@@ -3274,7 +3274,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                                              LanguageManager.GetString("String_NaturalAttribute", strLanguage, token: t),
                                              strInnerReturn);
                     }, token: token);
@@ -3290,7 +3290,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                                              LanguageManager.GetString("String_BaseAttribute", strLanguage, token: t),
                                              strInnerReturn);
                     }, token: token);
@@ -3306,7 +3306,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                             LanguageManager.GetString("String_MinimumAttribute", strLanguage, token: t),
                             strInnerReturn);
                     }, token: token);
@@ -3322,7 +3322,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                             LanguageManager.GetString("String_MaximumAttribute", strLanguage, token: t),
                             strInnerReturn);
                     }, token: token);
@@ -3388,7 +3388,7 @@ namespace Chummer.Backend.Attributes
                                        + ")";
                             }
 
-                            return string.Format(objCultureInfo,
+                            return StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "String_NaturalAttribute", strLanguage, token: t).ConfigureAwait(false),
                                 strInnerReturn);
@@ -3409,7 +3409,7 @@ namespace Chummer.Backend.Attributes
                                        + ")";
                             }
 
-                            return string.Format(objCultureInfo,
+                            return StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "String_BaseAttribute", strLanguage, token: t).ConfigureAwait(false),
                                 strInnerReturn);
@@ -3430,7 +3430,7 @@ namespace Chummer.Backend.Attributes
                                        + ")";
                             }
 
-                            return string.Format(objCultureInfo,
+                            return StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "String_MinimumAttribute", strLanguage, token: t).ConfigureAwait(false),
                                 strInnerReturn);
@@ -3451,7 +3451,7 @@ namespace Chummer.Backend.Attributes
                                        + ")";
                             }
 
-                            return string.Format(objCultureInfo,
+                            return StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "String_MaximumAttribute", strLanguage, token: t).ConfigureAwait(false),
                                 strInnerReturn);
@@ -3522,7 +3522,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: t)
                                 .ConfigureAwait(false),
                             strInnerReturn);
@@ -3541,7 +3541,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: t)
                                 .ConfigureAwait(false),
                             strInnerReturn);
@@ -3560,7 +3560,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_MinimumAttribute", strLanguage, token: t)
                                 .ConfigureAwait(false),
                             strInnerReturn);
@@ -3579,7 +3579,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
                         }
 
-                        return string.Format(objCultureInfo,
+                        return StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_MaximumAttribute", strLanguage, token: t)
                                 .ConfigureAwait(false),
                             strInnerReturn);

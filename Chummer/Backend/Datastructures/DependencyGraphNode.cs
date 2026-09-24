@@ -195,10 +195,10 @@ namespace Chummer
         public override int GetHashCode()
         {
             if (Root != null)
-                return Equals(MyObject, default(T))
+                return MyObject.Equals(default(T))
                     ? Root.GetHashCode()
                     : HashCode.Combine(Root, MyObject);
-            return Equals(MyObject, default(T)) ? 0 : MyObject.GetHashCode();
+            return MyObject.Equals(default(T)) ? 0 : MyObject.GetHashCode();
         }
 
         public override string ToString()

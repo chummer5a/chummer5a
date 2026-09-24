@@ -63,7 +63,8 @@ namespace Chummer
                 = new ConcurrentDictionary<ImprovementDictionaryKey, ValueTuple<decimal, List<Improvement>>>();
 
         public readonly struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>,
-            IEquatable<ValueTuple<Character, Improvement.ImprovementType, string>>
+            IEquatable<ValueTuple<Character, Improvement.ImprovementType, string>>,
+            IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
         {
             private readonly ValueTuple<Character, Improvement.ImprovementType, string> _objTupleKey;
 
@@ -158,6 +159,46 @@ namespace Chummer
             public static bool operator !=(object x, ImprovementDictionaryKey y)
             {
                 return !(x?.Equals(y) ?? false);
+            }
+
+            public static bool operator ==(ImprovementDictionaryKey x, Tuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return x.Equals(y);
+            }
+
+            public static bool operator !=(ImprovementDictionaryKey x, Tuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return !x.Equals(y);
+            }
+
+            public static bool operator ==(Tuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return y.Equals(x);
+            }
+
+            public static bool operator !=(Tuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return !y.Equals(x);
+            }
+
+            public static bool operator ==(ImprovementDictionaryKey x, ValueTuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return x.Equals(y);
+            }
+
+            public static bool operator !=(ImprovementDictionaryKey x, ValueTuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return !x.Equals(y);
+            }
+
+            public static bool operator ==(ValueTuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return y.Equals(x);
+            }
+
+            public static bool operator !=(ValueTuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return !y.Equals(x);
             }
         }
 
@@ -2202,7 +2243,7 @@ namespace Chummer
                     string strDescription;
                     if (blnSync)
                         strDescription = !string.IsNullOrEmpty(strFriendlyName)
-                            ? string.Format(GlobalSettings.CultureInfo,
+                            ? StringExtensions.FastFormat(
                                 // ReSharper disable once MethodHasAsyncOverload
                                 LanguageManager.GetString("String_Improvement_SelectSkillNamed", token: token),
                                 strFriendlyName)
@@ -2210,7 +2251,7 @@ namespace Chummer
                             : LanguageManager.GetString("String_Improvement_SelectSkill", token: token);
                     else
                         strDescription = !string.IsNullOrEmpty(strFriendlyName)
-                            ? string.Format(GlobalSettings.CultureInfo,
+                            ? StringExtensions.FastFormat(
                                 await LanguageManager
                                     .GetStringAsync("String_Improvement_SelectSkillNamed", token: token)
                                     .ConfigureAwait(false),
@@ -2321,10 +2362,10 @@ namespace Chummer
             string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
             string strDescription = !string.IsNullOrEmpty(strFriendlyName)
                 ? (blnSync
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                         LanguageManager.GetString("String_Improvement_SelectSkillGroupName", token: token),
                         strFriendlyName)
-                    : string.Format(GlobalSettings.CultureInfo,
+                    : StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token).ConfigureAwait(false),
                         strFriendlyName))
                 : (blnSync
@@ -2523,13 +2564,13 @@ namespace Chummer
                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                    ? ThreadSafeForm<SelectText>.Get(() => new SelectText
                                                    {
-                                                       Description = string.Format(GlobalSettings.CultureInfo,
+                                                       Description = StringExtensions.FastFormat(
                                                            strSelectText,
                                                            strFriendlyName)
                                                    })
                                                    : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                                                    {
-                                                       Description = string.Format(GlobalSettings.CultureInfo,
+                                                       Description = StringExtensions.FastFormat(
                                                            strSelectText,
                                                            strFriendlyName)
                                                    }, token).ConfigureAwait(false))
@@ -2684,14 +2725,14 @@ namespace Chummer
                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                        ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                                                        {
-                                                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                           Description = StringExtensions.FastFormat(
                                                                strSelectText,
                                                                strFriendlyName)
                                                        })
                                                        : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                                             {
                                                 if (!blnSync)
-                                                    await frmSelect.MyForm.DoThreadSafeAsync(x => x.Description = string.Format(GlobalSettings.CultureInfo,
+                                                    await frmSelect.MyForm.DoThreadSafeAsync(x => x.Description = StringExtensions.FastFormat(
                                                                strSelectText,
                                                                strFriendlyName), token).ConfigureAwait(false);
                                                 if (Convert.ToBoolean(
@@ -6929,7 +6970,7 @@ namespace Chummer
                 {
                     frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
                     string strDescription = !string.IsNullOrEmpty(strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo,
+                        ? StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritType", token: token)
                                 .ConfigureAwait(false),
                             strFriendlyName)

@@ -416,7 +416,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strPdfPrinter))
                     {
                         DialogResult ePdfPrinterDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
                                 strPdfPrinter),
                             await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
@@ -453,7 +453,7 @@ namespace Chummer
                     if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                     {
                         await Program.ShowScrollableMessageBoxAsync(this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile), token: _objGenericToken).ConfigureAwait(false);
                         return;
@@ -462,7 +462,7 @@ namespace Chummer
                     if (!await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
                     {
                         await Program.ShowScrollableMessageBoxAsync(this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                     "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile), token: _objGenericToken).ConfigureAwait(false);
                         return;

@@ -556,7 +556,7 @@ namespace Chummer
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                string strReturn = string.Format(
+                string strReturn = StringExtensions.FastFormat(
                     objCulture, LanguageManager.GetString("String_WeekDisplay", strLanguage)
                     , Year
                     , Week);
@@ -577,7 +577,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                string strReturn = string.Format(
+                string strReturn = StringExtensions.FastFormat(
                     objCulture, await LanguageManager.GetStringAsync("String_WeekDisplay", strLanguage, token: token)
                                                      .ConfigureAwait(false)
                     , await GetYearAsync(token).ConfigureAwait(false)

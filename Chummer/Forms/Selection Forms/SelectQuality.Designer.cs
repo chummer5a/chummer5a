@@ -88,7 +88,7 @@ namespace Chummer
             this.lstQualities.FormattingEnabled = true;
             this.lstQualities.Location = new System.Drawing.Point(3, 30);
             this.lstQualities.Name = "lstQualities";
-            this.lstQualities.Size = new System.Drawing.Size(297, 390);
+            this.lstQualities.Size = new System.Drawing.Size(297, 387);
             this.lstQualities.TabIndex = 9;
             this.lstQualities.SelectedIndexChanged += new System.EventHandler(this.lstQualities_SelectedIndexChanged);
             this.lstQualities.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -443,6 +443,8 @@ namespace Chummer
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -525,6 +527,7 @@ namespace Chummer
             this.gpbKarmaFilter.AutoSize = true;
             this.gpbKarmaFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbKarmaFilter.Controls.Add(this.tlpKarmaFilter);
+            this.gpbKarmaFilter.Dock = System.Windows.Forms.DockStyle.Left;
             this.gpbKarmaFilter.Location = new System.Drawing.Point(3, 3);
             this.gpbKarmaFilter.Name = "gpbKarmaFilter";
             this.gpbKarmaFilter.Size = new System.Drawing.Size(113, 97);
@@ -578,7 +581,7 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpRight.Size = new System.Drawing.Size(303, 101);
             this.tlpRight.TabIndex = 28;
             // 

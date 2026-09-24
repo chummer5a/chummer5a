@@ -278,8 +278,7 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     if (blnSync)
                     {
-                        string strDescription = string.Format(
-                                       GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_SelectVariableCost", token: token),
                                        CurrentDisplayNameShort);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -303,8 +302,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        string strDescription = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                         int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
@@ -2308,8 +2306,7 @@ namespace Chummer.Backend.Equipment
                         decMax = 1000000;
                     if (blnSync)
                     {
-                        string strDescription = string.Format(
-                                       GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                                        LanguageManager.GetString("String_SelectVariableCost", token: token),
                                        CurrentDisplayNameShort);
                         using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -2333,8 +2330,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        string strDescription = string.Format(
-                            GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                         int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);

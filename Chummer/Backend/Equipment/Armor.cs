@@ -439,8 +439,7 @@ namespace Chummer.Backend.Equipment
 
                         if (blnSync)
                         {
-                            string strDescription = string.Format(
-                                           GlobalSettings.CultureInfo,
+                            string strDescription = StringExtensions.FastFormat(
                                            LanguageManager.GetString("String_SelectVariableCost", token: token),
                                            CurrentDisplayNameShort);
                             using (ThreadSafeForm<SelectNumber> frmPickNumber
@@ -464,8 +463,7 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            string strDescription = string.Format(
-                                GlobalSettings.CultureInfo,
+                            string strDescription = StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
                                 await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                             int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
@@ -3178,7 +3176,7 @@ namespace Chummer.Backend.Equipment
                 string strCalculatedCapacity = CurrentCalculatedCapacity;
                 if (strCalculatedCapacity.Contains('[') && !strCalculatedCapacity.Contains("/["))
                     return strCalculatedCapacity;
-                return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                return StringExtensions.FastFormat(LanguageManager.GetString("String_CapacityRemaining"),
                                      strCalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
             }
         }
@@ -3188,7 +3186,7 @@ namespace Chummer.Backend.Equipment
             string strCalculatedCapacity = await GetCurrentCalculatedCapacityAsync(token).ConfigureAwait(false);
             if (strCalculatedCapacity.Contains('[') && !strCalculatedCapacity.Contains("/["))
                 return strCalculatedCapacity;
-            return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
+            return StringExtensions.FastFormat(await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
                 strCalculatedCapacity, (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##", GlobalSettings.CultureInfo));
         }
 

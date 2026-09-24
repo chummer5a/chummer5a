@@ -105,7 +105,7 @@ namespace Chummer
                 int intMaxAvail = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMaximumAvailabilityAsync().ConfigureAwait(false);
                 await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                 {
-                    x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
+                    x.Text = StringExtensions.FastFormat(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
                     x.Visible = true;
                     x.Checked = GlobalSettings.HideItemsOverAvailLimit;
                 }).ConfigureAwait(false);
@@ -241,7 +241,7 @@ namespace Chummer
 
                 string strRatingLabel = objXmlMod.SelectSingleNodeAndCacheExpression("ratinglabel", token)?.Value;
                 strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
-                    ? string.Format(GlobalSettings.CultureInfo,
+                    ? StringExtensions.FastFormat(
                                     await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
                     : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
@@ -572,7 +572,7 @@ namespace Chummer
                 {
                     // Add after sort so that it's always at the end
                     lstMods.Add(new ListItem(string.Empty,
-                                             string.Format(GlobalSettings.CultureInfo,
+                                             StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                            await LanguageManager.GetStringAsync("String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                            intOverLimit)));
                 }

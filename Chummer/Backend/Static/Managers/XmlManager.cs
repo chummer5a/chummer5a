@@ -1198,7 +1198,7 @@ namespace Chummer
                             sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                         }
 
-                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                        Program.ShowScrollableMessageBox(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                        LanguageManager.GetString(
                                                                            "Message_DuplicateGuidWarning",
                                                                            token: token),
@@ -1211,7 +1211,7 @@ namespace Chummer
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                Program.ShowScrollableMessageBox(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                LanguageManager.GetString(
                                                                    "Message_NonGuidIdWarning", token: token),
                                                                lstItemsWithMalformedIDs.Count,
@@ -1643,7 +1643,7 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strFilter))
                                     {
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                            "/chummer/" + objNode.Name + "/" + objType.Name + "[" + strFilter + "]");
+                                            "/chummer/".ConcatFast(objNode.Name, "/", objType.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                         {
                                             objItem.InnerXml = objType.InnerXmlViaPool(token);
@@ -1737,8 +1737,8 @@ namespace Chummer
                                         }
                                         token.ThrowIfCancellationRequested();
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
-                                            ? "/chummer/" + objParentNode.Name + "/" + objChild.Name + "[" + strFilter + "]"
-                                            : "/chummer/" + objParentNode.Name + "[" + strParentNodeFilter + "]/" + objChild.Name + "[" + strFilter + "]");
+                                            ? "/chummer/".ConcatFast(objParentNode.Name, "/", objChild.Name, "[", strFilter, "]")
+                                            : "/chummer/".ConcatFast(objParentNode.Name, "[", strParentNodeFilter, "]/", objChild.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                             lstDelete.Add(objChild);
                                     }
@@ -1863,8 +1863,8 @@ namespace Chummer
                     {
                         string strFileNoPath = Path.GetFileName(strFile);
                         Program.ShowMessageBox(
-                            string.Format(GlobalSettings.CultureInfo, strMessage, strFile, ex.Message),
-                            string.Format(GlobalSettings.CultureInfo, strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error);
+                            StringExtensions.FastFormat(strMessage, strFile, ex.Message),
+                            StringExtensions.FastFormat(strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error);
                     }
                 }
             }
@@ -1956,7 +1956,7 @@ namespace Chummer
                                     {
                                         token.ThrowIfCancellationRequested();
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(
-                                            "/chummer/" + objNode.Name + "/" + objType.Name + "[" + strFilter + "]");
+                                            "/chummer/".ConcatFast(objNode.Name, "/", objType.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                         {
                                             objItem.InnerXml = objType.InnerXmlViaPool(token);
@@ -2052,8 +2052,8 @@ namespace Chummer
                                         }
                                         token.ThrowIfCancellationRequested();
                                         XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
-                                            ? "/chummer/" + objParentNode.Name + "/" + objChild.Name + "[" + strFilter + "]"
-                                            : "/chummer/" + objParentNode.Name + "[" + strParentNodeFilter + "]/" + objChild.Name + "[" + strFilter + "]");
+                                            ? "/chummer/".ConcatFast(objParentNode.Name, "/", objChild.Name, "[", strFilter, "]")
+                                            : "/chummer/".ConcatFast(objParentNode.Name, "[", strParentNodeFilter, "]/", objChild.Name, "[", strFilter, "]"));
                                         if (objItem != null)
                                             lstDelete.Add(objChild);
                                     }
@@ -2177,8 +2177,8 @@ namespace Chummer
                     {
                         string strFileNoPath = Path.GetFileName(strFile);
                         await Program.ShowMessageBoxAsync(
-                            string.Format(GlobalSettings.CultureInfo, strMessage, strFile, ex.Message),
-                            string.Format(GlobalSettings.CultureInfo, strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                            StringExtensions.FastFormat(strMessage, strFile, ex.Message),
+                            StringExtensions.FastFormat(strTitle, strFileNoPath), icon: System.Windows.Forms.MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     }
                 }
             }
@@ -3158,10 +3158,10 @@ namespace Chummer
                                                                 .SelectSingleNodeAndCacheExpression("name", token: token).Value;
                                                         XPathNavigator objTranslate =
                                                             objLanguageRoot.SelectSingleNode(
-                                                                "metatypes/metatype[name = "
-                                                                + strChildNameElement.CleanXPath()
-                                                                + "]/metavariants/metavariant[name = "
-                                                                + strMetavariantName.CleanXPath() + "]");
+                                                                "metatypes/metatype[name = ".ConcatFast(
+                                                                strChildNameElement.CleanXPath(),
+                                                                "]/metavariants/metavariant[name = ",
+                                                                strMetavariantName.CleanXPath(), "]"));
                                                         if (objTranslate != null)
                                                         {
                                                             bool blnTranslate
@@ -3357,8 +3357,8 @@ namespace Chummer
                                     {
                                         string strChildName = objChild.Name;
                                         XPathNavigator objNode = objEnglishRoot.SelectSingleNode(
-                                            "/chummer/" + objType.Name + "/" + strChildName + "[name = "
-                                            + strChildNameElement.CleanXPath() + "]");
+                                            "/chummer/".ConcatFast(objType.Name, "/", strChildName, "[name = ",
+                                            strChildNameElement.CleanXPath(), "]"));
                                         if (objNode == null)
                                         {
                                             // <noentry>

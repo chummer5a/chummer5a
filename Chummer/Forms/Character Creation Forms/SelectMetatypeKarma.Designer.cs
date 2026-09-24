@@ -486,6 +486,7 @@ namespace Chummer
             this.chkPossessionBased.Tag = "Checkbox_Metatype_PossessionTradition";
             this.chkPossessionBased.Text = "Summoned by Possess-based Tradition";
             this.chkPossessionBased.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkPossessionBased.ToolTipText = "";
             this.chkPossessionBased.UseVisualStyleBackColor = true;
             this.chkPossessionBased.Visible = false;
             this.chkPossessionBased.CheckedChanged += new System.EventHandler(this.chkPossessionBased_CheckedChanged);
@@ -611,6 +612,7 @@ namespace Chummer
             this.lblSource.TabIndex = 111;
             this.lblSource.Text = "[Source]";
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSource.ToolTipText = "";
             this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // tlpButtons

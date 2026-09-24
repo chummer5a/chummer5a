@@ -159,7 +159,7 @@ namespace Chummer
                                                           : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(');
                             }
 
-                            sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                            sbdResults.AppendFastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Glitch_Singular" : "String_DiceRoller_Glitch").ConfigureAwait(false), intHitCount);
                             if (intThreshold > 0)
                                 sbdResults.Append(')');
@@ -176,12 +176,12 @@ namespace Chummer
                                 .Append(await LanguageManager.GetStringAsync(intHitCount >= intThreshold
                                                                                  ? "String_DiceRoller_Success"
                                                                                  : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(')
-                                .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
-                                              intHitCount.ToString(GlobalSettings.CultureInfo) + ")");
+                                .AppendFastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
+                                              intHitCount).Append(')');
                         }
                         else
                         {
-                            sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                            sbdResults.AppendFastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager
                                                           .GetStringAsync(
                                                               intHitCount == 1
@@ -369,7 +369,7 @@ namespace Chummer
                                     : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(');
                         }
 
-                        sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                        sbdResults.AppendFastFormat(GlobalSettings.CultureInfo,
                             await LanguageManager
                                 .GetStringAsync(intHitCount == 1
                                     ? "String_DiceRoller_Glitch_Singular"
@@ -392,12 +392,12 @@ namespace Chummer
                                 .Append(await LanguageManager.GetStringAsync(intHitCount >= intThreshold
                                                                                  ? "String_DiceRoller_Success"
                                                                                  : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(')
-                                .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
-                                              intHitCount, ')');
+                                .AppendFastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
+                                              intHitCount).Append(')');
                         }
                         else
                         {
-                            sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                            sbdResults.AppendFastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager
                                                           .GetStringAsync(
                                                               intHitCount == 1

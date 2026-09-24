@@ -198,7 +198,7 @@ namespace Chummer
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
-                Log.Warn(ex, "Failed to save installed custom data release version for {0}", objInfo.Name);
+                Log.Warn(ex, "Failed to save installed custom data release version for " + objInfo.Name);
             }
         }
 
@@ -289,7 +289,7 @@ namespace Chummer
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
-                Log.Warn(ex, "Failed to check custom data update availability for {0}", objInfo.Name);
+                Log.Warn(ex, "Failed to check custom data update availability for " + objInfo.Name);
                 CustomDataUpdateAvailability objFailed
                     = new CustomDataUpdateAvailability(CustomDataUpdateCheckState.CheckFailed, default);
                 s_dicUpdateAvailabilityCache[objInfo.InternalId] = objFailed;
@@ -322,7 +322,7 @@ namespace Chummer
                 catch (Exception ex) when (!(ex is OperationCanceledException))
                 {
                     ex = ex.Demystify();
-                    Log.Warn(ex, "Failed to reload custom data directory {0} for update check", objInfo.Name);
+                    Log.Warn(ex, "Failed to reload custom data directory " + objInfo.Name + " for update check");
                     continue;
                 }
 
@@ -357,10 +357,10 @@ namespace Chummer
             CustomDataUpdateAvailability objAvailability = GetCachedAvailability(objInfo);
             if (!objAvailability.IsUpdateAvailable)
                 return strDisplayName;
-            return string.Format(GlobalSettings.CultureInfo,
+            return StringExtensions.FastFormat(
                 LanguageManager.GetString("String_CustomData_UpdateAvailableInList",
                     strLanguage ?? GlobalSettings.Language),
-                strDisplayName, objAvailability.RemoteVersion);
+                strDisplayName, objAvailability.RemoteVersion.ToString());
         }
 
         /// <summary>
@@ -377,10 +377,10 @@ namespace Chummer
             ValueVersion objLocalVersion = GetEffectiveLocalVersion(objInfo);
             if (!objAvailability.IsUpdateAvailable)
                 return objLocalVersion.ToString();
-            return string.Format(GlobalSettings.CultureInfo,
+            return StringExtensions.FastFormat(
                 LanguageManager.GetString("String_CustomData_RemoteVersionAvailable",
                     strLanguage ?? GlobalSettings.Language),
-                objLocalVersion, objAvailability.RemoteVersion);
+                objLocalVersion.ToString(), objAvailability.RemoteVersion.ToString());
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace Chummer
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
                 ex = ex.Demystify();
-                Log.Warn(ex, "Failed to update custom data directory {0}", objInfo.Name);
+                Log.Warn(ex, "Failed to update custom data directory " + objInfo.Name);
                 return ex.Message;
             }
             finally
@@ -516,7 +516,7 @@ namespace Chummer
                 }
                 catch (Exception ex) when (!(ex is OperationCanceledException))
                 {
-                    Log.Warn(ex, "Failed to clean up temporary custom data update folder {0}", strTempRoot);
+                    Log.Warn(ex, "Failed to clean up temporary custom data update folder " + strTempRoot);
                 }
             }
         }
@@ -569,11 +569,15 @@ namespace Chummer
             if (!uriUpdateLocation.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
                 return false;
 
-            string[] astrPathParts = uriUpdateLocation.AbsolutePath.TrimNoAlloc('/').Split('/');
-            if (astrPathParts.Length < 2)
+            string[] astrPathParts = uriUpdateLocation.AbsolutePath.TrimNoAlloc('/').SplitFixedSize('/', 2);
+            string strFirstPart = astrPathParts[0];
+            if (string.IsNullOrWhiteSpace(strFirstPart))
+                return false;
+            string strSecondPart = astrPathParts[1];
+            if (string.IsNullOrWhiteSpace(strSecondPart))
                 return false;
 
-            uriApiUrl = new Uri("https://api.github.com/repos/".ConcatFast(astrPathParts[0], "/", astrPathParts[1], "/releases/latest"));
+            uriApiUrl = new Uri("https://api.github.com/repos/".ConcatFast(strFirstPart, "/", strSecondPart, "/releases/latest"));
             return true;
         }
 
@@ -741,7 +745,7 @@ namespace Chummer
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
-                Log.Warn(ex, "Failed to read manifest GUID from {0}", strManifestPath);
+                Log.Warn(ex, "Failed to read manifest GUID from " + strManifestPath);
                 return false;
             }
         }
@@ -761,7 +765,7 @@ namespace Chummer
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
-                Log.Warn(ex, "Failed to read manifest updatelocation from {0}", strManifestPath);
+                Log.Warn(ex, "Failed to read manifest updatelocation from " + strManifestPath);
                 return false;
             }
         }

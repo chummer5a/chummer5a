@@ -212,7 +212,11 @@ namespace Chummer
                 IEnumerable<XPathNavigator> xmlSettingsIterator
                     = XmlManager.LoadXPath("settings.xml", token: t).SelectAndCacheExpression("/chummer/settings/setting", t)
                     .Cast<XPathNavigator>();
-                Parallel.ForEach(xmlSettingsIterator,
+                ParallelOptions objOptions = new ParallelOptions
+                {
+                    CancellationToken = t
+                };
+                Parallel.ForEach(xmlSettingsIterator, objOptions,
                     (xmlBuiltInSetting, state) =>
                     {
                         if (t.IsCancellationRequested)
@@ -254,7 +258,11 @@ namespace Chummer
             {
                 Utils.RunWithoutThreadLock(t =>
                 {
-                    Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"),
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = t
+                    };
+                    Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), objOptions,
                         (strSettingsFilePath, state) =>
                         {
                             if (t.IsCancellationRequested)

@@ -88,7 +88,7 @@ namespace Chummer
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 if (Program.ShowScrollableMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_Prompt_Delete_Existing_File",
                                                 token: token), strPath),
@@ -97,7 +97,7 @@ namespace Chummer
                                     return false;
                             }
                             else if (await Program.ShowScrollableMessageBoxAsync(
-                                         string.Format(GlobalSettings.CultureInfo,
+                                         StringExtensions.FastFormat(
                                              await LanguageManager.GetStringAsync(
                                                      "Message_Prompt_Delete_Existing_File", token: token)
                                                  .ConfigureAwait(false), strPath),

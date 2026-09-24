@@ -727,7 +727,7 @@ namespace Chummer
                             if (objCustomDataDirectory.XmlException != default)
                             {
                                 Program.ShowScrollableMessageBox(
-                                    string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                    StringExtensions.FastFormat(LanguageManager.GetString("Message_FailedLoad"),
                                         objCustomDataDirectory.XmlException.Message),
                                     LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
                                         LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
@@ -746,8 +746,7 @@ namespace Chummer
                                         if (objExistingInfo.HasManifest)
                                         {
                                             Program.ShowScrollableMessageBox(
-                                                string.Format(
-                                                    GlobalSettings.CultureInfo,
+                                                StringExtensions.FastFormat(
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
                                                 LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -794,7 +793,7 @@ namespace Chummer
                     if (objCustomDataDirectory.XmlException != default)
                     {
                         Program.ShowScrollableMessageBox(
-                            string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                            StringExtensions.FastFormat(LanguageManager.GetString("Message_FailedLoad"),
                                 objCustomDataDirectory.XmlException.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad").ConcatFast(
                                 LanguageManager.GetString("String_Space"), objCustomDataDirectory.Name,
@@ -813,8 +812,7 @@ namespace Chummer
                                 if (objExistingInfo.HasManifest)
                                 {
                                     Program.ShowScrollableMessageBox(
-                                        string.Format(
-                                            GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
                                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -1645,7 +1643,15 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
                     s_xmlClipboard.RemoveAll();
-                    s_xmlClipboard.ImportNode(value, true);
+                    if (value is XmlDocument docValue)
+                    {
+                        foreach (XmlNode xmlLoop in docValue.ChildNodes)
+                        {
+                            s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(xmlLoop, true));
+                        }
+                    }
+                    else
+                        s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(value, true));
 
                     if (ClipboardChangedAsync != null)
                         Utils.SafelyRunSynchronously(t => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), t), token);
@@ -1703,7 +1709,15 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
                     s_xmlClipboard.RemoveAll();
-                    s_xmlClipboard.ImportNode(value, true);
+                    if (value is XmlDocument docValue)
+                    {
+                        foreach (XmlNode xmlLoop in docValue.ChildNodes)
+                        {
+                            s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(xmlLoop, true));
+                        }
+                    }
+                    else
+                        s_xmlClipboard.AppendChild(s_xmlClipboard.ImportNode(value, true));
 
                     if (ClipboardChangedAsync != null)
                         await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);

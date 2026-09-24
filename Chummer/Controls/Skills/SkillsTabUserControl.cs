@@ -78,7 +78,7 @@ namespace Chummer.UI.Skills
                 _objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalSettings.CultureInfo);
             int intSkillPointsSpentOnKnoSkills = _objCharacter.SkillsSection.SkillPointsSpentOnKnoskills;
             if (intSkillPointsSpentOnKnoSkills != 0)
-                strText += string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent", token: token), intSkillPointsSpentOnKnoSkills);
+                strText += StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent", token: token), intSkillPointsSpentOnKnoSkills);
             lblKnowledgeSkillPoints.Text = strText;
         }
 
@@ -91,7 +91,7 @@ namespace Chummer.UI.Skills
                 (await objSkillSection.GetKnowledgeSkillPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             int intSkillPointsSpentOnKnoSkills = await objSkillSection.GetSkillPointsSpentOnKnoskillsAsync(token).ConfigureAwait(false);
             if (intSkillPointsSpentOnKnoSkills != 0)
-                strText += string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_PlusSkillPointsSpent", token: token).ConfigureAwait(false), intSkillPointsSpentOnKnoSkills);
+                strText += StringExtensions.FastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_PlusSkillPointsSpent", token: token).ConfigureAwait(false), intSkillPointsSpentOnKnoSkills);
             await lblKnowledgeSkillPoints.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
         }
 
@@ -796,8 +796,8 @@ namespace Chummer.UI.Skills
                                     return 1;
                                 if (intRightSpecsCount == 0)
                                     return -1;
-                                int intLeftMax = await lstLeftSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
-                                int intRightMax = await lstRightSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
+                                int intLeftMax = await lstLeftSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
+                                int intRightMax = await lstRightSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
                                 if (intRightMax > intLeftMax)
                                     return 1;
                                 if (intRightMax < intLeftMax)
@@ -859,8 +859,8 @@ namespace Chummer.UI.Skills
                                     return -1;
                                 if (intRightSpecsCount == 0)
                                     return 1;
-                                int intLeftMax = await lstLeftSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
-                                int intRightMax = await lstRightSpecs.MaxAsync(z => z.GetSpecializationBonusAsync(t), t).ConfigureAwait(false);
+                                int intLeftMax = await lstLeftSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
+                                int intRightMax = await lstRightSpecs.MaxAsync((z, t2) => z.GetSpecializationBonusAsync(t2), t).ConfigureAwait(false);
                                 if (intRightMax > intLeftMax)
                                     return -1;
                                 if (intRightMax < intLeftMax)
@@ -1437,7 +1437,7 @@ namespace Chummer.UI.Skills
                                 || string.IsNullOrEmpty(await skill.GetTypeAsync(MyToken).ConfigureAwait(false))))
                         {
                             DialogResult eDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
-                                string.Format(GlobalSettings.CultureInfo,
+                                StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager
                                         .GetStringAsync(
                                             "Message_NewNativeLanguageSkill",

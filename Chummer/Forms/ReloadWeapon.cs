@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,57 +51,49 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstAmmo))
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
-                // Add each of the items to a new List since we need to also grab their plugin information.
-                foreach (Gear objGear in _lstAmmo)
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
                 {
-                    string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + strSpace + "×"
-                        + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
-                    int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
-                    if (intRating > 0)
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                    // Add each of the items to a new List since we need to also grab their plugin information.
+                    foreach (Gear objGear in _lstAmmo)
                     {
-                        strName += strSpace + "("
-                                            + string.Format(
-                                                GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync("Label_RatingFormat")
-                                                                     .ConfigureAwait(false),
-                                                await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                     .ConfigureAwait(false)) + strSpace
-                                            + intRating.ToString(GlobalSettings.CultureInfo) + ")";
-                    }
-
-                    if (objGear.Parent is Gear objParent)
-                    {
-                        if (!string.IsNullOrEmpty(await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)))
+                        sbdName.Append(await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false), strSpace, '×').Append(
+                            objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                        int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
+                        if (intRating > 0)
                         {
-                            strName += strSpace + "(" + await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
-                            if (objParent.Location != null)
-                                strName += strSpace + "@" + strSpace + await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false);
-                            strName += ")";
+                            sbdName.Append(strSpace, '(').AppendFastFormat(
+                                                    await LanguageManager.GetStringAsync("Label_RatingFormat")
+                                                                         .ConfigureAwait(false),
+                                                    await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                         .ConfigureAwait(false))
+                                .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), ')');
                         }
-                    }
-                    else if (objGear.Location != null)
-                        strName += strSpace + "(" + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ")";
 
-                    // Retrieve the plugin information if it has any.
-                    if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
-                    {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdPlugins))
+                        if (objGear.Parent is Gear objParent)
                         {
-                            sbdPlugins.Append(strName).Append(strSpace).Append('[');
-                            await objGear.Children.ForEachAsync(async objChild =>
-                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false), ',', strSpace))
-                                .ConfigureAwait(false);
-
-                            // Remove the trailing comma.
-                            sbdPlugins.Length -= 1 + strSpace.Length;
-                            // Append the plugin information to the name.
-                            strName = sbdPlugins.Append(']').ToString();
+                            if (!string.IsNullOrEmpty(await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)))
+                            {
+                                sbdName.Append(strSpace, '(', await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false));
+                                if (objParent.Location != null)
+                                    sbdName.Append(strSpace, '@', strSpace).Append(await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false));
+                                sbdName.Append(')');
+                            }
                         }
-                    }
+                        else if (objGear.Location != null)
+                            sbdName.Append(strSpace, '(').Append(await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false), ')');
 
-                    lstAmmo.Add(new ListItem(objGear.InternalId, strName));
+                        // Retrieve the plugin information if it has any.
+                        if (await objGear.Children.AnyAsync().ConfigureAwait(false))
+                        {
+                            sbdName.Append(strSpace, '[');
+                            await sbdName.AppendJoinAsync("," + strSpace, objGear.Children.Select(x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false);
+                            sbdName.Append(']');
+                        }
+
+                        lstAmmo.Add(new ListItem(objGear.InternalId, sbdName.ToTrimmedString()));
+                        sbdName.Clear();
+                    }
                 }
 
                 // Populate the lists.

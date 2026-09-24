@@ -343,6 +343,15 @@ namespace Chummer.UI.Skills
                                                                     ,
                                                               _objMyToken);
 
+                    bool blnCanHaveSpecs = _objSkill.CanHaveSpecs;
+                    this.DoThreadSafe(x =>
+                    {
+                        if (x.btnAddSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                            x.btnAddSpec.Visible = blnCanHaveSpecs;
+                        if (x.lblCareerSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                            x.lblCareerSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
+                    }, _objMyToken);
+
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstAttributeItems))
                     {
@@ -428,6 +437,8 @@ namespace Chummer.UI.Skills
                             x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                 _objMyToken),
                             _objMyToken);
+                        bool blnCanHaveSpecs = _objSkill.CanHaveSpecs;
+                        chkKarma.DoThreadSafe(x => x.Enabled = blnCanHaveSpecs, _objMyToken);
                         string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
                         Interlocked.Increment(ref _intUpdatingSpec);
                         try
@@ -443,6 +454,7 @@ namespace Chummer.UI.Skills
                                     if (x.SelectedIndex == -1)
                                         x.Text = strDisplaySpec;
                                 }
+                                x.Enabled = blnCanHaveSpecs;
                             }, _objMyToken);
                         }
                         finally
@@ -551,6 +563,15 @@ namespace Chummer.UI.Skills
                                                                 x => x.GetAddSpecToolTipAsync(_objMyToken)
                                                                       , token).ConfigureAwait(false);
 
+                bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    if (x.btnAddSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                        x.btnAddSpec.Visible = blnCanHaveSpecs;
+                    if (x.lblCareerSpec != null) // Need check because this method could fire when a create mode character is being saved into career mode
+                        x.lblCareerSpec.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec;
+                }, token).ConfigureAwait(false);
+
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstAttributeItems))
                 {
@@ -641,6 +662,8 @@ namespace Chummer.UI.Skills
                         x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                             _objMyToken),
                         token).ConfigureAwait(false);
+                    bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+                    await chkKarma.DoThreadSafeAsync(x => x.Enabled = blnCanHaveSpecs, token).ConfigureAwait(false);
                     string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
                                                            .ConfigureAwait(false);
                     Interlocked.Increment(ref _intUpdatingSpec);
@@ -660,6 +683,7 @@ namespace Chummer.UI.Skills
                                 if (x.SelectedIndex == -1)
                                     x.Text = strDisplaySpec;
                             }
+                            x.Enabled = blnCanHaveSpecs;
                         }, token: token).ConfigureAwait(false);
                     }
                     finally
@@ -966,7 +990,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
-                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync(
                                 "Message_ConfirmKarmaExpense",
                                 token: _objMyToken)
@@ -1025,7 +1049,7 @@ namespace Chummer.UI.Skills
                     else
                         intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager
                             .GetStringAsync(
                                 "Message_ConfirmKarmaExpenseSkillSpecialization",

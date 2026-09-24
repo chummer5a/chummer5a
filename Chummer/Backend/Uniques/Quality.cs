@@ -2069,7 +2069,7 @@ namespace Chummer
                                  .GetCachedImprovementListForValueOf(_objCharacter,
                                                                      Improvement.ImprovementType.DisableQuality, Name)
                                  .FirstOrDefault();
-                        strCachedNotes = string.Format(GlobalSettings.CultureInfo,
+                        strCachedNotes = StringExtensions.FastFormat(
                                                         LanguageManager.GetString("String_SuppressedBy"),
                                                         _objCharacter.GetObjectName(objDisablingImprovement)
                                                         ?? LanguageManager.GetString("String_Unknown"))
@@ -2116,7 +2116,7 @@ namespace Chummer
                               .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                   Improvement.ImprovementType.DisableQuality, Name, token: token).ConfigureAwait(false))
                           .FirstOrDefault();
-                    strCachedNotes = string.Format(GlobalSettings.CultureInfo,
+                    strCachedNotes = StringExtensions.FastFormat(
                                           await LanguageManager.GetStringAsync("String_SuppressedBy", token: token)
                                               .ConfigureAwait(false),
                                           await _objCharacter.GetObjectNameAsync(objDisablingImprovement, token: token)
@@ -2839,7 +2839,7 @@ namespace Chummer
                             }
 
                             if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             await LanguageManager
                                                 .GetStringAsync("Message_QualitySwap",
                                                     token: token)
@@ -2875,7 +2875,7 @@ namespace Chummer
                                 }
 
                                 if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                                        string.Format(GlobalSettings.CultureInfo,
+                                        StringExtensions.FastFormat(
                                             await LanguageManager
                                                 .GetStringAsync("Message_QualitySwap", token: token)
                                                 .ConfigureAwait(false),
@@ -2935,7 +2935,7 @@ namespace Chummer
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                         objExpense.Create(intKarmaCost * -1,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager.GetStringAsync(
                                         Type == QualityType.Positive
                                             ? "String_ExpenseSwapPositiveQuality"

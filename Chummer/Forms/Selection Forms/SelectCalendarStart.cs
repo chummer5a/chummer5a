@@ -115,7 +115,7 @@ namespace Chummer
                 datStart = new DateTime(intYear - 1, 12, 31 + intOrdinalDaySpanStart);
             }
             DateTime datEnd = datStart.AddDays(6);
-            lblDateSpan.Text = string.Format(GlobalSettings.CultureInfo, strFormat,
+            lblDateSpan.Text = StringExtensions.FastFormat(strFormat,
                 datStart.ToString("D", GlobalSettings.CultureInfo), datEnd.ToString("D", GlobalSettings.CultureInfo));
         }
 

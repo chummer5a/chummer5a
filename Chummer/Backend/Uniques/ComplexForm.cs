@@ -731,7 +731,7 @@ namespace Chummer
                                 .Append('(', objLoopImprovement.Value.ToString("#,0.##;-#,0.##;#,0.##", GlobalSettings.CultureInfo), ')');
                     }
                     // Minimum Fading of 2
-                    sbdTip.AppendLine().AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token), 2);
+                    sbdTip.AppendLine().AppendFastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MinimumAttribute", token: token), 2);
                     return sbdTip.ToString();
                 }
             }
@@ -796,8 +796,10 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strToAppend))
                                 strReturn += "L" + strToAppend;
+                            else if (intFadingDv == 0)
+                                strReturn = "L";
                             else
-                                strReturn = string.Format(GlobalSettings.InvariantCultureInfo, "L{0:+0;-0;}", intFadingDv);
+                                strReturn = "L" + (intFadingDv > 0 ? "+" + intFadingDv.ToString(GlobalSettings.InvariantCultureInfo) : intFadingDv.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                         else if (!string.IsNullOrEmpty(strToAppend))
                             strReturn += strToAppend;
@@ -866,8 +868,10 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strToAppend))
                             strReturn += "L" + strToAppend;
+                        else if (intFadingDv == 0)
+                            strReturn = "L";
                         else
-                            strReturn = string.Format(GlobalSettings.InvariantCultureInfo, "L{0:+0;-0;}", intFadingDv);
+                            strReturn = "L" + (intFadingDv > 0 ? "+" + intFadingDv.ToString(GlobalSettings.InvariantCultureInfo) : intFadingDv.ToString(GlobalSettings.InvariantCultureInfo));
                     }
                     else if (!string.IsNullOrEmpty(strToAppend))
                         strReturn += strToAppend;

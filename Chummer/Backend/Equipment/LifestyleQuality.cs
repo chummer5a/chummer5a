@@ -608,7 +608,7 @@ namespace Chummer.Backend.Equipment
                         using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(
                                    () => new SelectItem
                                    {
-                                       Description = string.Format(GlobalSettings.CultureInfo,
+                                       Description = StringExtensions.FastFormat(
                                                                    LanguageManager.GetString(
                                                                        "String_intCannotFindLifestyleQuality"),
                                                                    _strName)
@@ -687,7 +687,7 @@ namespace Chummer.Backend.Equipment
                                                                     ?.Value));
                         }
 
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                        string strDescription = StringExtensions.FastFormat(
                                                                    await LanguageManager.GetStringAsync(
                                                                        "String_intCannotFindLifestyleQuality", token: token).ConfigureAwait(false),
                                                                    _strName);

@@ -89,10 +89,10 @@ namespace Chummer
 
         private async void SelectArt_Load(object sender, EventArgs e)
         {
-            string strText = string.Format(GlobalSettings.CultureInfo,
+            string strText = StringExtensions.FastFormat(
                                            await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strLocalName);
             await this.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
-            string strLimitText = string.Format(GlobalSettings.CultureInfo,
+            string strLimitText = StringExtensions.FastFormat(
                                                 await LanguageManager.GetStringAsync(
                                                     "Checkbox_SelectGeneric_LimitList").ConfigureAwait(false), _strLocalName);
             await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText).ConfigureAwait(false);

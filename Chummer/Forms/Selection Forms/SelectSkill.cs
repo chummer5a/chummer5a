@@ -317,7 +317,7 @@ namespace Chummer
                 {
                     await Program.ShowScrollableMessageBoxAsync(
                         this,
-                        string.Format(GlobalSettings.CultureInfo,
+                        StringExtensions.FastFormat(
                             await LanguageManager
                                 .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
                                 .ConfigureAwait(false),
@@ -360,7 +360,7 @@ namespace Chummer
                     {
                         await Program.ShowScrollableMessageBoxAsync(
                             this,
-                            string.Format(GlobalSettings.CultureInfo,
+                            StringExtensions.FastFormat(
                                 await LanguageManager
                                     .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
                                     .ConfigureAwait(false),

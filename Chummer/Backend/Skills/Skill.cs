@@ -3289,7 +3289,7 @@ namespace Chummer.Backend.Skills
 
                             case Improvement.ImprovementType.EnhancedArticulation:
                                 if (SkillCategory == "Physical Active" &&
-                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(token).ConfigureAwait(false)))
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(t).ConfigureAwait(false)))
                                 {
                                     lstReturn.Add(objImprovement);
                                     if (blnExitAfterFirst)
@@ -3300,7 +3300,7 @@ namespace Chummer.Backend.Skills
                         }
 
                         return true;
-                    }, token: token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
 
                 return lstReturn;
             }
@@ -3541,10 +3541,10 @@ namespace Chummer.Backend.Skills
                     {
                         int intGroupUpper
                             = await SkillGroupObject.SkillList.MinAsync(
-                                                        async x => await x.GetBaseAsync(token).ConfigureAwait(false) +
-                                                                   await x.GetKarmaAsync(token).ConfigureAwait(false)
+                                                        async (x, t) => await x.GetBaseAsync(t).ConfigureAwait(false) +
+                                                                   await x.GetKarmaAsync(t).ConfigureAwait(false)
                                                                    + await x.RatingModifiersAsync(
-                                                                       await x.GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false),
+                                                                       await x.GetAttributeAsync(t).ConfigureAwait(false), token: t).ConfigureAwait(false),
                                                         token: token)
                                                     .ConfigureAwait(false);
                         int intGroupLower =
@@ -5223,7 +5223,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    int intIndexToReplace = await lstSpecs.FindIndexAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    int intIndexToReplace = await lstSpecs.FindIndexAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                     SkillSpecialization objNewSpec = new SkillSpecialization(CharacterObject, this, value);
                     try
                     {
@@ -5253,7 +5253,7 @@ namespace Chummer.Backend.Skills
                     }
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace
-                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     if (intIndexToReplace > 0)
                         Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
                     while (intIndexToReplace > 0)
@@ -5262,7 +5262,7 @@ namespace Chummer.Backend.Skills
                         await lstSpecs.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
                         await objToRemove.DisposeAsync().ConfigureAwait(false);
                         intIndexToReplace
-                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -5406,7 +5406,7 @@ namespace Chummer.Backend.Skills
 
                 if (att.TotalValue <= 0)
                 {
-                    return strExtraStart + string.Format(GlobalSettings.CultureInfo,
+                    return strExtraStart + StringExtensions.FastFormat(
                         LanguageManager.GetString("Tip_Skill_Zero_Attribute", token: token),
                         att.DisplayNameShort(GlobalSettings.Language));
                 }
@@ -5756,7 +5756,7 @@ namespace Chummer.Backend.Skills
                 int intAttTotalValue = await att.GetTotalValueAsync(token).ConfigureAwait(false);
                 if (intAttTotalValue <= 0)
                 {
-                    return strExtraStart + string.Format(GlobalSettings.CultureInfo,
+                    return strExtraStart + StringExtensions.FastFormat(
                         await LanguageManager.GetStringAsync("Tip_Skill_Zero_Attribute", token: token)
                             .ConfigureAwait(false),
                         await att.DisplayNameShortAsync(GlobalSettings.Language, token).ConfigureAwait(false));
@@ -6144,7 +6144,7 @@ namespace Chummer.Backend.Skills
                     int intCost = UpgradeKarmaCost;
                     return intCost < 0
                         ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
-                        : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
+                        : StringExtensions.FastFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
                                         Rating + 1, intCost);
                 }
             }
@@ -6160,7 +6160,7 @@ namespace Chummer.Backend.Skills
                 return intCost < 0
                     ? await LanguageManager.GetStringAsync("Tip_ImproveItemAtMaximum", token: token)
                                            .ConfigureAwait(false)
-                    : string.Format(GlobalSettings.CultureInfo,
+                    : StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token)
                                                          .ConfigureAwait(false),
                                     await GetRatingAsync(token).ConfigureAwait(false) + 1, intCost);
@@ -6199,7 +6199,7 @@ namespace Chummer.Backend.Skills
                         intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                     else
                         intPrice += decExtraSpecCost.StandardRound(); //Spec
-                    return string.Format(GlobalSettings.CultureInfo,
+                    return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         LanguageManager.GetString("Tip_Skill_AddSpecialization"), intPrice);
                 }
             }
@@ -6233,7 +6233,7 @@ namespace Chummer.Backend.Skills
                     intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                 else
                     intPrice += decExtraSpecCost.StandardRound(); //Spec
-                return string.Format(GlobalSettings.CultureInfo,
+                return StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                      await LanguageManager.GetStringAsync("Tip_Skill_AddSpecialization", token: token)
                                                           .ConfigureAwait(false), intPrice);
             }

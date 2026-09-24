@@ -84,10 +84,10 @@ namespace Chummer
                         _lstMetamagicLimits.Add(strName);
                 }
             }
-            string strText = string.Format(GlobalSettings.CultureInfo,
+            string strText = StringExtensions.FastFormat(
                                            await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strType);
             await this.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
-            string strLimitText = string.Format(GlobalSettings.CultureInfo,
+            string strLimitText = StringExtensions.FastFormat(
                                                 await LanguageManager.GetStringAsync(
                                                     "Checkbox_SelectGeneric_LimitList").ConfigureAwait(false), _strType);
             await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText).ConfigureAwait(false);
