@@ -1606,6 +1606,8 @@ namespace Chummer
 
             public TransportWrapper(Control objControl)
             {
+                if (objControl == null)
+                    throw new ArgumentNullException(nameof(objControl));
                 Control = objControl;
             }
 
@@ -1646,30 +1648,29 @@ namespace Chummer
 
             public static bool operator ==(object objX, TransportWrapper objY)
             {
-                return objX?.Equals(objY) ?? false;
-            }
+                return objY.Equals(objX)
 
             public static bool operator !=(object objX, TransportWrapper objY)
             {
-                return objX?.Equals(objY) ?? false;
+                return objY.Equals(objX);
             }
 
-            public static bool operator ==(Control objX, object objY)
+            public static bool operator ==(TransportWrapper objX, Control objY)
             {
                 return objX.Equals(objY);
             }
 
-            public static bool operator !=(Control objX, object objY)
+            public static bool operator !=(TransportWrapper objX, Control objY)
             {
                 return !objX.Equals(objY);
             }
 
-            public static bool operator ==(object objX, Control objY)
+            public static bool operator ==(Control objX, TransportWrapper objY)
             {
                 return objX?.Equals(objY) ?? false;
             }
 
-            public static bool operator !=(object objX, Control objY)
+            public static bool operator !=(Control objX, TransportWrapper objY)
             {
                 return objX?.Equals(objY) ?? false;
             }
