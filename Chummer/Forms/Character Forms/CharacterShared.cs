@@ -1649,6 +1649,7 @@ namespace Chummer
             public static bool operator ==(object objX, TransportWrapper objY)
             {
                 return objY.Equals(objX);
+            }
 
             public static bool operator !=(object objX, TransportWrapper objY)
             {
