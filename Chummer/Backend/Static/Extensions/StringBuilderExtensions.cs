@@ -2485,8 +2485,8 @@ namespace Chummer
         private static int GetNextOpenIndexForAppendFastFormat1Arg(string strFormat, int intLastOpenIndex, bool blnAllowFormat0 = true)
         {
             if (!blnAllowFormat0)
-                return strFormat.IndexOf("{0}", intLastOpenIndex + 2, StringComparison.Ordinal);
-            int intOpenIndex = strFormat.IndexOf("{0", intLastOpenIndex + 2, StringComparison.Ordinal);
+                return strFormat.IndexOf("{0}", Math.Max(intLastOpenIndex + 2, 0), StringComparison.Ordinal);
+            int intOpenIndex = strFormat.IndexOf("{0", Math.Max(intLastOpenIndex + 2, 0), StringComparison.Ordinal);
             if (intOpenIndex < 0)
                 return -1;
             int intOpenIndexPlus2 = intOpenIndex + 2;
@@ -2510,7 +2510,7 @@ namespace Chummer
         {
             if (!blnAllowFormat0 && !blnAllowFormat1)
                 return strFormat.IndexOfAny(s_astrFormatNeedles2Args, StringComparison.Ordinal);
-            int intStartSearchIndex = intLastOpenIndex + 2;
+            int intStartSearchIndex = Math.Max(intLastOpenIndex + 2, 0);
             int intOpenIndex = strFormat.IndexOf("{1", intStartSearchIndex, StringComparison.Ordinal);
             if (intOpenIndex < 0)
                 return GetNextOpenIndexForAppendFastFormat1Arg(strFormat, intLastOpenIndex, blnAllowFormat0);
@@ -2542,7 +2542,7 @@ namespace Chummer
         {
             if (!blnAllowFormat0 && !blnAllowFormat1 && !blnAllowFormat2)
                 return strFormat.IndexOfAny(s_astrFormatNeedles3Args, StringComparison.Ordinal);
-            int intStartSearchIndex = intLastOpenIndex + 2;
+            int intStartSearchIndex = Math.Max(intLastOpenIndex + 2, 0);
             string strNeedle2 = blnAllowFormat2 ? "{2" : "{2}";
             int intOpenIndex = strFormat.IndexOf(strNeedle2, intStartSearchIndex, StringComparison.Ordinal);
             if (intOpenIndex < 0)
@@ -2582,7 +2582,7 @@ namespace Chummer
         {
             if (!blnAllowFormat0 && !blnAllowFormat1 && !blnAllowFormat2 && !blnAllowFormat3)
                 return strFormat.IndexOfAny(s_astrFormatNeedles4Args, StringComparison.Ordinal);
-            int intStartSearchIndex = intLastOpenIndex + 2;
+            int intStartSearchIndex = Math.Max(intLastOpenIndex + 2, 0);
             string strNeedle3 = blnAllowFormat3 ? "{3" : "{3}";
             int intOpenIndex = strFormat.IndexOf(strNeedle3, intStartSearchIndex, StringComparison.Ordinal);
             if (intOpenIndex < 0)
@@ -2811,7 +2811,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -2855,7 +2855,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -2899,7 +2899,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -2943,7 +2943,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -2987,7 +2987,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat1Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3031,7 +3031,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, true, false);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, true, false);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3089,7 +3089,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, false, true);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, false, true);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg1 = null;
@@ -3147,7 +3147,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3211,7 +3211,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, true, false);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, true, false);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3269,7 +3269,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, false, true);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, false, true);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg1 = null;
@@ -3327,7 +3327,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3391,7 +3391,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, true, false);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, true, false);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3449,7 +3449,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, false, true);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, false, true);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg1 = null;
@@ -3507,7 +3507,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3571,7 +3571,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, true, false);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, true, false);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3629,7 +3629,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, false, true);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, false, true);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg1 = null;
@@ -3687,7 +3687,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3751,7 +3751,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, true, false);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, true, false);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3809,7 +3809,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1, false, true);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2, false, true);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg1 = null;
@@ -3867,7 +3867,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat2Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
@@ -3931,7 +3931,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat3Arg(strFormat, -1, false);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat3Arg(strFormat, -2, false);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg1 = null;
@@ -3998,7 +3998,7 @@ namespace Chummer
             int intFormatLength = strFormat.Length;
             if (intFormatLength < 3)
                 return sbdInput;
-            int intOpenIndex = GetNextOpenIndexForAppendFastFormat3Arg(strFormat, -1);
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat3Arg(strFormat, -2);
             if (intOpenIndex < 0)
                 return sbdInput.Append(strFormat);
             string strNoFormatArg0 = null;
