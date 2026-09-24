@@ -126,7 +126,11 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!_dicUnorderedData.TryGetValue(item.Key, out TValue objValue))
                     return false;
-                return Equals(objValue, default(TValue)) ? Equals(item.Value, default(TValue)) : objValue.Equals(item.Value);
+                if (objValue?.Equals(default(TValue)) != false)
+                    return item.Value?.Equals(default(TValue)) != false;
+                if (objValue is IEquatable<TValue> objValueCast)
+                    return objValueCast.Equals(item.Value);
+                return objValue.Equals(item.Value);
             }
             finally
             {
@@ -237,7 +241,11 @@ namespace Chummer
             {
                 if (!_dicUnorderedData.TryGetValue(item.Key, out TValue objValue))
                     return false;
-                return Equals(objValue, default(TValue)) ? Equals(item.Value, default(TValue)) : objValue.Equals(item.Value);
+                if (objValue?.Equals(default(TValue)) != false)
+                    return item.Value?.Equals(default(TValue)) != false;
+                if (objValue is IEquatable<TValue> objValueCast)
+                    return objValueCast.Equals(item.Value);
+                return objValue.Equals(item.Value);
             }
         }
 
@@ -248,7 +256,11 @@ namespace Chummer
             {
                 if (!_dicUnorderedData.TryGetValue(objKey, out TValue objExistingValue))
                     return false;
-                return Equals(objExistingValue, default(TValue)) ? Equals(objValue, default(TValue)) : objExistingValue.Equals(objValue);
+                if (objExistingValue?.Equals(default(TValue)) != false)
+                    return objValue?.Equals(default(TValue)) != false;
+                if (objExistingValue is IEquatable<TValue> objExistingValueCast)
+                    return objExistingValueCast.Equals(objValue);
+                return objValue.Equals(objValue);
             }
         }
 
@@ -259,7 +271,11 @@ namespace Chummer
             {
                 if (!_dicUnorderedData.TryGetValue(objKey, out TValue objExistingValue))
                     return false;
-                return Equals(objExistingValue, default(TValue)) ? Equals(objValue, default(TValue)) : objExistingValue.Equals(objValue);
+                if (objExistingValue?.Equals(default(TValue)) != false)
+                    return objValue?.Equals(default(TValue)) != false;
+                if (objExistingValue is IEquatable<TValue> objExistingValueCast)
+                    return objExistingValueCast.Equals(objValue);
+                return objValue.Equals(objValue);
             }
         }
 
@@ -1962,9 +1978,9 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     TValue objOldValue = _dicUnorderedData[key];
-                    if (Equals(objOldValue, default(TValue)))
+                    if (objOldValue?.Equals(default(TValue)) != false)
                     {
-                        if (Equals(value, default(TValue)))
+                        if (value?.Equals(default(TValue)) != false)
                             return;
                     }
                     else if (objOldValue.Equals(value))
@@ -1974,9 +1990,9 @@ namespace Chummer
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     TValue objOldValue = _dicUnorderedData[key];
-                    if (Equals(objOldValue, default(TValue)))
+                    if (objOldValue?.Equals(default(TValue)) != false)
                     {
-                        if (Equals(value, default(TValue)))
+                        if (value?.Equals(default(TValue)) != false)
                             return;
                     }
                     else if (objOldValue.Equals(value))
@@ -2009,9 +2025,9 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 TValue objOldValue = _dicUnorderedData[key];
-                if (Equals(objOldValue, default(TValue)))
+                if (objOldValue?.Equals(default(TValue)) != false)
                 {
-                    if (Equals(value, default(TValue)))
+                    if (value?.Equals(default(TValue)) != false)
                         return;
                 }
                 else if (objOldValue.Equals(value))
@@ -2027,9 +2043,9 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 TValue objOldValue = _dicUnorderedData[key];
-                if (Equals(objOldValue, default(TValue)))
+                if (objOldValue?.Equals(default(TValue)) != false)
                 {
-                    if (Equals(value, default(TValue)))
+                    if (value?.Equals(default(TValue)) != false)
                         return;
                 }
                 else if (objOldValue.Equals(value))
@@ -2060,9 +2076,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 TKey objKey = _lstIndexes[index];
                 TValue objOldValue = _dicUnorderedData[objKey];
-                if (Equals(objOldValue, default(TValue)))
+                if (objOldValue?.Equals(default(TValue)) != false)
                 {
-                    if (Equals(value, default(TValue)))
+                    if (value?.Equals(default(TValue)) != false)
                         return;
                 }
                 else if (objOldValue.Equals(value))
@@ -2169,7 +2185,7 @@ namespace Chummer
                             _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
                             if (objKeyToRemove != null)
                                 _dicUnorderedData.Remove(objKeyToRemove);
-                            if (Equals(objOldValue, default(TValue)) ? !Equals(value.Value, default(TValue)) : !objOldValue.Equals(value.Value))
+                            if (objOldValue?.Equals(default(TValue)) != false ? value.Value?.Equals(default(TValue)) == false : !objOldValue.Equals(value.Value))
                                 _dicUnorderedData[value.Key] = value.Value;
                         }
                     }
@@ -2254,7 +2270,7 @@ namespace Chummer
                         _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
                         if (objKeyToRemove != null)
                             _dicUnorderedData.Remove(objKeyToRemove);
-                        if (Equals(objOldValue, default(TValue)) ? !Equals(value.Value, default(TValue)) : !objOldValue.Equals(value.Value))
+                        if (objOldValue?.Equals(default(TValue)) != false ? value.Value?.Equals(default(TValue)) == false : !objOldValue.Equals(value.Value))
                             _dicUnorderedData[value.Key] = value.Value;
                     }
                     finally
@@ -3790,14 +3806,14 @@ namespace Chummer
 
             public int Compare(TKey x, TKey y)
             {
-                if (Equals(x, default(TKey)))
+                if (x?.Equals(default(TKey)) != false)
                 {
-                    if (Equals(y, default(TKey)))
+                    if (y?.Equals(default(TKey)) != false)
                         return 0;
                     return -1;
                 }
 
-                if (Equals(y, default(TKey)))
+                if (y?.Equals(default(TKey)) != false)
                     return 1;
 
                 return _objMyComparer?.Compare(new KeyValuePair<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),

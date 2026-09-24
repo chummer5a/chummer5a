@@ -1313,9 +1313,9 @@ namespace Chummer.Controls.Shared
 
             public int Compare(TType x, TType y)
             {
-                if (!Equals(x, default(TType)) && _dicIndeces.TryGetValue(x, out int xindex))
+                if (x?.Equals(default(TType)) == false && _dicIndeces.TryGetValue(x, out int xindex))
                 {
-                    if (!Equals(y, default(TType)) && _dicIndeces.TryGetValue(y, out int yindex))
+                    if (y?.Equals(default(TType)) == false && _dicIndeces.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }
@@ -1325,7 +1325,7 @@ namespace Chummer.Controls.Shared
                 }
 
                 Utils.BreakIfDebug();
-                if (!Equals(y, default(TType)) && (Equals(x, default(TType)) || _dicIndeces.ContainsKey(y)))
+                if (y?.Equals(default(TType)) == false && (x?.Equals(default(TType)) != false || _dicIndeces.ContainsKey(y)))
                     return -1;
 
                 return 0;

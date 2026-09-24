@@ -1437,7 +1437,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -1552,7 +1552,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -1667,7 +1667,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -1782,7 +1782,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -1900,7 +1900,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2018,7 +2018,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2136,7 +2136,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2254,7 +2254,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2379,7 +2379,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2520,7 +2520,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2661,7 +2661,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2802,7 +2802,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -2946,7 +2946,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -3090,7 +3090,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -3234,7 +3234,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try
@@ -3378,7 +3378,7 @@ namespace Chummer
                     T3 objInnerData = await objControl.DoThreadSafeFuncAsync(funcControlGetter, dataSetterToken)
                         .ConfigureAwait(false);
                     T3 objOldInnerData = await funcAsyncDataGetter.Invoke(objDataSource, dataSetterToken).ConfigureAwait(false);
-                    if (Equals(objInnerData, objOldInnerData))
+                    if ((objInnerData == null && objOldInnerData == null) || objInnerData?.Equals(objOldInnerData) == true)
                         return;
                     Interlocked.Increment(ref intSkipControlSetter);
                     try

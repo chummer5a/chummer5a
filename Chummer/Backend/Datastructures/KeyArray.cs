@@ -109,10 +109,33 @@ namespace Chummer
                 return false;
             if (Length != other.Length)
                 return false;
-            for (int i = 0; i < Length; ++i)
+            if (_aobjItems is IEquatable<T>[] aobjItemsCast)
             {
-                if (!Equals(this[i], other[i]))
-                    return false;
+                for (int i = 0; i < Length; ++i)
+                {
+                    IEquatable<T> objLoop = aobjItemsCast[i];
+                    if (objLoop == null)
+                    {
+                        if (other[i] != null)
+                            return false;
+                    }
+                    else if (!objLoop.Equals(other[i]))
+                        return false;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Length; ++i)
+                {
+                    T objLoop = this[i];
+                    if (objLoop == null)
+                    {
+                        if (other[i] != null)
+                            return false;
+                    }
+                    else if (!objLoop.Equals(other[i]))
+                        return false;
+                }
             }
             return true;
         }

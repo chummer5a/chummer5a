@@ -531,7 +531,7 @@ namespace Chummer
         {
             if (_intLoading > 0)
                 return;
-            bool blnShowQualitySelector = Equals(cboMugshotCompression.SelectedValue, "jpeg_manual");
+            bool blnShowQualitySelector = "jpeg_manual".Equals(cboMugshotCompression.SelectedValue?.ToString(), StringComparison.Ordinal);
             lblMugshotCompressionQuality.Visible = blnShowQualitySelector;
             nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
             OptionsChanged(sender, e);
@@ -2272,9 +2272,9 @@ namespace Chummer
             }
 
             bool blnShowQualitySelector
-                = Equals(
+                = "jpeg_manual".Equals(
                     await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                               .ConfigureAwait(false), "jpeg_manual");
+                                               .ConfigureAwait(false), StringComparison.Ordinal);
             await lblMugshotCompressionQuality.DoThreadSafeAsync(x => x.Visible = blnShowQualitySelector, token)
                                               .ConfigureAwait(false);
             await nudMugshotCompressionQuality.DoThreadSafeAsync(x => x.Visible = blnShowQualitySelector, token)
