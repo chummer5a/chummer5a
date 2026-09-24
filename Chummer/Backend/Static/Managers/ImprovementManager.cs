@@ -63,7 +63,8 @@ namespace Chummer
                 = new ConcurrentDictionary<ImprovementDictionaryKey, ValueTuple<decimal, List<Improvement>>>();
 
         public readonly struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>,
-            IEquatable<ValueTuple<Character, Improvement.ImprovementType, string>>
+            IEquatable<ValueTuple<Character, Improvement.ImprovementType, string>>,
+            IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
         {
             private readonly ValueTuple<Character, Improvement.ImprovementType, string> _objTupleKey;
 
@@ -158,6 +159,46 @@ namespace Chummer
             public static bool operator !=(object x, ImprovementDictionaryKey y)
             {
                 return !(x?.Equals(y) ?? false);
+            }
+
+            public static bool operator ==(ImprovementDictionaryKey x, Tuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return x.Equals(y);
+            }
+
+            public static bool operator !=(ImprovementDictionaryKey x, Tuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return !x.Equals(y);
+            }
+
+            public static bool operator ==(Tuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return y.Equals(x);
+            }
+
+            public static bool operator !=(Tuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return !y.Equals(x);
+            }
+
+            public static bool operator ==(ImprovementDictionaryKey x, ValueTuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return x.Equals(y);
+            }
+
+            public static bool operator !=(ImprovementDictionaryKey x, ValueTuple<Character, Improvement.ImprovementType, string> y)
+            {
+                return !x.Equals(y);
+            }
+
+            public static bool operator ==(ValueTuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return y.Equals(x);
+            }
+
+            public static bool operator !=(ValueTuple<Character, Improvement.ImprovementType, string> x, ImprovementDictionaryKey y)
+            {
+                return !y.Equals(x);
             }
         }
 

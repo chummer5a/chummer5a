@@ -378,10 +378,21 @@ namespace Chummer
         {
             if (Count != other._intSize)
                 return false;
-            for (int i = 0; i < _intSize; ++i)
+            if (_aobjInternal is IEquatable<T>[] aobjInternalCast)
             {
-                if (!_aobjInternal[i].Equals(other._aobjInternal[i]))
-                    return false;
+                for (int i = 0; i < _intSize; ++i)
+                {
+                    if (!aobjInternalCast[i].Equals(other._aobjInternal[i]))
+                        return false;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _intSize; ++i)
+                {
+                    if (!_aobjInternal[i].Equals(other._aobjInternal[i]))
+                        return false;
+                }
             }
             return true;
         }

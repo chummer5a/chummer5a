@@ -1600,7 +1600,7 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms.
         /// </summary>
-        protected readonly struct TransportWrapper : IEquatable<TransportWrapper>
+        protected readonly struct TransportWrapper : IEquatable<TransportWrapper>, IEquatable<Control>
         {
             public Control Control { get; }
 
@@ -1612,6 +1612,11 @@ namespace Chummer
             public bool Equals(TransportWrapper other)
             {
                 return Control.Equals(other.Control);
+            }
+
+            public bool Equals(Control other)
+            {
+                return Control.Equals(other);
             }
 
             public override bool Equals(object obj)
@@ -1645,6 +1650,26 @@ namespace Chummer
             }
 
             public static bool operator !=(object objX, TransportWrapper objY)
+            {
+                return objX?.Equals(objY) ?? false;
+            }
+
+            public static bool operator ==(Control objX, object objY)
+            {
+                return objX.Equals(objY);
+            }
+
+            public static bool operator !=(Control objX, object objY)
+            {
+                return !objX.Equals(objY);
+            }
+
+            public static bool operator ==(object objX, Control objY)
+            {
+                return objX?.Equals(objY) ?? false;
+            }
+
+            public static bool operator !=(object objX, Control objY)
             {
                 return objX?.Equals(objY) ?? false;
             }

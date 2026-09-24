@@ -150,7 +150,7 @@ namespace Chummer
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData.Equals(Keys.Down) && ShowSplit && !Disposing && !IsDisposed)
+            if (keyData == Keys.Down && ShowSplit && !Disposing && !IsDisposed)
                 return true;
 
             return base.IsInputKey(keyData);
@@ -164,7 +164,8 @@ namespace Chummer
                 return;
             }
 
-            if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+            PushButtonState eState = State; // For thread safety, just in case
+            if (eState != PushButtonState.Pressed && eState != PushButtonState.Disabled)
             {
                 State = PushButtonState.Default;
             }
@@ -229,7 +230,8 @@ namespace Chummer
                 return;
             }
 
-            if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+            PushButtonState eState = State; // For thread safety, just in case
+            if (eState != PushButtonState.Pressed && eState != PushButtonState.Disabled)
             {
                 State = PushButtonState.Normal;
             }
@@ -247,7 +249,8 @@ namespace Chummer
 
             isMouseEntered = true;
 
-            if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+            PushButtonState eState = State; // For thread safety, just in case
+            if (eState != PushButtonState.Pressed && eState != PushButtonState.Disabled)
             {
                 State = PushButtonState.Hot;
             }
@@ -263,7 +266,8 @@ namespace Chummer
 
             isMouseEntered = false;
 
-            if (!State.Equals(PushButtonState.Pressed) && !State.Equals(PushButtonState.Disabled))
+            PushButtonState eState = State; // For thread safety, just in case
+            if (eState != PushButtonState.Pressed && eState != PushButtonState.Disabled)
             {
                 State = Focused ? PushButtonState.Default : PushButtonState.Normal;
             }
