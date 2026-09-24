@@ -88,7 +88,7 @@ Bundled default content (`gears`, `mods`, `weapons`, `weaponmounts`) and additio
 
 **subsystems** (optional): defines which cyberware subsystems can be installed in this Vehicle Modification. Contains one or more **subsystem** elements.
 
-**required** (optional): defines requirements that must be met for this Vehicle Modification to be available. See [required nodes](Custom-Data-Files#required-nodes "Custom Data Files").
+**required** (optional): defines requirements that must be met for this Vehicle Modification to be available. Use a `vehiclemod` condition with `sameparent="True"` when this mod requires another mod on the same vehicle. See [Conditions](Conditions).
 
 **optionaldrone** (optional): if present, indicates this Vehicle Modification is optional for drones.
 

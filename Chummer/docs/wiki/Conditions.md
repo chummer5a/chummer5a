@@ -1013,6 +1013,26 @@ None.
 <traditionspiritform>Possession</traditionspiritform>
 ```
 
+### vehiclemod
+
+Checks for the presence of a vehicle mod. The node text may be the mod's name or source id. Optional `rating`, `minrating`, and `maxrating` attributes constrain the installed rating.
+
+#### Attributes
+**sameparent** Boolean. If present, requires that the vehicle mod be installed on the same vehicle as the item being selected. If specified and the parent is not a vehicle, the check returns false.
+
+#### Elements
+None.
+
+#### Limitations
+
+Checks mods installed directly on vehicles. Weapon-mount mods are not included.
+
+#### Example
+
+```XML
+<vehiclemod sameparent="True">Rigger Interface</vehiclemod>
+```
+
 ### weapon
 
 Checks whether the character has a specific named Weapon. 

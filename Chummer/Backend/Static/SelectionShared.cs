@@ -2547,6 +2547,15 @@ namespace Chummer
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
                             "armor.xml", "armormods/armormod", "String_ArmorMod", token).ConfigureAwait(false);
+                case "vehiclemod":
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                InstalledDataItemRequirementKind.VehicleMod, strNodeInnerText, strSpace, blnShowMessage,
+                                "vehicles.xml", "mods/mod", "String_VehicleModification", t), token)
+                        : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            InstalledDataItemRequirementKind.VehicleMod, strNodeInnerText, strSpace, blnShowMessage,
+                            "vehicles.xml", "mods/mod", "String_VehicleModification", token).ConfigureAwait(false);
                 default:
                     Utils.BreakIfDebug();
                     break;
@@ -3093,11 +3102,13 @@ namespace Chummer
             /// <summary>Adept powers on the character.</summary>
             Power,
             /// <summary>Armor mods on armor or under an armor parent.</summary>
-            ArmorMod
+            ArmorMod,
+            /// <summary>Vehicle mods on a vehicle or across the character's vehicles.</summary>
+            VehicleMod
         }
 
         /// <summary>
-        /// Evaluates installed gear, power, or armor mod requirement nodes with optional rating and <c>sameparent</c> checks.
+        /// Evaluates installed gear, power, armor mod, or vehicle mod requirement nodes with optional rating and <c>sameparent</c> checks.
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="xmlNode">Requirement condition node to evaluate.</param>
@@ -3120,7 +3131,8 @@ namespace Chummer
             RequirementRatingFilter objRatingFilter = GetRequirementRatingFilter(xmlNode, token);
             string strName = string.Empty;
 
-            if (eKind == InstalledDataItemRequirementKind.ArmorMod && blnShowMessage)
+            if ((eKind == InstalledDataItemRequirementKind.ArmorMod
+                 || eKind == InstalledDataItemRequirementKind.VehicleMod) && blnShowMessage)
             {
                 strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
                     strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
@@ -3212,6 +3224,35 @@ namespace Chummer
                                     y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), t), token)
                             : await objCharacter.Armor.AnyAsync(
                                 (x, t1) => x.ArmorMods.AnyAsync(
+                                    async (y, t2) => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
+                                        await y.GetRatingAsync(t2).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), t1),
+                                token).ConfigureAwait(false), strName);
+                }
+                case InstalledDataItemRequirementKind.VehicleMod:
+                {
+                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                    {
+                        return new ValueTuple<bool, string>(objParent is Vehicle objVehicle && (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objVehicle.Mods.Any(
+                                    x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
+                                        strNodeInnerText, objRatingFilter), token)
+                                : await objVehicle.Mods.AnyAsync(
+                                    async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), token).ConfigureAwait(false)),
+                            strName);
+                    }
+
+                    return new ValueTuple<bool, string>(
+                        blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.Vehicles.Any(
+                                (x, t) => x.Mods.Any(y => CharacterItemMatchesNameOrIdAndRating(y.Name,
+                                    y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), t), token)
+                            : await objCharacter.Vehicles.AnyAsync(
+                                (x, t1) => x.Mods.AnyAsync(
                                     async (y, t2) => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
                                         await y.GetRatingAsync(t2).ConfigureAwait(false), strNodeInnerText,
                                         objRatingFilter), t1),
