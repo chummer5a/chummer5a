@@ -6589,9 +6589,27 @@ namespace Chummer
         /// Version of <see cref="string.Format(string, object, object, object)"/> using minimal heap allocations and boxing.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, int intArg0, string strArg1, string strArg2)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, intArg0, strArg1, strArg2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string FastFormat(string strFormat, int intArg0, int intArg1, int intArg2)
         {
             return StringExtensions.FastFormat((IFormatProvider)null, strFormat, intArg0, intArg1, intArg2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(string, object, object, object)"/> using four parameters and minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(string strFormat, string strArg0, int intArg1, int intArg2, string strArg3)
+        {
+            return StringExtensions.FastFormat((IFormatProvider)null, strFormat, strArg0, intArg1, intArg2, strArg3);
         }
 
         /// <summary>
@@ -6892,6 +6910,20 @@ namespace Chummer
         /// Version of <see cref="string.Format(IFormatProvider, string, object, object, object)"/> using minimal heap allocations and boxing.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, int intArg0, string strArg1, string strArg2)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, intArg0, strArg1, strArg2).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string FastFormat(IFormatProvider objProvider, string strFormat, int intArg0, int intArg1, int intArg2)
         {
             if (string.IsNullOrEmpty(strFormat))
@@ -6900,6 +6932,20 @@ namespace Chummer
                 return strFormat;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 return sbdReturn.AppendFastFormat(objProvider, strFormat, intArg0, intArg1, intArg2).ToString();
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Format(IFormatProvider, string, object, object, object)"/> using four parameters and minimal heap allocations and boxing.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string FastFormat(IFormatProvider objProvider, string strFormat, string strArg0, int intArg1, int intArg2, string strArg3)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return string.Empty;
+            if (strFormat.Length < 3)
+                return strFormat;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                return sbdReturn.AppendFastFormat(objProvider, strFormat, strArg0, intArg1, intArg2, strArg3).ToString();
         }
 
         private static readonly Dictionary<string, string> s_DicLigaturesMap = new Dictionary<string, string>

@@ -1198,7 +1198,7 @@ namespace Chummer
                             sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                         }
 
-                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                        Program.ShowScrollableMessageBox(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                        LanguageManager.GetString(
                                                                            "Message_DuplicateGuidWarning",
                                                                            token: token),
@@ -1211,7 +1211,7 @@ namespace Chummer
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                Program.ShowScrollableMessageBox(StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                                                                LanguageManager.GetString(
                                                                    "Message_NonGuidIdWarning", token: token),
                                                                lstItemsWithMalformedIDs.Count,

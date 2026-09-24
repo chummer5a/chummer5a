@@ -2796,9 +2796,25 @@ namespace Chummer
         /// <summary>
         /// Version of <see cref="StringBuilder.AppendFormat(string, object, object, object)"/> using minimal heap allocations and boxing.
         /// </summary>
+        public static StringBuilder AppendFastFormat([NotNull] this StringBuilder sbdInput, string strFormat, int intArg0, string strArg1, string strArg2)
+        {
+            return sbdInput.AppendFastFormat((IFormatProvider)null, strFormat, intArg0, strArg1, strArg2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringBuilder.AppendFormat(string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
         public static StringBuilder AppendFastFormat([NotNull] this StringBuilder sbdInput, string strFormat, int intArg0, int intArg1, int intArg2)
         {
             return sbdInput.AppendFastFormat((IFormatProvider)null, strFormat, intArg0, intArg1, intArg2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringBuilder.AppendFormat(string, object, object, object)"/> using four parameters and minimal heap allocations and boxing.
+        /// </summary>
+        public static StringBuilder AppendFastFormat([NotNull] this StringBuilder sbdInput, string strFormat, string strArg0, int intArg1, int intArg2, string strArg3)
+        {
+            return sbdInput.AppendFastFormat((IFormatProvider)null, strFormat, strArg0, intArg1, intArg2, strArg3);
         }
 
         /// <summary>
@@ -3991,6 +4007,65 @@ namespace Chummer
         /// <summary>
         /// Version of <see cref="StringBuilder.AppendFormat(IFormatProvider, string, object, object, object)"/> using minimal heap allocations and boxing.
         /// </summary>
+        public static StringBuilder AppendFastFormat([NotNull] this StringBuilder sbdInput, IFormatProvider objProvider, string strFormat, int intArg0, string strArg1, string strArg2)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return sbdInput;
+            int intFormatLength = strFormat.Length;
+            if (intFormatLength < 3)
+                return sbdInput;
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat3Arg(strFormat, -2, true, false, false);
+            if (intOpenIndex < 0)
+                return sbdInput.Append(strFormat);
+            string strNoFormatArg0 = null;
+            int intLastCloseIndexPlus1 = 0;
+            for (; intOpenIndex >= 0; intOpenIndex = GetNextOpenIndexForAppendFastFormat3Arg(strFormat, intOpenIndex, true, false, false))
+            {
+                if (strFormat[intOpenIndex + 2] == ':')
+                {
+                    int intCloseBracketIndex = strFormat.IndexOf('}', intOpenIndex + 2);
+                    if (intCloseBracketIndex >= 0
+                        // Check if it's escaped
+                        // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
+                        && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
+                    {
+                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        if (strFormat[intOpenIndex + 1] == '0')
+                        {
+                            sbdInput.Append(intArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                        }
+                        intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
+                    }
+                }
+                // We only allow colons or closed brackets from our index getter, so if it's not a colon, we know it's a closed curly bracket
+                // Check if it's escaped
+                // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
+                else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
+                {
+                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    switch (strFormat[intOpenIndex + 1])
+                    {
+                        case '0':
+                            if (strNoFormatArg0 == null)
+                                strNoFormatArg0 = intArg0.ToString(objProvider);
+                            sbdInput.Append(strNoFormatArg0);
+                            break;
+                        case '1':
+                            sbdInput.Append(strArg1);
+                            break;
+                        case '2':
+                            sbdInput.Append(strArg2);
+                            break;
+                    }
+                    intLastCloseIndexPlus1 = intOpenIndex + 3;
+                }
+            }
+            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringBuilder.AppendFormat(IFormatProvider, string, object, object, object)"/> using minimal heap allocations and boxing.
+        /// </summary>
         public static StringBuilder AppendFastFormat([NotNull] this StringBuilder sbdInput, IFormatProvider objProvider, string strFormat, int intArg0, int intArg1, int intArg2)
         {
             if (string.IsNullOrEmpty(strFormat))
@@ -4053,6 +4128,76 @@ namespace Chummer
                             if (strNoFormatArg2 == null)
                                 strNoFormatArg2 = intArg2.ToString(objProvider);
                             sbdInput.Append(strNoFormatArg2);
+                            break;
+                    }
+                    intLastCloseIndexPlus1 = intOpenIndex + 3;
+                }
+            }
+            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringBuilder.AppendFormat(IFormatProvider, string, object, object, object)"/> using four parameters and minimal heap allocations and boxing.
+        /// </summary>
+        public static StringBuilder AppendFastFormat([NotNull] this StringBuilder sbdInput, IFormatProvider objProvider, string strFormat, string strArg0, int intArg1, int intArg2, string strArg3)
+        {
+            if (string.IsNullOrEmpty(strFormat))
+                return sbdInput;
+            int intFormatLength = strFormat.Length;
+            if (intFormatLength < 3)
+                return sbdInput;
+            int intOpenIndex = GetNextOpenIndexForAppendFastFormat4Arg(strFormat, -2, false, true, true, false);
+            if (intOpenIndex < 0)
+                return sbdInput.Append(strFormat);
+            string strNoFormatArg1 = null;
+            string strNoFormatArg2 = null;
+            int intLastCloseIndexPlus1 = 0;
+            for (; intOpenIndex >= 0; intOpenIndex = GetNextOpenIndexForAppendFastFormat4Arg(strFormat, intOpenIndex, false, true, true, false))
+            {
+                if (strFormat[intOpenIndex + 2] == ':')
+                {
+                    int intCloseBracketIndex = strFormat.IndexOf('}', intOpenIndex + 2);
+                    if (intCloseBracketIndex >= 0
+                        // Check if it's escaped
+                        // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
+                        && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
+                    {
+                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        switch (strFormat[intOpenIndex + 1])
+                        {
+                            case '1':
+                                sbdInput.Append(intArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                break;
+                            case '2':
+                                sbdInput.Append(intArg2.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                break;
+                        }
+                        intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
+                    }
+                }
+                // We only allow colons or closed brackets from our index getter, so if it's not a colon, we know it's a closed curly bracket
+                // Check if it's escaped
+                // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
+                else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
+                {
+                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    switch (strFormat[intOpenIndex + 1])
+                    {
+                        case '0':
+                            sbdInput.Append(strArg0);
+                            break;
+                        case '1':
+                            if (strNoFormatArg1 == null)
+                                strNoFormatArg1 = intArg1.ToString(objProvider);
+                            sbdInput.Append(strNoFormatArg1);
+                            break;
+                        case '2':
+                            if (strNoFormatArg2 == null)
+                                strNoFormatArg2 = intArg2.ToString(objProvider);
+                            sbdInput.Append(strNoFormatArg2);
+                            break;
+                        case '3':
+                            sbdInput.Append(strArg3);
                             break;
                     }
                     intLastCloseIndexPlus1 = intOpenIndex + 3;

@@ -1023,7 +1023,7 @@ namespace Chummer.UI.Skills
 
                     if (intKarmaCost == -1)
                         return; //TODO: more descriptive
-                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
                         await LanguageManager
                             .GetStringAsync(
                                 "Message_ConfirmKarmaExpense", token: _objMyToken)

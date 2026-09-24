@@ -7310,7 +7310,7 @@ namespace Chummer
                                     return;
                                 }
 
-                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(
+                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(StringExtensions.FastFormat(
                                                 GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync(
                                                         "Message_ConfirmKarmaandNuyenExpense",
