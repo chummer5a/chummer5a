@@ -31,7 +31,7 @@ namespace Chummer
     /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times (but cannot be stackalloc'ed because they are for reference types).
     /// Note: TemporaryArray is *not* read-only, only its size is unchangeable, it's just that there is no good interface for typed arrays
     /// </summary>
-    public readonly struct TemporaryArray<T> : IReadOnlyList<T>, IDisposable, IEquatable<TemporaryArray<T>> where T : unmanaged // DO NOT REMOVE UNMANAGED KEYWORD UNLESS YOU LIKE ADDING RANDOM MEMORY LEAKS VIA ARRAYPOOL<T>.SHARED!
+    public readonly struct TemporaryArray<T> : IList<T>, IReadOnlyList<T>, IDisposable, IEquatable<TemporaryArray<T>> where T : unmanaged // DO NOT REMOVE UNMANAGED KEYWORD UNLESS YOU LIKE ADDING RANDOM MEMORY LEAKS VIA ARRAYPOOL<T>.SHARED!
     {
         private readonly int _intSize;
         private readonly T[] _aobjInternal;
@@ -358,6 +358,8 @@ namespace Chummer
         // Make sure the method you are using will 100% for sure not exceed Count!
         public T[] RawArray => _aobjInternal;
 
+        public bool IsReadOnly => false;
+
         public void Dispose()
         {
             if (Count > 0)
@@ -415,6 +417,47 @@ namespace Chummer
         public override int GetHashCode()
         {
             return _aobjInternal.GetEnsembleHashCode(_intSize);
+        }
+
+        public int IndexOf(T item)
+        {
+            return Array.IndexOf(_aobjInternal, item);
+        }
+
+        public void Insert(int index, T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Add(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < _intSize; ++i)
+                _aobjInternal[i] = default;
+        }
+
+        public bool Contains(T item)
+        {
+            return IndexOf(item) >= 0;
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            _aobjInternal.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(T item)
+        {
+            throw new NotSupportedException();
         }
 
         [Serializable]

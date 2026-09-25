@@ -30,7 +30,7 @@ namespace Chummer
     /// Helping wrapper around an objArray taken from the shared objArray pool that will also respect the desired input size of the objArray when being read or enumerated.
     /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times (but cannot be stackalloc'ed because they are for reference types).
     /// </summary>
-    public readonly struct TemporaryStringArray : IReadOnlyList<string>, IDisposable, IEquatable<TemporaryStringArray> // Note: objArray is *not* read-only, only its size is unchangeable, it's just that there is no good interface for typed arrays
+    public readonly struct TemporaryStringArray : IList<string>, IReadOnlyList<string>, IDisposable, IEquatable<TemporaryStringArray>
     {
         private readonly int _intSize;
         private readonly string[] _aobjInternal;
@@ -357,6 +357,8 @@ namespace Chummer
         // Make sure the method you are using will 100% for sure not exceed Count!
         public string[] RawArray => _aobjInternal;
 
+        public bool IsReadOnly => false;
+
         public void Dispose()
         {
             if (Count > 0)
@@ -403,6 +405,47 @@ namespace Chummer
         public override int GetHashCode()
         {
             return _aobjInternal.GetEnsembleHashCode(_intSize);
+        }
+
+        public int IndexOf(string item)
+        {
+            return Array.IndexOf(_aobjInternal, item);
+        }
+
+        public void Insert(int index, string item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Add(string item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < _intSize; ++i)
+                _aobjInternal[i] = default;
+        }
+
+        public bool Contains(string item)
+        {
+            return IndexOf(item) >= 0;
+        }
+
+        public void CopyTo(string[] array, int arrayIndex)
+        {
+            _aobjInternal.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(string item)
+        {
+            throw new NotSupportedException();
         }
 
         [Serializable]
