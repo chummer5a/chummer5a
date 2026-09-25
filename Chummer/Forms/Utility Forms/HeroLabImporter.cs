@@ -159,7 +159,7 @@ namespace Chummer
                                         : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                     token.ThrowIfCancellationRequested();
                                     string strKey = Path.GetFileName(strEntryFullName);
-                                    _dicImages.AddOrUpdate(strKey, x => bmpNewMugshot, (x, y) =>
+                                    _dicImages.AddOrUpdate(strKey, _ => bmpNewMugshot, (_, y) =>
                                     {
                                         y.Dispose();
                                         return bmpNewMugshot;

@@ -12983,19 +12983,19 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncCyberwareBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
-                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncCyberwareToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, y,
                         funcMakeDirty, token: innerToken);
 
-                Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
-                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncGearToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, t => Children.GetCountAsync(t), y,
                         funcMakeDirty, token: innerToken);
 
@@ -13005,7 +13005,7 @@ namespace Chummer.Backend.Equipment
                            + await GearChildren.GetCountAsync(innerToken).ConfigureAwait(false);
                 }
 
-                Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncDrugToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     RefreshChildrenDrugs(treCyberware, cmsCyberware, t => FuncDrugOffset(t), y, innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
@@ -13053,19 +13053,19 @@ namespace Chummer.Backend.Equipment
             TaggedObservableCollection<Drug> lstDrugChildren = await GetDrugChildrenAsync(token).ConfigureAwait(false);
             if (blnAdd)
             {
-                Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncCyberwareBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
-                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncCyberwareToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, y,
                         funcMakeDirty, token: innerToken);
 
-                Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
-                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncGearToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, t => Children.GetCountAsync(t), y,
                         funcMakeDirty, token: innerToken);
 
@@ -13075,7 +13075,7 @@ namespace Chummer.Backend.Equipment
                            + await lstGearChildren.GetCountAsync(innerToken).ConfigureAwait(false);
                 }
 
-                Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncDrugToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     RefreshChildrenDrugs(treCyberware, cmsCyberware, t => FuncDrugOffset(t), y, innerToken);
 
                 lstChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);

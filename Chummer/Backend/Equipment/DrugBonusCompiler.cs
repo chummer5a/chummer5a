@@ -64,7 +64,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
 
             XmlNode nodSourceBonus = objDrug.Components.Count > 0
-                ? await BuildCustomBonusNodeAsync(objCharacter, objDrug, token).ConfigureAwait(false)
+                ? await BuildCustomBonusNodeAsync(objDrug, token).ConfigureAwait(false)
                 : await GetCatalogBonusNodeAsync(objCharacter, objDrug, token).ConfigureAwait(false);
 
             if (nodSourceBonus == null)
@@ -103,11 +103,10 @@ namespace Chummer.Backend.Equipment
         /// Merges custom drug component effects into a synthetic &lt;bonus&gt; node.
         /// Narco is not applied here; use bioware <c>drugpositiveattributemodifier</c> instead.
         /// </summary>
-        /// <param name="objCharacter">Character owning the drug.</param>
         /// <param name="objDrug">Custom drug with components.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A bonus node, or null when there are no effects.</returns>
-        public static async Task<XmlNode> BuildCustomBonusNodeAsync(Character objCharacter, Drug objDrug,
+        public static async Task<XmlNode> BuildCustomBonusNodeAsync(Drug objDrug,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

@@ -56,7 +56,7 @@ namespace Chummer.Controls.Shared
         private int _intOffScreenChunkSize = 1;
         private int _intListItemControlHeight;
         private bool _blnAllRendered;
-        private Predicate<TType> _visibleFilter = x => true;
+        private Predicate<TType> _visibleFilter = _ => true;
         private Func<TType, CancellationToken, Task<bool>> _visibleFilterAsync = DefaultVisibleAsync;
         private IComparer<TType> _comparison;
         private IAsyncComparer<TType> _comparisonAsync;
@@ -1341,7 +1341,7 @@ namespace Chummer.Controls.Shared
                 _dicIndeces.Clear();
                 for (int i = 0; i < source.Count; i++)
                 {
-                    _dicIndeces.AddOrUpdate(source[i], i, (x, y) => i);
+                    _dicIndeces.AddOrUpdate(source[i], i, (_, y) => i);
                 }
             }
 
@@ -1351,7 +1351,7 @@ namespace Chummer.Controls.Shared
                 _dicIndeces.Clear();
                 for (int i = 0; i < await source.GetCountAsync(token).ConfigureAwait(false); i++)
                 {
-                    _dicIndeces.AddOrUpdate(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i, (x, y) => i);
+                    _dicIndeces.AddOrUpdate(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i, (_, y) => i);
                 }
             }
         }

@@ -1675,11 +1675,11 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .AddOrUpdateAsync(
                                                  strFile,
-                                                 async (x, t) => objTemp = await objGeneratedCache.GetValueAsync(t)
+                                                 async (_, t) => objTemp = await objGeneratedCache.GetValueAsync(t)
                                                      .ConfigureAwait(false),
                                                  async (x, y, t) =>
                                                  {
-                                                     if (!await y.LoadFromFileAsync(strFile, t).ConfigureAwait(false))
+                                                     if (!await y.LoadFromFileAsync(x, t).ConfigureAwait(false))
                                                      {
                                                          objToDispose = y;
                                                          return objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false);
@@ -1695,7 +1695,7 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .GetOrAddAsync(
                                                  strFile,
-                                                 async (x, t) => objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false),
+                                                 async (_, t) => objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false),
                                                  token)
                                              .ConfigureAwait(false);
                         }

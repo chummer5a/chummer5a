@@ -939,7 +939,7 @@ namespace Chummer
 
                 return frmOwnerForm.DoThreadSafeFunc(x => ScrollableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
-            MainFormOnAssignActions.Add(x => ShowScrollableMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            MainFormOnAssignActions.Add(_ => ShowScrollableMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
         }
 
@@ -1007,7 +1007,7 @@ namespace Chummer
                             token: token), token: token).Unwrap().ConfigureAwait(false);
             }
 
-            MainFormOnAssignAsyncActions.Add(x =>
+            MainFormOnAssignAsyncActions.Add(_ =>
                 ShowScrollableMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
             return DialogResult.Cancel;
         }
@@ -1067,7 +1067,7 @@ namespace Chummer
 
                 return frmOwnerForm.DoThreadSafeFunc(x => CenterableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
-            MainFormOnAssignActions.Add(x => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            MainFormOnAssignActions.Add(_ => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
         }
 
@@ -1134,7 +1134,7 @@ namespace Chummer
                     .ConfigureAwait(false);
             }
 
-            MainFormOnAssignAsyncActions.Add(x =>
+            MainFormOnAssignAsyncActions.Add(_ =>
                 ShowMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
             return DialogResult.Cancel;
         }

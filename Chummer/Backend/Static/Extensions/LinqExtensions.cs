@@ -46,7 +46,7 @@ namespace Chummer
             {
                 while (enumerator.MoveNext())
                 {
-                    if (index-- == 0)
+                    if (--index == -1)
                         return enumerator.Current;
                 }
             }
@@ -83,7 +83,7 @@ namespace Chummer
                     {
                         while (enumerator.MoveNext())
                         {
-                            if (index-- == 0)
+                            if (--index == -1)
                                 return enumerator.Current;
                         }
                     }

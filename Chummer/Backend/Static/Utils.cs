@@ -857,7 +857,12 @@ namespace Chummer
                         CancellationToken = token
                     };
                     Parallel.ForEach(astrFilesToDelete, objOptions, () => true,
-                                     (strToDelete, x, y) => FileExtensions.SafeDelete(strToDelete, false, intTimeout, token) && y,
+                                     (strToDelete, x, y) =>
+                                     {
+                                         if (x.ShouldExitCurrentIteration)
+                                             return false;
+                                         return FileExtensions.SafeDelete(strToDelete, false, intTimeout, token) && y;
+                                     },
                                      blnLoop =>
                                      {
                                          if (!blnLoop)

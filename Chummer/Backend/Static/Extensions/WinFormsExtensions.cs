@@ -1099,7 +1099,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
             try
             {
@@ -1123,7 +1123,7 @@ namespace Chummer
             }
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember)
@@ -1166,7 +1166,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(t => funcAsyncDataGetter.Invoke(objDataSource, t), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
             try
             {
@@ -1190,7 +1190,7 @@ namespace Chummer
             }
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember)
@@ -1258,7 +1258,7 @@ namespace Chummer
             }
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember)
@@ -1328,7 +1328,7 @@ namespace Chummer
             }
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember)
@@ -1379,7 +1379,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -1408,7 +1408,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -1494,7 +1494,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(t => funcAsyncDataGetter.Invoke(objDataSource, t), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -1523,7 +1523,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -1609,7 +1609,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -1638,7 +1638,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -1724,7 +1724,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(t => funcAsyncDataGetter.Invoke(objDataSource, t), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -1753,7 +1753,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -1871,7 +1871,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -1989,7 +1989,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -2107,7 +2107,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -2225,7 +2225,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
                 if (e.PropertyName == strDataMember && intSkipControlSetter == 0)
@@ -2312,7 +2312,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -2348,7 +2348,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -2453,7 +2453,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(t => funcAsyncDataGetter.Invoke(objDataSource, t), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -2489,7 +2489,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -2594,7 +2594,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -2630,7 +2630,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -2735,7 +2735,7 @@ namespace Chummer
             }
 
             T3 objData = Utils.SafelyRunSynchronously(t => funcAsyncDataGetter.Invoke(objDataSource, t), token);
-            objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
+            objControl.DoThreadSafe(x => funcControlSetter.Invoke(x, objData), token);
 
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
@@ -2771,7 +2771,7 @@ namespace Chummer
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -2876,7 +2876,7 @@ namespace Chummer
             }
 
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-            await objControl.DoThreadSafeAsync((x, y) => funcControlSetter.Invoke(x, objData), token)
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
 
             int intSkipControlSetter = 0;
@@ -2915,7 +2915,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -3020,7 +3020,7 @@ namespace Chummer
             }
 
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource, token).ConfigureAwait(false);
-            await objControl.DoThreadSafeAsync((x, y) => funcControlSetter.Invoke(x, objData), token)
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
 
             int intSkipControlSetter = 0;
@@ -3059,7 +3059,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -3164,7 +3164,7 @@ namespace Chummer
             }
 
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
-            await objControl.DoThreadSafeAsync((x, y) => funcControlSetter.Invoke(x, objData), token)
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
 
             int intSkipControlSetter = 0;
@@ -3203,7 +3203,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -3308,7 +3308,7 @@ namespace Chummer
             }
 
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource, token).ConfigureAwait(false);
-            await objControl.DoThreadSafeAsync((x, y) => funcControlSetter.Invoke(x, objData), token)
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
 
             int intSkipControlSetter = 0;
@@ -3347,7 +3347,7 @@ namespace Chummer
                 .ConfigureAwait(false);
             return;
 
-            async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e,
+            async Task OnPropertyChangedAsync(object _, PropertyChangedEventArgs e,
                 CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
@@ -3667,7 +3667,7 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (_, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
@@ -3728,7 +3728,7 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (_, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
@@ -3789,7 +3789,7 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (_, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
@@ -3887,7 +3887,7 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (_, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
@@ -3955,7 +3955,7 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (_, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
@@ -4023,7 +4023,7 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (_, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;

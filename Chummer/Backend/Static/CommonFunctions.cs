@@ -2741,13 +2741,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strContentString = strArray[i];
-                        if (strContentString.Length > 0)
+                        int intContentLength = strContentString.Length;
+                        if (intContentLength > 0)
                         {
-                            char chrLastChar = strContentString[strContentString.Length - 1];
+                            char chrLastChar = strContentString[intContentLength - 1];
                             switch (chrLastChar)
                             {
                                 case '-':
-                                    sbdResultContent.Append(strContentString, 0, strContentString.Length - 1);
+                                    sbdResultContent.Append(strContentString, 0, intContentLength - 1);
                                     break;
                                 // Line ending with a sentence-ending punctuation = line is end of paragraph.
                                 // Not fantastic, has plenty of false positives, but simple text extraction strategy cannot

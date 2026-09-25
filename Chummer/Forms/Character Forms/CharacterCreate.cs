@@ -13175,8 +13175,8 @@ namespace Chummer
                                     sbdPositiveQualityTooltip.Append(strNameToUse, '/', strName);
 
                                 sbdPositiveQualityTooltip.Append(strSpace, '(',
-                                    await objGroupContact.GetContactPointsAsync(t).ConfigureAwait(false)
-                                    * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false))
+                                    (await objGroupContact.GetContactPointsAsync(t).ConfigureAwait(false)
+                                    * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                                     .AppendLine(')');
                             }, token).ConfigureAwait(false);
                         }

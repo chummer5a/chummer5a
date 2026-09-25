@@ -897,7 +897,7 @@ namespace Chummer
                     return Task.FromCanceled(token);
                 _dicCache.AddOrUpdate(new ValueTuple<string, string>(_strExportLanguage, _strXslt),
                     new ValueTuple<string, string>(strText, strDisplayText),
-                    (a, b) => new ValueTuple<string, string>(strText, strDisplayText));
+                    (_, b) => new ValueTuple<string, string>(strText, strDisplayText));
             }
             catch (Exception e)
             {

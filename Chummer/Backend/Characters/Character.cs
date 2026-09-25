@@ -33577,7 +33577,7 @@ namespace Chummer
                     return decBaseArmorImprovement.StandardRound();
                 decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
                 Dictionary<Armor, decimal> dicArmorImprovementValues
-                    = lstArmorsToConsider.ToDictionary(x => x, y => decBaseArmorImprovement);
+                    = lstArmorsToConsider.ToDictionary(x => x, _ => decBaseArmorImprovement);
                 foreach (Improvement objImprovement in lstUsedImprovements)
                 {
                     if (objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
@@ -33600,7 +33600,7 @@ namespace Chummer
 
                 // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
                 Dictionary<Armor, int> dicArmorStackingValues
-                    = lstArmorsToConsider.ToDictionary(x => x, y => 0);
+                    = lstArmorsToConsider.ToDictionary(x => x, _ => 0);
                 int intNakedStackingValue = 0;
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
@@ -33700,7 +33700,7 @@ namespace Chummer
                     return new ValueTuple<int, int, List<Improvement>>(decBaseArmorImprovement.StandardRound(), intFromEquippedArmorImprovements, lstUsedImprovements);
                 decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
                 Dictionary<Armor, decimal> dicArmorImprovementValues
-                    = lstArmorsToConsider.ToDictionary(x => x, y => decBaseArmorImprovement);
+                    = lstArmorsToConsider.ToDictionary(x => x, _ => decBaseArmorImprovement);
                 foreach (Improvement objImprovement in lstUsedImprovements)
                 {
                     if (objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
@@ -33725,7 +33725,7 @@ namespace Chummer
 
                 // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
                 Dictionary<Armor, int> dicArmorStackingValues
-                    = lstArmorsToConsider.ToDictionary(x => x, y => 0);
+                    = lstArmorsToConsider.ToDictionary(x => x, _ => 0);
                 int intNakedStackingValue = 0;
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
@@ -37782,7 +37782,7 @@ namespace Chummer
                     int intAverageStrength = STR?.TotalValue ?? 0;
                     // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
                     Dictionary<Armor, ValueTuple<int, int>> dicArmorStackingValues
-                        = lstArmorsToConsider.ToDictionary(x => x, y => new ValueTuple<int, int>(0, 0));
+                        = lstArmorsToConsider.ToDictionary(x => x, _ => new ValueTuple<int, int>(0, 0));
                     int intNakedEncumbranceValue = 0;
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
@@ -37893,7 +37893,7 @@ namespace Chummer
                 int intAverageStrength = objStrength != null ? await objStrength.GetTotalValueAsync(token).ConfigureAwait(false) : 0;
                 // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
                 Dictionary<Armor, ValueTuple<int, int>> dicArmorStackingValues
-                    = lstArmorsToConsider.ToDictionary(x => x, y => new ValueTuple<int, int>(0, 0));
+                    = lstArmorsToConsider.ToDictionary(x => x, _ => new ValueTuple<int, int>(0, 0));
                 int intNakedEncumbranceValue = 0;
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {

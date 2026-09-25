@@ -824,7 +824,6 @@ namespace Chummer
         /// </summary>
         public IReadOnlyDictionary<string, bool> AuthorDictionary => _dicAuthorDictionary;
 
-        private CultureInfo _objDisplayAuthorsCulture = GlobalSettings.CultureInfo;
         private string _strDisplayAuthorsLanguage = GlobalSettings.Language;
         private string _strDisplayAuthors;
 
@@ -840,9 +839,9 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-                if (string.IsNullOrEmpty(_strDisplayAuthors) || !ReferenceEquals(_objDisplayAuthorsCulture, GlobalSettings.CultureInfo) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+                if (string.IsNullOrEmpty(_strDisplayAuthors) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
-                    _strDisplayAuthors = DisplayAuthors(_objDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strDisplayAuthorsLanguage = GlobalSettings.Language);
+                    _strDisplayAuthors = DisplayAuthors(_strDisplayAuthorsLanguage = GlobalSettings.Language);
                 }
 
                 return _strDisplayAuthors;
@@ -857,15 +856,15 @@ namespace Chummer
             // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
             // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
             // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-            if (string.IsNullOrEmpty(_strDisplayAuthors) || !ReferenceEquals(_objDisplayAuthorsCulture, GlobalSettings.CultureInfo) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+            if (string.IsNullOrEmpty(_strDisplayAuthors) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
             {
-                _strDisplayAuthors = await DisplayAuthorsAsync(_objDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
+                _strDisplayAuthors = await DisplayAuthorsAsync(_strDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
             }
 
             return _strDisplayAuthors;
         }
 
-        public string DisplayAuthors(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
+        public string DisplayAuthors(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -886,7 +885,7 @@ namespace Chummer
             }
         }
 
-        public async Task<string> DisplayAuthorsAsync(CultureInfo objCultureInfo, string strLanguage,
+        public async Task<string> DisplayAuthorsAsync(string strLanguage,
                                                          CancellationToken token = default)
         {
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,

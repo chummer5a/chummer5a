@@ -13361,19 +13361,19 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeaponsClearBindings(treWeapons, y, innerToken);
 
-                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncUnderbarrelWeaponsToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         y, funcMakeDirty, token: innerToken);
 
-                Task FuncWeaponAccessoriesBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncWeaponAccessoriesBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessoriesClearBindings(treWeapons, y, innerToken);
 
-                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncWeaponAccessoriesToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         t => UnderbarrelWeapons.GetCountAsync(t), y, funcMakeDirty, token: innerToken);
 
@@ -13395,11 +13395,11 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         this.RefreshChildrenGearsClearBindings(treWeapons, y, innerToken);
 
-                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);
@@ -13439,19 +13439,19 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeaponsClearBindings(treWeapons, y, innerToken);
 
-                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncUnderbarrelWeaponsToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         y, funcMakeDirty, token: innerToken);
 
-                Task FuncWeaponAccessoriesBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncWeaponAccessoriesBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessoriesClearBindings(treWeapons, y, innerToken);
 
-                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncWeaponAccessoriesToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         t => UnderbarrelWeapons.GetCountAsync(t), y, funcMakeDirty, token: innerToken);
 
@@ -13472,11 +13472,11 @@ namespace Chummer.Backend.Equipment
 
                 await WeaponAccessories.ForEachWithSideEffectsAsync(async (objChild, t1) =>
                 {
-                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         this.RefreshChildrenGearsClearBindings(treWeapons, y, innerToken);
 
-                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);

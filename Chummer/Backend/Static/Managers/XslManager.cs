@@ -99,7 +99,7 @@ namespace Chummer
 
                 ValueTuple<DateTime, XslCompiledTransform> tupNewValue =
                     new ValueTuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
-                s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
+                s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (_, y) => tupNewValue);
             }
             else
                 objReturn = tupCachedData.Item2;

@@ -300,7 +300,7 @@ namespace Chummer.UI.Powers
                     null),
                 new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
-                    (x, t) => Task.FromResult(true)),
+                    (_, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) : Task.FromResult(true)),
                 new Tuple<string, Func<Power, CancellationToken, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
                     async (power, t) => await power.GetRatingAsync(t).ConfigureAwait(false) > 0),
@@ -651,7 +651,7 @@ namespace Chummer.UI.Powers
                                 }
                             }
 
-                            Task<decimal> MinExtractor(Power p, CancellationToken t) =>
+                            Task<decimal> MinExtractor(Power _, CancellationToken t) =>
                                 t.IsCancellationRequested
                                     ? Task.FromCanceled<decimal>(t)
                                     : Task.FromResult<decimal>(0);
@@ -1118,7 +1118,7 @@ namespace Chummer.UI.Powers
                         ToolTipExtractor = ToolTipExtractor
                     };
 
-                    async Task<string> ToolTipExtractor(Power p, CancellationToken t)
+                    async Task<string> ToolTipExtractor(Power _, CancellationToken t)
                     {
                         try
                         {
@@ -1197,7 +1197,7 @@ namespace Chummer.UI.Powers
                         ToolTipExtractor = ToolTipExtractor
                     };
 
-                    async Task<string> ToolTipExtractor(Power p, CancellationToken t)
+                    async Task<string> ToolTipExtractor(Power _, CancellationToken t)
                     {
                         try
                         {

@@ -55,7 +55,7 @@ namespace Chummer.Controls.Shared
         private int _intOffScreenChunkSize = 1;
         private int _intListItemControlHeight;
         private bool _blnAllRendered;
-        private Predicate<TType> _visibleFilter = x => true;
+        private Predicate<TType> _visibleFilter = _ => true;
         private Func<TType, CancellationToken, Task<bool>> _visibleFilterAsync = DefaultVisibleAsync;
         private IComparer<TType> _comparison;
         private IAsyncComparer<TType> _comparisonAsync;

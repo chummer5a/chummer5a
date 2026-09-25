@@ -6623,11 +6623,11 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncDelegateBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncDelegateBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenGearsClearBindings(treGear, y, innerToken);
 
-                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncDelegateToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, y, funcMakeDirty, token: innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treGear, FuncDelegateBeforeClearToAdd);
@@ -6654,11 +6654,11 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncDelegateBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncDelegateBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenGearsClearBindings(treGear, y, innerToken);
 
-                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncDelegateToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, y, funcMakeDirty, token: innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treGear, FuncDelegateBeforeClearToAdd);

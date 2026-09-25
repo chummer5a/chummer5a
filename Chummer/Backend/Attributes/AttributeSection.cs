@@ -619,7 +619,7 @@ namespace Chummer.Backend.Attributes
                         ValueTuple<string, AttributeCategory> tupKey =
                             new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
-                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (_, y) =>
                         {
                             y.Dispose();
                             return objAttribute;
@@ -675,7 +675,7 @@ namespace Chummer.Backend.Attributes
                         ValueTuple<string, AttributeCategory> tupKey =
                             new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
-                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (_, y) =>
                         {
                             y.Dispose();
                             return objAttribute;
@@ -694,7 +694,7 @@ namespace Chummer.Backend.Attributes
                         ValueTuple<string, AttributeCategory> tupKey =
                             new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
-                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (_, y) =>
                         {
                             y.Dispose();
                             return objAttribute;
@@ -722,7 +722,7 @@ namespace Chummer.Backend.Attributes
                         ValueTuple<string, AttributeCategory> tupKey =
                             new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
-                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (_, y) =>
                         {
                             y.Dispose();
                             return objAttribute;
@@ -778,7 +778,7 @@ namespace Chummer.Backend.Attributes
                         ValueTuple<string, AttributeCategory> tupKey =
                             new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
-                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (_, y) =>
                         {
                             y.Dispose();
                             return objAttribute;
@@ -797,7 +797,7 @@ namespace Chummer.Backend.Attributes
                         ValueTuple<string, AttributeCategory> tupKey =
                             new ValueTuple<string, AttributeCategory>(objAttribute.Abbrev,
                                 objAttribute.MetatypeCategory);
-                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (_, y) =>
                         {
                             y.Dispose();
                             return objAttribute;
@@ -2271,7 +2271,7 @@ namespace Chummer.Backend.Attributes
             objNewValue.PropertyChangedList.Add(funcPropertyChanged);
             _dicUIPropertyChangers.AddOrUpdate(strAbbrev,
                 objNewValue,
-                (x, y) =>
+                (_, y) =>
                 {
                     y.PropertyChangedList.Add(funcPropertyChanged);
                     return y;
@@ -2285,7 +2285,7 @@ namespace Chummer.Backend.Attributes
             objNewValue.AsyncPropertyChangedList.Add(funcPropertyChanged);
             _dicUIPropertyChangers.AddOrUpdate(strAbbrev,
                 objNewValue,
-                (x, y) =>
+                (_, y) =>
                 {
                     y.AsyncPropertyChangedList.Add(funcPropertyChanged);
                     return y;
@@ -2381,72 +2381,72 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            void BODVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void BODVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("BOD", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void AGIVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void AGIVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("AGI", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void REAVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void REAVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("REA", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void STRVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void STRVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("STR", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void CHAVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void CHAVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("CHA", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void INTVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void INTVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("INT", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void LOGVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void LOGVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("LOG", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void WILVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void WILVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("WIL", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void EDGVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void EDGVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("EDG", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void ESSVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void ESSVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("ESS", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void MAGVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void MAGVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("MAG", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void MAGAdeptVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void MAGAdeptVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("MAGAdept", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void RESVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void RESVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("RES", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void DEPVariant(object sender, MultiplePropertiesChangedEventArgs e)
+            void DEPVariant(object _, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("DEP", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
@@ -2507,7 +2507,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            Task BODVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task BODVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2515,7 +2515,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task AGIVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task AGIVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2523,7 +2523,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task REAVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task REAVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2531,7 +2531,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task STRVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task STRVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2539,7 +2539,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task CHAVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task CHAVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2547,7 +2547,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task INTVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task INTVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2555,7 +2555,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task LOGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task LOGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2563,7 +2563,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task WILVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task WILVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2571,7 +2571,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task EDGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task EDGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2579,7 +2579,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task ESSVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task ESSVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2587,7 +2587,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task MAGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task MAGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2595,7 +2595,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task MAGAdeptVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task MAGAdeptVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2603,7 +2603,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task RESVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task RESVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2611,7 +2611,7 @@ namespace Chummer.Backend.Attributes
                     ? CommonCode(objEvents, e, token)
                     : Task.CompletedTask;
             }
-            Task DEPVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            Task DEPVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);

@@ -339,7 +339,7 @@ namespace Chummer
                     Offset = intOffset
                 };
                 // If the Sourcebook was not found in the options, add it.
-                _dicSourcebookInfos.AddOrUpdate(strTag, objFoundSource, (x, y) =>
+                _dicSourcebookInfos.AddOrUpdate(strTag, objFoundSource, (_, y) =>
                 {
                     y.Offset = intOffset;
                     objFoundSource.Dispose();
@@ -1127,7 +1127,7 @@ namespace Chummer
             {
                 string strPlugin = (await clbPlugins.DoThreadSafeFuncAsync(x => x.Items[e.Index]).ConfigureAwait(false))?.ToString() ?? string.Empty;
                 bool blnNewValue = e.NewValue == CheckState.Checked;
-                GlobalSettings.PluginsEnabledDic.AddOrUpdate(strPlugin, blnNewValue, (x, y) => blnNewValue);
+                GlobalSettings.PluginsEnabledDic.AddOrUpdate(strPlugin, blnNewValue, (_, y) => blnNewValue);
                 OptionsChanged(sender, e);
             }
             finally
@@ -1199,9 +1199,9 @@ namespace Chummer
                         ? ColorManager.Highlight
                         : ColorManager.WindowText;
                 }, token).ConfigureAwait(false);
-                string strAuthors = ReferenceEquals(_objSelectedCultureInfo, GlobalSettings.CultureInfo) && _strSelectedLanguage == GlobalSettings.Language
+                string strAuthors = _strSelectedLanguage == GlobalSettings.Language
                     ? await objSelected.GetCurrentDisplayAuthorsAsync(token).ConfigureAwait(false)
-                    : await objSelected.DisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage, token)
+                    : await objSelected.DisplayAuthorsAsync(_strSelectedLanguage, token)
                                       .ConfigureAwait(false);
                 await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors, token).ConfigureAwait(false);
                 await lblDirectoryName.DoThreadSafeAsync(x => x.Text = objSelected.Name, token).ConfigureAwait(false);
@@ -2489,7 +2489,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strLanguageName))
                     continue;
                 token.ThrowIfCancellationRequested();
-                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), x => strLanguageName, (x, y) => strLanguageName);
+                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), _ => strLanguageName, (_, y) => strLanguageName);
             }
         }
 
@@ -2705,7 +2705,7 @@ namespace Chummer
                     Path = strPath
                 };
                 // If the Sourcebook was not found in the options, add it.
-                _dicSourcebookInfos.AddOrUpdate(strTag, objFoundSource, (x, y) =>
+                _dicSourcebookInfos.AddOrUpdate(strTag, objFoundSource, (_, y) =>
                 {
                     y.Path = strPath;
                     objFoundSource.Dispose();
@@ -2811,7 +2811,7 @@ namespace Chummer
                                 ?.Value, out int intMatchPage))
                             continue;
                         ValueTuple<string, int> tupValue = new ValueTuple<string, int>(strMatchText, intMatchPage);
-                        dicPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
+                        dicPatternsToMatch.AddOrUpdate(strCode, tupValue, (_, y) => tupValue);
                     }
 
                     foreach (XPathNavigator objBook in objBooks
@@ -2848,7 +2848,7 @@ namespace Chummer
                                 ?.Value, out int intMatchPage))
                             continue;
                         ValueTuple<string, int> tupValue = new ValueTuple<string, int>(strMatchText, intMatchPage);
-                        dicBackupPatternsToMatch.AddOrUpdate(strCode, tupValue, (x, y) => tupValue);
+                        dicBackupPatternsToMatch.AddOrUpdate(strCode, tupValue, (_, y) => tupValue);
                     }
 
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
@@ -2925,7 +2925,7 @@ namespace Chummer
                             // ReSharper disable once AccessToDisposedClosure
                             if (objInfo == null)
                                 continue;
-                            dicResults.AddOrUpdate(objInfo.Code, objInfo, (x, y) =>
+                            dicResults.AddOrUpdate(objInfo.Code, objInfo, (_, y) =>
                             {
                                 y.Path = objInfo.Path;
                                 y.Offset = objInfo.Offset;
@@ -2959,7 +2959,7 @@ namespace Chummer
                             // ReSharper disable once AccessToDisposedClosure
                             if (objInfo == null)
                                 continue;
-                            dicResults.AddOrUpdate(objInfo.Code, objInfo, (x, y) =>
+                            dicResults.AddOrUpdate(objInfo.Code, objInfo, (_, y) =>
                             {
                                 y.Path = objInfo.Path;
                                 y.Offset = objInfo.Offset;
@@ -2997,7 +2997,7 @@ namespace Chummer
             foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
             {
                 token.ThrowIfCancellationRequested();
-                lstReturn.Add(_dicSourcebookInfos.AddOrUpdate(kvpInfo.Key, kvpInfo.Value, (x, y) =>
+                lstReturn.Add(_dicSourcebookInfos.AddOrUpdate(kvpInfo.Key, kvpInfo.Value, (_, y) =>
                 {
                     y.Path = kvpInfo.Value.Path;
                     y.Offset = kvpInfo.Value.Offset;

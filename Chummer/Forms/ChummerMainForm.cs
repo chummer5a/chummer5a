@@ -968,7 +968,7 @@ namespace Chummer
                                     = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                                 foreach (ToolStripItem tssItem in await menuStrip
                                                                         .DoThreadSafeFuncAsync(
-                                                                            (x, y) => x.Items, _objGenericToken)
+                                                                            x => x.Items, _objGenericToken)
                                                                         .ConfigureAwait(false))
                                     lstToTranslate.AddRange(
                                         await menuStrip.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -981,7 +981,7 @@ namespace Chummer
                                 lstToTranslate.Clear();
                                 foreach (ToolStripItem tssItem in await mnuProcessFile
                                                                         .DoThreadSafeFuncAsync(
-                                                                            (x, y) => x.Items, _objGenericToken)
+                                                                            x => x.Items, _objGenericToken)
                                                                         .ConfigureAwait(false))
                                     lstToTranslate.AddRange(
                                         await mnuProcessFile.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -2632,10 +2632,11 @@ namespace Chummer
                 Lazy<string> strSpace = new Lazy<string>(() => LanguageManager.GetString("String_Space", token: token));
                 Lazy<string> strSheet = new Lazy<string>(() => LanguageManager.GetString("String_Sheet_Blank", token: token));
                 Lazy<string> strExport = new Lazy<string>(() => LanguageManager.GetString("String_Export_Blank", token: token));
-                tabForms.DoThreadSafe((x, z) =>
+                tabForms.DoThreadSafe((x, t) =>
                 {
                     foreach (TabPage objTabPage in x.TabPages)
                     {
+                        t.ThrowIfCancellationRequested();
                         switch (objTabPage.Tag)
                         {
                             case CharacterShared frmCharacter:
@@ -2757,7 +2758,7 @@ namespace Chummer
                     = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                 foreach (ToolStripItem tssItem in await menuStrip
                                                         .DoThreadSafeFuncAsync(
-                                                            (x, y) => x.Items, _objGenericToken)
+                                                            x => x.Items, _objGenericToken)
                                                         .ConfigureAwait(false))
                     lstToTranslate.AddRange(
                         await menuStrip.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -2779,7 +2780,7 @@ namespace Chummer
             try
             {
                 // ToolStrip Items.
-                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync((x, y) => x.Controls.OfType<ToolStrip>(), _objGenericToken).ConfigureAwait(false))
+                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync(x => x.Controls.OfType<ToolStrip>(), _objGenericToken).ConfigureAwait(false))
                 {
                     int intNumItems = await objToolStrip.DoThreadSafeFuncAsync(x =>
                     {
@@ -2793,7 +2794,7 @@ namespace Chummer
                         = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                     foreach (ToolStripItem tssItem in await objToolStrip
                                                             .DoThreadSafeFuncAsync(
-                                                                (x, y) => x.Items, _objGenericToken)
+                                                                x => x.Items, _objGenericToken)
                                                             .ConfigureAwait(false))
                         lstToTranslate.AddRange(
                             await objToolStrip.TranslateToolStripItemsRecursivelyPrepAsync(

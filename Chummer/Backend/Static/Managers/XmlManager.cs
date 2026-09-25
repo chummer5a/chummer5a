@@ -834,7 +834,7 @@ namespace Chummer
                     {
                         do
                         {
-                            xmlReferenceOfReturn = s_DicXmlDocuments.GetOrAdd(objDataKey, x => xmlNewReference.Value);
+                            xmlReferenceOfReturn = s_DicXmlDocuments.GetOrAdd(objDataKey, _ => xmlNewReference.Value);
                             if (xmlReferenceOfReturn == null)
                                 s_DicXmlDocuments.TryUpdate(objDataKey, xmlNewReference.Value, null);
                         } while (xmlReferenceOfReturn == null);
@@ -1663,7 +1663,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
 #endif
                     if (blnCacheFileExceptions)
-                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (_, y) => y);
                 }
             }
 
@@ -1810,7 +1810,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
 #endif
                     if (blnCacheFileExceptions)
-                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (_, y) => y);
                 }
             }
 
@@ -1847,7 +1847,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
 #endif
                     if (blnCacheFileExceptions)
-                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (_, y) => y);
                 }
             }
 
@@ -1976,7 +1976,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
 #endif
                     if (blnCacheFileExceptions)
-                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (_, y) => y);
                 }
             }
 
@@ -2124,7 +2124,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
 #endif
                     if (blnCacheFileExceptions)
-                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (_, y) => y);
                 }
             }
 
@@ -2161,7 +2161,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
 #endif
                     if (blnCacheFileExceptions)
-                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (x, y) => y);
+                        s_DicCustomFilePathsWithExceptions.AddOrUpdate(strFile, e, (_, y) => y);
                 }
             }
 

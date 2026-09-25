@@ -111,7 +111,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            async Task SetModWeaponMountParent(object sender, NotifyCollectionChangedEventArgs args, CancellationToken token = default)
+            async Task SetModWeaponMountParent(object _, NotifyCollectionChangedEventArgs args, CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
                 switch (args.Action)

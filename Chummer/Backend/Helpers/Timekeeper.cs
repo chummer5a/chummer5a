@@ -80,8 +80,8 @@ namespace Chummer
                 Debug.WriteLine(strLogEntry);
 #endif
 
-                s_DictionaryStatistics.AddOrUpdate(taskname, x => new ValueTuple<TimeSpan, int>(final, 1),
-                                                   (x, y) => new ValueTuple<TimeSpan, int>(
+                s_DictionaryStatistics.AddOrUpdate(taskname, _ => new ValueTuple<TimeSpan, int>(final, 1),
+                                                   (_, y) => new ValueTuple<TimeSpan, int>(
                                                        y.Item1 + final, y.Item2 + 1));
             }
             else

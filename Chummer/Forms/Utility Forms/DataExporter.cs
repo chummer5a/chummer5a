@@ -163,7 +163,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strLanguageName))
                     continue;
                 token.ThrowIfCancellationRequested();
-                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), x => strLanguageName, (x, y) => strLanguageName);
+                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), _ => strLanguageName, (_, y) => strLanguageName);
             }
         }
 
