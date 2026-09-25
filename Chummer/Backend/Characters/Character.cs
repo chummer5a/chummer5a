@@ -42736,7 +42736,7 @@ namespace Chummer
         /// <summary>
         /// Stamp used to notify UI when AddSpirit/AddSprite improvements change summonable type lists.
         /// </summary>
-        public int SpiritTypeListChanged => 0;
+        public static int SpiritTypeListChanged => 0;
 
         /// <summary>
         /// Whether Black Market Discount is enabled.

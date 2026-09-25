@@ -2564,7 +2564,8 @@ namespace Chummer
                     && sender is Character objCharacter
                     && await tabForms.DoThreadSafeFuncAsync(x => x.TabCount, token: token).ConfigureAwait(false) > 0)
                 {
-                    await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim(), token).ConfigureAwait(false);
+                    string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                    await UpdateCharacterTabTitle(objCharacter, strCharacterName.Trim(), token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -3525,7 +3526,12 @@ namespace Chummer
                     if (lstCharacters == null)
                         return;
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
-                        lstNewCharacters = lstCharacters.ToList();
+                    {
+                        if (lstCharacters is Character[] aobjCharacters)
+                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
+                        else
+                            lstNewCharacters = lstCharacters.ToList();
+                    }
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -3553,11 +3559,11 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
-                                token.ThrowIfCancellationRequested();
+                                string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
                                                                                 : strUI + strSpace + "("
-                                                                                + objCharacter.CharacterName
+                                                                                + strCharacterName
                                                                                 + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
@@ -3568,7 +3574,7 @@ namespace Chummer
                                     continue;
                                 if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -3723,6 +3729,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (lstCharacters == null)
+                return;
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
             {
@@ -3735,9 +3743,13 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    if (lstCharacters == null)
-                        return;
-                    List<Character> lstNewCharacters = lstCharacters.ToList();
+                    if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
+                    {
+                        if (lstCharacters is Character[] aobjCharacters)
+                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
+                        else
+                            lstNewCharacters = lstCharacters.ToList();
+                    }
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -3767,11 +3779,11 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
-                                token.ThrowIfCancellationRequested();
+                                string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
                                                                                 : strUI + strSpace + "("
-                                                                                + objCharacter.CharacterName
+                                                                                + strCharacterName
                                                                                 + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
@@ -3784,7 +3796,7 @@ namespace Chummer
 
                                 if (Program.MyProcess.HandleCount >= 9500
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -3868,7 +3880,7 @@ namespace Chummer
                                 while (stkToMaximize.Count > 0)
                                     stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                             }
-                        }, _objGenericToken).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -3963,6 +3975,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (lstCharacters == null)
+                return;
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
             {
@@ -3975,9 +3989,13 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    if (lstCharacters == null)
-                        return;
-                    List<Character> lstNewCharacters = lstCharacters.ToList();
+                    if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
+                    {
+                        if (lstCharacters is Character[] aobjCharacters)
+                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
+                        else
+                            lstNewCharacters = lstCharacters.ToList();
+                    }
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -4005,10 +4023,11 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
+                                string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
                                                                                 : strUI + strSpace + "("
-                                                                                + objCharacter.CharacterName
+                                                                                + strCharacterName
                                                                                 + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
@@ -4019,7 +4038,7 @@ namespace Chummer
                                     continue;
                                 if (Program.MyProcess.HandleCount >= 9500
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {

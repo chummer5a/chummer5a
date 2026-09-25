@@ -1513,7 +1513,8 @@ namespace Chummer
 
         public static Task<bool> SwitchToOpenCharacter(Character objCharacter, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
             if (objCharacter == null || MainForm == null)
                 return Task.FromResult(false);
             return MainForm.SwitchToOpenCharacter(objCharacter, token);
@@ -1539,6 +1540,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
@@ -1575,6 +1578,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
@@ -1585,7 +1590,8 @@ namespace Chummer
 
         public static Task<bool> SwitchToOpenExportCharacter(Character objCharacter, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
             if (objCharacter == null || MainForm == null)
                 return Task.FromResult(false);
             return MainForm.SwitchToOpenExportCharacter(objCharacter, token);
@@ -1611,6 +1617,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)

@@ -1743,9 +1743,9 @@ namespace Chummer
                     // ReSharper disable once StringLiteralTypo
                     string.Concat(",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßабвгдеёжзийклмнопрстуфхцчшщъыьэюяәғқңөұүԝꙣђєѕԑџӏњљјћһќс́їз́ӂҗе̄ѓґαβγδεζηθικλμνξοπρσςτυφχψωａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯӘҒҚҢӨҰҮԜꙢЂЄЅԐЏӀЊЉЈЋҺЌС́ЇЗ́ӁҖЕ̄ЃҐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), ",
                         strSearchText2, "))");
-                strReturn = StringExtensions.ConcatFast('(', StringExtensions.ConcatFast(strReturn, " or ((not(", strTranslateElement,
+                strReturn = StringExtensions.ConcatFast('(', strReturn, " or ((not(", strTranslateElement,
                     ") and contains(translate(", strNameElement, strInnerText,
-                    " or contains(translate(", strTranslateElement, strInnerText), ')');
+                    " or contains(translate(", strTranslateElement, strInnerText, ')');
             }
 
             return strReturn;

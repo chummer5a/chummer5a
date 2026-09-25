@@ -111,7 +111,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             XmlDocument objDoc = new XmlDocument();
-            XmlNode nodBonus = objDoc.CreateElement("bonus");
+            XmlElement nodBonus = objDoc.CreateElement("bonus");
 
             foreach (KeyValuePair<string, decimal> kvpAttribute in await objDrug.GetAttributesAsync(token)
                          .ConfigureAwait(false))
@@ -152,7 +152,7 @@ namespace Chummer.Backend.Equipment
             int intInitiative = await objDrug.GetInitiativeAsync(token).ConfigureAwait(false);
             if (intInitiative != 0)
             {
-                XmlNode nodIni = objDoc.CreateElement("initiative");
+                XmlElement nodIni = objDoc.CreateElement("initiative");
                 nodIni.InnerText = intInitiative.ToString(GlobalSettings.InvariantCultureInfo);
                 nodBonus.AppendChild(nodIni);
             }
@@ -160,7 +160,7 @@ namespace Chummer.Backend.Equipment
             int intInitiativeDice = await objDrug.GetInitiativeDiceAsync(token).ConfigureAwait(false);
             if (intInitiativeDice != 0)
             {
-                XmlNode nodDice = objDoc.CreateElement("initiativedice");
+                XmlElement nodDice = objDoc.CreateElement("initiativedice");
                 nodDice.InnerText = intInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo);
                 nodBonus.AppendChild(nodDice);
             }
