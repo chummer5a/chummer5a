@@ -2492,7 +2492,42 @@ namespace Chummer
         }
 
         public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet,
-                                                     IEnumerable<Character> lstCharacters = null,
+                                                     Character objCharacter,
+                                                     CultureInfo defaultCulture = null,
+                                                     CancellationToken token = default)
+        {
+            if (cboLanguage == null)
+                throw new ArgumentNullException(nameof(cboLanguage));
+            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
+            int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+            {
+                string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
+            List<ListItem> lstSheetLanguageList = GetSheetLanguageList(objCharacter, true, token);
+            try
+            {
+                cboLanguage.PopulateWithListItems(lstSheetLanguageList, token: token);
+                cboLanguage.DoThreadSafe(x =>
+                {
+                    if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                        x.SelectedValue = strDefaultSheetLanguage;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedValue
+                            = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                }, token);
+            }
+            finally
+            {
+                Utils.ListItemListPool.Return(ref lstSheetLanguageList);
+            }
+        }
+
+        public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet,
+                                                     IEnumerable<Character> lstCharacters,
                                                      CultureInfo defaultCulture = null,
                                                      CancellationToken token = default)
         {
@@ -2527,7 +2562,49 @@ namespace Chummer
         }
 
         public static Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet,
-                                                          IEnumerable<Character> lstCharacters = null,
+                                                          Character objCharacter = null,
+                                                          CultureInfo defaultCulture = null,
+                                                          CancellationToken token = default)
+        {
+            return cboLanguage == null
+                ? Task.FromException(new ArgumentNullException(nameof(cboLanguage)))
+                : PopulateSheetLanguageListAsyncInner(token);
+
+            async Task PopulateSheetLanguageListAsyncInner(CancellationToken innerToken)
+            {
+                string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
+                int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+                if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+                {
+                    string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                    if (strSheetLanguage.Length == 5)
+                        strDefaultSheetLanguage = strSheetLanguage;
+                }
+
+                List<ListItem> lstSheetLanguageList
+                    = await GetSheetLanguageListAsync(objCharacter, true, innerToken).ConfigureAwait(false);
+                try
+                {
+                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: innerToken)
+                                     .ConfigureAwait(false);
+                    await cboLanguage.DoThreadSafeAsync(x =>
+                    {
+                        if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                            x.SelectedValue = strDefaultSheetLanguage;
+                        if (x.SelectedIndex == -1)
+                            x.SelectedValue
+                                = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                    }, token: innerToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Utils.ListItemListPool.Return(ref lstSheetLanguageList);
+                }
+            }
+        }
+
+        public static Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet,
+                                                          IEnumerable<Character> lstCharacters,
                                                           CultureInfo defaultCulture = null,
                                                           CancellationToken token = default)
         {
@@ -2568,7 +2645,32 @@ namespace Chummer
             }
         }
 
-        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null,
+        public static List<ListItem> GetSheetLanguageList(Character objCharacter = null,
+                                                          bool blnUsePool = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
+                if (string.IsNullOrEmpty(strLanguageName))
+                    continue;
+                token.ThrowIfCancellationRequested();
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!XmlManager.AnyXslFiles(strLanguageCode, objCharacter, token))
+                    continue;
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
+            }
+
+            token.ThrowIfCancellationRequested();
+            lstLanguages.Sort(CompareListItems.CompareNames);
+            return lstLanguages;
+        }
+
+        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters,
                                                           bool blnUsePool = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2595,7 +2697,32 @@ namespace Chummer
         }
 
         public static async Task<List<ListItem>> GetSheetLanguageListAsync(
-            IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
+            Character objCharacter = null, bool blnUsePool = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
+                    continue;
+                token.ThrowIfCancellationRequested();
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!await XmlManager.AnyXslFilesAsync(strLanguageCode, objCharacter, token).ConfigureAwait(false))
+                    continue;
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
+            }
+
+            token.ThrowIfCancellationRequested();
+            lstLanguages.Sort(CompareListItems.CompareNames);
+            return lstLanguages;
+        }
+
+        public static async Task<List<ListItem>> GetSheetLanguageListAsync(
+            IEnumerable<Character> lstCharacters, bool blnUsePool = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();

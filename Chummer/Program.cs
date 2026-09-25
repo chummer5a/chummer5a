@@ -1529,7 +1529,10 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objCharacter == null)
                 return Task.CompletedTask;
-            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
+            if (MainForm != null)
+                return MainForm.OpenCharacter(objCharacter, blnIncludeInMru, token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacter(objCharacter, blnIncludeInMru, t)), token);
         }
 
         /// <summary>
@@ -1567,7 +1570,10 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objCharacter == null)
                 return Task.CompletedTask;
-            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
+            if (MainForm != null)
+                return MainForm.OpenCharacterForPrinting(objCharacter, blnIncludeInMru, token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterForPrinting(objCharacter, blnIncludeInMru, t)), token);
         }
 
         /// <summary>
@@ -1606,7 +1612,10 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objCharacter == null)
                 return Task.CompletedTask;
-            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
+            if (MainForm != null)
+                return MainForm.OpenCharacterForExport(objCharacter, blnIncludeInMru, token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterForExport(objCharacter, blnIncludeInMru, t)), token);
         }
 
         /// <summary>

@@ -113,7 +113,7 @@ namespace Chummer
 
                 await LanguageManager
                     .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
-                                                    _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
+                                                    _objCharacter, _objExportCulture, token: _objGenericToken)
                     .ConfigureAwait(false);
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))

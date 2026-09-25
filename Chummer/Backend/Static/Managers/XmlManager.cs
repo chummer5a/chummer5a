@@ -2730,17 +2730,118 @@ namespace Chummer
                     StripAmendAttributesRecursively(xmlChildNode, token);
         }
 
-        public static bool AnyXslFiles(string strLanguage, IEnumerable<Character> lstCharacters = null, CancellationToken token = default)
+        public static bool AnyXslFiles(string strLanguage, Character objCharacter = null, CancellationToken token = default)
+        {
+            GetXslFilesFromLocalDirectory(strLanguage, out bool blnReturn, out List<ListItem> _, objCharacter, false, false, token);
+            return blnReturn;
+        }
+
+        public static bool AnyXslFiles(string strLanguage, IEnumerable<Character> lstCharacters, CancellationToken token = default)
         {
             GetXslFilesFromLocalDirectory(strLanguage, out bool blnReturn, out List<ListItem> _, lstCharacters, false, false, token);
             return blnReturn;
         }
 
         public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage,
-                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
+                                                                   Character objCharacter = null, bool blnUsePool = false, CancellationToken token = default)
+        {
+            GetXslFilesFromLocalDirectory(strLanguage, out bool _, out List<ListItem> lstReturn, objCharacter, true, blnUsePool, token);
+            return lstReturn;
+        }
+
+        public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage,
+                                                                   IEnumerable<Character> lstCharacters, bool blnUsePool = false, CancellationToken token = default)
         {
             GetXslFilesFromLocalDirectory(strLanguage, out bool _, out List<ListItem> lstReturn, lstCharacters, true, blnUsePool, token);
             return lstReturn;
+        }
+
+        private static void GetXslFilesFromLocalDirectory(string strLanguage, out bool blnAnyItem, out List<ListItem> lstSheets, Character objCharacter, bool blnDoList, bool blnUsePool, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            blnAnyItem = false;
+            HashSet<string> setAddedSheetFileNames = blnDoList ? Utils.StringHashSetPool.Get() : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objCharacter != null)
+                {
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
+                    else
+                        lstSheets = null;
+                    // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+                    token.ThrowIfCancellationRequested();
+                    foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage, token: token)
+                                                                    .SelectAndCacheExpression(
+                                                                        "/chummer/sheets[@lang="
+                                                                        + strLanguage.CleanXPath()
+                                                                        + "]/sheet[not(hide)]", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token)?.Value;
+                        if (string.IsNullOrEmpty(strSheetFileName))
+                            continue;
+                        if (!blnDoList)
+                        {
+                            blnAnyItem = true;
+                            return;
+                        }
+                        token.ThrowIfCancellationRequested();
+                        if (!setAddedSheetFileNames.Add(strSheetFileName))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        blnAnyItem = true;
+                        lstSheets.Add(new ListItem(
+                                          !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                              StringComparison.OrdinalIgnoreCase)
+                                              ? Path.Combine(strLanguage, strSheetFileName)
+                                              : strSheetFileName,
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name", token)?.Value
+                                          ?? LanguageManager.GetString("String_Unknown", token: token)));
+                    }
+                }
+                else
+                {
+                    XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage, token: token)
+                        .SelectAndCacheExpression(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token);
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
+                    else
+                        lstSheets = null;
+
+                    foreach (XPathNavigator xmlSheet in xmlIterator)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token)?.Value;
+                        if (string.IsNullOrEmpty(strSheetFileName))
+                            continue;
+                        if (!blnDoList)
+                        {
+                            blnAnyItem = true;
+                            return;
+                        }
+                        token.ThrowIfCancellationRequested();
+                        if (!setAddedSheetFileNames.Add(strSheetFileName))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        blnAnyItem = true;
+                        lstSheets.Add(new ListItem(
+                                          !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                              StringComparison.OrdinalIgnoreCase)
+                                              ? Path.Combine(strLanguage, strSheetFileName)
+                                              : strSheetFileName,
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name", token)?.Value
+                                          ?? LanguageManager.GetString("String_Unknown", token: token)));
+                    }
+                }
+            }
+            finally
+            {
+                if (setAddedSheetFileNames != null)
+                    Utils.StringHashSetPool.Return(ref setAddedSheetFileNames);
+            }
         }
 
         private static void GetXslFilesFromLocalDirectory(string strLanguage, out bool blnAnyItem, out List<ListItem> lstSheets, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)
@@ -2834,15 +2935,103 @@ namespace Chummer
             }
         }
 
-        public static async Task<bool> AnyXslFilesAsync(string strLanguage, IEnumerable<Character> lstCharacters = null, CancellationToken token = default)
+        public static async Task<bool> AnyXslFilesAsync(string strLanguage, Character objCharacter = null, CancellationToken token = default)
+        {
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, objCharacter, false, false, token).ConfigureAwait(false)).Item1;
+        }
+
+        public static async Task<List<ListItem>> GetXslFilesFromLocalDirectoryAsync(string strLanguage,
+                                                                   Character objCharacter = null, bool blnUsePool = false, CancellationToken token = default)
+        {
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, objCharacter, true, blnUsePool, token).ConfigureAwait(false)).Item2;
+        }
+
+        public static async Task<bool> AnyXslFilesAsync(string strLanguage, IEnumerable<Character> lstCharacters, CancellationToken token = default)
         {
             return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, false, false, token).ConfigureAwait(false)).Item1;
         }
 
         public static async Task<List<ListItem>> GetXslFilesFromLocalDirectoryAsync(string strLanguage,
-                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
+                                                                   IEnumerable<Character> lstCharacters, bool blnUsePool = false, CancellationToken token = default)
         {
             return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool, token).ConfigureAwait(false)).Item2;
+        }
+
+        public static async Task<ValueTuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, Character objCharacter, bool blnDoList, bool blnUsePool, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<ListItem> lstSheets = null;
+            HashSet<string> setAddedSheetFileNames = blnDoList ? Utils.StringHashSetPool.Get() : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objCharacter != null)
+                {
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
+                    // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+                    token.ThrowIfCancellationRequested();
+                    foreach (XPathNavigator xmlSheet in (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
+                                 .SelectAndCacheExpression(
+                                     "/chummer/sheets[@lang="
+                                     + strLanguage.CleanXPath()
+                                     + "]/sheet[not(hide)]", token: token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value;
+                        if (string.IsNullOrEmpty(strSheetFileName))
+                            continue;
+                        if (!blnDoList)
+                            return new ValueTuple<bool, List<ListItem>>(true, null);
+                        token.ThrowIfCancellationRequested();
+                        if (!setAddedSheetFileNames.Add(strSheetFileName))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        lstSheets.Add(new ListItem(
+                                          !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                              StringComparison.OrdinalIgnoreCase)
+                                              ? Path.Combine(strLanguage, strSheetFileName)
+                                              : strSheetFileName,
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
+                    }
+                }
+                else
+                {
+                    XPathNodeIterator xmlIterator = (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
+                        .SelectAndCacheExpression(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token);
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
+
+                    foreach (XPathNavigator xmlSheet in xmlIterator)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value;
+                        if (string.IsNullOrEmpty(strSheetFileName))
+                            continue;
+                        if (!blnDoList)
+                            return new ValueTuple<bool, List<ListItem>>(true, null);
+                        token.ThrowIfCancellationRequested();
+                        if (!setAddedSheetFileNames.Add(strSheetFileName))
+                            continue;
+                        token.ThrowIfCancellationRequested();
+                        lstSheets.Add(new ListItem(
+                                          !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                              StringComparison.OrdinalIgnoreCase)
+                                              ? Path.Combine(strLanguage, strSheetFileName)
+                                              : strSheetFileName,
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
+                    }
+                }
+            }
+            finally
+            {
+                if (setAddedSheetFileNames != null)
+                    Utils.StringHashSetPool.Return(ref setAddedSheetFileNames);
+            }
+            return new ValueTuple<bool, List<ListItem>>(lstSheets != null && lstSheets.Count > 0, lstSheets);
         }
 
         public static async Task<ValueTuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)

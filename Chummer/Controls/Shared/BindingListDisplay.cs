@@ -406,6 +406,21 @@ namespace Chummer.Controls.Shared
                 token: token).ConfigureAwait(false);
         }
 
+        private void RedrawControl(ControlWithMetaData item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnAllRendered = false;
+            int intNumVisible = _lstContentList.Count(x => x.Visible);
+            if (item.Visible)
+                --intNumVisible;
+            item.RefreshVisible(token);
+            if (item.Visible)
+                ++intNumVisible;
+            ResetDisplayPanelHeight(intNumVisible, token);
+            ComputeDisplayIndex(token);
+            LoadScreenContent(token);
+        }
+
         private void RedrawControls(IEnumerable<ControlWithMetaData> lstToClear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -422,6 +437,21 @@ namespace Chummer.Controls.Shared
             ResetDisplayPanelHeight(intNumVisible, token);
             ComputeDisplayIndex(token);
             LoadScreenContent(token);
+        }
+
+        private async Task RedrawControlAsync(ControlWithMetaData item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnAllRendered = false;
+            int intNumVisible = _lstContentList.Count(x => x.Visible);
+            if (item.Visible)
+                --intNumVisible;
+            await item.RefreshVisibleAsync(token).ConfigureAwait(false);
+            if (item.Visible)
+                ++intNumVisible;
+            await ResetDisplayPanelHeightAsync(intNumVisible, token).ConfigureAwait(false);
+            await ComputeDisplayIndexAsync(token).ConfigureAwait(false);
+            await LoadScreenContentAsync(token).ConfigureAwait(false);
         }
 
         private async Task RedrawControlsAsync(IEnumerable<ControlWithMetaData> lstToClear, CancellationToken token = default)
@@ -975,7 +1005,7 @@ namespace Chummer.Controls.Shared
                     Utils.RunOnMainThread(() => _parent.ChildPropertyChanged?.Invoke(sender, e));
                 if (changes)
                 {
-                    _parent.RedrawControls(this.Yield());
+                    _parent.RedrawControl(this);
                 }
             }
 
@@ -995,7 +1025,7 @@ namespace Chummer.Controls.Shared
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
                 if (changes)
                 {
-                    await _parent.RedrawControlsAsync(this.Yield(), token).ConfigureAwait(false);
+                    await _parent.RedrawControlAsync(this, token).ConfigureAwait(false);
                 }
             }
 

@@ -3229,7 +3229,7 @@ namespace Chummer
         public static void EnableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            EnableImprovements(objCharacter, objImprovement.Yield(), token);
+            EnableImprovements(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static void EnableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -3250,7 +3250,7 @@ namespace Chummer
         public static Task EnableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return EnableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
+            return EnableImprovementsAsync(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static Task EnableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
@@ -3948,7 +3948,7 @@ namespace Chummer
         public static void DisableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            DisableImprovements(objCharacter, objImprovement.Yield(), token);
+            DisableImprovements(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static void DisableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -3970,7 +3970,7 @@ namespace Chummer
         public static Task DisableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return DisableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
+            return DisableImprovementsAsync(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static Task DisableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
