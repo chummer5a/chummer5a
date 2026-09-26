@@ -421,7 +421,7 @@ namespace Chummer
 
         public int IndexOf(T item)
         {
-            return Array.IndexOf(_aobjInternal, item);
+            return Array.IndexOf(_aobjInternal, item, 0, _intSize);
         }
 
         public void Insert(int index, T item)
