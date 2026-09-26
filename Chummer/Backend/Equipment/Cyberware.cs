@@ -5738,6 +5738,9 @@ namespace Chummer.Backend.Equipment
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
+
             using (LockObject.EnterReadLock())
             {
                 // Do not do property changes if we're not directly equipped to a character
@@ -5918,6 +5921,8 @@ namespace Chummer.Backend.Equipment
         private async Task DoPropertyChangesAsync(bool blnDoRating, bool blnDoGrade, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {

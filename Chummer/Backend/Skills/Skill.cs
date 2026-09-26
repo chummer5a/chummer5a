@@ -7348,6 +7348,8 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             if (IsLoading)
                 return;
             bool blnRefreshAddSpiritSkillSelections = false;
@@ -7531,6 +7533,8 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             if (IsLoading)
                 return;
             bool blnRefreshAddSpiritSkillSelections = false;

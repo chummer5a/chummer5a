@@ -2115,6 +2115,8 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
             {
                 if (e.PropertyNames.Contains(nameof(Skill.BasePoints)) || e.PropertyNames.Contains(nameof(Skill.FreeBase)))
@@ -2637,6 +2639,8 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -2766,6 +2770,8 @@ namespace Chummer.Backend.Skills
         public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
