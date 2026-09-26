@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <!-- Book codes:
+    CRB = Core Rulebook (3e > 2e > 1e)
+    CC = Cannon Companion
+    CS = Corporate Security
+    R3 = Rigger 3.0
+    -->
+  <gears>
+    <!-- Section Ammunition -->
+    <!-- Subsection generics/fallbacks -->
+    <gear xpathfilter="ammoforweapontype = 'gun'">
+      <!-- Based on: Ammunition, Regular Ammo (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'cannon'">
+      <!-- Based on: Ammunition, Assault Cannon (CRB) -->
+      <weight>0.125</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'taser'">
+      <!-- Based on: Ammunition, Taser Dart (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'dartgun'">
+      <!-- Based on: Dart Rounds (M&M) -->
+      <weight>0.015</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'bow'">
+      <!-- Based on: Arrow (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'crossbow'">
+      <!-- Based on: Bolts (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'netgun'">
+      <!-- Based on: Netgun Net, Small Net (CS) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'netgunxl'">
+      <!-- Based on: Netgun Net, Large Net (CS) -->
+      <weight>0.75</weight>
+    </gear>
+    <gear xpathfilter="starts-with(name, 'Grenade: ')">
+      <!-- Based on: Grenades, Gas (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear xpathfilter="starts-with(name, 'Minigrenade: ') or ammoforweapontype = 'glauncher'">
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'mlauncher'">
+      <!-- Based on: Anti-Personnel Rocket (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'microtorpedo'">
+      <!-- Based on: Ammunition, Gyrojet Rockets (CC) -->
+      <weight>0.175</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'torpglauncher'">
+      <!-- Based on: Piranha Torpedo (R3) -->
+      <weight>2.75</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'gyrojet'">
+      <!-- Based on: Ammunition, Gyrojet Rockets (CC) -->
+      <weight>0.175</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'bola'">
+      <!-- Based on: Bola Rounds (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'slingshot'">
+      <!-- Based on: Capsule Rounds (CC) -->
+      <weight>0.25</weight>
+    </gear>
+    
+    <!-- Subsection: Gun Ammo -->
+    <gear>
+      <name>Ammo: APDS</name>
+      <!-- Based on: Ammunition, APDS (CRB) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: APDS (2050)</name>
+      <!-- Based on: Ammunition, APDS (CRB) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Assault Cannon</name>
+      <!-- Based on: Ammunition, Assault Cannon (CRB) -->
+      <weight>0.125</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Assault Cannon (2050)</name>
+      <!-- Based on: Ammunition, Assault Cannon (CRB) -->
+      <weight>0.125</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Exposive Rounds</name>
+      <!-- Based on: Ammunition, Exposive Rounds (CRB) -->
+      <weight>0.075</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Exposive Rounds (2050)</name>
+      <!-- Based on: Ammunition, Exposive Rounds (CRB) -->
+      <weight>0.075</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Flechette Rounds</name>
+      <!-- Based on: Ammunition, Flechette Rounds (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Flechette Rounds (2050)</name>
+      <!-- Based on: Ammunition, Flechette Rounds (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Stick-n-Shock Flechette Rounds</name>
+      <!-- Based on: Ammunition, Flechette Rounds (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Gel Rounds</name>
+      <!-- Based on: Ammunition, Gel Rounds (CRB) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Gel Rounds (2050)</name>
+      <!-- Based on: Ammunition, Gel Rounds (CRB) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Hollow Points</name>
+      <!-- Based on: Ammunition, Hollow Points (CC) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Injection Darts</name>
+      <!-- Based on: Dart Rounds (M&M) -->
+      <weight>0.015</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Injection Darts (2050)</name>
+      <!-- Based on: Dart Rounds (M&M) -->
+      <weight>0.015</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Regular Ammo</name>
+      <!-- Based on: Ammunition, Regular Ammo (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Stick-n-Shock</name>
+      <!-- Based on: Ammunition, Stun Shells (CC) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Tracer</name>
+      <!-- Based on: Ammunition, Tracer (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Taser Dart</name>
+      <!-- Based on: Ammunition, Taser Dart (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Taser Dart (2050)</name>
+      <!-- Based on: Ammunition, Taser Dart (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Ammo: EX-Explosive Rounds</name>
+      <!-- Based on: Ammunition, EX Exposive (CRB) -->
+      <weight>0.075</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Flare Rounds</name>
+      <!-- Based on: Ammunition, Flare Rounds (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Tracker Rounds, Security Tag</name>
+      <!-- Based on: Ammunition, Tracker Rounds (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Tracker Rounds, Stealth Tag</name>
+      <!-- Based on: Ammunition, Tracker Rounds (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Capsule Rounds</name>
+      <!-- Based on: Ammunition, Capsule Rounds (CC) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: DMSO Rounds</name>
+      <!-- Based on: Ammunition, Capsule Rounds (CC) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Wood Pulp</name>
+      <!-- Based on: Ammunition, Capsule Rounds (CC) -->
+      <weight>0.025</weight>
+    </gear>
+    <gear>
+      <name>Ammo: AV Rounds</name>
+      <!-- Based on: Ammunition, AV Rounds (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Gyrojet</name>
+      <!-- Based on: Ammunition, Gyrojet Rockets (CC) -->
+      <weight>0.175</weight>
+    </gear>
+    <gear>
+      <name>Ammo: Hi-De Rounds</name>
+      <!-- Based on: Ammunition, Hi-C Plastic Rounds (CC) -->
+      <weight>0.025</weight>
+    </gear>
+    <!-- Subsection: Other Ammunition -->
+    <gear>
+      <name>Arrow: Standard</name>
+      <!-- Based on: Arrow (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Bolt: Standard</name>
+      <!-- Based on: Bolts (CRB) -->
+      <weight>0.05</weight>
+    </gear>
+    <gear>
+      <name>Bola: Standard</name>
+      <!-- Based on: Bola Rounds (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <!-- Subsection: Rockets and Missiles -->
+    <gear>
+      <name>Rocket: Anti-Vehicle</name>
+      <!-- Based on: Anti-Vehicle Rocket (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Rocket: Anti-Vehicle (2050)</name>
+      <!-- Based on: Anti-Vehicle Rocket (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Rocket: High Explosive</name>
+      <!-- Based on: High-Explosive Rocket (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Rocket: High Explosive (2050)</name>
+      <!-- Based on: High-Explosive Rocket (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Missile: Fragmentation</name>
+      <!-- Based on: Anti-Personnel Missile (CRB) -->
+      <weight>2.25</weight>
+    </gear>
+    <gear>
+      <name>Missile: Anti-Personnel (2050)</name>
+      <!-- Based on: Anti-Personnel Missile (CRB) -->
+      <weight>2.25</weight>
+    </gear>
+    <gear>
+      <name>Missile: Anti-Vehicle</name>
+      <!-- Based on: Anti-Vehicle Missile (CRB) -->
+      <weight>3.25</weight>
+    </gear>
+    <gear>
+      <name>Missile: Anti-Vehicle (2050)</name>
+      <!-- Based on: Anti-Vehicle Missile (CRB) -->
+      <weight>3.25</weight>
+    </gear>
+    <gear>
+      <name>Missile: High Explosive</name>
+      <!-- Based on: High-Explosive Missile (CRB) -->
+      <weight>2.25</weight>
+    </gear>
+    <gear>
+      <name>Missile: High Explosive (2050)</name>
+      <!-- Based on: High-Explosive Missile (CRB) -->
+      <weight>2.25</weight>
+    </gear>
+    
+    <!-- Section Throwable/Throwing Weapons -->
+    <gear>
+      <name>Urban Tribe Tomahawk</name>
+      <!-- Based on: Tomahawk (CC) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear>
+      <name>Harpoon</name>
+      <!-- Based on: Harpoon (CC) -->
+      <weight>4</weight>
+    </gear>
+    <gear>
+      <name>Javelin</name>
+      <!-- Based on: Javelin (CC) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Net</name>
+      <!-- Based on: Net (CC) -->
+      <weight>4</weight>
+    </gear>
+    <gear>
+      <name>Electro-Net</name>
+      <!-- Based on: Net (CC) -->
+      <weight>4</weight>
+    </gear>
+    <gear>
+      <name>Shuriken</name>
+      <!-- Based on: Shuriken (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Throwing Knife</name>
+      <!-- Based on: Throwing Knife (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Boomerang</name>
+      <!-- Based on: Throwing Knife (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Horizon BoomerEye</name>
+      <!-- Based on: Throwing Knife (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+
+    <!-- Section Grenades -->
+    <gear>
+      <name>Grenade: Flash-Bang</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Flash-Pak</name>
+      <!-- Based on: Grenades, Flash Pak (CRB) -->
+      <weight>0.2</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Fragmentation</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: High Explosive</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Gas</name>
+      <!-- Based on: Grenades, Gas (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Smoke</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Thermal Smoke</name>
+      <!-- Based on: Grenades, Smoke (IR) (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Paint</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Paint (Radioactive Tracking Dye)</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Flash-Bang</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Flash-Pak</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Fragmentation</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: High Explosive</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Gas</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Smoke</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Thermal Smoke</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Flash-Bang, Aerodynamic</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Flash-Pak, Aerodynamic</name>
+      <!-- Based on: Grenades, Flash Pak (CRB) -->
+      <weight>0.2</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Fragmentation, Aerodynamic</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: High Explosive, Aerodynamic</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Gas, Aerodynamic</name>
+      <!-- Based on: Grenades, Gas (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Smoke, Aerodynamic</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Thermal Smoke, Aerodynamic</name>
+      <!-- Based on: Grenades, Smoke (IR) (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Paint, Aerodynamic</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Shock (2050)</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Offensive (2050)</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Defensive (2050)</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Smoke (2050)</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Shock (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Offensive (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Defensive (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Minigrenade: Smoke (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Shock, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Offensive, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Defensive, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Grenade: Smoke, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+
+    <!-- Section Weapon Accessories -->
+    <gear>
+      <name>Spare Clip</name>
+      <!-- Based on: Spare Clips (CRB) -->
+      <weight>0.75</weight>
+    </gear>
+    <gear>
+      <name>Speed Loader</name>
+      <!-- Based on: Spare Clips (CRB) -->
+      <weight>0.75</weight>
+    </gear>
+    <gear>
+      <name>Concealable Holster</name>
+      <!-- Based on: Concealable Holster (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Holster</name>
+      <!-- Based on: Standard Holster (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Quick-Draw Holster</name>
+      <!-- Based on: Quick-Draw Holster, Standard (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Concealed Quick-Draw Holster</name>
+      <!-- Based on: Quick-Draw Holster, Concealable (CC) -->
+      <weight>0.1</weight>
+    </gear>
+    
+    <!-- Section Breaking and Entering -->
+    <gear>
+      <name>Monofilament Chainsaw</name>
+      <!-- Based on: Chainsaw (CC) -->
+      <weight>4</weight>
+    </gear>
+
+    <!-- Section Grapple Gun -->
+    <gear>
+      <name>Grapple Gun</name>
+      <!-- Based on: Grapple Gun (CRB) -->
+      <weight>2.25</weight>
+    </gear>
+    <gear>
+      <name>Tactical Grapple Gun</name>
+      <!-- Based on: Grapple Gun (CRB) -->
+      <weight>2.25</weight>
+    </gear>
+  </gears>
+</chummer>

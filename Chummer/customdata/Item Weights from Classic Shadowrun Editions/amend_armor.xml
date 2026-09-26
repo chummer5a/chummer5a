@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <!-- Book codes:
+    CRB = Core Rulebook (3e > 2e > 1e)
+    CC = Cannon Companion
+    K-G = Ka-Ge supplementals (semi-official)
+    M&M = Man & Machine
+    TWL = Target: Wastelands
+    -->
+  <armors>
+    <!-- Section Generics/Fallbacks-->
+    <armor xpathfilter="category = 'Armor' and not(starts-with(armor, '+'))">
+      <!-- Based on: Armor Jacket (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor xpathfilter="category = 'Armor' and starts-with(armor, '+')">
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor xpathfilter="category = 'Clothing' and not(starts-with(armor, '+')) and (armor &gt; 0 or armorcapacity &gt; 0)">
+      <!-- Based on: Ordinary Clothing (CRB) -->
+      <weight>1</weight>
+    </armor>
+    
+    <!-- Section Clothing -->
+    <armor>
+      <name>Clothing</name>
+      <!-- Based on: Ordinary Clothing (CRB) and Fine Clothing (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Clothing, Ordinary (2050)</name>
+      <!-- Based on: Ordinary Clothing (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Clothing, Fine (2050)</name>
+      <!-- Based on: Fine Clothing (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Clothing, Tres Chic (2050)</name>
+      <!-- Based on: Tres Chic (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>One-Use Shoes</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.6</weight>
+    </armor>
+    <armor>
+      <name>One-Use Pants</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>One-Use Skirt</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>One-Use Shirt</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.1</weight>
+    </armor>
+    <armor>
+      <name>Cheap Shoes</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.6</weight>
+    </armor>
+    <armor>
+      <name>Cheap Pants</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>Cheap Skirt</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>Cheap Shirt</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.1</weight>
+    </armor>
+    <armor>
+      <name>Good Shoes</name>
+      <!-- Based on: Fine Clothing (CRB) divided up -->
+      <weight>0.6</weight>
+    </armor>
+    <armor>
+      <name>Good Pants</name>
+      <!-- Based on: Fine Clothing (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>Good Skirt</name>
+      <!-- Based on: Fine Clothing (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>Good Shirt</name>
+      <!-- Based on: Fine Clothing (CRB) divided up -->
+      <weight>0.1</weight>
+    </armor>
+    <armor>
+      <name>Nice Shoes</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.6</weight>
+    </armor>
+    <armor>
+      <name>Nice Pants</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>Nice Skirt</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.3</weight>
+    </armor>
+    <armor>
+      <name>Nice Shirt</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.1</weight>
+    </armor>
+    <armor>
+      <name>Cheap Dress</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Cheap Suit</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Good Dress</name>
+      <!-- Based on: Fine Clothing (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Good Suit</name>
+      <!-- Based on: Fine Clothing (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Nice Dress</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Nice Suit</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Tuxedo Rental</name>
+      <!-- Based on: Tres Chic (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Coveralls</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+    <armor>
+      <name>Trenchcoat</name>
+      <!-- Based on: Ordinary Clothing (CRB) divided up -->
+      <weight>0.4</weight>
+    </armor>
+
+    <!-- Section Armored and/or Leather Clothing -->
+    <armor>
+      <name>Leather, Synthetic (2050)</name>
+      <!-- Based on: Leather, Synthetic (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Leather, Real (2050)</name>
+      <!-- Based on: Leather, Real (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Armor Clothing</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Armor Clothing (2050)</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Team Jersey (Licensed)</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Team Jersey (Unlicensed)</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Rockblood Old School Line</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Rockblood Signature Armored Shirt</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Actioneer Business Clothes</name>
+      <!-- Based on: Vashon Island Actioneer Line shirt + slacks + jacket (CC) -->
+      <weight>2.75</weight>
+    </armor>
+    <armor>
+      <name>Armor Jacket</name>
+      <!-- Based on: Armor Jacket (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Armor Jacket (2050)</name>
+      <!-- Based on: Armor Jacket (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Armor Vest</name>
+      <!-- Based on: Armor Vest (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Armor Vest (2050)</name>
+      <!-- Based on: Armor Vest (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Lined Coat</name>
+      <!-- Based on: Lined Coat (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Lined Coat (2050)</name>
+      <!-- Based on: Lined Coat (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Scout's Tux</name>
+      <!-- Based on: Lined Coat (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Chameleon Suit</name>
+      <!-- Based on: Form-Fitting Body Armor, Full-body suit (CC) -->
+      <weight>1.25</weight>
+    </armor>
+    <armor>
+      <name>Urban Explorer Jumpsuit</name>
+      <!-- Based on: Form-Fitting Body Armor, Full-body suit (CC) -->
+      <weight>1.25</weight>
+    </armor>
+    <armor>
+      <name>Catsuit</name>
+      <!-- Based on: Form-Fitting Body Armor, Full-body suit (CC) -->
+      <weight>1.25</weight>
+    </armor>
+    <armor>
+      <name>Urban Explorer Daedalus</name>
+      <!-- Based on: Form-Fitting Body Armor, Full-body suit (CC) -->
+      <weight>1.25</weight>
+    </armor>
+    <armor>
+      <name>Form Fitting, Shirt (2050)</name>
+      <!-- Based on: Form-Fitting Body Armor, Shirt (CC) -->
+      <weight>0.75</weight>
+    </armor>
+    <armor>
+      <name>Form Fitting, Half Suit (2050)</name>
+      <!-- Based on: Form-Fitting Body Armor, Half-body suit (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Form Fitting, Full Suit (2050)</name>
+      <!-- Based on: Form-Fitting Body Armor, Full-body suit (CC) -->
+      <weight>1.25</weight>
+    </armor>
+    <armor>
+      <name>Form-Fitting Body Armor</name>
+      <!-- Based on: Form-Fitting Body Armor, Full-body suit (CC) -->
+      <weight>1.25</weight>
+    </armor>
+
+    <!-- Section Full/Heavy Armor -->
+    <armor>
+      <name>Full Body Armor</name>
+      <!-- Based on: Security Armor, Light Security (CRB) -->
+      <weight>9 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Critter Body Armor</name>
+      <!-- Based on: Security Armor entries (CRB) -->
+      <weight>{Rating} + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Heavy Armor, Full (2050)</name>
+      <!-- Based on: Security Armor, Heavy Security (CRB) -->
+      <weight>13 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Heavy Armor, Partial (2050)</name>
+      <!-- Based on: Security Armor, Light Security (CRB) -->
+      <weight>9 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Hardened Mil-Spec Battle Armor: Light</name>
+      <!-- Based on: Hardened Military Grade Armor, Light (CC) -->
+      <weight>12 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Hardened Mil-Spec Battle Armor: Medium</name>
+      <!-- Based on: Hardened Military Grade Armor, Medium (CC) -->
+      <weight>14 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Hardened Mil-Spec Battle Armor: Heavy</name>
+      <!-- Based on: Hardened Military Grade Armor, Heavy (CC) -->
+      <weight>16 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Security Armor: Light</name>
+      <!-- Based on: Security Armor, Light Security (CRB) -->
+      <weight>9 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Security Armor: Medium</name>
+      <!-- Based on: Security Armor, Medium Security (CRB) -->
+      <weight>11 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Security Armor: Heavy</name>
+      <!-- Based on: Security Armor, Heavy Security (CRB) -->
+      <weight>13 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Bike Racing Armor</name>
+      <!-- Based on: Armor Vest (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Bunker Gear</name>
+      <!-- Based on: Security Armor, Light Security (CRB) -->
+      <weight>9 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Riot Control Armor</name>
+      <!-- Based on: Security Armor, Light Security (CRB) -->
+      <weight>9 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>SWAT Armor</name>
+      <!-- Based on: Security Armor, Light Security (CRB) -->
+      <weight>9 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Body Armor Bag</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Chain Mail</name>
+      <!-- Based on: Armor Vest with Plates (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Padded Leather</name>
+      <!-- Based on: Armor Clothing (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Murder Armor</name>
+      <!-- Based on: Armor Vest with Plates (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Ghillie Suit</name>
+      <!-- Based on: Ares Victory Wild Hunt Line, Camouflage Jumpsuit (CC) -->
+      <weight>1.5</weight>
+    </armor>
+
+    <!-- Section Survival/Specialty Armor -->
+    <armor>
+      <name>Ares Armored Survivalist</name>
+      <!-- Based on: Ares Victory Wild Hunt Line, Heavy Armor Clothing (CC) -->
+      <weight>3</weight>
+    </armor>
+    <armor>
+      <name>Desert Suit</name>
+      <!-- Based on: Desert Suit (TWL) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Coldsuit</name>
+      <!-- Based on: Coldsuit (TWL) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Polar Survival Suit</name>
+      <!-- Based on: Polar Survival Suit (TWL) -->
+      <weight>5</weight>
+    </armor>
+    <armor>
+      <name>Ares Arctic Forces Suit</name>
+      <!-- Based on: combining Polar Survival Suit (TWL) and Security Armor, Heavy Security (CRB) -->
+      <weight>18 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Ares Armored Coldsuit</name>
+      <!-- Based on: combining Coldsuit (TWL) and Security Armor, Light Security (CRB) -->
+      <weight>11 + {BOD}</weight>
+    </armor>
+    <armor>
+      <name>Ares Polar Sneak Suit</name>
+      <!-- Based on: combining Coldsuit (TWL) and Form-Fitting Body Armor, Full-body suit (CRB) -->
+      <weight>6.25</weight>
+    </armor>
+    <armor>
+      <name>Enclosed Breathing Helmet</name>
+      <!-- Based on: Enclosed Helmet (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Drysuit</name>
+      <!-- Based on: combining Breathing Regulator (CC), Compensator and Belt (CC), Scuba Tank (CC), and Drysuit (CC) -->
+      <weight>36</weight>
+    </armor>
+    <armor>
+      <name>Diving Armor</name>
+      <!-- Based on: combining Breathing Regulator (CC), Compensator and Belt (CC), Scuba Tank (CC), Wetsuit (CC), and Diving Armor (CC) -->
+      <weight>35.75</weight>
+    </armor>
+    <armor>
+      <name>Arctic Diving Suit</name>
+      <!-- Based on: combining Breathing Regulator (CC), Compensator and Belt (CC), Scuba Tank (CC), and Drysuit (CC) -->
+      <weight>36</weight>
+    </armor>
+    <armor>
+      <name>Evo HEL Suit</name>
+      <!-- Based on: combining Form-Fitting Body Armor, Full-body suit (CC) and Gas Mask and Air Tank (M&M) -->
+      <weight>11.25</weight>
+    </armor>
+    <armor>
+      <name>Spacesuit</name>
+      <!-- Based on: Spacesuit (TWL) -->
+      <weight>25</weight>
+    </armor>
+    <armor>
+      <name>Security Spacesuit</name>
+      <!-- Based on: Security Spacesuit (TWL) -->
+      <weight>35</weight>
+    </armor>
+    <armor>
+      <name>Evo Armadillo Armored Spacesuit</name>
+      <!-- Based on: Security Spacesuit (TWL) -->
+      <weight>35</weight>
+    </armor>
+    <armor>
+      <name>Magnetic Boots</name>
+      <!-- Based on: same weight as Shoes entries, which are based on Ordinary Clothing (CRB) divided up -->
+      <weight>0.6</weight>
+    </armor>
+    <armor>
+      <name>Survival Bubble, Rating 1</name>
+      <!-- Based on: Survival Bubble (TWL) -->
+      <weight>10</weight>
+    </armor>
+    <armor>
+      <name>Survival Bubble, Rating 2</name>
+      <!-- Based on: Survival Bubble (TWL) -->
+      <weight>20</weight>
+    </armor>
+    <armor>
+      <name>Survival Bubble, Rating 3</name>
+      <!-- Based on: Survival Bubble (TWL) -->
+      <weight>30</weight>
+    </armor>
+    <armor>
+      <name>Survival Bubble, Rating 4</name>
+      <!-- Based on: Survival Bubble (TWL) -->
+      <weight>40</weight>
+    </armor>
+    <armor>
+      <name>Survival Bubble, Rating 5</name>
+      <!-- Based on: Survival Bubble (TWL) -->
+      <weight>50</weight>
+    </armor>
+    <armor>
+      <name>Survival Bubble, Rating 6</name>
+      <!-- Based on: Survival Bubble (TWL) -->
+      <weight>60</weight>
+    </armor>
+    <armor>
+      <name>MCT EE Suit</name>
+      <!-- Based on: combining Armor Clothing (CRB) and Rad-Suit (TWL) / Gas Mask and Air Tank (M&M) -->
+      <weight>11</weight>
+    </armor>
+    <armor>
+      <name>Ares Arms Bug Stomper Custom Armor</name>
+      <!-- Based on: Security Armor, Heavy Security (CRB) -->
+      <weight>13 + {BOD}</weight>
+    </armor>
+
+    <!-- Section High-Fashion Armored Clothing -->
+    <armor>
+      <name>Armanté Suit</name>
+      <!-- Based on: Armanté Executive Suite Line (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Armanté Dress</name>
+      <!-- Based on: Armanté Executive Suite Line (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Berwick Suit</name>
+      <!-- Based on: Mortimer of London Crimson Sky Line (CC) minus weight from missing jacket -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Berwick Dress</name>
+      <!-- Based on: Mortimer of London Crimson Sky Line (CC) minus weight from missing jacket -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Crimson Sky Suit</name>
+      <!-- Based on: Mortimer of London Crimson Sky Line (CC) minus weight from missing jacket -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Summit Suit</name>
+      <!-- Based on: Mortimer of London Summit Line (CC) minus weight from missing coat -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Summit Dress</name>
+      <!-- Based on: Mortimer of London Summit Line (CC) minus weight from missing coat -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Greatcoat Coat</name>
+      <!-- Based on: Mortimer of London Greatcoat Line (CC) minus weight from missing suit -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Ulysses Coat</name>
+      <!-- Based on: Mortimer of London Ulysses Line (CC) minus weight from missing suit -->
+      <weight>3</weight>
+    </armor>
+    <armor>
+      <name>Mortimer of London: Argentum Coat</name>
+      <!-- Based on: Mortimer of London Ulysses Line (CC) minus weight from missing suit -->
+      <weight>3</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Cups</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks + jacket (CC) -->
+      <weight>2.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Swords</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Wands</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Coins</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Spades</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Clubs</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Hearts</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Ace of Diamonds</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Steampunk</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks + long coat (CC) -->
+      <weight>3.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Synergist Business Line</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Synergist Business Line Longcoat</name>
+      <!-- Based on: Vashion Island Actioneer Line long coat (CC) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Vashon Island: Sleeping Tiger</name>
+      <!-- Based on: Vashion Island Sleeping Tiger Line every piece (CC) -->
+      <weight>4</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Executive Suite</name>
+      <!-- Based on: Armanté Executive Suite Line (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Heritage 4</name>
+      <!-- Based on: Zoé Heritage Line (CC) -->
+      <weight>1.5</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Heritage 6</name>
+      <!-- Based on: Zoé Heritage Line (CC) -->
+      <weight>1.5</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Heritage 8</name>
+      <!-- Based on: Zoé Heritage Line (CC) -->
+      <weight>1.5</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Heritage 10</name>
+      <!-- Based on: Zoé Heritage Line (CC) -->
+      <weight>1.5</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Heritage 12</name>
+      <!-- Based on: Zoé Heritage Line (CC) -->
+      <weight>1.5</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Nightshade/Moonsilver</name>
+      <!-- Based on: Zoé Futura Line skirt (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Zoé: Second Skin</name>
+      <!-- Based on: Zoé Second Skin Line (CC) -->
+      <weight>0.25</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Globetrotter Jacket</name>
+      <!-- Based on: Victory Wild Hunt Line, Camouflage Jacket (CC) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Globetrotter Vest</name>
+      <!-- Based on: Victory Wild Hunt Line, Camouflage Vest (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Globetrotter Clothing</name>
+      <!-- Based on: Victory Wild Hunt Line, Light Armor Clothing (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Wild Hunt</name>
+      <!-- Based on: Victory Wild Hunt Line, Heavy Armor Clothing (CC) -->
+      <weight>3</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Industrious</name>
+      <!-- Based on: Victory Industrious Line, Coverall (CC) -->
+      <weight>3</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Big Game Hunter</name>
+      <!-- Based on: combining Victory Wild Hunt Line, Heavy Armor Clothing (CC) and Victory Wild Hunt Line, Camouflage Vest (CC) -->
+      <weight>4</weight>
+    </armor>
+    <armor>
+      <name>Ares Victory: Rapid Transit</name>
+      <!-- Based on: combining Victory Rapid Transit Line, Light Jumpsuit (CC) and Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>1.5</weight>
+    </armor>
+    <armor>
+      <name>E'lyzée Elio: Bra's Suit</name>
+      <!-- Based on: Armanté Executive Suite Line (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>E'lyzée Elio: Tha'il Dress</name>
+      <!-- Based on: Armanté Executive Suite Line (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>E'lyzée Elio: Bra's Cape</name>
+      <!-- Based on: Mortimer of London Greatcoat Line (CC) minus weight from missing suit -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>E'lyzée Elio: Tha'il Cape</name>
+      <!-- Based on: Mortimer of London Greatcoat Line (CC) minus weight from missing suit -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Franzinger Fashion Tenor: Tailcoat Combination</name>
+      <!-- Based on: Vashion Island Actioneer Line shirt + slacks (CC) -->
+      <weight>1.75</weight>
+    </armor>
+    <armor>
+      <name>Franzinger Fashion Tenor: Coat</name>
+      <!-- Based on: Vashion Island Actioneer Line long coat (CC) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Rheingold Pro Tec Plus: Suit</name>
+      <!-- Based on: Armanté Executive Suite Line (CC) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Rheingold Pro Tec Plus: Coat</name>
+      <!-- Based on: Mortimer of London Greatcoat Line (CC) minus weight from missing suit -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>StattKrieg: Armor Vest</name>
+      <!-- Based on: Armor Vest (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>StattKrieg: Armor Jacket</name>
+      <!-- Based on: Armor Jacket (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>StattKrieg: Padded Overall</name>
+      <!-- Based on: Victory Rapid Transit Line, Light Jumpsuit (CC) -->
+      <weight>1</weight>
+    </armor>
+
+    <!-- Section Armor Addons -->
+    <armor>
+      <name>Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Helmet (2050)</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Security Armor: Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Bike Racing Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Bunker Gear Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Riot Control Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>SWAT Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Ballistic Mask</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Custom Ballistic Mask</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Urban Explorer Daedalus: Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>StattKrieg: Helmet</name>
+      <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
+      <weight>0.5</weight>
+    </armor>
+    <armor>
+      <name>Ballistic Shield</name>
+      <!-- Based on: Riot Shield, Ballistic (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Riot Shield</name>
+      <!-- Based on: Riot Shield, Large (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Ares FlaShield</name>
+      <!-- Based on: Riot Shield, Large (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Yamatetsu Naval Technologies Rampart</name>
+      <!-- Based on: Riot Shield, Large (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Ares Briefcase Shield</name>
+      <!-- Based on: Riot Shield, Small (CRB) -->
+      <weight>2</weight>
+    </armor>
+    <armor>
+      <name>Forearm Guards</name>
+      <!-- Based on: Forearm Guards (CC) -->
+      <weight>0.2</weight>
+    </armor>
+    <armor>
+      <name>Shiawase Arms Simoom</name>
+      <!-- Based on: Forearm Guards (CC) -->
+      <weight>0.2</weight>
+    </armor>
+    <armor>
+      <name>Securetech PPP: Arms Kit</name>
+      <!-- Based on: Forearm Guards (CC) -->
+      <weight>0.2</weight>
+    </armor>
+    <armor>
+      <name>Securetech PPP: Legs Kit</name>
+      <!-- Based on: Forearm Guards (CC) -->
+      <weight>0.2</weight>
+    </armor>
+    <armor>
+      <name>Securetech PPP: Vitals Kit</name>
+      <!-- Based on: Armor Vest (CRB) -->
+      <weight>1</weight>
+    </armor>
+    <armor>
+      <name>Hardened Mil-Spec Battle Armor: Helmet</name>
+      <!-- Based on: Hardened Military Grade Armor, Helmet (CC) -->
+      <weight>3</weight>
+    </armor>
+  </armors>
+  <mods>
+    <mod>
+      <name>Insulation</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>{Rating}*0.5</weight>
+    </mod>
+    <mod>
+      <name>Liner - Insulation (6)</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>3</weight>
+    </mod>
+    <mod>
+      <name>Liner - Insulation (5)</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>2.5</weight>
+    </mod>
+    <mod>
+      <name>Liner - Insulation (4)</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>2</weight>
+    </mod>
+    <mod>
+      <name>Liner - Insulation (3)</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>1.5</weight>
+    </mod>
+    <mod>
+      <name>Liner - Insulation (2)</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>1</weight>
+    </mod>
+    <mod>
+      <name>Liner - Insulation (1)</name>
+      <!-- Based on: Insulation (CC) -->
+      <weight>0.5</weight>
+    </mod>
+    <mod>
+      <name>Gel Packs</name>
+      <!-- Based on: Gel Packs (CC) -->
+      <weight>{Parent Weight}*0.25</weight>
+    </mod>
+    <mod>
+      <name>Parachute (Urban Explorer Daedalus)</name>
+      <!-- Based on: Standard Parachute (CC) -->
+      <weight>20</weight>
+    </mod>
+  </mods>
+</chummer>

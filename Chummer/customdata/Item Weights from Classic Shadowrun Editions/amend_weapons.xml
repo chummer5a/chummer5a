@@ -1,0 +1,1673 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <!-- Book codes:
+    CRB = Core Rulebook (3e > 2e > 1e)
+    CC = Cannon Companion
+    M&M = Man & Machine
+    SotA2 = State of the Art 2064
+    TSS = The Shadowrun Supplemental (semi-official)
+    -->
+  <weapons>
+    <!-- Generic category weights based on "default" weapons -->
+    <weapon xpathfilter="category = 'Blades' or sizecategory = 'Blades'">
+      <!-- Based on: Sword (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and spec = 'Knives'">
+      <!-- Based on: Knife (CRB) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and spec = 'Axes'">
+      <!-- Based on: Combat Axe (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Clubs' or sizecategory = 'Clubs'">
+      <!-- Based on: Club (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Saps'">
+      <!-- Based on: Sap (CRB) -->
+      <weight>0</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Hammers'">
+      <!-- Based on: Mace (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Staves'">
+      <!-- Based on: Staff (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Bows' or sizecategory = 'Bows'">
+      <!-- Based on: Bow (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Crossbows' or sizecategory = 'Light Crossbows'">
+      <!-- Based on: Light Crossbow (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="sizecategory = 'Medium Crossbows'">
+      <!-- Based on: Medium Crossbow (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon xpathfilter="sizecategory = 'Heavy Crossbows'">
+      <!-- Based on: Heavy Crossbow (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'slingshot'">
+      <!-- Based on: Slingshot (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Tasers' or sizecategory = 'Tasers'">
+      <!-- Based on: Yamaha Pulsar (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Holdouts' or sizecategory = 'Holdouts'">
+      <!-- Based on: Streetline Special (CRB) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Light Pistols' or sizecategory = 'Light Pistols'">
+      <!-- Based on: Colt American L36 (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Heavy Pistols' or sizecategory = 'Heavy Pistols'">
+      <!-- Based on: Browning Max-Power (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Heavy Pistols' or sizecategory = 'Heavy Pistols') and contains(damage, '(f)')">
+      <!-- Based on: Ares Viper Slivergun (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Machine Pistols' or sizecategory = 'Machine Pistols'">
+      <!-- Based on: Ceska Black Scorpion (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Submachine Guns' or sizecategory = 'Submachine Guns'">
+      <!-- Based on: Ingram Smartgun (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Assault Rifles' or sizecategory = 'Assault Rifles'">
+      <!-- Based on: AK-97 (CRB) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Carbines' or sizecategory = 'Carbines'">
+      <!-- Based on: AK-97 SMG/Carbine (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Sporting Rifles' or sizecategory = 'Sporting Rifles'">
+      <!-- Based on: Remington 950 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Sporting Rifles' or sizecategory = 'Sporting Rifles') and accessories/accessory[name = 'Vintage']/name = 'Vintage'">
+      <!-- Based on: Remington 750 (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Sniper Rifles' or sizecategory = 'Sniper Rifles'">
+      <!-- Based on: Ranger Arms SM-3 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Shotguns' or sizecategory = 'Shotguns'">
+      <!-- Based on: Defiance T-250 (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon xpathfilter="(category = 'Shotguns' or sizecategory = 'Shotguns') and (contains(mode, 'BF') or contains(mode, 'FA'))">
+      <!-- Based on: Enfield AS-7 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Light Machine Guns' or sizecategory = 'Light Machine Guns'">
+      <!-- Based on: Ingram Valiant (CRB) -->
+      <weight>9</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Medium Machine Guns' or sizecategory = 'Medium Machine Guns'">
+      <!-- Based on: Ultimax MMG (CRB) -->
+      <weight>12</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Heavy Machine Guns' or sizecategory = 'Heavy Machine Guns'">
+      <!-- Based on: RPK HMG (CRB) -->
+      <weight>15</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Assault Cannons' or sizecategory = 'Assault Cannons'">
+      <!-- Based on: Vigorous Assault Cannon (CRB) -->
+      <weight>20</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Flamethrowers' or sizecategory = 'Missile Launchers'">
+      <!-- Based on: Flamethrower (CC) -->
+      <weight>21</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Laser Weapons' or sizecategory = 'Laser Weapons'">
+      <!-- Based on: Ares MP Laser III (CC) -->
+      <weight>20</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Grenade Launchers' or sizecategory = 'Grenade Launchers'">
+      <!-- Based on: ArmTech MGL-6 (CC) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon xpathfilter="category = 'Missile Launchers' or sizecategory = 'Missile Launchers'">
+      <!-- Based on: Aztechnology Lasher (CC) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon xpathfilter="starts-with(name, 'Grenade: ')">
+      <!-- Based on: Grenades, Gas (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon xpathfilter="starts-with(name, 'Minigrenade: ')">
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'dartgun'">
+      <!-- Based on: Dart Pistol (M&M) -->
+      <weight>1.5</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'dartgun' and conceal &gt; 6">
+      <!-- Based on: Dart Rifle (M&M) -->
+      <weight>3.25</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'squirtgun'">
+      <!-- Based on: Ares SuperSquirt II (M&M) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'netgun'">
+      <!-- Based on: Net Gun, Normal (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'harpoongun'">
+      <!-- Based on: Speargun (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon xpathfilter="weapontype = 'grapplegun'">
+      <!-- Based on: Grapple Gun (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon xpathfilter="spec = 'Shields'">
+      <!-- Based on: Riot Shield, Ballistic (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    
+    <!-- Specific weights for items that have older edition equivalents -->
+    
+    <!-- Section: Blades -->
+    <weapon>
+      <name>Ares 'One' Monosword</name>
+      <!-- Based on: Ares Monosword (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Bayonet</name>
+      <!-- Based on: Bayonet (CC) -->
+      <weight>0.75</weight>
+    </weapon>
+    <weapon>
+      <name>Retractable Bayonet</name>
+      <!-- Based on: Bayonet (CC) -->
+      <weight>0.75</weight>
+    </weapon>
+    <weapon>
+      <name>Combat Axe</name>
+      <!-- Based on: Combat Axe (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Aztechnology Blood Drinker Combat Axe</name>
+      <!-- Based on: Combat Axe (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Cougar Fineblade: Short</name>
+      <!-- Based on: Cougar Fineblade Knife, Short Blade (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Cougar Fineblade: Long</name>
+      <!-- Based on: Cougar Fineblade Knife, Long Blade (CC) -->
+      <weight>0.75</weight>
+    </weapon>
+    <weapon>
+      <name>Forearm Snap-Blades</name>
+      <!-- Based on: Forearm Snap Blades (CRB) -->
+      <weight>1.5</weight>
+    </weapon>
+    <weapon>
+      <name>Katana</name>
+      <!-- Based on: Katana (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Traditional Macuahuitl</name>
+      <!-- Based on: Macauitl (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Modern Macuahuitl</name>
+      <!-- Based on: Macauitl (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Survival Knife</name>
+      <!-- Based on: Survival Knife (CRB) -->
+      <weight>0.75</weight>
+    </weapon>
+    <weapon>
+      <name>Urban Tribe Tomahawk</name>
+      <!-- Based on: Tomahawk (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Victorinox Collapsible Hatchet</name>
+      <!-- Based on: Tomahawk (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Vibro Knife</name>
+      <!-- Based on: Vibro Knife (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Vibro Sword</name>
+      <!-- Based on: Vibro Sword (CC) -->
+      <weight>2</weight>
+    </weapon>
+
+    <!-- Section: Clubs/Pole Arms/Staffs -->
+    <weapon>
+      <name>Highland Forge Claymore</name>
+      <!-- Based on: Claymore (CC) -->
+      <weight>6</weight>
+    </weapon>
+    <weapon>
+      <name>Club</name>
+      <!-- Based on: Club (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Extendable Baton</name>
+      <!-- Based on: Extendable Baton (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Harpoon</name>
+      <!-- Based on: Harpoon (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Javelin</name>
+      <!-- Based on: Javelin (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Nodachi</name>
+      <!-- Based on: No-Dachi (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>Pole Arm</name>
+      <!-- Based on: Pole Arm (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Rheinmetall Cleaner (Telescoping Halberd)</name>
+      <!-- Based on: Pole Arm (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Cougar Collapsible Spear</name>
+      <!-- Based on: Spear (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Staff</name>
+      <!-- Based on: Staff (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Stun Baton</name>
+      <!-- Based on: Stun Baton (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Telescoping Staff</name>
+      <!-- Based on: Telescoping Staff (CC) -->
+      <weight>3</weight>
+    </weapon>
+
+    <!-- Section: Whips/Flails -->
+    <weapon>
+      <name>Chain</name>
+      <!-- Based on: Chain (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>Monofilament Whip</name>
+      <!-- Based on: Monofilament Whip (CRB) -->
+      <weight>0</weight>
+    </weapon>
+    <weapon>
+      <name>Bullwhip</name>
+      <!-- Based on: Whip (CRB) -->
+      <weight>0.5</weight>
+    </weapon>
+
+    <!-- Section: Other Melee Weapons -->
+    <weapon>
+      <name>Ash Arms Combat Chainsaw</name>
+      <!-- Based on: Chainsaw (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Ash Arms Monofilament Chainsaw</name>
+      <!-- Based on: Chainsaw (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Chainsaw</name>
+      <!-- Based on: Chainsaw (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Monofilament Chainsaw</name>
+      <!-- Based on: Chainsaw (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Krime Gloves</name>
+      <!-- Based on: Hardliner Gloves (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Shock Gloves</name>
+      <!-- Based on: Shock Glove (CRB) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Ballistic Shield</name>
+      <!-- Based on: Riot Shield, Large (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Riot Shield</name>
+      <!-- Based on: Riot Shield, Large (CRB) -->
+      <weight>2</weight>
+    </weapon>
+
+    <!-- Section: Bows -->
+    <weapon>
+      <name>Bow</name>
+      <!-- Based on: Standard Bow (CRB) -->
+      <weight>1</weight>
+    </weapon>
+
+    <!-- Section: Crossbows -->
+    <weapon>
+      <name>Light Crossbow</name>
+      <!-- Based on: Light Crossbow (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Medium Crossbow</name>
+      <!-- Based on: Medium Crossbow (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Mounted Crossbow</name>
+      <!-- Based on: Medium Crossbow (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Winchester Airbow</name>
+      <!-- Based on: Medium Crossbow (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Heavy Crossbow</name>
+      <!-- Based on: Heavy Crossbow (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Ranger Sliver Pistol Crossbow</name>
+      <!-- Based on: Pistol Crossbow (CC) -->
+      <weight>1</weight>
+    </weapon>
+
+    <!-- Section: Slings -->
+    <weapon>
+      <name>Ares Giantslayer Slingshot</name>
+      <!-- Based on: Slingshot (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Ontario Arms Sling-Shot</name>
+      <!-- Based on: Slingshot (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+
+    <!-- Section: Throwing Weapons -->
+    <weapon>
+      <name>Net</name>
+      <!-- Based on: Net (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Electro-Net</name>
+      <!-- Based on: Net (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Shuriken</name>
+      <!-- Based on: Shuriken (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Throwing Knife</name>
+      <!-- Based on: Throwing Knife (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+
+    <!-- Section: Holdouts -->
+    <weapon>
+      <name>Raecor Sting</name>
+      <!-- Based on: Raecor Sting (CC) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Streetline Special</name>
+      <!-- Based on: Streetline Special (CRB) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Streetline Special (2050)</name>
+      <!-- Based on: Streetline Special (CRB) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Fichetti Tiffani Needler</name>
+      <!-- Based on: Tiffani Needler (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Fichetti Tiffani Self-Defender</name>
+      <!-- Based on: Tiffani Self-Defender (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Tiffani Self-Defender (2050)</name>
+      <!-- Based on: Tiffani Self-Defender (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Walther Palm Pistol</name>
+      <!-- Based on: Walther Palm Pistol (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Walther Palm Pistol (2050)</name>
+      <!-- Based on: Walther Palm Pistol (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+
+    <!-- Section: Light Pistols -->
+    <weapon>
+      <name>Ares Light Fire 70</name>
+      <!-- Based on: Ares Light Fire 70 (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Light Fire 70 (2050)</name>
+      <!-- Based on: Ares Light Fire 70 (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Light Fire 75</name>
+      <!-- Based on: Ares Light Fire 70 (CC) -->
+      <weight>0.5</weight>
+    </weapon>
+    <weapon>
+      <name>Beretta Model 101T (2050)</name>
+      <!-- Based on: Beretta Model 101T (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Beretta 200 ST (2050)</name>
+      <!-- Based on: Beretta Model 200ST (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Beretta 201T</name>
+      <!-- Based on: Beretta Model 200ST (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Colt America L36</name>
+      <!-- Based on: Colt American L36 (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Colt America L36 (2050)</name>
+      <!-- Based on: Colt American L36 (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Fichetti Executive Action</name>
+      <!-- Based on: Executive Action (CC) -->
+      <weight>1.5</weight>
+    </weapon>
+    <weapon>
+      <name>Fichetti Security 500 (2050)</name>
+      <!-- Based on: Fichetti Security 500 (CRB) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Fichetti Security 500a (2050)</name>
+      <!-- Based on: Fichetti Security 500a (CRB) -->
+      <weight>1.25</weight>
+    </weapon>
+    <weapon>
+      <name>Hammerli 620S</name>
+      <!-- Based on: Hammerli Model 610S (CC) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Shiawase Armaments Puzzler</name>
+      <!-- Based on: SA Puzzler (CC) -->
+      <weight>0.75</weight>
+    </weapon>
+    <weapon>
+      <name>Taurus Omni-6</name>
+      <!-- Based on: Taurus Multi-6 (CC) -->
+      <weight>1</weight>
+    </weapon>
+
+    <!-- Section: Machine Pistols -->
+    <weapon>
+      <name>Ares Crusader II</name>
+      <!-- Based on: Ares Crusader (CC) -->
+      <weight>3.25</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Crusader MP 6 (2050)</name>
+      <!-- Based on: Ares Crusader (CC) -->
+      <weight>3.25</weight>
+    </weapon>
+    <weapon>
+      <name>Ceska Black Scorpion</name>
+      <!-- Based on: Ceska Black Scorpion (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Ceska Black Scorpion (2050)</name>
+      <!-- Based on: Ceska Black Scorpion (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Steyr TMP</name>
+      <!-- Based on: Steyr TMP (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Steyr TMP (2050)</name>
+      <!-- Based on: Steyr TMP (CC) -->
+      <weight>2</weight>
+    </weapon>
+
+    <!-- Section: Heavy Pistols -->
+    <weapon>
+      <name>Ares Predator V</name>
+      <!-- Based on: Ares Predator (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Predator III</name>
+      <!-- Based on: Ares Predator III (CC) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Predator (2050)</name>
+      <!-- Based on: Ares Predator (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Viper Slivergun</name>
+      <!-- Based on: Ares Viper Slivergun (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Viper Slivergun (2050)</name>
+      <!-- Based on: Ares Viper Slivergun (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Browning Max-Power (2050)</name>
+      <!-- Based on: Browning Ultra-Power (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Browning Ultra-Power</name>
+      <!-- Based on: Browning Ultra-Power (CC) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Cavalier Deputy</name>
+      <!-- Based on: Cavalier Deputy (CC) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Colt Manhunter</name>
+      <!-- Based on: Colt Manhunter (CC) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Colt Manhunter A1</name>
+      <!-- Based on: Colt Manhunter (CC) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Colt Manhunter (2050)</name>
+      <!-- Based on: Colt Manhunter (CC) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Lemat 2072</name>
+      <!-- Based on: LeMat Revolver (TSS #7) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Morrissey Alta</name>
+      <!-- Based on: Morrissey Alta (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Morrissey Elite</name>
+      <!-- Based on: Morrissey Elite (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Remington Roomsweeper</name>
+      <!-- Based on: Remington Roomsweeper (CRB) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Remington Roomsweeper (2050)</name>
+      <!-- Based on: Remington Roomsweeper (CRB) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Ruger Super Warhawk</name>
+      <!-- Based on: Ruger Super Warhawk (CRB) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Ruger Super Warhawk (2050)</name>
+      <!-- Based on: Ruger Super Warhawk (CRB) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Savalette Guardian</name>
+      <!-- Based on: Savalette Guardian (CC) -->
+      <weight>3.25</weight>
+    </weapon>
+
+    <!-- Section: Tasers -->
+    <weapon>
+      <name>Defiance Super Shock (2050)</name>
+      <!-- Based on: Defiance Super Shock (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Yamaha Pulsar</name>
+      <!-- Based on: Yamaha Pulsar (CC) -->
+      <weight>2</weight>
+    </weapon>
+
+    <!-- Section: SMGs -->
+    <weapon>
+      <name>AK-97 Carbine (2050)</name>
+      <!-- Based on: AK-97 SMG/Carbine (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Beretta Model 70 (2050)</name>
+      <!-- Based on: Beretta Model 70 (CC) -->
+      <weight>3.75</weight>
+    </weapon>
+    <weapon>
+      <name>Colt Cobra TZ-120</name>
+      <!-- Based on: Colt Cobra TZ-118 (CC) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>HK227 (2050)</name>
+      <!-- Based on: Heckler & Koch HK227 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>HK 227</name>
+      <!-- Based on: Heckler & Koch HK227-S (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Ingram Smartgun X</name>
+      <!-- Based on: Ingram Smartgun (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Ingram Smartgun (2050)</name>
+      <!-- Based on: Ingram Smartgun (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>SCK Model 100</name>
+      <!-- Based on: SCK Model 100 (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>Uzi IV</name>
+      <!-- Based on: Uzi III (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Uzi III (2050)</name>
+      <!-- Based on: Uzi III (CRB) -->
+      <weight>2</weight>
+    </weapon>
+
+    <!-- Section: Assault Rifles -->
+    <weapon>
+      <name>Ares Alpha</name>
+      <!-- Based on: Ares Alpha (CC) -->
+      <weight>5.25</weight>
+    </weapon>
+    <weapon>
+      <name>Ares HVAR</name>
+      <!-- Based on: Ares HVAR (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>AK-97</name>
+      <!-- Based on: AK-97 (CRB) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>AK-97 (2050)</name>
+      <!-- Based on: AK-97 (CRB) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>AK-98</name>
+      <!-- Based on: AK-98 (CRB) -->
+      <weight>6</weight>
+    </weapon>
+    <weapon>
+      <name>AK-98 (2050)</name>
+      <!-- Based on: AK-98 (CRB) -->
+      <weight>6</weight>
+    </weapon>
+    <weapon>
+      <name>Colt M22A2 (2050)</name>
+      <!-- Based on: Colt M22A2 (CC) -->
+      <weight>4.75</weight>
+    </weapon>
+    <weapon>
+      <name>Colt M23</name>
+      <!-- Based on: Colt M-23 (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>Colt M23A2</name>
+      <!-- Based on: Colt M-23 (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>FN HAR</name>
+      <!-- Based on: FN HAR (CRB) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>FN HAR (2050)</name>
+      <!-- Based on: FN HAR (CRB) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>HK G12A4</name>
+      <!-- Based on: Heckler & Koch G12A3z (CC) -->
+      <weight>5.25</weight>
+    </weapon>
+
+    <!-- Section: Shotguns -->
+    <weapon>
+      <name>Defiance T-250</name>
+      <!-- Based on: Defiance T-250 (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Defiance T-250 (2050)</name>
+      <!-- Based on: Defiance T-250 (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Defiance T-250, Short-Barrel</name>
+      <!-- Based on: Defiance T-250 (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Enfield AS-7</name>
+      <!-- Based on: Enfield AS-7 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Enfield AS-7 (2050)</name>
+      <!-- Based on: Enfield AS-7 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Franchi SPAS-24</name>
+      <!-- Based on: Franchi SPAS-22 (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Mossberg CMDT (2050)</name>
+      <!-- Based on: Mossberg CMDT (CC) -->
+      <weight>4.25</weight>
+    </weapon>
+    <weapon>
+      <name>Mossberg AM-CMDT</name>
+      <!-- Based on: Mossberg SM-CMDT (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>Mossberg CMDT/SM (2050)</name>
+      <!-- Based on: Mossberg SM-CMDT (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>Remington 990</name>
+      <!-- Based on: Remington 990 (CC) -->
+      <weight>4</weight>
+    </weapon>
+
+    <!-- Section: Sporting & Sniper Rifles -->
+    <weapon>
+      <name>Barret Model 122</name>
+      <!-- Based on: Barret Model 121 (CC) -->
+      <weight>10</weight>
+    </weapon>
+    <weapon>
+      <name>Ranger Arms SM-5</name>
+      <!-- Based on: Ranger Arms SM-3 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Ranger Arms SM-3 (2050)</name>
+      <!-- Based on: Ranger Arms SM-3 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Walther MA-2100 (2050)</name>
+      <!-- Based on: Walther MA-2100 (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>Remington 750 (2050)</name>
+      <!-- Based on: Remington 750 (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Remington 950</name>
+      <!-- Based on: Remington 950 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Remington 950 (2050)</name>
+      <!-- Based on: Remington 950 (CRB) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Ruger 101</name>
+      <!-- Based on: Ruger 100 (CC) -->
+      <weight>3.75</weight>
+    </weapon>
+    <weapon>
+      <name>Ruger 100 (2050)</name>
+      <!-- Based on: Ruger 100 (CC) -->
+      <weight>3.75</weight>
+    </weapon>
+
+    <!-- Section: Heavy Weapons (LMGs, MMGs, HMGs, Miniguns, Assault Cannons) -->
+    <weapon>
+      <name>Ingram Valiant</name>
+      <!-- Based on: Ingram Valiant (CRB) -->
+      <weight>9</weight>
+    </weapon>
+    <weapon>
+      <name>FN MAG-5</name>
+      <!-- Based on: FN MAG-5 Medium Machine Gun (CC) -->
+      <weight>9.5</weight>
+    </weapon>
+    <weapon>
+      <name>GE Vindicator Mini-Gun</name>
+      <!-- Based on: GE Vindicator Minigun (CC) -->
+      <weight>15</weight>
+    </weapon>
+    <weapon>
+      <name>RPK HMG</name>
+      <!-- Based on: RPK HMG (CRB) -->
+      <weight>15</weight>
+    </weapon>
+    <weapon>
+      <name>Panther XXL</name>
+      <!-- Based on: Panther Assault Cannon (CC) -->
+      <weight>18</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Vigorous Assault Cannon</name>
+      <!-- Based on: Vigorous Assault Cannon (CRB) -->
+      <weight>20</weight>
+    </weapon>
+
+    <!-- Section: Launcher Weapons -->
+    <weapon>
+      <name>Ares Antioch-2</name>
+      <!-- Based on: Ares Antioch (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Underbarrel Grenade Launcher</name>
+      <!-- Based on: Generic Underbarrel Grenade Launcher (CRB 2e) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>ArmTech MGL-12</name>
+      <!-- Based on: ArmTech MGL-12 (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>Aztechnology Striker</name>
+      <!-- Based on: Aztechnology Lasher (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>Onotari Arms Ballista MML</name>
+      <!-- Based on: Ballista MRML (CC) -->
+      <weight>6.5</weight>
+    </weapon>
+    <weapon>
+      <name>M79B1 LAW Rocket</name>
+      <!-- Based on: M79B1 LAW (CC) -->
+      <weight>2.5</weight>
+    </weapon>
+    <weapon>
+      <name>Phalanx Systems Vogeljager II</name>
+      <!-- Based on: Vogeljäger (CC) -->
+      <weight>8</weight>
+    </weapon>
+    <weapon>
+      <name>Autocannon (2050)</name>
+      <!-- Based on: Ares Vermicide Autocannon (CRB) -->
+      <weight>36</weight>
+    </weapon>
+    <weapon>
+      <name>Water Cannon (2050)</name>
+      <!-- Based on: Water Cannon (CRB) -->
+      <weight>12</weight>
+    </weapon>
+
+    <!-- Section: Modular Weapons -->
+    <weapon>
+      <name>Steyr AUG-CSL (2050)</name>
+      <!-- Based on: Steyr AUG-CSL Assault Rifle (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>Steyr AUG-CSL SMG (2050)</name>
+      <!-- Based on: Steyr AUG-CSL SMG (CC) -->
+      <weight>3.5</weight>
+    </weapon>
+    <weapon>
+      <name>Steyr AUG-CSL Carbine (2050)</name>
+      <!-- Based on: Steyr AUG-CSL Carbine (CC) -->
+      <weight>3.75</weight>
+    </weapon>
+    <weapon>
+      <name>Steyr AUG-CSL LMG (2050)</name>
+      <!-- Based on: Steyr AUG-CSL LMG (CC) -->
+      <weight>5.5</weight>
+    </weapon>
+
+    <!-- Section: Rockets -->
+    <weapon>
+      <name>Rocket: Fragmentation</name>
+      <!-- Based on: Anti-Personnel Rocket (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Rocket: Anti-Personnel (2050)</name>
+      <!-- Based on: Anti-Personnel Rocket (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Rocket: Incendiary</name>
+      <!-- Based on: Anti-Personnel Rocket (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Rocket: Anti-Vehicle</name>
+      <!-- Based on: Anti-Vehicle Rocket (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Rocket: Anti-Vehicle (2050)</name>
+      <!-- Based on: Anti-Vehicle Rocket (CRB) -->
+      <weight>3</weight>
+    </weapon>
+    <weapon>
+      <name>Rocket: High Explosive</name>
+      <!-- Based on: High-Explosive Rocket (CRB) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Rocket: High Explosive (2050)</name>
+      <!-- Based on: High-Explosive Rocket (CRB) -->
+      <weight>2</weight>
+    </weapon>
+
+    <!-- Section: Missiles -->
+    <weapon>
+      <name>Missile: Fragmentation</name>
+      <!-- Based on: Anti-Personnel Missile (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Missile: Anti-Personnel (2050)</name>
+      <!-- Based on: Anti-Personnel Missile (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Missile: Anti-Vehicle</name>
+      <!-- Based on: Anti-Vehicle Missile (CRB) -->
+      <weight>3.25</weight>
+    </weapon>
+    <weapon>
+      <name>Missile: Anti-Vehicle (2050)</name>
+      <!-- Based on: Anti-Vehicle Missile (CRB) -->
+      <weight>3.25</weight>
+    </weapon>
+    <weapon>
+      <name>Missile: High Explosive</name>
+      <!-- Based on: High-Explosive Missile (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+    <weapon>
+      <name>Missile: High Explosive (2050)</name>
+      <!-- Based on: High-Explosive Missile (CRB) -->
+      <weight>2.25</weight>
+    </weapon>
+
+    <!-- Section Grenades -->
+    <weapon>
+      <name>Grenade: Flash-Bang</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Flash-Pak</name>
+      <!-- Based on: Grenades, Flash Pak (CRB) -->
+      <weight>0.2</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Fragmentation</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: High Explosive</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Gas</name>
+      <!-- Based on: Grenades, Gas (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Smoke</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Thermal Smoke</name>
+      <!-- Based on: Grenades, Smoke (IR) (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Paint</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Paint (Radioactive Tracking Dye)</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Flash-Bang</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Flash-Pak</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Fragmentation</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: High Explosive</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Gas</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Smoke</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Thermal Smoke</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Flash-Bang, Aerodynamic</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Flash-Pak, Aerodynamic</name>
+      <!-- Based on: Grenades, Flash Pak (CRB) -->
+      <weight>0.2</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Fragmentation, Aerodynamic</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: High Explosive, Aerodynamic</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Gas, Aerodynamic</name>
+      <!-- Based on: Grenades, Gas (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Smoke, Aerodynamic</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Thermal Smoke, Aerodynamic</name>
+      <!-- Based on: Grenades, Smoke (IR) (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Paint, Aerodynamic</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</name>
+      <!-- Based on: Splash Grenade (M&M) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Shock (2050)</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Offensive (2050)</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Defensive (2050)</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Smoke (2050)</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Shock (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Offensive (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Defensive (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Minigrenade: Smoke (2050)</name>
+      <!-- Based on: Grenades, Mini-Grenade (CRB) -->
+      <weight>0.1</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Shock, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Concussion (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Offensive, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Offensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Defensive, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Defensive (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Grenade: Smoke, Aerodynamic (2050)</name>
+      <!-- Based on: Grenades, Smoke (CRB) -->
+      <weight>0.25</weight>
+    </weapon>
+
+    <!-- Section: Special Weapons -->
+    <accessory>
+      <name>Underbarrel Grapple Gun</name>
+      <!-- Based on: Underbarrel Grapple Gun (CC) -->
+      <weight>2</weight>
+    </accessory>
+    <weapon>
+      <name>Ares Executioner</name>
+      <!-- Based on: Ares Executive Protector (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>Ares S-III Super Squirt</name>
+      <!-- Based on: Ares SuperSquirt II (M&M) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Blowgun</name>
+      <!-- Based on: Blowgun (CC) -->
+      <weight>0.25</weight>
+    </weapon>
+    <weapon>
+      <name>Tiffani Elegance Shooting Bracers</name>
+      <!-- Based on: Bracer (CC) -->
+      <weight>0.3</weight>
+    </weapon>
+    <weapon>
+      <name>Flame Bracer</name>
+      <!-- Based on: Bracer (CC) -->
+      <weight>0.3</weight>
+    </weapon>
+    <weapon>
+      <name>Shiawase Arms Simoom</name>
+      <!-- Based on: Forearm Guards (CC) -->
+      <weight>0.2</weight>
+    </weapon>
+    <weapon>
+      <name>FN-AAL Gyrojet Pistol</name>
+      <!-- Based on: FN-AAL Gyrojet Pistol (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Knockoff Gun Cane</name>
+      <!-- Based on: Gun Cane (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>Mortimer of London 'Trafalger' Gun Cane</name>
+      <!-- Based on: Gun Cane (CC) -->
+      <weight>1</weight>
+    </weapon>
+    <weapon>
+      <name>SA Retiarius Net Gun</name>
+      <!-- Based on: Net Gun, Normal (CC) -->
+      <weight>4</weight>
+    </weapon>
+    <weapon>
+      <name>SA Retiarius Net Gun XL</name>
+      <!-- Based on: Net Gun, Large (CC) -->
+      <weight>4.5</weight>
+    </weapon>
+    <weapon>
+      <name>Standard Harpoon Gun</name>
+      <!-- Based on: Speargun (CC) -->
+      <weight>2</weight>
+    </weapon>
+    <weapon>
+      <name>Shiawase Blazer</name>
+      <!-- Based on: Shiawase Blazer (CC) -->
+      <weight>6</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Archon Heavy MP Laser</name>
+      <!-- Based on: Ares MP Heavy Laser Plus (CC) -->
+      <weight>30</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Lancer MP Laser</name>
+      <!-- Based on: Ares MP Laser III (CC) -->
+      <weight>20</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Redline</name>
+      <!-- Based on: Ares Redline (CC) -->
+      <weight>5</weight>
+    </weapon>
+    <weapon>
+      <name>Ares Screech Sonic Rifle</name>
+      <!-- Based on: Ares "Screech" Sonic Beam Rifle (SotA2) -->
+      <weight>6</weight>
+    </weapon>
+  </weapons>
+  
+  <accessories>
+    <accessory>
+      <name>Concealable Holster</name>
+      <!-- Based on: Concealable Holster (CRB) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Concealable Holster (2050)</name>
+      <!-- Based on: Concealable Holster (CRB) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Quick-Draw Holster</name>
+      <!-- Based on: Quick-Draw Holster, Standard (CC) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Concealed Quick-Draw Holster</name>
+      <!-- Based on: Quick-Draw Holster, Concealable (CC) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Hidden Gun Arm Slide</name>
+      <!-- Based on: Quick-Draw Holster, Concealable (CC) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Sling</name>
+      <!-- Based on: Sling (CC) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Bayonet</name>
+      <!-- Based on: Bayonet (CC) -->
+      <weight>0.75</weight>
+    </accessory>
+    <accessory>
+      <name>Retractable Bayonet</name>
+      <!-- Based on: Bayonet (CC) -->
+      <weight>0.75</weight>
+    </accessory>
+    <accessory>
+      <name>Underbarrel Grenade Launcher</name>
+      <!-- Based on: Generic Underbarrel Grenade Launcher (CRB 2e) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Grenade Launcher (2050)</name>
+      <!-- Based on: Generic Underbarrel Grenade Launcher (CRB 2e) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Underbarrel Grapple Gun</name>
+      <!-- Based on: Underbarrel Grapple Gun (CC) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Safe Target System, Base</name>
+      <!-- Based on: Safe Target System, Gun Modification (CC) -->
+      <weight>1</weight>
+    </accessory>
+    <accessory xpathfilter="starts-with(name, 'Advanced Safety System')">
+      <!-- Based on: Personalized Safety Modification (M&M) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Airburst Link</name>
+      <!-- Based on: Grenade Link (CC) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Improved Range Finder</name>
+      <!-- Based on: Rangefinder (CC) -->
+      <weight>0.1</weight>
+    </accessory>
+    <accessory>
+      <name>Bipod</name>
+      <!-- Based on: Bipod (CRB) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Bipod (2050)</name>
+      <!-- Based on: Bipod (CRB) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Tripod</name>
+      <!-- Based on: Tripod (CRB) -->
+      <weight>8</weight>
+    </accessory>
+    <accessory>
+      <name>Tripod (2050)</name>
+      <!-- Based on: Tripod (CRB) -->
+      <weight>8</weight>
+    </accessory>
+    <accessory>
+      <name>Smart Firing Platform</name>
+      <!-- Based on: Tripod (CRB) -->
+      <weight>8</weight>
+    </accessory>
+    <accessory>
+      <name>Foregrip</name>
+      <!-- Based on: Foregrip (CC) -->
+      <weight>0.5</weight>
+    </accessory>
+    <accessory>
+      <name>Gas-Vent 1 System</name>
+      <!-- Based on: extrapolation from Gas Vent II and Gas Vent III (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Gas-Vent 2 System</name>
+      <!-- Based on: Gas Vent II (CRB) -->
+      <weight>0.5</weight>
+    </accessory>
+    <accessory>
+      <name>Gas-Vent 2 System (2050)</name>
+      <!-- Based on: Gas Vent II (CRB) -->
+      <weight>0.5</weight>
+    </accessory>
+    <accessory>
+      <name>Gas-Vent 3 System</name>
+      <!-- Based on: Gas Vent III (CRB) -->
+      <weight>0.75</weight>
+    </accessory>
+    <accessory>
+      <name>Gas-Vent 3 System (2050)</name>
+      <!-- Based on: Gas Vent III (CRB) -->
+      <weight>0.75</weight>
+    </accessory>
+    <accessory>
+      <name>Gyro Mount</name>
+      <!-- Based on: Gyro Mount, Standard (CRB) -->
+      <weight>6</weight>
+    </accessory>
+    <accessory>
+      <name>Gyro Mount, Default (2050)</name>
+      <!-- Based on: Gyro Mount, Standard (CRB) -->
+      <weight>6</weight>
+    </accessory>
+    <accessory>
+      <name>Gyro Mount, Deluxe (2050)</name>
+      <!-- Based on: Gyro Mount, Deluxe (CRB) -->
+      <weight>8</weight>
+    </accessory>
+    <accessory>
+      <name>Hip Pad Bracing System</name>
+      <!-- Based on: Hip Pad Bracing System (CC) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Shock Pad</name>
+      <!-- Based on: Shock Pads (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Shock Pad (2050)</name>
+      <!-- Based on: Shock Pads (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Stock</name>
+      <!-- Based on: Stock (CC) -->
+      <weight>0.5</weight>
+    </accessory>
+    <accessory>
+      <name>Folding Stock</name>
+      <!-- Based on: Stock (CC) -->
+      <weight>0.5</weight>
+    </accessory>
+    <accessory>
+      <name>Underbarrel Weight</name>
+      <!-- Based on: Underbarrel Weight (CC) -->
+      <weight>1</weight>
+    </accessory>
+    <accessory>
+      <name>Flashlight, Standard</name>
+      <!-- Based on: Flashlight, Standard (CC) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Flashlight, Low Light</name>
+      <!-- Based on: Flashlight, Low-Light (CC) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Flashlight, Infrared</name>
+      <!-- Based on: Flashlight, Infrared (CC) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Guncam</name>
+      <!-- Based on: Guncam (CC) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Laser Sight</name>
+      <!-- Based on: Laser Sights (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Laser Sight (2050)</name>
+      <!-- Based on: Laser Sights (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Holographic Sight</name>
+      <!-- Based on: Imaging Scopes (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Imaging Scope</name>
+      <!-- Based on: Imaging Scopes (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Imaging Scope (2050)</name>
+      <!-- Based on: Imaging Scopes (CRB) -->
+      <weight>0.25</weight>
+    </accessory>
+    <accessory>
+      <name>Silencer/Suppressor</name>
+      <!-- Based on: Silencer (CRB) -->
+      <weight>0.2</weight>
+    </accessory>
+    <accessory>
+      <name>Sound Suppressor</name>
+      <!-- Based on: Silencer (CRB) -->
+      <weight>0.2</weight>
+    </accessory>
+    <accessory xpathfilter="starts-with(name, 'Silencer ')">
+      <!-- Based on: Silencer (CRB) -->
+      <weight>0.2</weight>
+    </accessory>
+    <accessory>
+      <name>Smartgun System, External</name>
+      <!-- Based on: Smartgun, External (CRB) -->
+      <weight>1</weight>
+    </accessory>
+    <accessory>
+      <name>Krime Dual-Mode External Smartgun Link</name>
+      <!-- Based on: Smartgun, External (CRB) -->
+      <weight>1</weight>
+    </accessory>
+    <accessory>
+      <name>Smartgun System, Internal</name>
+      <!-- Based on: Smartgun, Internal (CRB) -->
+      <weight>0.5</weight>
+    </accessory>
+    <accessory>
+      <name>Extra Case, Ares Executioner</name>
+      <!-- Based on: Ares Executive Protector (CC) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory xpathfilter="ammoslots &gt; 0 and not(ammoreplace = 'External Source')">
+      <!-- Based on: Spare Clips (CRB) -->
+      <weight>0.75</weight>
+    </accessory>
+    <accessory>
+      <name>Peak-Discharge Battery Pack, Power Clip</name>
+      <!-- Based on: Battery Clip (CC) -->
+      <weight>1</weight>
+    </accessory>
+    <accessory>
+      <name>Peak-Discharge Battery Pack, Satchel Power Pack</name>
+      <!-- Based on: Hip Battery (CC) -->
+      <weight>2</weight>
+    </accessory>
+    <accessory>
+      <name>Peak-Discharge Battery Pack, Power Backpack</name>
+      <!-- Based on: Battery Pack (CC) -->
+      <weight>15</weight>
+    </accessory>
+  </accessories>
+</chummer>
