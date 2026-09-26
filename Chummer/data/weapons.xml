@@ -10058,7 +10058,7 @@
     </weapon>
     <weapon>
       <id>459205e8-54bd-44aa-ba25-f7fb8d056d70</id>
-      <name>AK-97 Karabiner (2050)</name>
+      <name>AK-97 Carbine (2050)</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>2</conceal>
@@ -18493,7 +18493,7 @@
     </accessory>
     <accessory>
       <id>e6b1550c-c392-4e85-b618-04f8a09b8020</id>
-      <name>Gyro Mount, default (2050) </name>
+      <name>Gyro Mount, Default (2050) </name>
       <mount>Under</mount>
       <avail>4</avail>
       <cost>2500</cost>

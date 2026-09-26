@@ -88,6 +88,7 @@ Weapons:
 - Implemented a cap on the range modifier for weapons to prevent modifiers from reducing the range modifier above +0.
 - Fixed underbarrel weapons being blocked from being added to weapons.
 - Fixed some issues with Reach and Damage calculations for the Unarmed Attack weapon not including unarmedreach or unarmeddv improvements unless the optional rule for weapons that use Unarmed Combat was enabled.
+- Corrected typos for some entries from Shadowrun 2050 where German terms were used for English names.
 
 Traditions:
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
