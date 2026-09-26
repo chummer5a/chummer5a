@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -43333,13 +43333,13 @@
       </vehicle>
       <vehicle>
         <id>026beaac-5e92-4210-943a-97f5455d98ec</id>
-        <name>Dodge Hurricane Crew Modell</name>
+        <name>Dodge Hurricane Crew Model</name>
         <translate>Dodge Hurricane (Gang)</translate>
         <altpage>42</altpage>
       </vehicle>
       <vehicle>
         <id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
-        <name>Dodge Hurricane Security Modell</name>
+        <name>Dodge Hurricane Security Model</name>
         <translate>Dodge Hurricane (Sécurité)</translate>
         <altpage>42</altpage>
       </vehicle>
@@ -43351,13 +43351,13 @@
       </vehicle>
       <vehicle>
         <id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
-        <name>Mercedes-Benz Tornado Crew Modell</name>
+        <name>Mercedes-Benz Tornado Crew Model</name>
         <translate>Mercedes-Benz Tornado (Gang)</translate>
         <altpage>42</altpage>
       </vehicle>
       <vehicle>
         <id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
-        <name>Mercedes-Benz Tornado Security Modell</name>
+        <name>Mercedes-Benz Tornado Security Model</name>
         <translate>Mercedes-Benz Tornado (Sécurité)</translate>
         <altpage>42</altpage>
       </vehicle>
@@ -43381,7 +43381,7 @@
       </vehicle>
       <vehicle>
         <id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
-        <name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
+        <name>Mercedes-Benz CityMog / Dodge City Basis Model</name>
         <translate>Mercedes-Benz CityMog / Dodge City (Nu)</translate>
         <altpage>42</altpage>
       </vehicle>
@@ -44689,13 +44689,13 @@
       </vehicle>
       <vehicle>
         <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
-        <name>Dodge Hurricane Crew Modell</name>
+        <name>Dodge Hurricane Crew Model</name>
         <translate>Dodge Hurricane (Gang)</translate>
         <altpage>57</altpage>
       </vehicle>
       <vehicle>
         <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
-        <name>Dodge Hurricane Security Modell</name>
+        <name>Dodge Hurricane Security Model</name>
         <translate>Dodge Hurricane (Sécurité)</translate>
         <altpage>57</altpage>
       </vehicle>
@@ -48628,8 +48628,8 @@
       </weapon>
       <weapon>
         <id>847a9604-0890-4f24-bea2-83d372feef7e</id>
-        <name>Beretta Modell 101T (2050)</name>
-        <translate>Beretta Modell 101T (2050)</translate>
+        <name>Beretta Model 101T (2050)</name>
+        <translate>Beretta Model 101T (2050)</translate>
         <altpage>184</altpage>
       </weapon>
       <weapon>
@@ -48706,8 +48706,8 @@
       </weapon>
       <weapon>
         <id>fe671fb0-85ba-4d10-9fa6-e3dff6c55645</id>
-        <name>Beretta Modell 70 (2050)</name>
-        <translate>Beretta Modell 70 (2050)</translate>
+        <name>Beretta Model 70 (2050)</name>
+        <translate>Beretta Model 70 (2050)</translate>
         <altpage>185</altpage>
       </weapon>
       <weapon>
