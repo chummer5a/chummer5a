@@ -27,6 +27,8 @@
     NGRL = Neo-Anarchists' Guide to Real Life
     R3 = Rigger 3.0
     SB = Shadowbeat
+    SotA = State of the Art 2063
+    SotA2 = State of the Art 2064
     -->
   <gears>
     <!-- Section Ammunition -->
@@ -548,6 +550,23 @@
       <weight>0.25</weight>
     </gear>
 
+    <!-- Section Explosives -->
+    <gear>
+      <name>Detonator, Radio</name>
+      <!-- Based on: Radio Detonator (CRB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Detonator, Timer</name>
+      <!-- Based on: Timer (CRB) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear>
+      <name>Thermite Burning Bar</name>
+      <!-- Based on: Thermite, Burning Bars (M&M) -->
+      <weight>1</weight>
+    </gear>
+
     <!-- Section Weapon Accessories -->
     <gear>
       <name>Spare Clip</name>
@@ -779,6 +798,21 @@
       <!-- Based on: Chainsaw (CC) -->
       <weight>4</weight>
     </gear>
+    <gear>
+      <name>Cellular Glove Molder</name>
+      <!-- Based on: Cellular Glove Mold (SotA) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Lockpick Set</name>
+      <!-- Based on: Lockpick Set (SotA) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Autopicker</name>
+      <!-- Based on: Autopicker (SotA) -->
+      <weight>1</weight>
+    </gear>
 
     <!-- Section Communications -->
     <gear>
@@ -808,8 +842,8 @@
     </gear>
     <gear>
       <name>Satellite Link</name>
-      <!-- Based on: Satellite Link (CC) -->
-      <weight>2</weight>
+      <!-- Based on: combining Satellite Link (CC) and Satellite Dish, Standard Portable (CC) -->
+      <weight>7</weight>
     </gear>
     <gear>
       <name>Telecom (2050)</name>
@@ -829,7 +863,7 @@
     <gear>
       <name>Personal Computer (2050)</name>
       <!-- Based on: Personal Computer, Table Top (CRB) -->
-      <weight>10</weight>
+      <weight>3</weight>
     </gear>
     <gear>
       <name>Data Display (2050)</name>
@@ -839,7 +873,7 @@
     <gear>
       <name>Printer</name>
       <!-- Based on: Personal Computer, Printer (CRB) -->
-      <weight>10</weight>
+      <weight>2</weight>
     </gear>
 
     <!-- Section Grapple Gun -->
@@ -975,27 +1009,22 @@
       <!-- Based on: Gas Mask and Air Tank (M&M) -->
       <weight>10</weight>
     </gear>
+    <gear>
+      <name>Uniforms</name>
+      <!-- Based on: Ordinary Clothing (CRB) and Fine Clothing (CRB) -->
+      <weight>1</weight>
+    </gear>
 
     <!-- Section Music -->
     <gear>
       <name>Microphone, Omni-Directional</name>
-      <!-- Based on: Mike Boom (SB) -->
-      <weight>1.5</weight>
+      <!-- Based on: Shotgun Microphone (CRB) -->
+      <weight>1</weight>
     </gear>
     <gear>
       <name>Microphone, Omni-Directional, Micro</name>
-      <!-- Based on: Body Mike w/ Batteries (SB) -->
+      <!-- Based on: Microphones (SB) -->
       <weight>0.25</weight>
-    </gear>
-    <gear>
-      <name>Internal Synthlink</name>
-      <!-- Based on: Synthlink controller (SB) -->
-      <weight>1</weight>
-    </gear>
-    <gear>
-      <name>External Synthlink</name>
-      <!-- Based on: Synthlink controller (SB) -->
-      <weight>1</weight>
     </gear>
     <gear>
       <name>Simrig</name>
@@ -1023,6 +1052,16 @@
       <name>Orichalcum</name>
       <!-- Based on: Orichalcum (GM2) -->
       <weight>0.01</weight>
+    </gear>
+    <gear>
+      <name>Quicksilver Camera</name>
+      <!-- Based on: Mana-Sensitive Film Camera (SotA2) -->
+      <weight>2.5</weight>
+    </gear>
+    <gear>
+      <name>Mana-Sensitive Film Plate</name>
+      <!-- Based on: Mana-Sensitive Film (per plate) (SotA2) -->
+      <weight>0.5</weight>
     </gear>
   </gears>
 </chummer>

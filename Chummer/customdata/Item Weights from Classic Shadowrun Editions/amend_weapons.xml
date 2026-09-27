@@ -405,8 +405,8 @@
     </weapon>
     <weapon>
       <name>Riot Shield</name>
-      <!-- Based on: Riot Shield, Large (CRB) -->
-      <weight>2</weight>
+      <!-- Based on: Electro Riot Shield (SotA2) -->
+      <weight>3</weight>
     </weapon>
 
     <!-- Section: Bows -->

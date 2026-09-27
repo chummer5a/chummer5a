@@ -23,6 +23,7 @@
     CC = Cannon Companion
     K-G = Ka-Ge supplementals (semi-official)
     M&M = Man & Machine
+    SotA2 = State of the Art 2064
     TWL = Target: Wastelands
     -->
   <armors>
@@ -439,8 +440,8 @@
     </armor>
     <armor>
       <name>Ares Polar Sneak Suit</name>
-      <!-- Based on: combining Coldsuit (TWL) and Form-Fitting Body Armor, Full-body suit (CRB) -->
-      <weight>6.25</weight>
+      <!-- Based on: Null Suit (SotA2) -->
+      <weight>20</weight>
     </armor>
     <armor>
       <name>Enclosed Breathing Helmet</name>
