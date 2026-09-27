@@ -22,7 +22,11 @@
     CRB = Core Rulebook (3e > 2e > 1e)
     CC = Cannon Companion
     CS = Corporate Security
+    GM2 = Grimoire, 2nd Edition
+    NGNA = Neo-Anarchists' Guide to North America
+    NGRL = Neo-Anarchists' Guide to Real Life
     R3 = Rigger 3.0
+    SB = Shadowbeat
     -->
   <gears>
     <!-- Section Ammunition -->
@@ -90,6 +94,10 @@
     <gear xpathfilter="ammoforweapontype = 'slingshot'">
       <!-- Based on: Capsule Rounds (CC) -->
       <weight>0.25</weight>
+    </gear>
+    <gear xpathfilter="ammoforweapontype = 'grapplegun'">
+      <!-- Based on: Rope, 50m (CRB) -->
+      <weight>2</weight>
     </gear>
     
     <!-- Subsection: Gun Ammo -->
@@ -571,12 +579,267 @@
       <!-- Based on: Quick-Draw Holster, Concealable (CC) -->
       <weight>0.1</weight>
     </gear>
+    <gear>
+      <name>Micro Flare Launcher</name>
+      <!-- Based on: Micro Flare Launcher (CRB) -->
+      <weight>2</weight>
+    </gear>
+
+    <!-- Section Biotech -->
+    <gear>
+      <name>Biomonitor</name>
+      <!-- Based on: Bio-Monitor (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Medkit</name>
+      <!-- Based on: Medkit (M&M) -->
+      <weight>{Rating}</weight>
+    </gear>
+    <gear>
+      <name>Medkit (Bullets &amp; Bandages)</name>
+      <!-- Based on: Medkit (M&M) -->
+      <weight>{Rating}</weight>
+    </gear>
+    <gear>
+      <name>Savior Medkit</name>
+      <!-- Based on: Savior Advanced Medkit (M&M) -->
+      <weight>4</weight>
+    </gear>
+    <gear>
+      <name>Stabilization Unit, Standard (2050)</name>
+      <!-- Based on: Stabilization Unit, Basic (CRB) -->
+      <weight>30</weight>
+    </gear>
+    <gear>
+      <name>Stabilization Unit, Deluxe (2050)</name>
+      <!-- Based on: Stabilization Unit, Deluxe (CRB) -->
+      <weight>35</weight>
+    </gear>
+
+    <!-- Section Surveillance -->
+    <gear>
+      <name>Binoculars</name>
+      <!-- Based on: Binoculars (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Binoculars, Optical</name>
+      <!-- Based on: Binoculars (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Binoculars (2050)</name>
+      <!-- Based on: Binoculars (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Binoculars, Optical (2050)</name>
+      <!-- Based on: Binoculars (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Data Codebreaker (2050)</name>
+      <!-- Based on: Data Codebreaker (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Laser Microphone</name>
+      <!-- Based on: Laser Microphone (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Laser Microphone (2050)</name>
+      <!-- Based on: Laser Microphone (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Microphone, Directional</name>
+      <!-- Based on: Shotgun Microphone (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Shotgun Microphone (2050)</name>
+      <!-- Based on: Shotgun Microphone (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Signal Locator (2050)</name>
+      <!-- Based on: Signal Locator, Standard (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Voice Identifier (2050)</name>
+      <!-- Based on: Voice Identifier (CRB) -->
+      <weight>5</weight>
+    </gear>
     
-    <!-- Section Breaking and Entering -->
+    <!-- Section Countersurveillance -->
+    <gear>
+      <name>Bug Scanner</name>
+      <!-- Based on: Bug Scanner (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Bug Scanner (2050)</name>
+      <!-- Based on: Bug Scanner (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Dataline Scanner (2050)</name>
+      <!-- Based on: Dataline Scanner (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Jammer, Area</name>
+      <!-- Based on: Jammer (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Jammer, Directional</name>
+      <!-- Based on: Jammer (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>White Noise Generator</name>
+      <!-- Based on: White Noise Generator (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>White Noise Generator (2050)</name>
+      <!-- Based on: White Noise Generator (CRB) -->
+      <weight>1</weight>
+    </gear>
+    
+    <!-- Section Security -->
+    <gear>
+      <name>Handheld Housing</name>
+      <!-- Based on: Chem Sniffer, Hand-held (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Restraint, Containment Manacles</name>
+      <!-- Based on: Containment Manacles (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Headjammer</name>
+      <!-- Based on: Headjammer (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Mystic Jacket</name>
+      <!-- Based on: Magemask (NGNA) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Magemask</name>
+      <!-- Based on: Magemask (NGNA) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Restraint, Metal</name>
+      <!-- Based on: Metal Restraints (CRB) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear>
+      <name>Restraints, Metal (2050)</name>
+      <!-- Based on: Metal Restraints (CRB) -->
+      <weight>0.5</weight>
+    </gear>
+
+    <!-- Section Countersecurity -->
+    <gear>
+      <name>Sequencer</name>
+      <!-- Based on: Keypad Sequencer (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Maglock Passkey</name>
+      <!-- Based on: Maglock Passkey (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Maglock Passkey (2050)</name>
+      <!-- Based on: Maglock Passkey (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Micro-Recorder (2050)</name>
+      <!-- Based on: Pocket Recorder (NGRL) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Ultrasonic Noise Generator</name>
+      <!-- Based on: Ultrasound Emitter (CRB) -->
+      <weight>0.5</weight>
+    </gear>
     <gear>
       <name>Monofilament Chainsaw</name>
       <!-- Based on: Chainsaw (CC) -->
       <weight>4</weight>
+    </gear>
+
+    <!-- Section Communications -->
+    <gear>
+      <name>PI-Tac Level I (Renraku Taka)</name>
+      <!-- Based on: BattleTac Master Component (CC) -->
+      <weight>2.5</weight>
+    </gear>
+    <gear>
+      <name>PI-Tac Level II (Novatech Tactician)</name>
+      <!-- Based on: BattleTac Master Component (CC) -->
+      <weight>2.5</weight>
+    </gear>
+    <gear>
+      <name>PI-Tac Level III (ComPac-Esprit General)</name>
+      <!-- Based on: BattleTac Master Component (CC) -->
+      <weight>2.5</weight>
+    </gear>
+    <gear>
+      <name>Data Encryption System (2050)</name>
+      <!-- Based on: Data Encryption System (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Pantheon Industries Micro-Dish Transmitter</name>
+      <!-- Based on: Signal Repeater (CRB) @ Rating 1 -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Satellite Link</name>
+      <!-- Based on: Satellite Link (CC) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Telecom (2050)</name>
+      <!-- Based on: Telecom (CRB) -->
+      <weight>15</weight>
+    </gear>
+    <gear>
+      <name>Portable Phone (2050)</name>
+      <!-- Based on: Portable Phone, Handset Unit (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Pocket Secretary (2050)</name>
+      <!-- Based on: Pocket Secretary (CRB) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear>
+      <name>Personal Computer (2050)</name>
+      <!-- Based on: Personal Computer, Table Top (CRB) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Data Display (2050)</name>
+      <!-- Based on: Data Display System, Data Unit (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Printer</name>
+      <!-- Based on: Personal Computer, Printer (CRB) -->
+      <weight>10</weight>
     </gear>
 
     <!-- Section Grapple Gun -->
@@ -589,6 +852,177 @@
       <name>Tactical Grapple Gun</name>
       <!-- Based on: Grapple Gun (CRB) -->
       <weight>2.25</weight>
+    </gear>
+    <gear>
+      <name>Microwire (100m)</name>
+      <!-- Based on: Stealth Line, normal (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Myomeric Rope (10m)</name>
+      <!-- Based on: Rope, 50m (CRB) -->
+      <weight>0.2</weight>
+    </gear>
+    <gear>
+      <name>Standard Rope (100m)</name>
+      <!-- Based on: Rope, 50m (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Stealth Rope (100m)</name>
+      <!-- Based on: Stealth Line, dissolveable (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Reinforced Stealth Rope (100m)</name>
+      <!-- Based on: Stealth Line, dissolveable (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Climbing Gear</name>
+      <!-- Based on: Ascent/Descent Kit (CRB) -->
+      <weight>2</weight>
+    </gear>
+
+    <!-- Section Misc. Gear -->
+    <gear>
+      <name>Chemsuit</name>
+      <!-- Based on: Chemsuit (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Diving Gear</name>
+      <!-- Based on: combining Wetsuit (CC), Breathing Regulator (CC), and Scuba Tank (CC) -->
+      <weight>21.7</weight>
+    </gear>
+    <gear>
+      <name>Tool Kit</name>
+      <!-- Based on: Toolkit (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Tool Kit (2050)</name>
+      <!-- Based on: Toolkit (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Theatrical Cosmetics Kit</name>
+      <!-- Based on: Toolkit (CRB) -->
+      <weight>5</weight>
+    </gear>
+    <gear>
+      <name>Tool Shop</name>
+      <!-- Based on: Enchanting Shop (GM2) -->
+      <weight>300</weight>
+    </gear>
+    <gear>
+      <name>Tool Shop (2050)</name>
+      <!-- Based on: Enchanting Shop (GM2) -->
+      <weight>300</weight>
+    </gear>
+    <gear>
+      <name>Miniwelder</name>
+      <!-- Based on: MicroTorch (K-G #4) -->
+      <weight>1.5</weight>
+    </gear>
+    <gear>
+      <name>Miniwelder Fuel Canister</name>
+      <!-- Based on: MicroTorch, refill (K-G #4) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear>
+      <name>Respirator</name>
+      <!-- Based on: Respirator (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Respirator (2050)</name>
+      <!-- Based on: Respirator (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Gas Mask</name>
+      <!-- Based on: Respirator (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Survival Kit</name>
+      <!-- Based on: Survival Kit (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Survival Kit (2050)</name>
+      <!-- Based on: Survival Kit (CRB) -->
+      <weight>2</weight>
+    </gear>
+    <gear>
+      <name>Several Days' Worth of Ration Bars</name>
+      <!-- Based on: Ration Bars, 10 days (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Fashion Respirator</name>
+      <!-- Based on: Fellini-Med Breather (NGRL) -->
+      <weight>0.5</weight>
+    </gear>
+    <gear>
+      <name>Urban Explorer Daedalus Replacement Parachute</name>
+      <!-- Based on: Parachute (CC) -->
+      <weight>20</weight>
+    </gear>
+    <gear>
+      <name>Hazmat Suit</name>
+      <!-- Based on: Gas Mask and Air Tank (M&M) -->
+      <weight>10</weight>
+    </gear>
+
+    <!-- Section Music -->
+    <gear>
+      <name>Microphone, Omni-Directional</name>
+      <!-- Based on: Mike Boom (SB) -->
+      <weight>1.5</weight>
+    </gear>
+    <gear>
+      <name>Microphone, Omni-Directional, Micro</name>
+      <!-- Based on: Body Mike w/ Batteries (SB) -->
+      <weight>0.25</weight>
+    </gear>
+    <gear>
+      <name>Internal Synthlink</name>
+      <!-- Based on: Synthlink controller (SB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>External Synthlink</name>
+      <!-- Based on: Synthlink controller (SB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Simrig</name>
+      <!-- Based on: Simrig (CRB) -->
+      <weight>0.5</weight>
+    </gear>
+
+    <!-- Section Magical Gear -->
+    <gear>
+      <name>Fetish</name>
+      <!-- Based on: Reusable Fetish (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
+      <name>Magical Lodge Materials</name>
+      <!-- Based on: Medicine Lodge Materials (CRB) -->
+      <weight>2 * {Rating}</weight>
+    </gear>
+    <gear>
+      <name>Medicine Lodge Materials (2050)</name>
+      <!-- Based on: Medicine Lodge Materials (CRB) -->
+      <weight>2 * {Rating}</weight>
+    </gear>
+    <gear>
+      <name>Orichalcum</name>
+      <!-- Based on: Orichalcum (GM2) -->
+      <weight>0.01</weight>
     </gear>
   </gears>
 </chummer>

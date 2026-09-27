@@ -199,6 +199,10 @@
       <!-- Based on: Riot Shield, Ballistic (CRB) -->
       <weight>2</weight>
     </weapon>
+    <weapon xpathfilter="weapontype = 'flaregun'">
+      <!-- Based on: Micro Flare Launcher (CRB) -->
+      <weight>2</weight>
+    </weapon>
     
     <!-- Specific weights for items that have older edition equivalents -->
     
@@ -1393,6 +1397,11 @@
       <name>Ares Screech Sonic Rifle</name>
       <!-- Based on: Ares "Screech" Sonic Beam Rifle (SotA2) -->
       <weight>6</weight>
+    </weapon>
+    <weapon>
+      <name>Micro Flare Launcher</name>
+      <!-- Based on: Micro Flare Launcher (CRB) -->
+      <weight>2</weight>
     </weapon>
   </weapons>
   
