@@ -28,15 +28,15 @@
     -->
   <armors>
     <!-- Section Generics/Fallbacks-->
-    <armor xpathfilter="category = 'Armor' and not(starts-with(armor, '+'))">
+    <armor xpathfilter="category = 'Armor' and not(starts-with(armor, '+')) and not(weight)">
       <!-- Based on: Armor Jacket (CRB) -->
       <weight>2</weight>
     </armor>
-    <armor xpathfilter="category = 'Armor' and starts-with(armor, '+')">
+    <armor xpathfilter="category = 'Armor' and starts-with(armor, '+') and not(weight)">
       <!-- Based on: Victory Rapid Transit Line, Helmet (CC) -->
       <weight>0.5</weight>
     </armor>
-    <armor xpathfilter="category = 'Clothing' and not(starts-with(armor, '+')) and (armor &gt; 0 or armorcapacity &gt; 0)">
+    <armor xpathfilter="category = 'Clothing' and not(starts-with(armor, '+')) and (armor &gt; 0 or armorcapacity &gt; 0) and not(weight)">
       <!-- Based on: Ordinary Clothing (CRB) -->
       <weight>1</weight>
     </armor>

@@ -27,179 +27,179 @@
     -->
   <weapons>
     <!-- Generic category weights based on "default" weapons -->
-    <weapon xpathfilter="category = 'Blades' or sizecategory = 'Blades'">
+    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and not(weight)">
       <!-- Based on: Sword (CRB) -->
       <weight>1</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and spec = 'Knives'">
+    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and spec = 'Knives' and not(weight)">
       <!-- Based on: Knife (CRB) -->
       <weight>0.5</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and spec = 'Axes'">
+    <weapon xpathfilter="(category = 'Blades' or sizecategory = 'Blades') and spec = 'Axes' and not(weight)">
       <!-- Based on: Combat Axe (CRB) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Clubs' or sizecategory = 'Clubs'">
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and not(weight)">
       <!-- Based on: Club (CRB) -->
       <weight>1</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Saps'">
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Saps' and not(weight)">
       <!-- Based on: Sap (CRB) -->
       <weight>0</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Hammers'">
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Hammers' and not(weight)">
       <!-- Based on: Mace (CC) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Staves'">
+    <weapon xpathfilter="(category = 'Clubs' or sizecategory = 'Clubs') and spec = 'Staves' and not(weight)">
       <!-- Based on: Staff (CRB) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Bows' or sizecategory = 'Bows'">
+    <weapon xpathfilter="(category = 'Bows' or sizecategory = 'Bows') and not(weight)">
       <!-- Based on: Bow (CRB) -->
       <weight>1</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Crossbows' or sizecategory = 'Light Crossbows'">
+    <weapon xpathfilter="(category = 'Crossbows' or sizecategory = 'Light Crossbows') and not(weight)">
       <!-- Based on: Light Crossbow (CRB) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="sizecategory = 'Medium Crossbows'">
+    <weapon xpathfilter="sizecategory = 'Medium Crossbows' and not(weight)">
       <!-- Based on: Medium Crossbow (CRB) -->
       <weight>3</weight>
     </weapon>
-    <weapon xpathfilter="sizecategory = 'Heavy Crossbows'">
+    <weapon xpathfilter="sizecategory = 'Heavy Crossbows' and not(weight)">
       <!-- Based on: Heavy Crossbow (CRB) -->
       <weight>4</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'slingshot'">
+    <weapon xpathfilter="weapontype = 'slingshot' and not(weight)">
       <!-- Based on: Slingshot (CC) -->
       <weight>0.5</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Tasers' or sizecategory = 'Tasers'">
+    <weapon xpathfilter="(category = 'Tasers' or sizecategory = 'Tasers') and not(weight)">
       <!-- Based on: Yamaha Pulsar (CC) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Holdouts' or sizecategory = 'Holdouts'">
+    <weapon xpathfilter="(category = 'Holdouts' or sizecategory = 'Holdouts') and not(weight)">
       <!-- Based on: Streetline Special (CRB) -->
       <weight>0.5</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Light Pistols' or sizecategory = 'Light Pistols'">
+    <weapon xpathfilter="(category = 'Light Pistols' or sizecategory = 'Light Pistols') and not(weight)">
       <!-- Based on: Colt American L36 (CRB) -->
       <weight>1</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Heavy Pistols' or sizecategory = 'Heavy Pistols'">
+    <weapon xpathfilter="(category = 'Heavy Pistols' or sizecategory = 'Heavy Pistols') and not(weight)">
       <!-- Based on: Browning Max-Power (CRB) -->
       <weight>2.25</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Heavy Pistols' or sizecategory = 'Heavy Pistols') and contains(damage, '(f)')">
+    <weapon xpathfilter="(category = 'Heavy Pistols' or sizecategory = 'Heavy Pistols') and not(weight) and contains(damage, '(f)')">
       <!-- Based on: Ares Viper Slivergun (CRB) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Machine Pistols' or sizecategory = 'Machine Pistols'">
+    <weapon xpathfilter="(category = 'Machine Pistols' or sizecategory = 'Machine Pistols') and not(weight)">
       <!-- Based on: Ceska Black Scorpion (CRB) -->
       <weight>3</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Submachine Guns' or sizecategory = 'Submachine Guns'">
+    <weapon xpathfilter="(category = 'Submachine Guns' or sizecategory = 'Submachine Guns') and not(weight)">
       <!-- Based on: Ingram Smartgun (CRB) -->
       <weight>3</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Assault Rifles' or sizecategory = 'Assault Rifles'">
+    <weapon xpathfilter="(category = 'Assault Rifles' or sizecategory = 'Assault Rifles') and not(weight)">
       <!-- Based on: AK-97 (CRB) -->
       <weight>4.5</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Carbines' or sizecategory = 'Carbines'">
+    <weapon xpathfilter="(category = 'Carbines' or sizecategory = 'Carbines') and not(weight)">
       <!-- Based on: AK-97 SMG/Carbine (CRB) -->
       <weight>4</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Sporting Rifles' or sizecategory = 'Sporting Rifles'">
+    <weapon xpathfilter="(category = 'Sporting Rifles' or sizecategory = 'Sporting Rifles') and not(weight)">
       <!-- Based on: Remington 950 (CRB) -->
       <weight>4</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Sporting Rifles' or sizecategory = 'Sporting Rifles') and accessories/accessory[name = 'Vintage']/name = 'Vintage'">
+    <weapon xpathfilter="(category = 'Sporting Rifles' or sizecategory = 'Sporting Rifles') and not(weight) and accessories/accessory[name = 'Vintage']/name = 'Vintage'">
       <!-- Based on: Remington 750 (CRB) -->
       <weight>3</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Sniper Rifles' or sizecategory = 'Sniper Rifles'">
+    <weapon xpathfilter="(category = 'Sniper Rifles' or sizecategory = 'Sniper Rifles') and not(weight)">
       <!-- Based on: Ranger Arms SM-3 (CRB) -->
       <weight>4</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Shotguns' or sizecategory = 'Shotguns'">
+    <weapon xpathfilter="(category = 'Shotguns' or sizecategory = 'Shotguns') and not(weight)">
       <!-- Based on: Defiance T-250 (CRB) -->
       <weight>3</weight>
     </weapon>
-    <weapon xpathfilter="(category = 'Shotguns' or sizecategory = 'Shotguns') and (contains(mode, 'BF') or contains(mode, 'FA'))">
+    <weapon xpathfilter="(category = 'Shotguns' or sizecategory = 'Shotguns') and not(weight) and (contains(mode, 'BF') or contains(mode, 'FA'))">
       <!-- Based on: Enfield AS-7 (CRB) -->
       <weight>4</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Light Machine Guns' or sizecategory = 'Light Machine Guns'">
+    <weapon xpathfilter="(category = 'Light Machine Guns' or sizecategory = 'Light Machine Guns') and not(weight)">
       <!-- Based on: Ingram Valiant (CRB) -->
       <weight>9</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Medium Machine Guns' or sizecategory = 'Medium Machine Guns'">
+    <weapon xpathfilter="(category = 'Medium Machine Guns' or sizecategory = 'Medium Machine Guns') and not(weight)">
       <!-- Based on: Ultimax MMG (CRB) -->
       <weight>12</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Heavy Machine Guns' or sizecategory = 'Heavy Machine Guns'">
+    <weapon xpathfilter="(category = 'Heavy Machine Guns' or sizecategory = 'Heavy Machine Guns') and not(weight)">
       <!-- Based on: RPK HMG (CRB) -->
       <weight>15</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Assault Cannons' or sizecategory = 'Assault Cannons'">
+    <weapon xpathfilter="(category = 'Assault Cannons' or sizecategory = 'Assault Cannons') and not(weight)">
       <!-- Based on: Vigorous Assault Cannon (CRB) -->
       <weight>20</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Flamethrowers' or sizecategory = 'Missile Launchers'">
+    <weapon xpathfilter="(category = 'Flamethrowers' or sizecategory = 'Missile Launchers') and not(weight)">
       <!-- Based on: Flamethrower (CC) -->
       <weight>21</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Laser Weapons' or sizecategory = 'Laser Weapons'">
+    <weapon xpathfilter="(category = 'Laser Weapons' or sizecategory = 'Laser Weapons') and not(weight)">
       <!-- Based on: Ares MP Laser III (CC) -->
       <weight>20</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Grenade Launchers' or sizecategory = 'Grenade Launchers'">
+    <weapon xpathfilter="(category = 'Grenade Launchers' or sizecategory = 'Grenade Launchers') and not(weight)">
       <!-- Based on: ArmTech MGL-6 (CC) -->
       <weight>2.5</weight>
     </weapon>
-    <weapon xpathfilter="category = 'Missile Launchers' or sizecategory = 'Missile Launchers'">
+    <weapon xpathfilter="(category = 'Missile Launchers' or sizecategory = 'Missile Launchers') and not(weight)">
       <!-- Based on: Aztechnology Lasher (CC) -->
       <weight>3</weight>
     </weapon>
-    <weapon xpathfilter="starts-with(name, 'Grenade: ')">
+    <weapon xpathfilter="starts-with(name, 'Grenade: ') and not(weight)">
       <!-- Based on: Grenades, Gas (CRB) -->
       <weight>0.25</weight>
     </weapon>
-    <weapon xpathfilter="starts-with(name, 'Minigrenade: ')">
+    <weapon xpathfilter="starts-with(name, 'Minigrenade: ') and not(weight)">
       <!-- Based on: Grenades, Mini-Grenade (CRB) -->
       <weight>0.1</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'dartgun'">
+    <weapon xpathfilter="weapontype = 'dartgun' and not(weight)">
       <!-- Based on: Dart Pistol (M&M) -->
       <weight>1.5</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'dartgun' and conceal &gt; 6">
+    <weapon xpathfilter="weapontype = 'dartgun' and conceal &gt; 6 and not(weight)">
       <!-- Based on: Dart Rifle (M&M) -->
       <weight>3.25</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'squirtgun'">
+    <weapon xpathfilter="weapontype = 'squirtgun' and not(weight)">
       <!-- Based on: Ares SuperSquirt II (M&M) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'netgun'">
+    <weapon xpathfilter="weapontype = 'netgun' and not(weight)">
       <!-- Based on: Net Gun, Normal (CC) -->
       <weight>4</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'harpoongun'">
+    <weapon xpathfilter="weapontype = 'harpoongun' and not(weight)">
       <!-- Based on: Speargun (CC) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'grapplegun'">
+    <weapon xpathfilter="weapontype = 'grapplegun' and not(weight)">
       <!-- Based on: Grapple Gun (CRB) -->
       <weight>2.25</weight>
     </weapon>
-    <weapon xpathfilter="spec = 'Shields'">
+    <weapon xpathfilter="spec = 'Shields' and not(weight)">
       <!-- Based on: Riot Shield, Ballistic (CRB) -->
       <weight>2</weight>
     </weapon>
-    <weapon xpathfilter="weapontype = 'flaregun'">
+    <weapon xpathfilter="weapontype = 'flaregun' and not(weight)">
       <!-- Based on: Micro Flare Launcher (CRB) -->
       <weight>2</weight>
     </weapon>

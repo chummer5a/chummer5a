@@ -33,71 +33,71 @@
   <gears>
     <!-- Section Ammunition -->
     <!-- Subsection generics/fallbacks -->
-    <gear xpathfilter="ammoforweapontype = 'gun'">
+    <gear xpathfilter="ammoforweapontype = 'gun' and not(weight)">
       <!-- Based on: Ammunition, Regular Ammo (CRB) -->
       <weight>0.05</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'cannon'">
+    <gear xpathfilter="ammoforweapontype = 'cannon' and not(weight)">
       <!-- Based on: Ammunition, Assault Cannon (CRB) -->
       <weight>0.125</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'taser'">
+    <gear xpathfilter="ammoforweapontype = 'taser' and not(weight)">
       <!-- Based on: Ammunition, Taser Dart (CRB) -->
       <weight>0.05</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'dartgun'">
+    <gear xpathfilter="ammoforweapontype = 'dartgun' and not(weight)">
       <!-- Based on: Dart Rounds (M&M) -->
       <weight>0.015</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'bow'">
+    <gear xpathfilter="ammoforweapontype = 'bow' and not(weight)">
       <!-- Based on: Arrow (CRB) -->
       <weight>0.1</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'crossbow'">
+    <gear xpathfilter="ammoforweapontype = 'crossbow' and not(weight)">
       <!-- Based on: Bolts (CRB) -->
       <weight>0.05</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'netgun'">
+    <gear xpathfilter="ammoforweapontype = 'netgun' and not(weight)">
       <!-- Based on: Netgun Net, Small Net (CS) -->
       <weight>0.5</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'netgunxl'">
+    <gear xpathfilter="ammoforweapontype = 'netgunxl' and not(weight)">
       <!-- Based on: Netgun Net, Large Net (CS) -->
       <weight>0.75</weight>
     </gear>
-    <gear xpathfilter="starts-with(name, 'Grenade: ')">
+    <gear xpathfilter="starts-with(name, 'Grenade: ') and not(weight)">
       <!-- Based on: Grenades, Gas (CRB) -->
       <weight>0.25</weight>
     </gear>
-    <gear xpathfilter="starts-with(name, 'Minigrenade: ') or ammoforweapontype = 'glauncher'">
+    <gear xpathfilter="(starts-with(name, 'Minigrenade: ') or ammoforweapontype = 'glauncher') and not(weight)">
       <!-- Based on: Grenades, Mini-Grenade (CRB) -->
       <weight>0.1</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'mlauncher'">
+    <gear xpathfilter="ammoforweapontype = 'mlauncher' and not(weight)">
       <!-- Based on: Anti-Personnel Rocket (CRB) -->
       <weight>2</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'microtorpedo'">
+    <gear xpathfilter="ammoforweapontype = 'microtorpedo' and not(weight)">
       <!-- Based on: Ammunition, Gyrojet Rockets (CC) -->
       <weight>0.175</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'torpglauncher'">
+    <gear xpathfilter="ammoforweapontype = 'torpglauncher' and not(weight)">
       <!-- Based on: Piranha Torpedo (R3) -->
       <weight>2.75</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'gyrojet'">
+    <gear xpathfilter="ammoforweapontype = 'gyrojet' and not(weight)">
       <!-- Based on: Ammunition, Gyrojet Rockets (CC) -->
       <weight>0.175</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'bola'">
+    <gear xpathfilter="ammoforweapontype = 'bola' and not(weight)">
       <!-- Based on: Bola Rounds (CC) -->
       <weight>0.1</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'slingshot'">
+    <gear xpathfilter="ammoforweapontype = 'slingshot' and not(weight)">
       <!-- Based on: Capsule Rounds (CC) -->
       <weight>0.25</weight>
     </gear>
-    <gear xpathfilter="ammoforweapontype = 'grapplegun'">
+    <gear xpathfilter="ammoforweapontype = 'grapplegun' and not(weight)">
       <!-- Based on: Rope, 50m (CRB) -->
       <weight>2</weight>
     </gear>
