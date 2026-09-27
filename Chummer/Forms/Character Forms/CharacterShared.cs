@@ -4515,7 +4515,7 @@ namespace Chummer
         }
 
         private async Task RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
-                                                Func<Task<int>> funcOffset, ICollection<Location> lstLocations,
+                                                Func<Task<int>> funcOffset, TaggedObservableCollection<Location> lstLocations,
                                                 NotifyCollectionChangedEventArgs e, string strSelectedId, string strNodeName,
                                                 bool rootSibling = true, CancellationToken token = default)
         {
