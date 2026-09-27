@@ -59,6 +59,7 @@ Gear:
 - Implemented a purchasing control for the Custom Item object in Career mode to allow the user to purchase more of the item while supporting markup and cost modifiers from services like Black Market Pipeline, Free!, etc. Closes #1261
 - Fixed custom drugs losing their InternalId on character load, which left drug-granted qualities behind after the drugs were deleted. Orphaned improvement qualities can now be removed when their linking SpecificQuality improvement is gone. Closes #4181.
 - Added stub data for BTLs from Chrome Flesh. Pending further implementation.
+- Added missing weight for the Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster. Existing characters with this gear will have to re-add it for its weight to show up.
 
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
@@ -89,6 +90,7 @@ Weapons:
 - Fixed underbarrel weapons being blocked from being added to weapons.
 - Fixed some issues with Reach and Damage calculations for the Unarmed Attack weapon not including unarmedreach or unarmeddv improvements unless the optional rule for weapons that use Unarmed Combat was enabled.
 - Corrected typos for some entries from Shadowrun 2050 where German terms were used for English names.
+- Added missing weights for Battering Ram, Fluid-Motion Battering Ram, and the HK 82A1. Existing characters with any of these weapons will have to re-add them for their weights to show up.
 
 Traditions:
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure

@@ -1867,6 +1867,7 @@
       <ammo>0</ammo>
       <avail>10R</avail>
       <cost>3500</cost>
+      <weight>30</weight>
       <source>RG</source>
       <page>103</page>
       <spec>Battering Ram</spec>
@@ -1924,6 +1925,7 @@
       <ammo>0</ammo>
       <avail>10R</avail>
       <cost>2000</cost>
+      <weight>20</weight>
       <source>RG</source>
       <page>103</page>
       <spec>Battering Ram</spec>
@@ -14066,6 +14068,7 @@
       <ammo>1(b)</ammo>
       <avail>6F</avail>
       <cost>1500</cost>
+      <weight>2.5</weight>
       <source>SL</source>
       <page>42</page>
       <accessorymounts>
