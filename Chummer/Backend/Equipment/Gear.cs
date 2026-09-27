@@ -2420,8 +2420,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
                 string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weight", (await GetTotalWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ownweight", (await GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("bonded", Bonded.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -3201,15 +3201,16 @@ namespace Chummer.Backend.Equipment
                                     async t => (await objParentGear.GetCalculatedCostAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "Gear Cost",
                                     async t => (await objParentGear.GetCalculatedCostAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParentGear.OwnWeight);
+                                Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentWeight = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(
+                                    () => objParentGear.GetOwnWeightAsync(token), Utils.JoinableTaskFactory);
                                 await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}",
-                                    () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => (await decParentWeight.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight",
-                                    () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => (await decParentWeight.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "{Gear Weight}",
-                                    () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => ((await decParentWeight.GetValueAsync(t).ConfigureAwait(false)) * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "Gear Weight",
-                                    () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => ((await decParentWeight.GetValueAsync(t).ConfigureAwait(false)) * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -3247,7 +3248,7 @@ namespace Chummer.Backend.Equipment
                         if (strExpression.Contains("Children Weight"))
                         {
                             decimal decTotalChildrenWeight = await Children.GetCountAsync(token).ConfigureAwait(false) > 0
-                                ? await Children.SumAsync(x => x.OwnWeight * x.Quantity, token).ConfigureAwait(false)
+                                ? await Children.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false)
                                 : 0;
                             sbdValue.Replace("{Children Weight}", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
                             sbdValue.Replace("Children Weight", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3360,15 +3361,16 @@ namespace Chummer.Backend.Equipment
                                     async t => (await objParentGear.GetCalculatedCostAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "Gear Cost",
                                     async t => (await objParentGear.GetCalculatedCostAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParentGear.OwnWeight);
+                                Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentWeight = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(
+                                    () => objParentGear.GetOwnWeightAsync(token), Utils.JoinableTaskFactory);
                                 await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}",
-                                    () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => (await decParentWeight.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight",
-                                    () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => (await decParentWeight.GetValueAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "{Gear Weight}",
-                                    () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => ((await decParentWeight.GetValueAsync(t).ConfigureAwait(false)) * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdValue.CheapReplaceAsync(strExpression, "Gear Weight",
-                                    () => (decParentWeight.Value * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    async t => ((await decParentWeight.GetValueAsync(t).ConfigureAwait(false)) * objParentGear.Quantity).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -3406,7 +3408,7 @@ namespace Chummer.Backend.Equipment
                         if (strExpression.Contains("Children Weight"))
                         {
                             decimal decTotalChildrenWeight = await Children.GetCountAsync(token).ConfigureAwait(false) > 0
-                                ? await Children.SumAsync(x => x.OwnWeight * x.Quantity, token).ConfigureAwait(false)
+                                ? await Children.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false)
                                 : 0;
                             sbdValue.Replace("{Children Weight}", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
                             sbdValue.Replace("Children Weight", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
@@ -5053,9 +5055,30 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Weight for just the Gear itself.
+        /// </summary>
+        public async Task<decimal> GetOwnWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (IncludedInParent)
+                return 0;
+            return (await ProcessRatingStringAsDecAsync(Weight, GetRatingAsync, token).ConfigureAwait(false)).Item1;
+        }
+
+        /// <summary>
         /// Total weight of the Gear and its accessories.
         /// </summary>
         public decimal TotalWeight => (OwnWeight + Children.Sum(x => x.Equipped, x => x.TotalWeight)) * Quantity;
+
+        /// <summary>
+        /// Total weight of the Gear and its accessories.
+        /// </summary>
+        public async Task<decimal> GetTotalWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await GetOwnWeightAsync(token).ConfigureAwait(false)
+                + await Children.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false)) * Quantity;
+        }
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.

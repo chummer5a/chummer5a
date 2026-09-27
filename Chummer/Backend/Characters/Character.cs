@@ -37711,11 +37711,11 @@ namespace Chummer
                 if (decReturn != decimal.MinValue)
                     return decReturn;
                 return _decCachedTotalCarriedWeight =
-                    await Armor.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
-                    + await Weapons.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
-                    + await Gear.SumParallelAsync(x => x.Equipped, x => x.TotalWeight, token: token).ConfigureAwait(false)
+                    await Armor.SumParallelAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token: token).ConfigureAwait(false)
+                    + await Weapons.SumParallelAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token: token).ConfigureAwait(false)
+                    + await Gear.SumParallelAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token: token).ConfigureAwait(false)
                     + await Cyberware.SumParallelAsync(
-                        (x, t) => x.GetIsModularCurrentlyEquippedAsync(t), x => x.TotalWeight, token: token).ConfigureAwait(false);
+                        (x, t) => x.GetIsModularCurrentlyEquippedAsync(t), (x, t) => x.GetTotalWeightAsync(t), token: token).ConfigureAwait(false);
             }
             finally
             {
