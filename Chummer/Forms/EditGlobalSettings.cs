@@ -1738,8 +1738,9 @@ namespace Chummer
                     return null;
                 }
 
-                if (!CustomDataDirectoryUpdater.TrySetUpdateLocationInManifest(objInfo.DirectoryPath,
-                        strUpdateLocation, out string strError))
+                (bool blnSuccess, string strError) = await CustomDataDirectoryUpdater.TrySetUpdateLocationInManifestAsync(objInfo.DirectoryPath,
+                        strUpdateLocation, token).ConfigureAwait(false);
+                if (!blnSuccess)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
                         StringExtensions.FastFormat(

@@ -222,8 +222,8 @@ namespace Chummer
 
             try
             {
-                XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(strManifestPath);
+                XmlDocument xmlDocument = new XmlDocument() { XmlResolver = null };
+                xmlDocument.LoadStandard(strManifestPath);
                 XmlNode xmlManifest = xmlDocument.SelectSingleNode("//*[local-name()='manifest']")
                                       ?? xmlDocument.DocumentElement;
                 if (xmlManifest == null)
@@ -249,8 +249,60 @@ namespace Chummer
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
-                strError = ex.Message;
+                strError = ex.Demystify().Message;
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Writes or updates the updatelocation element in a custom data directory's manifest.xml.
+        /// </summary>
+        /// <param name="strDirectoryPath">Path to the custom data directory.</param>
+        /// <param name="strUpdateLocation">GitHub releases URL to save.</param>
+        /// <returns>True if the manifest was updated successfully.</returns>
+        public static async ValueTask<ValueTuple<bool, string>> TrySetUpdateLocationInManifestAsync(string strDirectoryPath, string strUpdateLocation, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strManifestPath = Path.Combine(strDirectoryPath, "manifest.xml");
+            if (!File.Exists(strManifestPath))
+            {
+                return new ValueTuple<bool, string>(false, "manifest.xml not found");
+            }
+
+            try
+            {
+                XmlDocument xmlDocument = new XmlDocument() { XmlResolver = null };
+                await xmlDocument.LoadStandardAsync(strManifestPath, token: token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                XmlNode xmlManifest = xmlDocument.SelectSingleNode("//*[local-name()='manifest']")
+                                      ?? xmlDocument.DocumentElement;
+                if (xmlManifest == null)
+                {
+                    return new ValueTuple<bool, string>(false, "manifest element not found");
+                }
+
+                token.ThrowIfCancellationRequested();
+                XmlNode xmlUpdateLocation = xmlManifest.SelectSingleNode("*[local-name()='updatelocation']");
+                if (xmlUpdateLocation == null)
+                {
+                    token.ThrowIfCancellationRequested();
+                    xmlUpdateLocation = xmlDocument.CreateElement("updatelocation");
+                    XmlNode xmlVersion = xmlManifest.SelectSingleNode("*[local-name()='version']");
+                    if (xmlVersion?.NextSibling != null)
+                        xmlManifest.InsertAfter(xmlUpdateLocation, xmlVersion);
+                    else
+                        xmlManifest.AppendChild(xmlUpdateLocation);
+                }
+
+                token.ThrowIfCancellationRequested();
+                xmlUpdateLocation.InnerText = strUpdateLocation.Trim();
+                token.ThrowIfCancellationRequested();
+                xmlDocument.Save(strManifestPath);
+                return new ValueTuple<bool, string>(true, string.Empty);
+            }
+            catch (Exception ex) when (!(ex is OperationCanceledException))
+            {
+                return new ValueTuple<bool, string>(false, ex.Demystify().Message);
             }
         }
 
@@ -496,7 +548,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 ReplaceDirectoryContents(strContentRoot, objInfo.DirectoryPath, token);
                 if (!string.IsNullOrEmpty(strPreserveUpdateLocation))
-                    TrySetUpdateLocationInManifest(objInfo.DirectoryPath, strPreserveUpdateLocation, out _);
+                    await TrySetUpdateLocationInManifestAsync(objInfo.DirectoryPath, strPreserveUpdateLocation, token).ConfigureAwait(false);
                 SetInstalledReleaseVersion(objInfo, objRemoteRelease.Version);
                 InvalidateAvailabilityCache(objInfo);
                 return string.Empty;

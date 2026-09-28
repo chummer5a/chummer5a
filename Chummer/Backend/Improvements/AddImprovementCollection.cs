@@ -71,7 +71,7 @@ namespace Chummer
                 _queuePendingForcedValues = new Queue<string>();
             }
             string strForcedValue = ForcedValue; // Ensures that we keep behaving properly even if ForcedValue changes between calls
-            if (!string.IsNullOrEmpty(strForcedValue) && !string.Equals(_strLastQueuedPendingForcedValue, strForcedValue))
+            if (!string.IsNullOrEmpty(strForcedValue) && !string.Equals(_strLastQueuedPendingForcedValue, strForcedValue, StringComparison.Ordinal))
             {
                 _strLastQueuedPendingForcedValue = strForcedValue;
                 foreach (string strPart in strForcedValue.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))

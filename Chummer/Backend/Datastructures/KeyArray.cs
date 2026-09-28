@@ -100,7 +100,63 @@ namespace Chummer
 
         public static bool operator ==(KeyArray<T> lhs, KeyArray<T> rhs) => lhs.Equals(rhs);
 
+        public static bool operator ==(KeyArray<T> lhs, KeyArray<string> rhs) => lhs.Equals(rhs);
+
         public static bool operator !=(KeyArray<T> lhs, KeyArray<T> rhs) => !(lhs == rhs);
+
+        public static bool operator !=(KeyArray<T> lhs, KeyArray<string> rhs) => !(lhs == rhs);
+
+        /// <inheritdoc />
+        public bool Equals(KeyArray<string> other)
+        {
+            if (GetHashCode() != other.GetHashCode())
+                return false;
+            if (Length != other.Length)
+                return false;
+            if (_aobjItems is string[] aobjItemsStringCast)
+            {
+                for (int i = 0; i < Length; ++i)
+                {
+                    string strLoop = aobjItemsStringCast[i];
+                    if (strLoop == null)
+                    {
+                        if (other[i] != null)
+                            return false;
+                    }
+                    else if (!strLoop.Equals(other[i], StringComparison.Ordinal))
+                        return false;
+                }
+            }
+            else if (_aobjItems is IEquatable<string>[] aobjItemsCast)
+            {
+                for (int i = 0; i < Length; ++i)
+                {
+                    IEquatable<string> objLoop = aobjItemsCast[i];
+                    if (objLoop == null)
+                    {
+                        if (other[i] != null)
+                            return false;
+                    }
+                    else if (!objLoop.Equals(other[i]))
+                        return false;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Length; ++i)
+                {
+                    T objLoop = this[i];
+                    if (objLoop == null)
+                    {
+                        if (other[i] != null)
+                            return false;
+                    }
+                    else if (!objLoop.Equals(other[i]))
+                        return false;
+                }
+            }
+            return true;
+        }
 
         /// <inheritdoc />
         public bool Equals(KeyArray<T> other)
