@@ -46,7 +46,7 @@ namespace Chummer.Backend
             if (frame == null)
                 return;
             string heat = string.Concat(frame.GetFileName(), ":", frame.GetFileLineNumber().ToString(GlobalSettings.InvariantCultureInfo));
-            _dicMap.Value.AddOrUpdate(heat, 1, (a, b) => b + 1);
+            _dicMap.Value.AddOrUpdate(heat, 1, (_, b) => b + 1);
         }
 
         public string GenerateInfo()

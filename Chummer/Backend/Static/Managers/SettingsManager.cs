@@ -415,7 +415,7 @@ namespace Chummer
                 string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 CharacterSettings objSettingsLoaded = await s_DicLoadedCharacterSettings.AddOrUpdateAsync(
                     strKey, objNewCharacterSettings,
-                    async (x, objOldCharacterSettings, t) =>
+                    async (_, objOldCharacterSettings, t) =>
                     {
                         await objOldCharacterSettings
                               .CopyValuesAsync(
@@ -543,7 +543,7 @@ namespace Chummer
                 string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 CharacterSettings objSettingsLoaded = await s_DicLoadedCharacterSettings.AddOrUpdateAsync(
                     strKey, objNewCharacterSettings,
-                    async (x, objOldCharacterSettings, t) =>
+                    async (_, objOldCharacterSettings, t) =>
                     {
                         await objOldCharacterSettings
                               .CopyValuesAsync(

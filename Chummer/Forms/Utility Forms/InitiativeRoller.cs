@@ -45,7 +45,7 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();

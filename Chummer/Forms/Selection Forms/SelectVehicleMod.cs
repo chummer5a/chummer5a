@@ -207,14 +207,14 @@ namespace Chummer
             await UpdateGearInfo().ConfigureAwait(false);
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object _, EventArgs e)
         {
             if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 await RefreshList().ConfigureAwait(false);
             await UpdateGearInfo().ConfigureAwait(false);
         }
 
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        private void txtSearch_KeyDown(object _, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {

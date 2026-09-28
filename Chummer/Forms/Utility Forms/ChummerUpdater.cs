@@ -830,7 +830,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdCleanReinstall_Click(object sender, EventArgs e)
+        private async void cmdCleanReinstall_Click(object _, EventArgs e)
         {
             Log.Info("cmdCleanReinstall_Click");
             try

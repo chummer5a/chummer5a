@@ -35,7 +35,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void VersionHistory_Load(object sender, EventArgs e)
+        private async void VersionHistory_Load(object _, EventArgs e)
         {
             // Display the contents of the changelog.txt file in the TextBox.
             try

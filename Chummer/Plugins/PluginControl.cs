@@ -474,7 +474,7 @@ namespace Chummer.Plugins
             };
             if (Interlocked.CompareExchange(ref _objWatcher, objNewWatcher, null) == null)
             {
-                objNewWatcher.Changed += (s, e) =>
+                objNewWatcher.Changed += (_, e) =>
                 {
                     if (e.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                         Refresh();

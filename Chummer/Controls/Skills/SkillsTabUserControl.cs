@@ -880,7 +880,7 @@ namespace Chummer.UI.Skills
                         int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = SkillsSection.CompareSkills(x, y);
                         }
@@ -892,7 +892,7 @@ namespace Chummer.UI.Skills
                         int intReturn = (await y.GetAttributeModifiersAsync(t).ConfigureAwait(false)).CompareTo(await x.GetAttributeModifiersAsync(t).ConfigureAwait(false));
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         }
@@ -901,7 +901,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>, IAsyncComparer<Skill>>(await LanguageManager.GetStringAsync("Skill_SortAttributeName", token: token).ConfigureAwait(false),
                     new SkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -909,7 +909,7 @@ namespace Chummer.UI.Skills
                     new AsyncSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -935,7 +935,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>, IAsyncComparer<Skill>>(await LanguageManager.GetStringAsync("Skill_SortCategory", token: token).ConfigureAwait(false),
                     new SkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -943,7 +943,7 @@ namespace Chummer.UI.Skills
                     new AsyncSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -962,7 +962,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_Search", token: token).ConfigureAwait(false),
                     null, null),
                 new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_SkillFilterAll", token: token).ConfigureAwait(false),
-                    x => true, (x, t) => Task.FromResult(true)),
+                    _ => true, (_, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) :Task.FromResult(true)),
                 new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_SkillFilterRatingAboveZero", token: token).ConfigureAwait(false),
                     skill => skill.Rating > 0,
                     async (skill, t) => await skill.GetRatingAsync(t).ConfigureAwait(false) > 0),
@@ -974,7 +974,7 @@ namespace Chummer.UI.Skills
                     async (skill, t) => await skill.GetRatingAsync(t).ConfigureAwait(false) == 0),
                 new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_SkillFilterNoSkillGroup", token: token).ConfigureAwait(false),
                     skill => skill.SkillGroup.Length == 0,
-                    (skill, t) => Task.FromResult(skill.SkillGroup.Length == 0)),
+                    (skill, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) :Task.FromResult(skill.SkillGroup.Length == 0)),
                 new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_SkillFilterBrokenSkillGroup", token: token).ConfigureAwait(false),
                     skill => skill.Pool > 0 && (skill.SkillGroup.Length == 0 || (skill.SkillGroupObject != null && skill.Rating > skill.SkillGroupObject.Rating)),
                     async (skill, t) => await skill.GetPoolAsync(t).ConfigureAwait(false) > 0
@@ -997,7 +997,7 @@ namespace Chummer.UI.Skills
                     ret.Add(new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(
                         strCategory + strSpace + (xmlCategoryNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName),
                         skill => skill.SkillCategory == strName,
-                        (skill, t) => Task.FromResult(skill.SkillCategory == strName)));
+                        (skill, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) : Task.FromResult(skill.SkillCategory == strName)));
             }
 
             string strAttributeLabel = await LanguageManager.GetStringAsync("String_ExpenseAttribute", token: token).ConfigureAwait(false);
@@ -1019,7 +1019,7 @@ namespace Chummer.UI.Skills
                     ret.Add(new Tuple<string, Predicate<Skill>, Func<Skill, CancellationToken, Task<bool>>>(
                         strSkillGroupLabel + strSpace + (xmlSkillGroupNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName),
                         skill => skill.SkillGroup == strName,
-                        (skill, t) => Task.FromResult(skill.SkillGroup == strName)));
+                        (skill, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) : Task.FromResult(skill.SkillGroup == strName)));
             }
 
             return ret;
@@ -1087,7 +1087,7 @@ namespace Chummer.UI.Skills
                         int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = SkillsSection.CompareSkills(x, y);
                         }
@@ -1099,7 +1099,7 @@ namespace Chummer.UI.Skills
                         int intReturn = (await y.GetAttributeModifiersAsync(t).ConfigureAwait(false)).CompareTo(await x.GetAttributeModifiersAsync(t).ConfigureAwait(false));
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         }
@@ -1108,7 +1108,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>>(await LanguageManager.GetStringAsync("Skill_SortAttributeName", token: token).ConfigureAwait(false),
                     new KnowledgeSkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -1116,7 +1116,7 @@ namespace Chummer.UI.Skills
                     new AsyncKnowledgeSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -1124,7 +1124,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>>(await LanguageManager.GetStringAsync("Skill_SortCategory", token: token).ConfigureAwait(false),
                     new KnowledgeSkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -1132,7 +1132,7 @@ namespace Chummer.UI.Skills
                     new AsyncKnowledgeSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -1152,7 +1152,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_Search", token: token).ConfigureAwait(false),
                     null, null),
                 new Tuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_KnowledgeSkillFilterAll", token: token).ConfigureAwait(false),
-                    x => true, (x, t) => Task.FromResult(true)),
+                    _ => true, (_, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) :Task.FromResult(true)),
                 new Tuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>(await LanguageManager.GetStringAsync("String_KnowledgeSkillFilterRatingAboveZero", token: token).ConfigureAwait(false),
                     skill => skill.Rating > 0,
                     async (skill, t) => await skill.GetRatingAsync(t).ConfigureAwait(false) > 0),
@@ -1180,7 +1180,7 @@ namespace Chummer.UI.Skills
                     ret.Add(new Tuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>(
                         strCategory + strSpace + (xmlCategoryNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName),
                         skill => skill.SkillCategory == strName,
-                        (skill, t) => Task.FromResult(skill.SkillCategory == strName)));
+                        (skill, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) : Task.FromResult(skill.SkillCategory == strName)));
             }
 
             string strAttributeLabel = await LanguageManager.GetStringAsync("String_ExpenseAttribute", token: token).ConfigureAwait(false);

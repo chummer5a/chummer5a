@@ -318,7 +318,7 @@ namespace Chummer
                                         }
 
                                         string strToAdd = strSelectedNodeName;
-                                        strSelectedNodeName = _dicPersistence.GetOrAdd(macroPool, x => strToAdd);
+                                        strSelectedNodeName = _dicPersistence.GetOrAdd(macroPool, _ => strToAdd);
                                     }
 
                                     break;

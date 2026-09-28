@@ -662,14 +662,14 @@ namespace Chummer
 
             public int Compare(TKey x, TKey y)
             {
-                if (Equals(x, default(TKey)))
+                if (x?.Equals(default(TKey)) != false)
                 {
-                    if (Equals(y, default(TKey)))
+                    if (y?.Equals(default(TKey)) != false)
                         return 0;
                     return -1;
                 }
 
-                if (Equals(y, default(TKey)))
+                if (y?.Equals(default(TKey)) != false)
                     return 1;
 
                 return _objMyComparer?.Compare(new KeyValuePair<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),

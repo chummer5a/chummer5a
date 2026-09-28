@@ -46,7 +46,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private async void SelectSpec_Load(object sender, EventArgs e)
+        private async void SelectSpec_Load(object _, EventArgs e)
         {
             string strSkillName = await _objSkill.GetNameAsync().ConfigureAwait(false);
             XPathNavigator xmlParentSkill;

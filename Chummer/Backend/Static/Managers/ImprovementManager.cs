@@ -224,7 +224,7 @@ namespace Chummer
             if (objCharacter == null)
                 s_strInvariantLimitSelection = value;
             else if (!objCharacter.IsDisposed)
-                s_dicLimitSelections.AddOrUpdate(objCharacter, value, (c, s) => value);
+                s_dicLimitSelections.AddOrUpdate(objCharacter, value, (_, s) => value);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace Chummer
             if (objCharacter == null)
                 s_strInvariantSelectedValue = value;
             else if (!objCharacter.IsDisposed)
-                s_dicSelectedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
+                s_dicSelectedValues.AddOrUpdate(objCharacter, value, (_, s) => value);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace Chummer
             if (objCharacter == null)
                 s_strInvariantForcedValue = value;
             else if (!objCharacter.IsDisposed)
-                s_dicForcedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
+                s_dicForcedValues.AddOrUpdate(objCharacter, value, (_, s) => value);
         }
 
         /// <summary>
@@ -313,9 +313,9 @@ namespace Chummer
                     = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
                 token.ThrowIfCancellationRequested();
                 s_DictionaryCachedValues.AddOrUpdate(objCheckKey,
-                                                     x => new ValueTuple<decimal, List<Improvement>>(
+                                                     _ => new ValueTuple<decimal, List<Improvement>>(
                                                          decimal.MinValue, new List<Improvement>(8)),
-                                                     (x, y) =>
+                                                     (_, y) =>
                                                      {
                                                          y.Item2.Clear();
                                                          return new ValueTuple<decimal, List<Improvement>>(
@@ -323,9 +323,9 @@ namespace Chummer
                                                      });
                 token.ThrowIfCancellationRequested();
                 s_DictionaryCachedAugmentedValues.AddOrUpdate(objCheckKey,
-                                                              x => new ValueTuple<decimal, List<Improvement>>(
+                                                              _ => new ValueTuple<decimal, List<Improvement>>(
                                                                   decimal.MinValue, new List<Improvement>(8)),
-                                                              (x, y) =>
+                                                              (_, y) =>
                                                               {
                                                                   y.Item2.Clear();
                                                                   return new ValueTuple<decimal, List<Improvement>>(
@@ -352,8 +352,8 @@ namespace Chummer
                         lstTemp.Clear();
                         s_DictionaryCachedValues
                             .AddOrUpdate(objCheckKey,
-                                         x => new ValueTuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
-                                         (x, y) => new ValueTuple<decimal, List<Improvement>>(
+                                         _ => new ValueTuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
+                                         (_, y) => new ValueTuple<decimal, List<Improvement>>(
                                              decimal.MinValue, lstTemp));
                     }
                 }
@@ -376,8 +376,8 @@ namespace Chummer
                         lstTemp.Clear();
                         s_DictionaryCachedAugmentedValues
                             .AddOrUpdate(objCheckKey,
-                                         x => new ValueTuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
-                                         (x, y) => new ValueTuple<decimal, List<Improvement>>(
+                                         _ => new ValueTuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp),
+                                         (_, y) => new ValueTuple<decimal, List<Improvement>>(
                                              decimal.MinValue, lstTemp));
                     }
                 }
@@ -1493,7 +1493,7 @@ namespace Chummer
                                     }
 
                                     dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
-                                        (x, y) => tupNewValue);
+                                        (_, y) => tupNewValue);
                                 }
                             }
 
@@ -3229,7 +3229,7 @@ namespace Chummer
         public static void EnableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            EnableImprovements(objCharacter, objImprovement.Yield(), token);
+            EnableImprovements(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static void EnableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -3250,7 +3250,7 @@ namespace Chummer
         public static Task EnableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return EnableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
+            return EnableImprovementsAsync(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static Task EnableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
@@ -3948,7 +3948,7 @@ namespace Chummer
         public static void DisableImprovements(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            DisableImprovements(objCharacter, objImprovement.Yield(), token);
+            DisableImprovements(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static void DisableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -3970,7 +3970,7 @@ namespace Chummer
         public static Task DisableImprovementsAsync(Character objCharacter, Improvement objImprovement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return DisableImprovementsAsync(objCharacter, objImprovement.Yield(), token);
+            return DisableImprovementsAsync(objCharacter, Array.AsReadOnly(objImprovement.Yield()), token);
         }
 
         public static Task DisableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
@@ -6388,8 +6388,8 @@ namespace Chummer
 
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions
-                        = s_DictionaryTransactions.AddOrUpdate(objCharacter, x => new List<Improvement>(1),
-                                                               (x, y) => y);
+                        = s_DictionaryTransactions.AddOrUpdate(objCharacter, _ => new List<Improvement>(1),
+                                                               (_, y) => y);
                     lstTransactions.Add(objImprovement);
                 }
             }
@@ -6488,8 +6488,8 @@ namespace Chummer
 
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions
-                        = s_DictionaryTransactions.AddOrUpdate(objCharacter, x => new List<Improvement>(1),
-                                                               (x, y) => y);
+                        = s_DictionaryTransactions.AddOrUpdate(objCharacter, _ => new List<Improvement>(1),
+                                                               (_, y) => y);
                     lstTransactions.Add(objImprovement);
                 }
                 finally

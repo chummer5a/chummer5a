@@ -318,7 +318,7 @@ namespace Chummer
             }
         }
 
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        private void txtSearch_KeyDown(object _, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {

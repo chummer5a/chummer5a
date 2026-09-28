@@ -67,7 +67,9 @@ namespace Chummer
                 _strCachedParentOwnCost = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
                     async () => (await _objArmor.GetOwnCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                     Utils.JoinableTaskFactory);
-                _strCachedParentOwnWeight = new Lazy<string>(() => _objArmor.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                _strCachedParentOwnWeight = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
+                    async () => (await _objArmor.GetOwnWeightAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                    Utils.JoinableTaskFactory);
                 _strCachedParentCapacity = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
                     () => _objArmor.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
                 _objParentNode = _objArmor.GetNodeXPath();
@@ -616,7 +618,7 @@ namespace Chummer
 
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentRating;
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentOwnCost;
-        private readonly Lazy<string> _strCachedParentOwnWeight;
+        private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentOwnWeight;
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCapacity;
 
         private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
@@ -651,13 +653,13 @@ namespace Chummer
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
                                 t => _strCachedParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight",
-                                () => _strCachedParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                                t => _strCachedParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}",
                                 t => _strCachedParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Capacity",

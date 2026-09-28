@@ -1012,7 +1012,7 @@ namespace Chummer
         {
             if (obj is CalendarWeek objWeek)
                 return CompareTo(objWeek);
-            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalSettings.CultureInfo);
+            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         public int CompareTo(CalendarWeek other)

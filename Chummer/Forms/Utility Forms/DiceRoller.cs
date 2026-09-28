@@ -219,12 +219,12 @@ namespace Chummer
             }
         }
 
-        private void nudDice_ValueChanged(object sender, EventArgs e)
+        private void nudDice_ValueChanged(object _, EventArgs e)
         {
             _intDice = nudDice.ValueAsInt;
         }
 
-        private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboMethod_SelectedIndexChanged(object _, EventArgs e)
         {
             if (cboMethod.SelectedValue.ToString() == "Standard")
                 chkRuleOf6.Enabled = true;

@@ -72,13 +72,13 @@ namespace Chummer
             {
                 if (objReturn._blnAppStartingCursor)
                 {
-                    int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (_, y) => Interlocked.Increment(ref y));
                     objReturn.SetControlCursor(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
                     objReturn._blnDoUnsetCursorOnDispose = true;
                 }
                 else
                 {
-                    s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (x, y) => Interlocked.Add(ref y, short.MaxValue));
+                    s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (_, y) => Interlocked.Add(ref y, short.MaxValue));
                     objReturn.SetControlCursor(Cursors.WaitCursor);
                     objReturn._blnDoUnsetCursorOnDispose = true;
                 }
@@ -132,7 +132,7 @@ namespace Chummer
             {
                 if (objReturn._blnAppStartingCursor)
                 {
-                    int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (_, y) => Interlocked.Increment(ref y));
                     try
                     {
                         await objReturn.SetControlCursorAsync(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor, token).ConfigureAwait(false);
@@ -146,7 +146,7 @@ namespace Chummer
                 }
                 else
                 {
-                    s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (x, y) => Interlocked.Add(ref y, short.MaxValue));
+                    s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (_, y) => Interlocked.Add(ref y, short.MaxValue));
                     try
                     {
                         await objReturn.SetControlCursorAsync(Cursors.WaitCursor, token).ConfigureAwait(false);
@@ -219,7 +219,7 @@ namespace Chummer
                 {
                     int intDecrementedValue = Interlocked.Decrement(ref intCurrentValue);
                     if (intDecrementedValue > 0)
-                        s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                        s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (_, y) => y + intDecrementedValue);
                     else if (_blnDoUnsetCursorOnDispose)
                         SetControlCursor(null);
                 }
@@ -229,7 +229,7 @@ namespace Chummer
                 int intDecrementedValue = Interlocked.Add(ref intCurrentValue, -short.MaxValue);
                 if (intDecrementedValue > 0)
                 {
-                    s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                    s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (_, y) => y + intDecrementedValue);
                     if (_blnDoUnsetCursorOnDispose)
                         SetControlCursor(intDecrementedValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
                 }
@@ -257,7 +257,7 @@ namespace Chummer
                 {
                     int intDecrementedValue = Interlocked.Decrement(ref intCurrentValue);
                     if (intDecrementedValue > 0)
-                        s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                        s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (_, y) => y + intDecrementedValue);
                     else if (_blnDoUnsetCursorOnDispose)
                         await SetControlCursorAsync(null).ConfigureAwait(false);
                 }
@@ -267,7 +267,7 @@ namespace Chummer
                 int intDecrementedValue = Interlocked.Add(ref intCurrentValue, -short.MaxValue);
                 if (intDecrementedValue > 0)
                 {
-                    s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                    s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (_, y) => y + intDecrementedValue);
                     if (_blnDoUnsetCursorOnDispose)
                         await SetControlCursorAsync(intDecrementedValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor).ConfigureAwait(false);
                 }

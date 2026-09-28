@@ -13175,8 +13175,8 @@ namespace Chummer
                                     sbdPositiveQualityTooltip.Append(strNameToUse, '/', strName);
 
                                 sbdPositiveQualityTooltip.Append(strSpace, '(',
-                                    await objGroupContact.GetContactPointsAsync(t).ConfigureAwait(false)
-                                    * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false))
+                                    (await objGroupContact.GetContactPointsAsync(t).ConfigureAwait(false)
+                                    * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
                                     .AppendLine(')');
                             }, token).ConfigureAwait(false);
                         }
@@ -14121,7 +14121,7 @@ namespace Chummer
 
         private int _intFileUpdateQueued;
 
-        protected override async void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
+        protected override async void LiveUpdateFromCharacterFile(object _, FileSystemEventArgs e)
         {
             if (Interlocked.Increment(ref _intFileUpdateQueued) > 1)
             {

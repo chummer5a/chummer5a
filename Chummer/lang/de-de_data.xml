@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -42136,13 +42136,13 @@
       </vehicle>
       <vehicle translated="True">
         <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
-        <name>Dodge Hurricane Crew Modell</name>
+        <name>Dodge Hurricane Crew Model</name>
         <translate>Dodge Hurricane Crew-Modell</translate>
         <altpage>57</altpage>
       </vehicle>
       <vehicle translated="True">
         <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
-        <name>Dodge Hurricane Security Modell</name>
+        <name>Dodge Hurricane Security Model</name>
         <translate>Dodge Hurricane Security-Modell</translate>
         <altpage>57</altpage>
       </vehicle>
@@ -45675,13 +45675,13 @@
       </weapon>
       <weapon>
         <id>459205e8-54bd-44aa-ba25-f7fb8d056d70</id>
-        <name>AK-97 Karabiner (2050)</name>
+        <name>AK-97 Carbine (2050)</name>
         <translate>AK-97 Karabiner</translate>
         <altpage>185</altpage>
       </weapon>
       <weapon>
         <id>fe671fb0-85ba-4d10-9fa6-e3dff6c55645</id>
-        <name>Beretta Modell 70 (2050)</name>
+        <name>Beretta Model 70 (2050)</name>
         <translate>Beretta Modell 70</translate>
         <altpage>185</altpage>
       </weapon>
@@ -48218,8 +48218,8 @@
       </accessory>
       <accessory>
         <id>e6b1550c-c392-4e85-b618-04f8a09b8020</id>
-        <name>Gyro Mount, default (2050) </name>
-        <translate>Gyro Mount, default (2050) </translate>
+        <name>Gyro Mount, Default (2050) </name>
+        <translate>Gyro Mount, Default (2050) </translate>
         <altpage>189</altpage>
       </accessory>
       <accessory>

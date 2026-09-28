@@ -3969,8 +3969,8 @@ namespace Chummer.Backend.Skills
             bool blnLhsFree = lhs.Free;
             if (blnLhsFree != rhs.Free)
                 return blnLhsFree ? 1 : -1;
-            return string.Compare(lhs.CurrentDisplayName, rhs.CurrentDisplayName, false,
-                GlobalSettings.CultureInfo);
+            return string.Compare(lhs.CurrentDisplayName, rhs.CurrentDisplayName,
+                GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         public static int CompareSkills(Skill rhs, Skill lhs)
@@ -3982,13 +3982,13 @@ namespace Chummer.Backend.Skills
             {
                 return lhsExoticSkill != null
                     ? string.Compare(rhsExoticSkill.CurrentDisplaySpecific,
-                        lhsExoticSkill.CurrentDisplaySpecific ?? string.Empty, false,
-                        GlobalSettings.CultureInfo)
+                        lhsExoticSkill.CurrentDisplaySpecific ?? string.Empty,
+                        GlobalSettings.CultureInfo, CompareOptions.StringSort)
                     : 1;
             }
             if (lhsExoticSkill != null)
                 return -1;
-            return string.Compare(rhs?.CurrentDisplayName ?? string.Empty, lhs?.CurrentDisplayName ?? string.Empty, false, GlobalSettings.CultureInfo);
+            return string.Compare(rhs?.CurrentDisplayName ?? string.Empty, lhs?.CurrentDisplayName ?? string.Empty, GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         public static int CompareSkillGroups(SkillGroup objXGroup, SkillGroup objYGroup)
@@ -3997,8 +3997,8 @@ namespace Chummer.Backend.Skills
                 return objYGroup == null ? 0 : 1;
             if (objYGroup == null)
                 return -1;
-            return string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false,
-                GlobalSettings.CultureInfo);
+            return string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName,
+                GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         public static async Task<int> CompareSpecializationsAsync(SkillSpecialization lhs, SkillSpecialization rhs, CancellationToken token = default)
@@ -4015,8 +4015,8 @@ namespace Chummer.Backend.Skills
             if (blnLhsFree != await rhs.GetFreeAsync(token).ConfigureAwait(false))
                 return blnLhsFree ? 1 : -1;
             return string.Compare(await lhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                  await rhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), false,
-                                  GlobalSettings.CultureInfo);
+                                  await rhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                  GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         public static async Task<int> CompareSkillsAsync(Skill rhs, Skill lhs, CancellationToken token = default)
@@ -4028,15 +4028,15 @@ namespace Chummer.Backend.Skills
             {
                 return lhsExoticSkill != null
                     ? string.Compare(await rhsExoticSkill.GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false),
-                                     await lhsExoticSkill.GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false) ?? string.Empty, false,
-                                     GlobalSettings.CultureInfo)
+                                     await lhsExoticSkill.GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false) ?? string.Empty,
+                                     GlobalSettings.CultureInfo, CompareOptions.StringSort)
                     : 1;
             }
             if (lhsExoticSkill != null)
                 return -1;
             return string.Compare(rhs != null ? await rhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty,
-                                  lhs != null ? await lhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty, false,
-                                  GlobalSettings.CultureInfo);
+                                  lhs != null ? await lhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty,
+                                  GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         public static async Task<int> CompareSkillGroupsAsync(SkillGroup objXGroup, SkillGroup objYGroup, CancellationToken token = default)
@@ -4046,8 +4046,8 @@ namespace Chummer.Backend.Skills
             if (objYGroup == null)
                 return -1;
             return string.Compare(await objXGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                  await objYGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), false,
-                                  GlobalSettings.CultureInfo);
+                                  await objYGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                  GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
 
         private static string SkillFilter(FilterOption eFilter, string strName = "")

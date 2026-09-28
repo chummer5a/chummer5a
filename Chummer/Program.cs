@@ -939,7 +939,7 @@ namespace Chummer
 
                 return frmOwnerForm.DoThreadSafeFunc(x => ScrollableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
-            MainFormOnAssignActions.Add(x => ShowScrollableMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            MainFormOnAssignActions.Add(_ => ShowScrollableMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
         }
 
@@ -1007,7 +1007,7 @@ namespace Chummer
                             token: token), token: token).Unwrap().ConfigureAwait(false);
             }
 
-            MainFormOnAssignAsyncActions.Add(x =>
+            MainFormOnAssignAsyncActions.Add(_ =>
                 ShowScrollableMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
             return DialogResult.Cancel;
         }
@@ -1067,7 +1067,7 @@ namespace Chummer
 
                 return frmOwnerForm.DoThreadSafeFunc(x => CenterableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
-            MainFormOnAssignActions.Add(x => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            MainFormOnAssignActions.Add(_ => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
         }
 
@@ -1134,7 +1134,7 @@ namespace Chummer
                     .ConfigureAwait(false);
             }
 
-            MainFormOnAssignAsyncActions.Add(x =>
+            MainFormOnAssignAsyncActions.Add(_ =>
                 ShowMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
             return DialogResult.Cancel;
         }
@@ -1513,7 +1513,8 @@ namespace Chummer
 
         public static Task<bool> SwitchToOpenCharacter(Character objCharacter, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
             if (objCharacter == null || MainForm == null)
                 return Task.FromResult(false);
             return MainForm.SwitchToOpenCharacter(objCharacter, token);
@@ -1528,7 +1529,10 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objCharacter == null)
                 return Task.CompletedTask;
-            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
+            if (MainForm != null)
+                return MainForm.OpenCharacter(objCharacter, blnIncludeInMru, token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacter(objCharacter, blnIncludeInMru, t)), token);
         }
 
         /// <summary>
@@ -1539,6 +1543,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
@@ -1564,7 +1570,10 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objCharacter == null)
                 return Task.CompletedTask;
-            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
+            if (MainForm != null)
+                return MainForm.OpenCharacterForPrinting(objCharacter, blnIncludeInMru, token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterForPrinting(objCharacter, blnIncludeInMru, t)), token);
         }
 
         /// <summary>
@@ -1575,6 +1584,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
@@ -1585,7 +1596,8 @@ namespace Chummer
 
         public static Task<bool> SwitchToOpenExportCharacter(Character objCharacter, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
             if (objCharacter == null || MainForm == null)
                 return Task.FromResult(false);
             return MainForm.SwitchToOpenExportCharacter(objCharacter, token);
@@ -1600,7 +1612,10 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (objCharacter == null)
                 return Task.CompletedTask;
-            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
+            if (MainForm != null)
+                return MainForm.OpenCharacterForExport(objCharacter, blnIncludeInMru, token);
+            return TaskExtensions.RunWithoutEC(t => MainFormOnAssignAsyncActions.Add(
+                                x => x.OpenCharacterForExport(objCharacter, blnIncludeInMru, t)), token);
         }
 
         /// <summary>
@@ -1611,6 +1626,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
@@ -1639,7 +1656,7 @@ namespace Chummer
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
             {
-                x.Closed += (sender, args) =>
+                x.Closed += (_, args) =>
                 {
                     s_setLoadingBars.Remove(x);
                     Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);

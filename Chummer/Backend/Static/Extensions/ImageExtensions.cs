@@ -446,9 +446,9 @@ namespace Chummer
                     if (eOverrideFormat == null)
                     {
                         // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
-                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                        if (ImageFormat.Jpeg.Equals(imgToConvert.RawFormat))
                             eOverrideFormat = ImageFormat.Jpeg;
-                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                        else if (ImageFormat.Gif.Equals(imgToConvert.RawFormat))
                             eOverrideFormat = ImageFormat.Gif;
                         else
                             eOverrideFormat = ImageFormat.Png;
@@ -550,9 +550,9 @@ namespace Chummer
                     if (eOverrideFormat == null)
                     {
                         // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
-                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                        if (ImageFormat.Jpeg.Equals(imgToConvert.RawFormat))
                             eOverrideFormat = ImageFormat.Jpeg;
-                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                        else if (ImageFormat.Gif.Equals(imgToConvert.RawFormat))
                             eOverrideFormat = ImageFormat.Gif;
                         else
                             eOverrideFormat = ImageFormat.Png;

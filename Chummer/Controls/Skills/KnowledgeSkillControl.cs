@@ -279,7 +279,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     cboName.PopulateWithListItems(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills, token: _objMyToken);
-                    cboName.DoThreadSafe((x, y) =>
+                    cboName.DoThreadSafe(x =>
                     {
                         x.SelectedIndex = -1;
                         x.Text = strWritableName;
@@ -396,7 +396,7 @@ namespace Chummer.UI.Skills
                     bool blnEnableNative
                         = _objSkill.IsNativeLanguage
                           || _objCharacter.SkillsSection.HasAvailableNativeLanguageSlots;
-                    chkNativeLanguage.DoThreadSafe((x, y) => x.Enabled = blnEnableNative, _objMyToken);
+                    chkNativeLanguage.DoThreadSafe(x => x.Enabled = blnEnableNative, _objMyToken);
 
                     bool blnCanHaveSpecs = _objSkill.CanHaveSpecs;
                     chkKarma.DoThreadSafe(x => x.Enabled = blnCanHaveSpecs, _objMyToken);

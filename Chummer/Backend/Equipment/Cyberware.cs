@@ -3188,11 +3188,11 @@ namespace Chummer.Backend.Equipment
                     string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "weight", TotalWeight.ToString(strWeightFormat, objCulture),
+                            "weight", (await GetTotalWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("ownweight",
-                            OwnWeight.ToString(strWeightFormat, objCulture),
+                            (await GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture),
                             token: token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
@@ -5738,6 +5738,9 @@ namespace Chummer.Backend.Equipment
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
+
             using (LockObject.EnterReadLock())
             {
                 // Do not do property changes if we're not directly equipped to a character
@@ -5918,6 +5921,8 @@ namespace Chummer.Backend.Equipment
         private async Task DoPropertyChangesAsync(bool blnDoRating, bool blnDoGrade, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (IsDisposed) // Hacky fix for if we got queued to have this processed, but got deleted by an earlier entry
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11101,6 +11106,343 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total weight of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public decimal CalculatedOwnWeight(Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterReadLock(token))
+            {
+                if (!string.IsNullOrEmpty(ParentID))
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(funcRating, token).TrimStartNoAlloc('+');
+                string strParentWeight = "0";
+                decimal decTotalParentGearWeight = 0;
+                if (_objParent != null)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strWeightExpression.Contains("Parent Weight"))
+                        strParentWeight = _objParent.Weight;
+                    if (strWeightExpression.Contains("Parent Gear Weight"))
+                        decTotalParentGearWeight
+                            = _objParent.GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+                }
+
+                decimal decTotalGearWeight = 0;
+                if (GearChildren.Count > 0 && strWeightExpression.Contains("Gear Weight"))
+                {
+                    token.ThrowIfCancellationRequested();
+                    decTotalGearWeight = GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+                }
+
+                decimal decTotalChildrenWeight = 0;
+                if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
+                {
+                    token.ThrowIfCancellationRequested();
+                    decTotalChildrenWeight
+                        = Children.Sum(x => x.CalculatedTotalWeight(() => x.Rating));
+                }
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdWeight.Append(strWeightExpression);
+                    sbdWeight.Replace("Parent Weight", strParentWeight);
+                    sbdWeight.Replace("Parent Gear Weight",
+                                      decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Gear Weight", decTotalGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Children Weight",
+                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    token.ThrowIfCancellationRequested();
+                    sbdWeight.CheapReplace(strWeightExpression, "MinRating",
+                                           () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    token.ThrowIfCancellationRequested();
+                    sbdWeight.CheapReplace("Rating", t => funcRating(t).ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                    token.ThrowIfCancellationRequested();
+                    ProcessAttributesInXPath(sbdWeight, strWeightExpression, token: token);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), token);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public async Task<decimal> CalculatedOwnWeightAsync(Func<int> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(ParentID))
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(funcRating, token).TrimStartNoAlloc('+');
+                string strParentWeight = "0";
+                decimal decTotalParentGearWeight = 0;
+                if (_objParent != null)
+                {
+                    if (strWeightExpression.Contains("Parent Weight"))
+                        strParentWeight = _objParent.Weight;
+                    if (strWeightExpression.Contains("Parent Gear Weight"))
+                        decTotalParentGearWeight
+                            = await _objParent.GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalGearWeight = 0;
+                if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Gear Weight"))
+                {
+                    decTotalGearWeight = await GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalChildrenWeight = 0;
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Children Weight"))
+                {
+                    decTotalChildrenWeight
+                        = await Children.SumAsync((x, t) => x.CalculatedTotalWeightAsync(t2 => x.GetRatingAsync(t2), t), token).ConfigureAwait(false);
+                }
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression);
+                    sbdWeight.Replace("Parent Weight", strParentWeight);
+                    sbdWeight.Replace("Parent Gear Weight",
+                                      decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Gear Weight", decTotalGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Children Weight",
+                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdWeight.CheapReplaceAsync(strWeightExpression, "MinRating",
+                                           async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    sbdWeight.CheapReplace("Rating", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                    await ProcessAttributesInXPathAsync(sbdWeight, strWeightExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public async Task<decimal> CalculatedOwnWeightAsync(Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(ParentID))
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(funcRating, token).TrimStartNoAlloc('+');
+                string strParentWeight = "0";
+                decimal decTotalParentGearWeight = 0;
+                if (_objParent != null)
+                {
+                    if (strWeightExpression.Contains("Parent Weight"))
+                        strParentWeight = _objParent.Weight;
+                    if (strWeightExpression.Contains("Parent Gear Weight"))
+                        decTotalParentGearWeight
+                            = await _objParent.GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalGearWeight = 0;
+                if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Gear Weight"))
+                {
+                    decTotalGearWeight = await GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalChildrenWeight = 0;
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Children Weight"))
+                {
+                    decTotalChildrenWeight
+                        = await Children.SumAsync((x, t) => x.CalculatedTotalWeightAsync(t2 => x.GetRatingAsync(t2), t), token).ConfigureAwait(false);
+                }
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression);
+                    sbdWeight.Replace("Parent Weight", strParentWeight);
+                    sbdWeight.Replace("Parent Gear Weight",
+                                      decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Gear Weight", decTotalGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Children Weight",
+                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdWeight.CheapReplaceAsync(strWeightExpression, "MinRating",
+                                           async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    sbdWeight.CheapReplace("Rating", t => funcRating(t).ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                    await ProcessAttributesInXPathAsync(sbdWeight, strWeightExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public async Task<decimal> CalculatedOwnWeightAsync(Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(ParentID))
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+                strWeightExpression = (await strWeightExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartNoAlloc('+');
+                string strParentWeight = "0";
+                decimal decTotalParentGearWeight = 0;
+                if (_objParent != null)
+                {
+                    if (strWeightExpression.Contains("Parent Weight"))
+                        strParentWeight = _objParent.Weight;
+                    if (strWeightExpression.Contains("Parent Gear Weight"))
+                        decTotalParentGearWeight
+                            = await _objParent.GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalGearWeight = 0;
+                if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Gear Weight"))
+                {
+                    decTotalGearWeight = await GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalChildrenWeight = 0;
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Children Weight"))
+                {
+                    decTotalChildrenWeight
+                        = await Children.SumAsync((x, t) => x.CalculatedTotalWeightAsync(t2 => x.GetRatingAsync(t2), t), token).ConfigureAwait(false);
+                }
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression);
+                    sbdWeight.Replace("Parent Weight", strParentWeight);
+                    sbdWeight.Replace("Parent Gear Weight",
+                                      decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Gear Weight", decTotalGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Children Weight",
+                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdWeight.CheapReplaceAsync(strWeightExpression, "MinRating",
+                                           async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdWeight.CheapReplaceAsync("Rating", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await ProcessAttributesInXPathAsync(sbdWeight, strWeightExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public async Task<decimal> CalculatedOwnWeightAsync(Func<CancellationToken, Task<int>> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(ParentID))
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+                strWeightExpression = (await strWeightExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartNoAlloc('+');
+                string strParentWeight = "0";
+                decimal decTotalParentGearWeight = 0;
+                if (_objParent != null)
+                {
+                    if (strWeightExpression.Contains("Parent Weight"))
+                        strParentWeight = _objParent.Weight;
+                    if (strWeightExpression.Contains("Parent Gear Weight"))
+                        decTotalParentGearWeight
+                            = await _objParent.GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalGearWeight = 0;
+                if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Gear Weight"))
+                {
+                    decTotalGearWeight = await GearChildren.SumAsync(async (x, t) => await x.GetOwnWeightAsync(t).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);
+                }
+
+                decimal decTotalChildrenWeight = 0;
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strWeightExpression.Contains("Children Weight"))
+                {
+                    decTotalChildrenWeight
+                        = await Children.SumAsync((x, t) => x.CalculatedTotalWeightAsync(t2 => x.GetRatingAsync(t2), t), token).ConfigureAwait(false);
+                }
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression);
+                    sbdWeight.Replace("Parent Weight", strParentWeight);
+                    sbdWeight.Replace("Parent Gear Weight",
+                                      decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Gear Weight", decTotalGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Children Weight",
+                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdWeight.CheapReplaceAsync(strWeightExpression, "MinRating",
+                                           async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdWeight.CheapReplaceAsync("Rating", async t => (await funcRating(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await ProcessAttributesInXPathAsync(sbdWeight, strWeightExpression, token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal((double)objProcess);
+                }
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Total weight of the Cyberware and its plugins.
         /// </summary>
         public decimal CalculatedTotalWeight(Func<int> funcRating)
@@ -11136,6 +11478,216 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Total weight of the Cyberware and its plugins.
+        /// </summary>
+        public decimal CalculatedTotalWeight(Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterReadLock(token))
+            {
+                decimal decWeight = CalculatedOwnWeight(funcRating, token);
+                decimal decReturn = decWeight;
+
+                // Add in the weight of all child components.
+                foreach (Cyberware objChild in Children.Where(x => x.IsModularCurrentlyEquipped))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (objChild.Capacity == "[*]")
+                        continue;
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Weight.StartsWith('*'))
+                    {
+                        if (decimal.TryParse(objChild.Weight.TrimStartNoAlloc('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        {
+                            --decPluginWeight;
+                            decPluginWeight *= decWeight;
+                            decReturn += decPluginWeight;
+                        }
+                    }
+                    else
+                        decReturn += objChild.CalculatedTotalWeight(() => objChild.Rating);
+                }
+
+                // Add in the weight of all Gear plugins.
+                decReturn += GearChildren.Sum(x => x.Equipped, objGear => objGear.TotalWeight, token);
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the Cyberware and its plugins.
+        /// </summary>
+        public async Task<decimal> CalculatedTotalWeightAsync(Func<int> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decWeight = await CalculatedOwnWeightAsync(funcRating, token).ConfigureAwait(false);
+                decimal decReturn = decWeight;
+
+                // Add in the weight of all child components.
+                decReturn += await Children.SumAsync(x => x.IsModularCurrentlyEquipped, (objChild, t) =>
+                {
+                    if (objChild.Capacity == "[*]")
+                        return Task.FromResult(0.0m);
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Weight.StartsWith('*'))
+                    {
+                        if (decimal.TryParse(objChild.Weight.TrimStartNoAlloc('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        {
+                            --decPluginWeight;
+                            decPluginWeight *= decWeight;
+                            return Task.FromResult(decPluginWeight);
+                        }
+                        return Task.FromResult(0.0m);
+                    }
+                    else
+                        return objChild.CalculatedTotalWeightAsync(t2 => objChild.GetRatingAsync(t2), t);
+                }, token).ConfigureAwait(false);
+
+                // Add in the weight of all Gear plugins.
+                decReturn += await GearChildren.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the Cyberware and its plugins.
+        /// </summary>
+        public async Task<decimal> CalculatedTotalWeightAsync(Func<CancellationToken, int> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decWeight = await CalculatedOwnWeightAsync(funcRating, token).ConfigureAwait(false);
+                decimal decReturn = decWeight;
+
+                // Add in the weight of all child components.
+                decReturn += await Children.SumAsync(x => x.IsModularCurrentlyEquipped, (objChild, t) =>
+                {
+                    if (objChild.Capacity == "[*]")
+                        return Task.FromResult(0.0m);
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Weight.StartsWith('*'))
+                    {
+                        if (decimal.TryParse(objChild.Weight.TrimStartNoAlloc('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        {
+                            --decPluginWeight;
+                            decPluginWeight *= decWeight;
+                            return Task.FromResult(decPluginWeight);
+                        }
+                        return Task.FromResult(0.0m);
+                    }
+                    else
+                        return objChild.CalculatedTotalWeightAsync(t2 => objChild.GetRatingAsync(t2), t);
+                }, token).ConfigureAwait(false);
+
+                // Add in the weight of all Gear plugins.
+                decReturn += await GearChildren.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the Cyberware and its plugins.
+        /// </summary>
+        public async Task<decimal> CalculatedTotalWeightAsync(Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decWeight = await CalculatedOwnWeightAsync(funcRating, token).ConfigureAwait(false);
+                decimal decReturn = decWeight;
+
+                // Add in the weight of all child components.
+                decReturn += await Children.SumAsync(x => x.IsModularCurrentlyEquipped, (objChild, t) =>
+                {
+                    if (objChild.Capacity == "[*]")
+                        return Task.FromResult(0.0m);
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Weight.StartsWith('*'))
+                    {
+                        if (decimal.TryParse(objChild.Weight.TrimStartNoAlloc('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        {
+                            --decPluginWeight;
+                            decPluginWeight *= decWeight;
+                            return Task.FromResult(decPluginWeight);
+                        }
+                        return Task.FromResult(0.0m);
+                    }
+                    else
+                        return objChild.CalculatedTotalWeightAsync(t2 => objChild.GetRatingAsync(t2), t);
+                }, token).ConfigureAwait(false);
+
+                // Add in the weight of all Gear plugins.
+                decReturn += await GearChildren.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the Cyberware and its plugins.
+        /// </summary>
+        public async Task<decimal> CalculatedTotalWeightAsync(Func<CancellationToken, Task<int>> funcRating, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decWeight = await CalculatedOwnWeightAsync(funcRating, token).ConfigureAwait(false);
+                decimal decReturn = decWeight;
+
+                // Add in the weight of all child components.
+                decReturn += await Children.SumAsync(x => x.IsModularCurrentlyEquipped, (objChild, t) =>
+                {
+                    if (objChild.Capacity == "[*]")
+                        return Task.FromResult(0.0m);
+                    // If the child cost starts with "*", multiply the item's base cost.
+                    if (objChild.Weight.StartsWith('*'))
+                    {
+                        if (decimal.TryParse(objChild.Weight.TrimStartNoAlloc('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        {
+                            --decPluginWeight;
+                            decPluginWeight *= decWeight;
+                            return Task.FromResult(decPluginWeight);
+                        }
+                        return Task.FromResult(0.0m);
+                    }
+                    else
+                        return objChild.CalculatedTotalWeightAsync(t2 => objChild.GetRatingAsync(t2), t);
+                }, token).ConfigureAwait(false);
+
+                // Add in the weight of all Gear plugins.
+                decReturn += await GearChildren.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+
+                return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public decimal TotalWeight
         {
             get
@@ -11145,12 +11697,40 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<decimal> GetTotalWeightAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await CalculatedTotalWeightAsync(GetRatingAsync, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public decimal OwnWeight
         {
             get
             {
                 using (LockObject.EnterReadLock())
                     return CalculatedOwnWeight(() => Rating);
+            }
+        }
+
+        public async Task<decimal> GetOwnWeightAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await CalculatedOwnWeightAsync(GetRatingAsync, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -12983,19 +13563,19 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncCyberwareBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
-                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncCyberwareToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, y,
                         funcMakeDirty, token: innerToken);
 
-                Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
-                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncGearToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, t => Children.GetCountAsync(t), y,
                         funcMakeDirty, token: innerToken);
 
@@ -13005,7 +13585,7 @@ namespace Chummer.Backend.Equipment
                            + await GearChildren.GetCountAsync(innerToken).ConfigureAwait(false);
                 }
 
-                Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncDrugToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     RefreshChildrenDrugs(treCyberware, cmsCyberware, t => FuncDrugOffset(t), y, innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
@@ -13053,19 +13633,19 @@ namespace Chummer.Backend.Equipment
             TaggedObservableCollection<Drug> lstDrugChildren = await GetDrugChildrenAsync(token).ConfigureAwait(false);
             if (blnAdd)
             {
-                Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncCyberwareBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberwareClearBindings(treCyberware, y, innerToken);
 
-                Task FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncCyberwareToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, y,
                         funcMakeDirty, token: innerToken);
 
-                Task FuncGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
-                Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncGearToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, t => Children.GetCountAsync(t), y,
                         funcMakeDirty, token: innerToken);
 
@@ -13075,7 +13655,7 @@ namespace Chummer.Backend.Equipment
                            + await lstGearChildren.GetCountAsync(innerToken).ConfigureAwait(false);
                 }
 
-                Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncDrugToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     RefreshChildrenDrugs(treCyberware, cmsCyberware, t => FuncDrugOffset(t), y, innerToken);
 
                 lstChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);

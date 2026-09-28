@@ -2363,11 +2363,11 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strArg0);
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg0);
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -2390,7 +2390,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     if (strFormat[intOpenIndex + 1] == '0')
                         sbdInput.Append(strArg0);
                     else
@@ -2398,7 +2398,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -2421,7 +2421,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -2437,7 +2437,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -2460,7 +2460,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -2479,7 +2479,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         private static int GetNextOpenIndexForAppendFastFormat1Arg(string strFormat, int intLastOpenIndex, bool blnAllowFormat0 = true)
@@ -2842,8 +2842,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                            intArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(intArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                         intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                     }
                 }
@@ -2854,11 +2853,11 @@ namespace Chummer
                 {
                     if (strNoFormatArg0 == null)
                         strNoFormatArg0 = intArg0.ToString(objProvider);
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -2886,8 +2885,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                            lngArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(lngArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                         intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                     }
                 }
@@ -2898,11 +2896,11 @@ namespace Chummer
                 {
                     if (strNoFormatArg0 == null)
                         strNoFormatArg0 = lngArg0.ToString(objProvider);
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -2930,8 +2928,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                            fltArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(fltArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                         intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                     }
                 }
@@ -2942,11 +2939,11 @@ namespace Chummer
                 {
                     if (strNoFormatArg0 == null)
                         strNoFormatArg0 = fltArg0.ToString(objProvider);
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -2974,8 +2971,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                            dblArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(dblArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                         intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                     }
                 }
@@ -2986,11 +2982,11 @@ namespace Chummer
                 {
                     if (strNoFormatArg0 == null)
                         strNoFormatArg0 = dblArg0.ToString(objProvider);
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3018,8 +3014,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                            decArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(decArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                         intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                     }
                 }
@@ -3030,11 +3025,11 @@ namespace Chummer
                 {
                     if (strNoFormatArg0 == null)
                         strNoFormatArg0 = decArg0.ToString(objProvider);
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3065,8 +3060,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    intArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(intArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3077,7 +3071,7 @@ namespace Chummer
                         {
                             if (strNoFormatArg0 == null)
                                 strNoFormatArg0 = intArg0.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3086,13 +3080,13 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3119,7 +3113,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3132,8 +3126,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    intArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(intArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3144,13 +3137,13 @@ namespace Chummer
                         {
                             if (strNoFormatArg1 == null)
                                 strNoFormatArg1 = intArg1.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3179,7 +3172,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '0':
@@ -3197,7 +3190,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -3214,7 +3207,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3245,8 +3238,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    lngArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(lngArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3257,7 +3249,7 @@ namespace Chummer
                         {
                             if (strNoFormatArg0 == null)
                                 strNoFormatArg0 = lngArg0.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3266,13 +3258,13 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3299,7 +3291,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3312,8 +3304,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    lngArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(lngArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3324,13 +3315,13 @@ namespace Chummer
                         {
                             if (strNoFormatArg1 == null)
                                 strNoFormatArg1 = lngArg1.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3359,7 +3350,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '0':
@@ -3377,7 +3368,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -3394,7 +3385,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3425,8 +3416,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    fltArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(fltArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3437,7 +3427,7 @@ namespace Chummer
                         {
                             if (strNoFormatArg0 == null)
                                 strNoFormatArg0 = fltArg0.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3446,13 +3436,13 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3479,7 +3469,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3492,8 +3482,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    fltArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(fltArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3504,13 +3493,13 @@ namespace Chummer
                         {
                             if (strNoFormatArg1 == null)
                                 strNoFormatArg1 = fltArg1.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3539,7 +3528,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '0':
@@ -3557,7 +3546,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -3574,7 +3563,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3605,8 +3594,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    dblArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(dblArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3617,7 +3605,7 @@ namespace Chummer
                         {
                             if (strNoFormatArg0 == null)
                                 strNoFormatArg0 = dblArg0.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3626,13 +3614,13 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3659,7 +3647,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3672,8 +3660,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    dblArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(dblArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3684,13 +3671,13 @@ namespace Chummer
                         {
                             if (strNoFormatArg1 == null)
                                 strNoFormatArg1 = dblArg1.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3719,7 +3706,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '0':
@@ -3737,7 +3724,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -3754,7 +3741,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3785,8 +3772,7 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    decArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(decArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3797,7 +3783,7 @@ namespace Chummer
                         {
                             if (strNoFormatArg0 == null)
                                 strNoFormatArg0 = decArg0.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3806,13 +3792,13 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3839,7 +3825,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                         {
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)).Append(strArg0);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strArg0);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
@@ -3852,8 +3838,8 @@ namespace Chummer
                                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                                 && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                             {
-                                sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1),
-                                    decArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
+                                sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1)
+                                    .Append(decArg1.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
                                 intLastCloseIndexPlus1 = intCloseBracketIndex + 1;
                             }
                         }
@@ -3864,13 +3850,13 @@ namespace Chummer
                         {
                             if (strNoFormatArg1 == null)
                                 strNoFormatArg1 = decArg1.ToString(objProvider);
-                            sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1), strNoFormatArg1);
+                            sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1).Append(strNoFormatArg1);
                             intLastCloseIndexPlus1 = intOpenIndex + 3;
                         }
                         break;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3899,7 +3885,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '0':
@@ -3917,7 +3903,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -3934,7 +3920,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -3963,7 +3949,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '1':
@@ -3981,7 +3967,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -4001,7 +3987,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -4029,7 +4015,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         if (strFormat[intOpenIndex + 1] == '0')
                         {
                             sbdInput.Append(intArg0.ToString(strFormat.Substring(intOpenIndex + 3, intCloseBracketIndex - intOpenIndex - 3), objProvider));
@@ -4042,7 +4028,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -4060,7 +4046,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -4090,7 +4076,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '0':
@@ -4111,7 +4097,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -4133,7 +4119,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
 
         /// <summary>
@@ -4162,7 +4148,7 @@ namespace Chummer
                         // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                         && (intOpenIndex <= 0 || intCloseBracketIndex + 1 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intCloseBracketIndex + 1] != '}'))
                     {
-                        sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                        sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                         switch (strFormat[intOpenIndex + 1])
                         {
                             case '1':
@@ -4180,7 +4166,7 @@ namespace Chummer
                 // While escaped strings are rare, format strings tend to be short enough that checking for escaped ones ahead-of-time is slower than this kind of check
                 else if (intOpenIndex <= 0 || intOpenIndex + 4 >= intFormatLength || strFormat[intOpenIndex - 1] != '{' || strFormat[intOpenIndex + 4] != '}')
                 {
-                    sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1));
+                    sbdInput.Append(strFormat, intLastCloseIndexPlus1, intOpenIndex - intLastCloseIndexPlus1);
                     switch (strFormat[intOpenIndex + 1])
                     {
                         case '0':
@@ -4203,7 +4189,7 @@ namespace Chummer
                     intLastCloseIndexPlus1 = intOpenIndex + 3;
                 }
             }
-            return sbdInput.Append(strFormat.Substring(intLastCloseIndexPlus1));
+            return sbdInput.Append(strFormat, intLastCloseIndexPlus1, intFormatLength - intLastCloseIndexPlus1);
         }
     }
 }

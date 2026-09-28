@@ -2478,10 +2478,10 @@ namespace Chummer.Backend.Equipment
                             strNuyenFormat, objCulture), token).ConfigureAwait(false);
                     string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight",
-                            objGear.TotalWeight.ToString(strWeightFormat, objCulture), token)
+                            (await objGear.GetTotalWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight",
-                            objGear.OwnWeight.ToString(strWeightFormat, objCulture), token)
+                            (await objGear.GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                 }
                 else
@@ -2501,10 +2501,10 @@ namespace Chummer.Backend.Equipment
                             strNuyenFormat, objCulture), token).ConfigureAwait(false);
                     string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight",
-                            TotalWeight.ToString(strWeightFormat, objCulture), token)
+                            (await GetTotalWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight",
-                            OwnWeight.ToString(strWeightFormat, objCulture), token)
+                            (await GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token)
                         .ConfigureAwait(false);
                 }
 
@@ -6518,6 +6518,17 @@ namespace Chummer.Backend.Equipment
                    + WeaponAccessories.Sum(x => objExcludeAccessory != x && x.Equipped, x => x.TotalWeight, token);
         }
 
+        /// <summary>
+        /// Weapon Weight to use when working with Total Weight price modifiers for Weapon Mods.
+        /// </summary>
+        public async Task<decimal> MultipliableWeightAysnc(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GetOwnWeightAsync(token).ConfigureAwait(false)
+                   // Run through the list of Weapon Mods.
+                   + await WeaponAccessories.SumAsync(x => objExcludeAccessory != x && x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+        }
+
         public IEnumerable<string> GetAccessoryMounts(bool blnWithInternalAndNone = true)
         {
             string strSlots = ModificationSlots;
@@ -6829,6 +6840,17 @@ namespace Chummer.Backend.Equipment
                                                 + Children.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
+        /// The Armor's total Weight including Modifications.
+        /// </summary>
+        public async Task<decimal> GetTotalWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GetOwnWeightAsync(token).ConfigureAwait(false)
+                + await WeaponAccessories.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false)
+                + await Children.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// The weight of just the Weapon itself.
         /// </summary>
         public decimal OwnWeight
@@ -6840,6 +6862,18 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 return ProcessRatingStringAsDec(Weight, () => Rating);
             }
+        }
+
+        /// <summary>
+        /// Weight for just the Weapon itself.
+        /// </summary>
+        public async Task<decimal> GetOwnWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // If this is a Cyberware or Gear Weapon, remove the Weapon Weight from this since it has already been paid for through the parent item (but is needed to calculate Mod weight).
+            if (Cyberware || Category == "Gear" || IncludedInWeapon)
+                return 0;
+            return (await ProcessRatingStringAsDecAsync(Weight, GetRatingAsync, token: token).ConfigureAwait(false)).Item1;
         }
 
         /// <summary>
@@ -13361,19 +13395,19 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeaponsClearBindings(treWeapons, y, innerToken);
 
-                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncUnderbarrelWeaponsToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         y, funcMakeDirty, token: innerToken);
 
-                Task FuncWeaponAccessoriesBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncWeaponAccessoriesBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessoriesClearBindings(treWeapons, y, innerToken);
 
-                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncWeaponAccessoriesToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         t => UnderbarrelWeapons.GetCountAsync(t), y, funcMakeDirty, token: innerToken);
 
@@ -13395,11 +13429,11 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         this.RefreshChildrenGearsClearBindings(treWeapons, y, innerToken);
 
-                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);
@@ -13439,19 +13473,19 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncUnderbarrelWeaponsBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeaponsClearBindings(treWeapons, y, innerToken);
 
-                Task FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncUnderbarrelWeaponsToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         y, funcMakeDirty, token: innerToken);
 
-                Task FuncWeaponAccessoriesBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                Task FuncWeaponAccessoriesBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                     CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessoriesClearBindings(treWeapons, y, innerToken);
 
-                Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                Task FuncWeaponAccessoriesToAdd(object _, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
                         t => UnderbarrelWeapons.GetCountAsync(t), y, funcMakeDirty, token: innerToken);
 
@@ -13472,11 +13506,11 @@ namespace Chummer.Backend.Equipment
 
                 await WeaponAccessories.ForEachWithSideEffectsAsync(async (objChild, t1) =>
                 {
-                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearBeforeClearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         this.RefreshChildrenGearsClearBindings(treWeapons, y, innerToken);
 
-                    Task FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y,
+                    Task FuncWeaponAccessoryGearToAdd(object _, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
                         objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty,
                             token: innerToken);

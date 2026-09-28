@@ -60,7 +60,7 @@ namespace Chummer
                 : "/chummer/metamagics/metamagic";
         }
 
-        private async void SelectMetamagic_Load(object sender, EventArgs e)
+        private async void SelectMetamagic_Load(object _, EventArgs e)
         {
             // Load the Metamagic information.
             if (_blnTechnomancer)
@@ -96,7 +96,7 @@ namespace Chummer
             await BuildMetamagicList().ConfigureAwait(false);
         }
 
-        private async void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetamagic_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -127,28 +127,28 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void lstMetamagic_DoubleClick(object sender, EventArgs e)
+        private async void lstMetamagic_DoubleClick(object _, EventArgs e)
         {
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object _, EventArgs e)
         {
             await BuildMetamagicList().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await BuildMetamagicList().ConfigureAwait(false);
         }

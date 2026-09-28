@@ -21,6 +21,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Chummer.Annotations;
 
 namespace Chummer
 {
@@ -30,6 +31,8 @@ namespace Chummer
 
         public static XmlElementWriteHelper StartElement(XmlWriter objWriter, string localName)
         {
+            if (objWriter == null)
+                throw new ArgumentNullException(nameof(objWriter));
             objWriter.WriteStartElement(localName);
             return new XmlElementWriteHelper(objWriter);
         }
@@ -37,11 +40,13 @@ namespace Chummer
         public static async Task<XmlElementWriteHelper> StartElementAsync(XmlWriter objWriter, string localName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (objWriter == null)
+                throw new ArgumentNullException(nameof(objWriter));
             await objWriter.WriteStartElementAsync(localName, token: token).ConfigureAwait(false);
             return new XmlElementWriteHelper(objWriter);
         }
 
-        private XmlElementWriteHelper(XmlWriter objWriter)
+        private XmlElementWriteHelper([NotNull] XmlWriter objWriter)
         {
             _objWriter = objWriter;
         }
@@ -61,7 +66,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Equals(XmlElementWriteHelper other)
         {
-            return Equals(_objWriter, other._objWriter);
+            return _objWriter.Equals(other._objWriter);
         }
 
         /// <inheritdoc />

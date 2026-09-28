@@ -37,19 +37,19 @@ namespace Chummer
             nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 
-        private void SelectNumber_Shown(object sender, EventArgs e)
+        private void SelectNumber_Shown(object _, EventArgs e)
         {
             nudNumber.Focus();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _decReturnValue = nudNumber.Value;
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

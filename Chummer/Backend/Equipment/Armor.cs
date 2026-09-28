@@ -1360,8 +1360,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
                 string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weight", (await GetTotalWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ownweight", (await GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("armorname", CustomName, token).ConfigureAwait(false);
@@ -2532,6 +2532,17 @@ namespace Chummer.Backend.Equipment
                                                 + GearChildren.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
+        /// The Armor's total Weight including Modifications.
+        /// </summary>
+        public async Task<decimal> GetTotalWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GetOwnWeightAsync(token).ConfigureAwait(false)
+                + await ArmorMods.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false)
+                + await GearChildren.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Weight for just the Armor.
         /// </summary>
         public decimal OwnWeight
@@ -2540,6 +2551,15 @@ namespace Chummer.Backend.Equipment
             {
                 return ProcessRatingStringAsDec(Weight, () => Rating);
             }
+        }
+
+        /// <summary>
+        /// Weight for just the Armor.
+        /// </summary>
+        public async Task<decimal> GetOwnWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ProcessRatingStringAsDecAsync(Weight, GetRatingAsync, token).ConfigureAwait(false)).Item1;
         }
 
         /// <summary>

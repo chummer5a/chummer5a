@@ -94,7 +94,7 @@ namespace Chummer
 
         #region Controls Methods
 
-        private async void About_Load(object sender, EventArgs e)
+        private async void About_Load(object _, EventArgs e)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
             string strReturn = await LanguageManager.GetStringAsync("Label_About", false).ConfigureAwait(false);

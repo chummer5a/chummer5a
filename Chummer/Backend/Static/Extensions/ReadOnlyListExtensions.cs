@@ -184,6 +184,10 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
+            if (lstCollection is T[] aobjArray)
+                return Array.LastIndexOf(aobjArray, objItem);
+            if (lstCollection is List<T> lstCollectionCast)
+                return lstCollectionCast.LastIndexOf(objItem);
             if (objItem == null)
                 throw new ArgumentNullException(nameof(objItem));
             if (objItem is IEquatable<T> objItemCast)
@@ -210,10 +214,35 @@ namespace Chummer
             return -1;
         }
 
+        public static int LastIndexOf(this IReadOnlyList<string> lstCollection, string strItem)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstCollection is string[] astrArray)
+                return Array.LastIndexOf(astrArray, strItem);
+            if (lstCollection is List<string> lstCollectionCast)
+                return lstCollectionCast.LastIndexOf(strItem);
+            if (strItem == null)
+                throw new ArgumentNullException(nameof(strItem));
+            for (int i = lstCollection.Count - 1; i >= 0; --i)
+            {
+                if (strItem.Equals(lstCollection[i], StringComparison.Ordinal))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         public static int IndexOf<T>(this IReadOnlyList<T> lstCollection, T objItem)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
+            if (lstCollection is T[] aobjArray)
+                return Array.IndexOf(aobjArray, objItem);
+            if (lstCollection is List<T> lstCollectionCast)
+                return lstCollectionCast.IndexOf(objItem);
             if (objItem == null)
                 throw new ArgumentNullException(nameof(objItem));
             if (objItem is IEquatable<T> objItemCast)
@@ -234,6 +263,27 @@ namespace Chummer
                     {
                         return i;
                     }
+                }
+            }
+
+            return -1;
+        }
+
+        public static int IndexOf(this IReadOnlyList<string> lstCollection, string strItem)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstCollection is string[] astrArray)
+                return Array.IndexOf(astrArray, strItem);
+            if (lstCollection is List<string> lstCollectionCast)
+                return lstCollectionCast.IndexOf(strItem);
+            if (strItem == null)
+                throw new ArgumentNullException(nameof(strItem));
+            for (int i = 0; i < lstCollection.Count; ++i)
+            {
+                if (strItem.Equals(lstCollection[i], StringComparison.Ordinal))
+                {
+                    return i;
                 }
             }
 

@@ -159,7 +159,7 @@ namespace Chummer
                                         : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                     token.ThrowIfCancellationRequested();
                                     string strKey = Path.GetFileName(strEntryFullName);
-                                    _dicImages.AddOrUpdate(strKey, x => bmpNewMugshot, (x, y) =>
+                                    _dicImages.AddOrUpdate(strKey, _ => bmpNewMugshot, (_, y) =>
                                     {
                                         y.Dispose();
                                         return bmpNewMugshot;
@@ -572,12 +572,12 @@ namespace Chummer
             await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode)).ConfigureAwait(false);
         }
 
-        private async void cmdImport_Click(object sender, EventArgs e)
+        private async void cmdImport_Click(object _, EventArgs e)
         {
             await DoImport().ConfigureAwait(false);
         }
 
-        private async void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object _, EventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;

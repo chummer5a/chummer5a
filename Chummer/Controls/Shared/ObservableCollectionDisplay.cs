@@ -56,7 +56,7 @@ namespace Chummer.Controls.Shared
         private int _intOffScreenChunkSize = 1;
         private int _intListItemControlHeight;
         private bool _blnAllRendered;
-        private Predicate<TType> _visibleFilter = x => true;
+        private Predicate<TType> _visibleFilter = _ => true;
         private Func<TType, CancellationToken, Task<bool>> _visibleFilterAsync = DefaultVisibleAsync;
         private IComparer<TType> _comparison;
         private IAsyncComparer<TType> _comparisonAsync;
@@ -363,6 +363,21 @@ namespace Chummer.Controls.Shared
                 token: token).ConfigureAwait(false);
         }
 
+        private void RedrawControl(ControlWithMetaData item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnAllRendered = false;
+            int intNumVisible = _lstContentList.Count(x => x.Visible);
+            if (item.Visible)
+                --intNumVisible;
+            item.RefreshVisible(token);
+            if (item.Visible)
+                ++intNumVisible;
+            ResetDisplayPanelHeight(intNumVisible, token);
+            ComputeDisplayIndex(token);
+            LoadScreenContent(token);
+        }
+
         private void RedrawControls(IEnumerable<ControlWithMetaData> lstToClear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -379,6 +394,21 @@ namespace Chummer.Controls.Shared
             ResetDisplayPanelHeight(intNumVisible, token);
             ComputeDisplayIndex(token);
             LoadScreenContent(token);
+        }
+
+        private async Task RedrawControlAsync(ControlWithMetaData item, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnAllRendered = false;
+            int intNumVisible = _lstContentList.Count(x => x.Visible);
+            if (item.Visible)
+                --intNumVisible;
+            await item.RefreshVisibleAsync(token).ConfigureAwait(false);
+            if (item.Visible)
+                ++intNumVisible;
+            await ResetDisplayPanelHeightAsync(intNumVisible, token).ConfigureAwait(false);
+            await ComputeDisplayIndexAsync(token).ConfigureAwait(false);
+            await LoadScreenContentAsync(token).ConfigureAwait(false);
         }
 
         private async Task RedrawControlsAsync(IEnumerable<ControlWithMetaData> lstToClear, CancellationToken token = default)
@@ -956,7 +986,7 @@ namespace Chummer.Controls.Shared
                     Utils.RunOnMainThread(() => _parent.ChildPropertyChanged?.Invoke(sender, e));
                 if (changes)
                 {
-                    _parent.RedrawControls(this.Yield());
+                    _parent.RedrawControl(this);
                 }
             }
 
@@ -976,7 +1006,7 @@ namespace Chummer.Controls.Shared
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
                 if (changes)
                 {
-                    await _parent.RedrawControlsAsync(this.Yield(), token).ConfigureAwait(false);
+                    await _parent.RedrawControlAsync(this, token).ConfigureAwait(false);
                 }
             }
 
@@ -1313,9 +1343,9 @@ namespace Chummer.Controls.Shared
 
             public int Compare(TType x, TType y)
             {
-                if (!Equals(x, default(TType)) && _dicIndeces.TryGetValue(x, out int xindex))
+                if (x?.Equals(default(TType)) == false && _dicIndeces.TryGetValue(x, out int xindex))
                 {
-                    if (!Equals(y, default(TType)) && _dicIndeces.TryGetValue(y, out int yindex))
+                    if (y?.Equals(default(TType)) == false && _dicIndeces.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }
@@ -1325,7 +1355,7 @@ namespace Chummer.Controls.Shared
                 }
 
                 Utils.BreakIfDebug();
-                if (!Equals(y, default(TType)) && (Equals(x, default(TType)) || _dicIndeces.ContainsKey(y)))
+                if (y?.Equals(default(TType)) == false && (x?.Equals(default(TType)) != false || _dicIndeces.ContainsKey(y)))
                     return -1;
 
                 return 0;
@@ -1341,7 +1371,7 @@ namespace Chummer.Controls.Shared
                 _dicIndeces.Clear();
                 for (int i = 0; i < source.Count; i++)
                 {
-                    _dicIndeces.AddOrUpdate(source[i], i, (x, y) => i);
+                    _dicIndeces.AddOrUpdate(source[i], i, (_, y) => i);
                 }
             }
 
@@ -1351,7 +1381,7 @@ namespace Chummer.Controls.Shared
                 _dicIndeces.Clear();
                 for (int i = 0; i < await source.GetCountAsync(token).ConfigureAwait(false); i++)
                 {
-                    _dicIndeces.AddOrUpdate(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i, (x, y) => i);
+                    _dicIndeces.AddOrUpdate(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i, (_, y) => i);
                 }
             }
         }

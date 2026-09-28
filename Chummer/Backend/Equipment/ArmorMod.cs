@@ -730,8 +730,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
                 string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weight", (await GetTotalWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ownweight", (await GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("included", IncludedInArmor.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -1353,11 +1353,12 @@ namespace Chummer.Backend.Equipment
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost", t => strParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}", t => strParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost", t => strParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
-                            Lazy<string> strParentOwnWeight = new Lazy<string>(() => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                            Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentOwnWeight = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
+                                async () => (await objParent.GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
                             Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentCapacity = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
                                 () => objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}", t => strParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
@@ -1437,11 +1438,12 @@ namespace Chummer.Backend.Equipment
                             await sbdValue.CheapReplaceAsync(strExpression, "Armor Cost", t => strParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}", t => strParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost", t => strParentOwnCost.GetValueAsync(t), token: token).ConfigureAwait(false);
-                            Lazy<string> strParentOwnWeight = new Lazy<string>(() => objParent.OwnWeight.ToString(GlobalSettings.InvariantCultureInfo));
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
-                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight", () => strParentOwnWeight.Value, token: token).ConfigureAwait(false);
+                            Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentOwnWeight = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
+                                async () => (await objParent.GetOwnWeightAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Armor Weight}", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Armor Weight", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Weight}", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Weight", t => strParentOwnWeight.GetValueAsync(t), token: token).ConfigureAwait(false);
                             Microsoft.VisualStudio.Threading.AsyncLazy<string> strParentCapacity = new Microsoft.VisualStudio.Threading.AsyncLazy<string>(
                                 () => objParent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token), Utils.JoinableTaskFactory);
                             await sbdValue.CheapReplaceAsync(strExpression, "{Armor Capacity}", t => strParentCapacity.GetValueAsync(t), token: token).ConfigureAwait(false);
@@ -2263,6 +2265,16 @@ namespace Chummer.Backend.Equipment
         public decimal TotalWeight => OwnWeight + GearChildren.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
+        /// Total weight of the Armor Mod.
+        /// </summary>
+        public async Task<decimal> GetTotalWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GetOwnWeightAsync(token).ConfigureAwait(false)
+                + await GearChildren.SumAsync(x => x.Equipped, (x, t) => x.GetTotalWeightAsync(t), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Weight for just the Armor Mod.
         /// </summary>
         public decimal OwnWeight
@@ -2273,6 +2285,17 @@ namespace Chummer.Backend.Equipment
                     return 0;
                 return ProcessRatingStringAsDec(Weight, () => Rating);
             }
+        }
+
+        /// <summary>
+        /// Weight for just the Armor Mod.
+        /// </summary>
+        public async Task<decimal> GetOwnWeightAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (IncludedInArmor)
+                return 0;
+            return (await ProcessRatingStringAsDecAsync(Weight, GetRatingAsync, token).ConfigureAwait(false)).Item1;
         }
 
         private XmlNode _objCachedMyXmlNode;

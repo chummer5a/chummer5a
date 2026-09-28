@@ -22036,6 +22036,7 @@
       <source>KC</source>
       <page>73</page>
       <avail>12R</avail>
+      <weight>0.45</weight>
       <cost>3500</cost>
       <devicerating>5</devicerating>
     </gear>

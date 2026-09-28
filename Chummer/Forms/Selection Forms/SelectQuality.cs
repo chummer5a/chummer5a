@@ -232,26 +232,26 @@ namespace Chummer
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void chkNotMetagenic_CheckedChanged(object sender, EventArgs e)
+        private async void chkNotMetagenic_CheckedChanged(object _, EventArgs e)
         {
             if (await chkNotMetagenic.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 await chkMetagenic.DoThreadSafeAsync(x => x.Checked = false).ConfigureAwait(false);
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void chkXPathMode_CheckedChanged(object sender, EventArgs e)
+        private async void chkXPathMode_CheckedChanged(object _, EventArgs e)
         {
             _blnXPathMode = await chkXPathMode.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
             await UpdateSearchControlMode().ConfigureAwait(false);
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void txtSearch_SelectedIndexChanged(object sender, EventArgs e)
+        private async void txtSearch_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnXPathMode)
             {

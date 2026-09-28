@@ -92,7 +92,7 @@ namespace Chummer
         public bool AddTaggedCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
             HashSet<NotifyCollectionChangedEventHandler> setFuncs
-                = _dicTaggedAddedDelegates.GetOrAdd(objTag, x => new HashSet<NotifyCollectionChangedEventHandler>());
+                = _dicTaggedAddedDelegates.GetOrAdd(objTag, _ => new HashSet<NotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.CollectionChanged += funcDelegateToAdd;
@@ -171,7 +171,7 @@ namespace Chummer
         public bool AddTaggedCollectionChanged(object objTag, AsyncNotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
             HashSet<AsyncNotifyCollectionChangedEventHandler> setFuncs
-                = _dicTaggedAddedAsyncDelegates.GetOrAdd(objTag, x => new HashSet<AsyncNotifyCollectionChangedEventHandler>());
+                = _dicTaggedAddedAsyncDelegates.GetOrAdd(objTag, _ => new HashSet<AsyncNotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.CollectionChangedAsync += funcDelegateToAdd;
@@ -265,7 +265,7 @@ namespace Chummer
         {
             HashSet<NotifyCollectionChangedEventHandler> setFuncs
                 = _dicTaggedAddedBeforeClearDelegates.GetOrAdd(
-                    objTag, x => new HashSet<NotifyCollectionChangedEventHandler>());
+                    objTag, _ => new HashSet<NotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.BeforeClearCollectionChanged += funcDelegateToAdd;
@@ -345,7 +345,7 @@ namespace Chummer
         {
             HashSet<AsyncNotifyCollectionChangedEventHandler> setFuncs
                 = _dicTaggedAddedAsyncBeforeClearDelegates.GetOrAdd(
-                    objTag, x => new HashSet<AsyncNotifyCollectionChangedEventHandler>());
+                    objTag, _ => new HashSet<AsyncNotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.BeforeClearCollectionChangedAsync += funcDelegateToAdd;

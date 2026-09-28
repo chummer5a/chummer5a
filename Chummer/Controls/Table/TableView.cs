@@ -256,7 +256,7 @@ namespace Chummer.UI.Table
         public TableView()
         {
             _columns = new TableColumnCollection<T>(this);
-            _funcDefaultFilter = (x, t) => Task.FromResult(true);
+            _funcDefaultFilter = (_, t) => t.IsCancellationRequested ? Task.FromCanceled<bool>(t) : Task.FromResult(true);
             _funcFilter = _funcDefaultFilter;
             InitializeComponent();
         }
@@ -359,7 +359,7 @@ namespace Chummer.UI.Table
             }
             if (blnPerformLayout)
             {
-                this.DoThreadSafe((x, y) => x.PerformLayout(), token);
+                this.DoThreadSafe(x => x.PerformLayout(), token);
             }
         }
 
@@ -395,7 +395,7 @@ namespace Chummer.UI.Table
             }
             if (blnPerformLayout)
             {
-                await this.DoThreadSafeAsync((x, y) => x.PerformLayout(), token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.PerformLayout(), token).ConfigureAwait(false);
             }
         }
 
@@ -594,7 +594,7 @@ namespace Chummer.UI.Table
             await CreateCellsForColumn(index, column, token).ConfigureAwait(false);
             foreach (string dependency in column.Dependencies)
             {
-                List<int> lstDependencies = _dicObservedProperties.GetOrAdd(dependency, x => new List<int>(1));
+                List<int> lstDependencies = _dicObservedProperties.GetOrAdd(dependency, _ => new List<int>(1));
                 lstDependencies.Add(index);
             }
         }

@@ -193,14 +193,14 @@ namespace Chummer
                 txtSearch.Select(txtSearch.TextLength, 0);
         }
 
-        private async void chkExtended_CheckedChanged(object sender, EventArgs e)
+        private async void chkExtended_CheckedChanged(object _, EventArgs e)
         {
             if (_blnRefresh)
                 return;
             await UpdateSpellInfo().ConfigureAwait(false);
         }
 
-        private async void chkLimited_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimited_CheckedChanged(object _, EventArgs e)
         {
             if (_blnRefresh)
                 return;

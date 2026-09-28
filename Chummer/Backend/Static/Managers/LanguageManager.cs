@@ -153,7 +153,7 @@ namespace Chummer
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    objObject.DoThreadSafe((x, y) => x.SuspendLayout(), token);
+                    objObject.DoThreadSafe(x => x.SuspendLayout(), token);
                 else
                     await objObject.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
             }
@@ -191,7 +191,7 @@ namespace Chummer
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    objObject.DoThreadSafe((x, y) => x.ResumeLayout(), CancellationToken.None);
+                    objObject.DoThreadSafe(x => x.ResumeLayout(), CancellationToken.None);
                 else
                     await objObject.DoThreadSafeAsync(x => x.ResumeLayout(), CancellationToken.None).ConfigureAwait(false);
             }
@@ -243,13 +243,13 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                objNewLanguage = s_DicLanguageData.GetOrAdd(strKey, x => new LanguageData(strLanguage));
+                objNewLanguage = s_DicLanguageData.GetOrAdd(strKey, _ => new LanguageData(strLanguage));
             }
             else
             {
                 objNewLanguage = await s_DicLanguageData
                     .GetOrAddAsync(
-                        strKey, (x, t) => LanguageData.CreateAsync(strLanguage, t), token)
+                        strKey, (_, t) => LanguageData.CreateAsync(strLanguage, t), token)
                     .ConfigureAwait(false);
             }
 
@@ -287,7 +287,7 @@ namespace Chummer
             if (objParent == null)
                 return;
 
-            objParent.DoThreadSafe((x, y) =>
+            objParent.DoThreadSafe(x =>
             {
                 try
                 {
@@ -321,9 +321,9 @@ namespace Chummer
             }
 
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
-            foreach (Control objChild in objParent.DoThreadSafeFunc((x, y) => x.Controls, token))
+            foreach (Control objChild in objParent.DoThreadSafeFunc(x => x.Controls, token))
             {
-                objChild.DoThreadSafe((x, y) =>
+                objChild.DoThreadSafe(x =>
                 {
                     try
                     {
@@ -384,7 +384,7 @@ namespace Chummer
                     }
                     case TabControl objTabControl:
                     {
-                        foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc((x, y) => x.TabPages, token))
+                        foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc(x => x.TabPages, token))
                         {
                             tabPage.DoThreadSafe((x, y) =>
                             {
@@ -402,21 +402,21 @@ namespace Chummer
                         break;
                     }
                     case SplitContainer objSplitControl:
-                        UpdateControls(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel1, token), strIntoLanguage,
+                        UpdateControls(objSplitControl.DoThreadSafeFunc(x => x.Panel1, token), strIntoLanguage,
                                        eIntoRightToLeft, token);
-                        UpdateControls(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel2, token), strIntoLanguage,
+                        UpdateControls(objSplitControl.DoThreadSafeFunc(x => x.Panel2, token), strIntoLanguage,
                                        eIntoRightToLeft, token);
                         break;
 
                     case GroupBox _:
                     {
-                        objChild.DoThreadSafe((x, y) =>
+                        objChild.DoThreadSafe((x, t) =>
                         {
                             string strControlTag = x.Tag?.ToString();
                             if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
                                                                      && !strControlTag.IsGuid()
                                                                      && !File.Exists(strControlTag))
-                                x.Text = GetString(strControlTag, strIntoLanguage, token: y);
+                                x.Text = GetString(strControlTag, strIntoLanguage, token: t);
                             else if (x.Text.StartsWith('['))
                                 x.Text = string.Empty;
                         }, token);
@@ -489,7 +489,7 @@ namespace Chummer
             if (objParent == null)
                 return;
 
-            await objParent.DoThreadSafeAsync((x, y) =>
+            await objParent.DoThreadSafeAsync(x =>
             {
                 try
                 {
@@ -519,13 +519,13 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strTagToUse))
                 {
                     string strText = await GetStringAsync(strTagToUse, strIntoLanguage, false, token).ConfigureAwait(false);
-                    await frmForm.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                    await frmForm.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                 }
                 // update any menu strip items that have tags
-                MenuStrip objMenuStrip = await frmForm.DoThreadSafeFuncAsync((x, y) => x.MainMenuStrip, token).ConfigureAwait(false);
+                MenuStrip objMenuStrip = await frmForm.DoThreadSafeFuncAsync(x => x.MainMenuStrip, token).ConfigureAwait(false);
                 if (objMenuStrip != null)
                 {
-                    ToolStripItemCollection lstItems = await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false);
+                    ToolStripItemCollection lstItems = await objMenuStrip.DoThreadSafeFuncAsync(x => x.Items, token).ConfigureAwait(false);
                     List<ValueTuple<ToolStripItem, string>> lstTagsToUse = new List<ValueTuple<ToolStripItem, string>>(lstItems.Count);
                     foreach (ToolStripItem tssItem in lstItems)
                         lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(objMenuStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
@@ -538,9 +538,9 @@ namespace Chummer
             }
 
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
-            foreach (Control objChild in await objParent.DoThreadSafeFuncAsync((x, y) => x.Controls, token).ConfigureAwait(false))
+            foreach (Control objChild in await objParent.DoThreadSafeFuncAsync(x => x.Controls, token).ConfigureAwait(false))
             {
-                await objChild.DoThreadSafeAsync((x, y) =>
+                await objChild.DoThreadSafeAsync(x =>
                 {
                     try
                     {
@@ -573,13 +573,13 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strTagToUse))
                             {
                                 string strText = await GetStringAsync(strTagToUse, strIntoLanguage, false, token).ConfigureAwait(false);
-                                await objChild.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                                await objChild.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                             }
                             break;
                         }
                     case ToolStrip tssStrip:
                         {
-                            ToolStripItemCollection lstItems = await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false);
+                            ToolStripItemCollection lstItems = await tssStrip.DoThreadSafeFuncAsync(x => x.Items, token).ConfigureAwait(false);
                             List<ValueTuple<ToolStripItem, string>> lstTagsToUse = new List<ValueTuple<ToolStripItem, string>>(lstItems.Count);
                             foreach (ToolStripItem tssItem in lstItems)
                                 lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
@@ -593,10 +593,11 @@ namespace Chummer
                     case ListView lstList:
                         {
                             List<ValueTuple<ColumnHeader, string>> lstTagsToUse = new List<ValueTuple<ColumnHeader, string>>(await lstList.DoThreadSafeFuncAsync(x => x.Columns.Count, token).ConfigureAwait(false));
-                            await lstList.DoThreadSafeAsync((x, y) =>
+                            await lstList.DoThreadSafeAsync((x, t) =>
                             {
                                 foreach (ColumnHeader objHeader in x.Columns)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     string strControlTag = objHeader.Tag?.ToString();
                                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
                                                                              && !strControlTag.IsGuid()
@@ -616,10 +617,10 @@ namespace Chummer
                         }
                     case TabControl objTabControl:
                         {
-                            List<ValueTuple<TabPage, string>> lstTagsToUse = new List<ValueTuple<TabPage, string>>(await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabCount, token).ConfigureAwait(false));
-                            foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabPages, token).ConfigureAwait(false))
+                            List<ValueTuple<TabPage, string>> lstTagsToUse = new List<ValueTuple<TabPage, string>>(await objTabControl.DoThreadSafeFuncAsync(x => x.TabCount, token).ConfigureAwait(false));
+                            foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync(x => x.TabPages, token).ConfigureAwait(false))
                             {
-                                await tabPage.DoThreadSafeAsync((x, y) =>
+                                await tabPage.DoThreadSafeAsync(x =>
                                 {
                                     string strControlTag = x.Tag?.ToString();
                                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
@@ -636,15 +637,15 @@ namespace Chummer
                             foreach ((TabPage objControl, string strTag) in lstTagsToUse)
                             {
                                 string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
-                                await objControl.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                                await objControl.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                             }
 
                             break;
                         }
                     case SplitContainer objSplitControl:
-                        await UpdateControlsAsync(await objSplitControl.DoThreadSafeFuncAsync((x, y) => x.Panel1, token).ConfigureAwait(false), strIntoLanguage,
+                        await UpdateControlsAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel1, token).ConfigureAwait(false), strIntoLanguage,
                                                   eIntoRightToLeft, token).ConfigureAwait(false);
-                        await UpdateControlsAsync(await objSplitControl.DoThreadSafeFuncAsync((x, y) => x.Panel2, token).ConfigureAwait(false), strIntoLanguage,
+                        await UpdateControlsAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel2, token).ConfigureAwait(false), strIntoLanguage,
                                                   eIntoRightToLeft, token).ConfigureAwait(false);
                         break;
 
@@ -664,7 +665,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strTagToUse))
                             {
                                 string strText = await GetStringAsync(strTagToUse, strIntoLanguage, false, token).ConfigureAwait(false);
-                                await objChild.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                                await objChild.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                             }
                             await UpdateControlsAsync(objChild, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false);
                             break;
@@ -676,10 +677,11 @@ namespace Chummer
                     case TreeView treTree:
                         {
                             List<ValueTuple<TreeNode, string>> lstTagsToUse = new List<ValueTuple<TreeNode, string>>(await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false));
-                            await treTree.DoThreadSafeAsync((x, y) =>
+                            await treTree.DoThreadSafeAsync((x, t) =>
                             {
                                 foreach (TreeNode objNode in x.Nodes)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     if (objNode.Level == 0)
                                     {
                                         string strControlTag = objNode.Tag?.ToString();
@@ -706,10 +708,11 @@ namespace Chummer
                     case DataGridView objDataGridView:
                         {
                             List<ValueTuple<DataGridViewTextBoxColumn, string>> lstTagsToUse = new List<ValueTuple<DataGridViewTextBoxColumn, string>>(await objDataGridView.DoThreadSafeFuncAsync(x => x.ColumnCount, token).ConfigureAwait(false));
-                            await objDataGridView.DoThreadSafeAsync((x, y) =>
+                            await objDataGridView.DoThreadSafeAsync((x, t) =>
                             {
                                 foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn
                                         && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
                                     {
@@ -2489,7 +2492,42 @@ namespace Chummer
         }
 
         public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet,
-                                                     IEnumerable<Character> lstCharacters = null,
+                                                     Character objCharacter,
+                                                     CultureInfo defaultCulture = null,
+                                                     CancellationToken token = default)
+        {
+            if (cboLanguage == null)
+                throw new ArgumentNullException(nameof(cboLanguage));
+            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
+            int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+            {
+                string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
+            List<ListItem> lstSheetLanguageList = GetSheetLanguageList(objCharacter, true, token);
+            try
+            {
+                cboLanguage.PopulateWithListItems(lstSheetLanguageList, token: token);
+                cboLanguage.DoThreadSafe(x =>
+                {
+                    if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                        x.SelectedValue = strDefaultSheetLanguage;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedValue
+                            = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                }, token);
+            }
+            finally
+            {
+                Utils.ListItemListPool.Return(ref lstSheetLanguageList);
+            }
+        }
+
+        public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet,
+                                                     IEnumerable<Character> lstCharacters,
                                                      CultureInfo defaultCulture = null,
                                                      CancellationToken token = default)
         {
@@ -2508,7 +2546,7 @@ namespace Chummer
             try
             {
                 cboLanguage.PopulateWithListItems(lstSheetLanguageList, token: token);
-                cboLanguage.DoThreadSafe((x, y) =>
+                cboLanguage.DoThreadSafe(x =>
                 {
                     if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
                         x.SelectedValue = strDefaultSheetLanguage;
@@ -2524,7 +2562,49 @@ namespace Chummer
         }
 
         public static Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet,
-                                                          IEnumerable<Character> lstCharacters = null,
+                                                          Character objCharacter = null,
+                                                          CultureInfo defaultCulture = null,
+                                                          CancellationToken token = default)
+        {
+            return cboLanguage == null
+                ? Task.FromException(new ArgumentNullException(nameof(cboLanguage)))
+                : PopulateSheetLanguageListAsyncInner(token);
+
+            async Task PopulateSheetLanguageListAsyncInner(CancellationToken innerToken)
+            {
+                string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
+                int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+                if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+                {
+                    string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                    if (strSheetLanguage.Length == 5)
+                        strDefaultSheetLanguage = strSheetLanguage;
+                }
+
+                List<ListItem> lstSheetLanguageList
+                    = await GetSheetLanguageListAsync(objCharacter, true, innerToken).ConfigureAwait(false);
+                try
+                {
+                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: innerToken)
+                                     .ConfigureAwait(false);
+                    await cboLanguage.DoThreadSafeAsync(x =>
+                    {
+                        if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                            x.SelectedValue = strDefaultSheetLanguage;
+                        if (x.SelectedIndex == -1)
+                            x.SelectedValue
+                                = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                    }, token: innerToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Utils.ListItemListPool.Return(ref lstSheetLanguageList);
+                }
+            }
+        }
+
+        public static Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet,
+                                                          IEnumerable<Character> lstCharacters,
                                                           CultureInfo defaultCulture = null,
                                                           CancellationToken token = default)
         {
@@ -2565,7 +2645,32 @@ namespace Chummer
             }
         }
 
-        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null,
+        public static List<ListItem> GetSheetLanguageList(Character objCharacter = null,
+                                                          bool blnUsePool = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
+                if (string.IsNullOrEmpty(strLanguageName))
+                    continue;
+                token.ThrowIfCancellationRequested();
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!XmlManager.AnyXslFiles(strLanguageCode, objCharacter, token))
+                    continue;
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
+            }
+
+            token.ThrowIfCancellationRequested();
+            lstLanguages.Sort(CompareListItems.CompareNames);
+            return lstLanguages;
+        }
+
+        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters,
                                                           bool blnUsePool = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2592,7 +2697,32 @@ namespace Chummer
         }
 
         public static async Task<List<ListItem>> GetSheetLanguageListAsync(
-            IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
+            Character objCharacter = null, bool blnUsePool = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
+                    continue;
+                token.ThrowIfCancellationRequested();
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!await XmlManager.AnyXslFilesAsync(strLanguageCode, objCharacter, token).ConfigureAwait(false))
+                    continue;
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
+            }
+
+            token.ThrowIfCancellationRequested();
+            lstLanguages.Sort(CompareListItems.CompareNames);
+            return lstLanguages;
+        }
+
+        public static async Task<List<ListItem>> GetSheetLanguageListAsync(
+            IEnumerable<Character> lstCharacters, bool blnUsePool = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();

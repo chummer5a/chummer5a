@@ -50,7 +50,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void PrintMultipleCharacters_Load(object sender, EventArgs e)
+        private async void PrintMultipleCharacters_Load(object _, EventArgs e)
         {
             try
             {

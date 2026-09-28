@@ -40,7 +40,7 @@ namespace Chummer
         private readonly StringBuilder _sbdOutputBuilder;
         private readonly Character _objCharacter = new Character();
 
-        private void cmdTest_Click(object sender, EventArgs e)
+        private void cmdTest_Click(object _, EventArgs e)
         {
             cmdTest.Enabled = false;
             _blnAddExceptionInfoToErrors = chkAddExceptionInfoToErrors.Checked;

@@ -353,8 +353,8 @@ namespace Chummer
             {
                 if (!_dicData.TryGetValue(item.Key, out TValue objValue))
                     return false;
-                if (Equals(objValue, default(TValue)))
-                    return Equals(item.Value, default(TValue)) && _dicData.Remove(item.Key);
+                if (objValue?.Equals(default(TValue)) != false)
+                    return item.Value?.Equals(default(TValue)) != false && _dicData.Remove(item.Key);
                 return objValue.Equals(item.Value) && _dicData.Remove(item.Key);
             }
         }
@@ -385,8 +385,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!_dicData.TryGetValue(item.Key, out TValue objValue))
                     return false;
-                if (Equals(objValue, default(TValue)))
-                    return Equals(item.Value, default(TValue)) && _dicData.Remove(item.Key);
+                if (objValue?.Equals(default(TValue)) != false)
+                    return item.Value?.Equals(default(TValue)) != false && _dicData.Remove(item.Key);
                 return objValue.Equals(item.Value) && _dicData.Remove(item.Key);
             }
             finally
@@ -1627,9 +1627,9 @@ namespace Chummer
                 {
                     if (_dicData.TryGetValue(key, out TValue objValue))
                     {
-                        if (Equals(objValue, default(TKey)))
+                        if (objValue?.Equals(default(TKey)) != false)
                         {
-                            if (Equals(value, default(TKey)))
+                            if (value?.Equals(default(TKey)) != false)
                                 return;
                         }
                         else if (objValue.Equals(value))
@@ -1641,9 +1641,9 @@ namespace Chummer
                 {
                     if (_dicData.TryGetValue(key, out TValue objValue))
                     {
-                        if (Equals(objValue, default(TKey)))
+                        if (objValue?.Equals(default(TKey)) != false)
                         {
-                            if (Equals(value, default(TKey)))
+                            if (value?.Equals(default(TKey)) != false)
                                 return;
                         }
                         else if (objValue.Equals(value))
@@ -1678,9 +1678,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objValue))
                 {
-                    if (Equals(objValue, default(TKey)))
+                    if (objValue?.Equals(default(TKey)) != false)
                     {
-                        if (Equals(value, default(TKey)))
+                        if (value?.Equals(default(TKey)) != false)
                             return;
                     }
                     else if (objValue.Equals(value))
@@ -1698,9 +1698,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objValue))
                 {
-                    if (Equals(objValue, default(TKey)))
+                    if (objValue?.Equals(default(TKey)) != false)
                     {
-                        if (Equals(value, default(TKey)))
+                        if (value?.Equals(default(TKey)) != false)
                             return;
                     }
                     else if (objValue.Equals(value))

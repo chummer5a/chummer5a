@@ -379,7 +379,7 @@ namespace Chummer.UI.Skills
                         string strAbbrev = _objSkill.AttributeObject.Abbrev;
                         cboSelectAttribute.PopulateWithListItems(lstAttributeItems, token: _objMyToken);
                         if (!string.IsNullOrEmpty(strAbbrev))
-                            cboSelectAttribute.DoThreadSafe((x, y) => x.SelectedValue = strAbbrev, token: _objMyToken);
+                            cboSelectAttribute.DoThreadSafe(x => x.SelectedValue = strAbbrev, token: _objMyToken);
                     }
                 }
                 else
@@ -1389,7 +1389,7 @@ namespace Chummer.UI.Skills
             string strAbbrev = AttributeActive.Abbrev;
             string strBackgroundCalcPool = _objSkill.DisplayOtherAttribute(strAbbrev, token);
             string strBackgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(strAbbrev, token: token);
-            lblModifiedRating.DoThreadSafe((x, y) =>
+            lblModifiedRating.DoThreadSafe(x =>
             {
                 x.Text = strBackgroundCalcPool;
                 x.ToolTipText = strBackgroundCalcTooltip;

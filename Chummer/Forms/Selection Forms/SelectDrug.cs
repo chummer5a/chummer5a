@@ -779,17 +779,17 @@ namespace Chummer
 
         private int _intSkipListRefresh;
 
-        private Task<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> AnyItemInList(CancellationToken token = default)
         {
-            return RefreshList(strCategory, false, token);
+            return RefreshList(false, token);
         }
 
-        private Task<bool> RefreshList(string strCategory = "", CancellationToken token = default)
+        private Task<bool> RefreshList(CancellationToken token = default)
         {
-            return RefreshList(strCategory, true, token);
+            return RefreshList(true, token);
         }
 
-        private async Task<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
+        private async Task<bool> RefreshList(bool blnDoUIUpdate, CancellationToken token = default)
         {
             if ((_intLoading > 0 || _intSkipListRefresh > 0) && blnDoUIUpdate)
                 return false;

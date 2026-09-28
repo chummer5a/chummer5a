@@ -42,7 +42,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private async void SelectSkillCategory_Load(object sender, EventArgs e)
+        private async void SelectSkillCategory_Load(object _, EventArgs e)
         {
             // Build the list of Skill Categories found in the Skills file.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))

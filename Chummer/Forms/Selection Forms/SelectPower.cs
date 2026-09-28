@@ -51,20 +51,20 @@ namespace Chummer
             _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private async void SelectPower_Load(object sender, EventArgs e)
+        private async void SelectPower_Load(object _, EventArgs e)
         {
             await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = !ForBonus).ConfigureAwait(false);
             _blnLoading = false;
             await BuildPowerList().ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstPowers_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -105,24 +105,24 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await BuildPowerList().ConfigureAwait(false);
         }
 
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        private void txtSearch_KeyDown(object _, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
@@ -155,7 +155,7 @@ namespace Chummer
             }
         }
 
-        private void txtSearch_KeyUp(object sender, KeyEventArgs e)
+        private void txtSearch_KeyUp(object _, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.TextLength, 0);

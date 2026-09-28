@@ -163,7 +163,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strLanguageName))
                     continue;
                 token.ThrowIfCancellationRequested();
-                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), x => strLanguageName, (x, y) => strLanguageName);
+                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), _ => strLanguageName, (_, y) => strLanguageName);
             }
         }
 
@@ -190,7 +190,7 @@ namespace Chummer
             }
         }
 
-        private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLanguage_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {

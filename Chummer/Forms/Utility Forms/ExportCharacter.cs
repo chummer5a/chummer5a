@@ -113,7 +113,7 @@ namespace Chummer
 
                 await LanguageManager
                     .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
-                                                    _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
+                                                    _objCharacter, _objExportCulture, token: _objGenericToken)
                     .ConfigureAwait(false);
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
@@ -565,14 +565,14 @@ namespace Chummer
             }
         }
 
-        private void txtText_Leave(object sender, EventArgs e)
+        private void txtText_Leave(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
             _intSelected = 0;
         }
 
-        private void txtText_MouseUp(object sender, MouseEventArgs e)
+        private void txtText_MouseUp(object _, MouseEventArgs e)
         {
             if (_intLoading > 0 || _intSelected > 0 || txtText.SelectionLength != 0 || Interlocked.Exchange(ref _intSelected, 1) > 0)
                 return;
@@ -897,7 +897,7 @@ namespace Chummer
                     return Task.FromCanceled(token);
                 _dicCache.AddOrUpdate(new ValueTuple<string, string>(_strExportLanguage, _strXslt),
                     new ValueTuple<string, string>(strText, strDisplayText),
-                    (a, b) => new ValueTuple<string, string>(strText, strDisplayText));
+                    (_, b) => new ValueTuple<string, string>(strText, strDisplayText));
             }
             catch (Exception e)
             {

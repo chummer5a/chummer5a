@@ -968,7 +968,7 @@ namespace Chummer
                                     = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                                 foreach (ToolStripItem tssItem in await menuStrip
                                                                         .DoThreadSafeFuncAsync(
-                                                                            (x, y) => x.Items, _objGenericToken)
+                                                                            x => x.Items, _objGenericToken)
                                                                         .ConfigureAwait(false))
                                     lstToTranslate.AddRange(
                                         await menuStrip.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -981,7 +981,7 @@ namespace Chummer
                                 lstToTranslate.Clear();
                                 foreach (ToolStripItem tssItem in await mnuProcessFile
                                                                         .DoThreadSafeFuncAsync(
-                                                                            (x, y) => x.Items, _objGenericToken)
+                                                                            x => x.Items, _objGenericToken)
                                                                         .ConfigureAwait(false))
                                     lstToTranslate.AddRange(
                                         await mnuProcessFile.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -2564,7 +2564,8 @@ namespace Chummer
                     && sender is Character objCharacter
                     && await tabForms.DoThreadSafeFuncAsync(x => x.TabCount, token: token).ConfigureAwait(false) > 0)
                 {
-                    await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim(), token).ConfigureAwait(false);
+                    string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                    await UpdateCharacterTabTitle(objCharacter, strCharacterName.Trim(), token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2632,10 +2633,11 @@ namespace Chummer
                 Lazy<string> strSpace = new Lazy<string>(() => LanguageManager.GetString("String_Space", token: token));
                 Lazy<string> strSheet = new Lazy<string>(() => LanguageManager.GetString("String_Sheet_Blank", token: token));
                 Lazy<string> strExport = new Lazy<string>(() => LanguageManager.GetString("String_Export_Blank", token: token));
-                tabForms.DoThreadSafe((x, z) =>
+                tabForms.DoThreadSafe((x, t) =>
                 {
                     foreach (TabPage objTabPage in x.TabPages)
                     {
+                        t.ThrowIfCancellationRequested();
                         switch (objTabPage.Tag)
                         {
                             case CharacterShared frmCharacter:
@@ -2757,7 +2759,7 @@ namespace Chummer
                     = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                 foreach (ToolStripItem tssItem in await menuStrip
                                                         .DoThreadSafeFuncAsync(
-                                                            (x, y) => x.Items, _objGenericToken)
+                                                            x => x.Items, _objGenericToken)
                                                         .ConfigureAwait(false))
                     lstToTranslate.AddRange(
                         await menuStrip.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -2779,7 +2781,7 @@ namespace Chummer
             try
             {
                 // ToolStrip Items.
-                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync((x, y) => x.Controls.OfType<ToolStrip>(), _objGenericToken).ConfigureAwait(false))
+                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync(x => x.Controls.OfType<ToolStrip>(), _objGenericToken).ConfigureAwait(false))
                 {
                     int intNumItems = await objToolStrip.DoThreadSafeFuncAsync(x =>
                     {
@@ -2793,7 +2795,7 @@ namespace Chummer
                         = new List<ValueTuple<ToolStripItem, string>>(intNumItems);
                     foreach (ToolStripItem tssItem in await objToolStrip
                                                             .DoThreadSafeFuncAsync(
-                                                                (x, y) => x.Items, _objGenericToken)
+                                                                x => x.Items, _objGenericToken)
                                                             .ConfigureAwait(false))
                         lstToTranslate.AddRange(
                             await objToolStrip.TranslateToolStripItemsRecursivelyPrepAsync(
@@ -2826,24 +2828,42 @@ namespace Chummer
                 {
                     // Open each file that has been dropped into the window.
                     string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
-                    if (s.Length == 0)
-                        return;
-                    Character[] lstCharacters = new Character[s.Length];
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(string.Empty,
-                                                                         Character.NumLoadingSections * s.Length, _objGenericToken).ConfigureAwait(false))
+                    int intLength = s.Length;
+                    switch (intLength)
                     {
-                        // Array instead of concurrent bag because we want to preserve order
-                        await ParallelExtensions.ForAsync(0, s.Length, async (i, t) =>
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            lstCharacters[i]
-                                = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
-                                    .ConfigureAwait(false);
-                        }, _objGenericToken).ConfigureAwait(false);
-                    }
+                        case 0:
+                            return;
+                        case 1:
+                            Character objCharacter;
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                   = await Program.CreateAndShowProgressBarAsync(string.Empty,
+                                                                                 Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                            {
+                                objCharacter = await Program.LoadCharacterAsync(s[0], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                            .ConfigureAwait(false);
+                            }
 
-                    await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
+                            await OpenCharacter(objCharacter, token: _objGenericToken).ConfigureAwait(false);
+                            break;
+                        default:
+                            Character[] lstCharacters = new Character[intLength];
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                   = await Program.CreateAndShowProgressBarAsync(string.Empty,
+                                                                                 Character.NumLoadingSections * intLength, _objGenericToken).ConfigureAwait(false))
+                            {
+                                // Array instead of concurrent bag because we want to preserve order
+                                await ParallelExtensions.ForAsync(0, intLength, async (i, t) =>
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    lstCharacters[i]
+                                        = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
+                                            .ConfigureAwait(false);
+                                }, _objGenericToken).ConfigureAwait(false);
+                            }
+
+                            await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
+                            break;
+                    }
                 }
                 finally
                 {
@@ -3456,26 +3476,45 @@ namespace Chummer
                             lstFilesToOpen.Add(strFile);
                     }
 
-                    if (lstFilesToOpen.Count == 0)
-                        return;
-                    // Array instead of concurrent bag because we want to preserve order
-                    Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                               StringExtensions.JoinFast(
-                                   "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
-                                   lstFilesToOpen.Select(Path.GetFileName)),
-                               lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                    int intCount = lstFilesToOpen.Count;
+                    switch (intCount)
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
-                        {
-                            // ReSharper disable once AccessToDisposedClosure
-                            lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
-                                    .ConfigureAwait(false);
-                        }, _objGenericToken).ConfigureAwait(false);
-                    }
+                        case 0:
+                            return;
+                        case 1:
+                            Character objCharacter;
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                                       StringExtensions.JoinFast(
+                                           "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                           lstFilesToOpen.Select(Path.GetFileName)),
+                                       intCount * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                            {
+                                objCharacter = await Program.LoadCharacterAsync(lstFilesToOpen[0], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                            .ConfigureAwait(false);
+                            }
+                            await OpenCharacter(objCharacter, token: _objGenericToken).ConfigureAwait(false);
+                            break;
+                        default:
+                            // Array instead of concurrent bag because we want to preserve order
+                            Character[] lstCharacters = new Character[intCount];
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                                       StringExtensions.JoinFast(
+                                           "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                           lstFilesToOpen.Select(Path.GetFileName)),
+                                       intCount * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                            {
+                                await ParallelExtensions.ForAsync(0, intCount, async (i, t) =>
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    lstCharacters[i]
+                                        = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
+                                            .ConfigureAwait(false);
+                                }, _objGenericToken).ConfigureAwait(false);
+                            }
 
-                    await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
+                            await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
+                            break;
+                    }
                 }
                 finally
                 {
@@ -3494,11 +3533,133 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character.
         /// </summary>
-        public Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
+        public async Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
+            if (objCharacter == null)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != _objGenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objGenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                try
+                {
+                    await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        bool blnMaximizeNewForm
+                            = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                                    || x.MdiChildren.Exists(
+                                                                        y => y.WindowState
+                                                                             == FormWindowState.Maximized),
+                                                               token).ConfigureAwait(false);
+                        string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
+                                                            .ConfigureAwait(false);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
+                                              .ConfigureAwait(false))
+                        {
+                            string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                            ? strUI
+                                                                            : strUI + strSpace + "("
+                                                                            + strCharacterName
+                                                                            + ")", token: token)
+                                                .ConfigureAwait(false);
+                            ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
+                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                    x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
+                                return;
+                            if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
+                                && await Program.ShowScrollableMessageBoxAsync(
+                                    StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                    strTooManyHandlesTitle,
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                            {
+                                if (await Program.OpenCharacters
+                                        .AllAsync(
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
+                                            token).ConfigureAwait(false))
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                        .ConfigureAwait(false);
+                                return;
+                            }
+
+                            //Timekeeper.Start("load_event_time");
+                            // Show the character forms.
+                            await this.DoThreadSafeAsync(y =>
+                            {
+                                CharacterShared frmNewCharacter = objCharacter.Created
+                                    ? (CharacterShared)new CharacterCareer(objCharacter)
+                                    : new CharacterCreate(objCharacter);
+                                frmNewCharacter.MdiParent = y;
+                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                    || ReferenceEquals(MdiChildren[0], frmNewCharacter));
+                                Stack<Form> stkToMaximize = null;
+                                if (blnMaximizePreShow)
+                                {
+                                    if (blnMaximizeNewForm)
+                                        frmNewCharacter.WindowState = FormWindowState.Maximized;
+                                }
+                                else
+                                {
+                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                    if (blnMaximizeNewForm)
+                                        stkToMaximize.Push(frmNewCharacter);
+                                    foreach (Form frmLoop in y.MdiChildren)
+                                    {
+                                        if (frmLoop.WindowState == FormWindowState.Maximized
+                                            && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                        {
+                                            frmLoop.WindowState = FormWindowState.Normal;
+                                            stkToMaximize.Push(frmLoop);
+                                        }
+                                    }
+                                }
+
+                                frmNewCharacter.Show();
+                                if (stkToMaximize?.Count > 0)
+                                {
+                                    while (stkToMaximize.Count > 0)
+                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                }
+                            }, token).ConfigureAwait(false);
+                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                && File.Exists(objCharacter.FileName))
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, objCharacter.FileName, token).ConfigureAwait(false);
+                            //Timekeeper.Finish("load_event_time");
+                        }
+                    }
+                    finally
+                    {
+                        _objFormOpeningSemaphore.Release();
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
         }
 
         /// <summary>
@@ -3524,7 +3685,12 @@ namespace Chummer
                     if (lstCharacters == null)
                         return;
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
-                        lstNewCharacters = lstCharacters.ToList();
+                    {
+                        if (lstCharacters is Character[] aobjCharacters)
+                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
+                        else
+                            lstNewCharacters = lstCharacters.ToList();
+                    }
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -3552,11 +3718,11 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
-                                token.ThrowIfCancellationRequested();
+                                string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
                                                                                 : strUI + strSpace + "("
-                                                                                + objCharacter.CharacterName
+                                                                                + strCharacterName
                                                                                 + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
@@ -3567,7 +3733,7 @@ namespace Chummer
                                     continue;
                                 if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -3707,21 +3873,10 @@ namespace Chummer
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        public async Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
-        }
-
-        /// <summary>
-        /// Open print forms for a list of characters (each one gets its own form).
-        /// </summary>
-        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
-        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        public async Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
-        {
+            if (objCharacter == null)
+                return;
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
             {
@@ -3734,9 +3889,166 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    if (lstCharacters == null)
-                        return;
-                    List<Character> lstNewCharacters = lstCharacters.ToList();
+                    await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        bool blnMaximizeNewForm
+                            = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                                    || x.MdiChildren.Exists(
+                                                                        y => y.WindowState
+                                                                             == FormWindowState.Maximized),
+                                                               token).ConfigureAwait(false);
+                        CharacterSheetViewer frmNewFormToProcess = null;
+                        string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
+                                                            .ConfigureAwait(false);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
+                                              .ConfigureAwait(false))
+                        {
+                            string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                            ? strUI
+                                                                            : strUI + strSpace + "("
+                                                                            + strCharacterName
+                                                                            + ")", token: token)
+                                               .ConfigureAwait(false);
+                            ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
+                                = OpenCharacterSheetViewers;
+                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                    x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
+                                return;
+
+                            if (Program.MyProcess.HandleCount >= 9500
+                                && await Program.ShowScrollableMessageBoxAsync(
+                                    StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                    strTooManyHandlesTitle,
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                            {
+                                if (await Program.OpenCharacters
+                                        .AllAsync(
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
+                                            token).ConfigureAwait(false))
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                        .ConfigureAwait(false);
+                                return;
+                            }
+
+                            //Timekeeper.Start("load_event_time");
+                            // Show the character forms.
+                            frmNewFormToProcess = await this.DoThreadSafeFuncAsync(y =>
+                            {
+                                return new CharacterSheetViewer
+                                {
+                                    MdiParent = y
+                                };
+                            }, token: token).ConfigureAwait(false);
+
+                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                && File.Exists(objCharacter.FileName))
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, objCharacter.FileName, token).ConfigureAwait(false);
+                            //Timekeeper.Finish("load_event_time");
+                        }
+
+                        if (frmNewFormToProcess != null)
+                        {
+                            await frmNewFormToProcess.SetCharacters(token, objCharacter).ConfigureAwait(false);
+
+                            await this.DoThreadSafeAsync(x =>
+                            {
+                                bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0
+                                    || ReferenceEquals(x.MdiChildren[0], objCharacter));
+                                Stack<Form> stkToMaximize = null;
+                                if (blnMaximizePreShow)
+                                {
+                                    if (blnMaximizeNewForm && frmNewFormToProcess != null)
+                                    {
+                                        frmNewFormToProcess.WindowState = FormWindowState.Maximized;
+                                    }
+                                }
+                                else
+                                {
+                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                    stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
+                                    if (blnMaximizeNewForm && frmNewFormToProcess != null)
+                                    {
+                                        stkToMaximize.Push(frmNewFormToProcess);
+                                    }
+
+                                    foreach (Form frmLoop in x.MdiChildren)
+                                    {
+                                        if (frmLoop.WindowState == FormWindowState.Maximized
+                                            && !ReferenceEquals(frmNewFormToProcess, frmLoop))
+                                        {
+                                            frmLoop.WindowState = FormWindowState.Normal;
+                                            stkToMaximize.Push(frmLoop);
+                                        }
+                                    }
+                                }
+
+                                frmNewFormToProcess.Show();
+                                if (stkToMaximize?.Count > 0)
+                                {
+                                    while (stkToMaximize.Count > 0)
+                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        _objFormOpeningSemaphore.Release();
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Open print forms for a list of characters (each one gets its own form).
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
+        {
+            if (lstCharacters == null)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != _objGenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objGenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                try
+                {
+                    if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
+                    {
+                        if (lstCharacters is Character[] aobjCharacters)
+                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
+                        else
+                            lstNewCharacters = lstCharacters.ToList();
+                    }
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -3766,11 +4078,11 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
-                                token.ThrowIfCancellationRequested();
+                                string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
                                                                                 : strUI + strSpace + "("
-                                                                                + objCharacter.CharacterName
+                                                                                + strCharacterName
                                                                                 + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
@@ -3783,7 +4095,7 @@ namespace Chummer
 
                                 if (Program.MyProcess.HandleCount >= 9500
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
@@ -3867,7 +4179,7 @@ namespace Chummer
                                 while (stkToMaximize.Count > 0)
                                     stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                             }
-                        }, _objGenericToken).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -3947,21 +4259,12 @@ namespace Chummer
         /// <summary>
         /// Open a character's export form up without necessarily opening them up fully for editing.
         /// </summary>
-        public Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
-        }
-
-        /// <summary>
-        /// Open export forms for a list of characters.
-        /// </summary>
-        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
+        public async Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
+            if (objCharacter == null)
+                return;
             CancellationTokenSource objSource = null;
             if (token != _objGenericToken)
             {
@@ -3974,9 +4277,151 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    if (lstCharacters == null)
-                        return;
-                    List<Character> lstNewCharacters = lstCharacters.ToList();
+                    await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        bool blnMaximizeNewForm
+                            = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                                    || x.MdiChildren.Exists(
+                                                                        y => y.WindowState
+                                                                             == FormWindowState.Maximized),
+                                                               token).ConfigureAwait(false);
+                        string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
+                                                            .ConfigureAwait(false);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
+                                              .ConfigureAwait(false))
+                        {
+                            string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
+                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                            ? strUI
+                                                                            : strUI + strSpace + "("
+                                                                            + strCharacterName
+                                                                            + ")", token: token)
+                                                .ConfigureAwait(false);
+                            ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
+                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                    x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
+                                return;
+                            if (Program.MyProcess.HandleCount >= 9500
+                                && await Program.ShowScrollableMessageBoxAsync(
+                                    StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                    strTooManyHandlesTitle,
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                            {
+                                if (await Program.OpenCharacters
+                                        .AllAsync(
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
+                                            token).ConfigureAwait(false))
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                        .ConfigureAwait(false);
+                                return;
+                            }
+
+                            //Timekeeper.Start("load_event_time");
+                            // Show the character forms.
+                            await this.DoThreadSafeAsync(y =>
+                            {
+                                ExportCharacter frmViewer = new ExportCharacter(objCharacter)
+                                {
+                                    MdiParent = y
+                                };
+                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                    || ReferenceEquals(MdiChildren[0], frmViewer));
+                                Stack<Form> stkToMaximize = null;
+                                if (blnMaximizePreShow)
+                                {
+                                    if (blnMaximizeNewForm)
+                                        frmViewer.WindowState = FormWindowState.Maximized;
+                                }
+                                else
+                                {
+                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                    if (blnMaximizeNewForm)
+                                        stkToMaximize.Push(frmViewer);
+                                    foreach (Form frmLoop in y.MdiChildren)
+                                    {
+                                        if (frmLoop.WindowState == FormWindowState.Maximized
+                                            && !ReferenceEquals(frmLoop, frmViewer))
+                                        {
+                                            frmLoop.WindowState = FormWindowState.Normal;
+                                            stkToMaximize.Push(frmLoop);
+                                        }
+                                    }
+                                }
+
+                                frmViewer.Show();
+                                if (stkToMaximize?.Count > 0)
+                                {
+                                    while (stkToMaximize.Count > 0)
+                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                }
+                            }, token).ConfigureAwait(false);
+                            if (blnIncludeInMru)
+                            {
+                                string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, strFile, token).ConfigureAwait(false);
+                            }
+                            //Timekeeper.Finish("load_event_time");
+                        }
+                    }
+                    finally
+                    {
+                        _objFormOpeningSemaphore.Release();
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Open export forms for a list of characters.
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
+        {
+            if (lstCharacters == null)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != _objGenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objGenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                try
+                {
+                    if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
+                    {
+                        if (lstCharacters is Character[] aobjCharacters)
+                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
+                        else
+                            lstNewCharacters = lstCharacters.ToList();
+                    }
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -4004,10 +4449,11 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
+                                string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
                                                                                 : strUI + strSpace + "("
-                                                                                + objCharacter.CharacterName
+                                                                                + strCharacterName
                                                                                 + ")", token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
@@ -4018,7 +4464,7 @@ namespace Chummer
                                     continue;
                                 if (Program.MyProcess.HandleCount >= 9500
                                     && await Program.ShowScrollableMessageBoxAsync(
-                                        StringExtensions.FastFormat(strTooManyHandles, objCharacter.CharacterName),
+                                        StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {

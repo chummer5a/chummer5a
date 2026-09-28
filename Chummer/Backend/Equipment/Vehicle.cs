@@ -6662,7 +6662,7 @@ namespace Chummer.Backend.Equipment
             await sbdInput.CheapReplaceAsync(strOriginal, "{Body}",
                 t => strTotalBody.GetValueAsync(t), token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Handling}",
-                async t => (await strHandlingValues.GetValueAsync(token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                async t => (await strHandlingValues.GetValueAsync(t).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{OffroadHandling}",
                 async t => (await strHandlingValues.GetValueAsync(t).ConfigureAwait(false)).Item2, token: token).ConfigureAwait(false);
             await sbdInput.CheapReplaceAsync(strOriginal, "{Speed}",
