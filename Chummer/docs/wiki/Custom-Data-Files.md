@@ -47,77 +47,70 @@ Amend files are designed for when you wish to modify a piece of existing content
 
 Amend files can match items using:
 - **GUID**: If your amend entry contains an `id` field, Chummer will match it to the original item's GUID.
-- **Name**: If no `id` field is present, Chummer will attempt to match by the `name` field.
-- **XPath filters**: Use the `xpathfilter` attribute to match nodes by other criteria. For example, `xpathfilter="name='Squatter'"` matches items by name, or `xpathfilter="category='Cyberware' and grade='Standard'"` matches by multiple criteria.
+- **Name**: If no `id` field is present, Chummer matches on the `name` field when the node also contains another child element, or when the operation is `remove`. A node whose only child element is `name` is not matched by name, because some data files use `name` as a list entry rather than an identifier.
+- **Identifier nodes**: A child marked `isidnode="True"` is an additional identifier, for items that use neither an `id` nor a `name`.
+- **XPath filters**: Use the `xpathfilter` attribute to match nodes by other criteria. For example, `xpathfilter="name='Squatter'"` matches items by name, or `xpathfilter="category='Cyberware' and grade='Standard'"` matches by multiple criteria. When `xpathfilter` is present, `id` and `name` are not used for matching.
 
 #### Amend Operations
 
 Amend files use amend operations (specified via the `amendoperation` attribute) to specify how the data should be modified. The available amend operations are:
 
-- `replace` - Replaces the entire node or attribute with the new content. If used with `addifnotfound="True"`, it will add the node if it doesn't exist (similar to custom files but with targeting).
-- `addnode` - Adds a new node if it doesn't exist. If the node already exists, it will not be modified. This is useful for adding optional fields.
-- `remove` - Removes the node or attribute entirely.
-- `recurse` - Recursively processes child nodes. This is required when you need to modify nested elements within a matched item.
-- `append` - Appends content to existing text nodes or adds new content to existing nodes.
-- `regexreplace` - Performs a regular expression replacement on text content. Requires a `regexpattern` attribute specifying the regex pattern.
+- `replace` - Replaces the entire node with the new content. If used with `addifnotfound="True"`, it will add the node if it doesn't exist.
+- `addnode` - Always appends a new copy of this node under the current parent, including when a node of the same name already exists. Use it to insert a new entry. This differs from custom files, which skip an item whose GUID or name is already present.
+- `remove` - Removes the matched node entirely.
+- `recurse` - Applies each child element to the matched node. This is the default when the amending node contains child elements, so a parent that only exists to point at a child does not need the attribute written out.
+- `append` - Appends the amending node's contents onto the matched node. Text is concatenated onto existing text; other child nodes are added.
+- `regexreplace` - Performs a regular expression replacement on text content. Requires a `regexpattern` attribute specifying the regex pattern. If `regexpattern` is missing, the operation falls back to `replace`.
 
-#### Additional Amend Attributes
+#### Default Amend Operations
 
-- `addifnotfound` - When set to `"True"` on a `replace` operation, the node will be added if it doesn't exist (similar to custom files but with targeting).
-- `xpathfilter` - Used to match items by XPath criteria instead of just GUID or name. Example: `xpathfilter="name='Squatter'"` or `xpathfilter="category='Quality' and karma='10'"`.
+If `amendoperation` is omitted, or is set to a value Chummer does not recognize, the operation is chosen from the node:
 
-#### Amend Examples
+- **The node contains child elements** → `recurse`. The node is a step down the tree, not a value to write. Chummer matches it, then applies each child element to that match. Only element children count. A text value such as the `250` in `<cost>250</cost>` does not, so that node is a leaf.
+- **The node has no child elements, and nothing matches it** → `append`. The node is added under the current parent.
+- **The node has no child elements, and a match exists** → `replace`. Unless you set `addifnotfound` yourself, it also defaults to `True`, so the node is added under any matched parent that does not already contain it.
 
-The following examples demonstrate common amend operations. Note that the modern approach uses `amendoperation="recurse"` on parent nodes with `xpathfilter` attributes for matching, which provides more precise control.
+An explicit `amendoperation="recurse"` on a node with no child elements falls through to those same leaf defaults.
 
-**Example 1: Changing the cost of the Squatter lifestyle**
+You do not need to repeat `amendoperation="recurse"` on every parent between the file root and the value you want to change. Any node that contains child elements already defaults to `recurse`. The attribute on the root `<chummer>` element has no effect either way: Chummer amends each child of `<chummer>` against `/chummer`.
 
-This example changes the cost of the Squatter lifestyle from its default value to 250 using the modern recurse approach:
+**Example: Change a nested value by defaulting to recurse**
+
+`lifestyles` and `lifestyle` contain child elements, so both default to `recurse`. `lifestyle` is matched by name because it has a child element other than `<name>`. `cost` is a leaf and a `cost` node already exists, so it defaults to `replace`.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<chummer amendoperation="recurse">
-  <lifestyles amendoperation="recurse">
-    <lifestyle xpathfilter="name='Squatter'" amendoperation="recurse">
-      <cost amendoperation="replace">250</cost>
+<chummer>
+  <lifestyles>
+    <lifestyle>
+      <name>Squatter</name>
+      <cost>250</cost>
     </lifestyle>
   </lifestyles>
 </chummer>
 ```
 
-**Example 2: Hiding a quality**
+This writes the same `cost` as Example 1 when Squatter already has a `cost` node. Because the leaf operation is chosen automatically, it also adds `cost` if that node is missing. The parents do not need `amendoperation="recurse"`.
 
-The following example hides the Bad Rep quality from the list of qualities that characters can acquire:
+**Example: Add a missing leaf**
+
+`hide` has no child elements. If Bad Rep has no `hide` node, the operation defaults to `append` and the node is added. If `hide` is already present, it is replaced.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<chummer amendoperation="recurse">
-  <qualities amendoperation="recurse">
-    <quality xpathfilter="name='Bad Rep'" amendoperation="recurse">
-      <hide amendoperation="addnode" />
+<chummer>
+  <qualities>
+    <quality>
+      <name>Bad Rep</name>
+      <hide />
     </quality>
   </qualities>
 </chummer>
 ```
 
-**Example 3: Removing requirements**
+**Example: Replace one nested node and append another**
 
-The following example removes all extra requirements for learning the Mana Choke martial arts technique, which allows it to be learned by people without a Magic rating:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<chummer amendoperation="recurse">
-  <techniques amendoperation="recurse">
-    <technique xpathfilter="name='Mana Choke'" amendoperation="recurse">
-      <required amendoperation="remove" />
-    </technique>
-  </techniques>
-</chummer>
-```
-
-**Example 4: Modifying nested bonus nodes**
-
-This example (from the actual codebase) modifies Adapsin bioware to change how it applies its bonus:
+`bioware` contains child elements other than `<name>`, so it defaults to `recurse` and is matched by name. `bonus` likewise defaults to `recurse`. `adapsin` is removed explicitly. `cyberwaretotalessmultipliernonretroactive` has no child elements: it replaces an existing node of that name, or is appended if Adapsin has no such node yet.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -134,7 +127,63 @@ This example (from the actual codebase) modifies Adapsin bioware to change how i
 </chummer>
 ```
 
-**Note**: When using `amendoperation="recurse"`, you must apply it to each parent node in the hierarchy leading to the node you want to modify. The `xpathfilter` attribute allows you to target specific items without needing to know their GUID.
+#### Additional Amend Attributes
+
+- `addifnotfound` - When set to `"True"` on a `replace` or `recurse` operation, the node is added if no match exists. On a leaf with no `amendoperation`, this defaults to `"True"` when a match exists. When the attribute is present, the value you write is used as-is.
+- `xpathfilter` - Used to match items by XPath criteria instead of GUID or name. Example: `xpathfilter="name='Squatter'"` or `xpathfilter="category='Quality' and karma='10'"`.
+- `regexpattern` - The regular expression used by `regexreplace`.
+- `isidnode` - Marks a child element as an extra identifier when matching. See Matching Items for Amendment.
+
+#### Amend Examples
+
+The following examples set `amendoperation` explicitly. That is optional for `recurse` on a node that already contains child elements, and for a leaf that should be replaced or added. `remove` and `addnode` still have to be written out: omitting the attribute never selects those two. `xpathfilter` is optional when the node can be matched by `id` or `name`.
+
+**Example 1: Changing the cost of the Squatter lifestyle**
+
+This example changes the cost of the Squatter lifestyle to 250. `recurse` is set on each parent so the path is explicit. `cost` uses `replace`, so unlike the default leaf operation it is left unchanged if Squatter has no `cost` node:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <lifestyles amendoperation="recurse">
+    <lifestyle xpathfilter="name='Squatter'" amendoperation="recurse">
+      <cost amendoperation="replace">250</cost>
+    </lifestyle>
+  </lifestyles>
+</chummer>
+```
+
+**Example 2: Hiding a quality**
+
+The following example hides the Bad Rep quality from the list of qualities that characters can acquire:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <qualities amendoperation="recurse">
+    <quality xpathfilter="name='Bad Rep'" amendoperation="recurse">
+      <hide amendoperation="addnode" />
+    </quality>
+  </qualities>
+</chummer>
+```
+
+**Example 3: Removing requirements**
+
+The following example removes all extra requirements for learning the Mana Choke martial arts technique, which allows it to be learned by people without a Magic rating:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <techniques amendoperation="recurse">
+    <technique xpathfilter="name='Mana Choke'" amendoperation="recurse">
+      <required amendoperation="remove" />
+    </technique>
+  </techniques>
+</chummer>
+```
+
+**Note**: `amendoperation="recurse"` on a node that contains child elements only repeats the default. Set it when you want that path written explicitly. `xpathfilter` targets an item without its GUID; a `name` child does the same thing when the node also contains another child element.
 
 ## Manifest Data
 
