@@ -97,12 +97,12 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             ConfirmSelection(cboCategory.SelectedValue.ToString());
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

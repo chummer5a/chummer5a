@@ -62,7 +62,7 @@ namespace Chummer
             Close();
         }
 
-        private void SelectText_Shown(object sender, EventArgs e)
+        private void SelectText_Shown(object _, EventArgs e)
         {
             if (!string.IsNullOrEmpty(DefaultString))
             {
@@ -70,7 +70,7 @@ namespace Chummer
             }
         }
 
-        private void txtValue_TextChanged(object sender, EventArgs e)
+        private void txtValue_TextChanged(object _, EventArgs e)
         {
             RefreshOKButton();
         }

@@ -328,7 +328,7 @@ namespace Chummer
             }
         }
 
-        private async void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
+        private async void CharacterSheetViewer_FormClosing(object _, FormClosingEventArgs e)
         {
             CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
             if (objTempTokenSource?.IsCancellationRequested == false)

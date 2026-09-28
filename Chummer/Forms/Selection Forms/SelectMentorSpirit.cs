@@ -50,7 +50,7 @@ namespace Chummer
             _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private async void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMentor_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -188,7 +188,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm(object sender, EventArgs e)
+        private void AcceptForm(object _, EventArgs e)
         {
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -208,7 +208,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Mentor list.
         /// </summary>
-        private async void RefreshMentorsList(object sender, EventArgs e)
+        private async void RefreshMentorsList(object _, EventArgs e)
         {
             string strForceId = string.Empty;
 
@@ -267,7 +267,7 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

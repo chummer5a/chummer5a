@@ -105,14 +105,14 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _strReturnValue = cboSkillGroup.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

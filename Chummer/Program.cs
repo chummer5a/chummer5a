@@ -1656,7 +1656,7 @@ namespace Chummer
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
             {
-                x.Closed += (sender, args) =>
+                x.Closed += (_, args) =>
                 {
                     s_setLoadingBars.Remove(x);
                     Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);

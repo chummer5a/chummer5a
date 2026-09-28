@@ -14121,7 +14121,7 @@ namespace Chummer
 
         private int _intFileUpdateQueued;
 
-        protected override async void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
+        protected override async void LiveUpdateFromCharacterFile(object _, FileSystemEventArgs e)
         {
             if (Interlocked.Increment(ref _intFileUpdateQueued) > 1)
             {

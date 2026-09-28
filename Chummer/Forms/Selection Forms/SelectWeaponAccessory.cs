@@ -272,12 +272,12 @@ namespace Chummer
                 await UpdateGearInfo(false).ConfigureAwait(false);
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void CostFilter(object sender, EventArgs e)
+        private async void CostFilter(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;

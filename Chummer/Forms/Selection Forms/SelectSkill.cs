@@ -535,7 +535,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private async void cboSkill_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSkill_SelectedIndexChanged(object _, EventArgs e)
         {
             ValueTuple<string, bool> tupSelected = (ValueTuple<string, bool>)await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false);
             if (tupSelected.Item2)

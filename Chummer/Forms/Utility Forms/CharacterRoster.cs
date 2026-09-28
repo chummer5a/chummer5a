@@ -618,7 +618,7 @@ namespace Chummer
             }
         }
 
-        private async void RefreshMruLists(object sender, TextEventArgs e)
+        private async void RefreshMruLists(object _, TextEventArgs e)
         {
             try
             {

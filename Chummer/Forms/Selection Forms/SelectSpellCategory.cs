@@ -44,7 +44,7 @@ namespace Chummer
             _setExcludeCategories = Utils.StringHashSetPool.Get();
         }
 
-        private async void SelectSpellCategory_Load(object sender, EventArgs e)
+        private async void SelectSpellCategory_Load(object _, EventArgs e)
         {
             // Build the list of Spell Categories from the Spells file.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))

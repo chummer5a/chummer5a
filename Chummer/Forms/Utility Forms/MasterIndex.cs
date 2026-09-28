@@ -940,7 +940,7 @@ namespace Chummer
             internal string TranslatedNameOnPage { get; }
         }
 
-        private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)
+        private async void cmdEditCharacterSetting_Click(object _, EventArgs e)
         {
             try
             {

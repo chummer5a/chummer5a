@@ -190,7 +190,7 @@ namespace Chummer
             }
         }
 
-        private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLanguage_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {

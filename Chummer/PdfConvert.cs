@@ -328,7 +328,7 @@ namespace Codaxy.WkHtmlToPdf
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder error))
                     {
-                        void OutputHandler(object sender, DataReceivedEventArgs e)
+                        void OutputHandler(object _, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -341,7 +341,7 @@ namespace Codaxy.WkHtmlToPdf
                             }
                         }
 
-                        void ErrorHandler(object sender, DataReceivedEventArgs e)
+                        void ErrorHandler(object _, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {

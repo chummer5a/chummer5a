@@ -82,7 +82,7 @@ namespace Chummer
             _lstCategory = Utils.ListItemListPool.Get();
         }
 
-        private async void SelectPACKSKit_Load(object sender, EventArgs e)
+        private async void SelectPACKSKit_Load(object _, EventArgs e)
         {
             // Populate the PACKS Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category[not(hide)]"))
@@ -109,7 +109,7 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             await RefreshCategories().ConfigureAwait(false);
         }
@@ -161,7 +161,7 @@ namespace Chummer
             await cmdDelete.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
         }
 
-        private async void lstKits_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstKits_SelectedIndexChanged(object _, EventArgs e)
         {
             string strSelectedKit = await lstKits.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedKit))
@@ -826,25 +826,25 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             AcceptForm();
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             string strSelectedKit = await lstKits.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedKit))
