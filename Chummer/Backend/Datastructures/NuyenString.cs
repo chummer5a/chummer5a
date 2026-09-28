@@ -133,7 +133,7 @@ namespace Chummer
                     return 1;
                 if (_objMyCulture != other._objMyCulture)
                     return string.CompareOrdinal(_objMyCulture.ToString(), other._objMyCulture.ToString());
-                return string.Compare(BaseString, other.BaseString, false, _objMyCulture);
+                return string.Compare(BaseString, other.BaseString, _objMyCulture, CompareOptions.StringSort);
             }
             if (other.UseDecimal)
                 return Value.CompareTo(other.Value);

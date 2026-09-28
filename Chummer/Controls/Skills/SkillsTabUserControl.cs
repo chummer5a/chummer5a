@@ -880,7 +880,7 @@ namespace Chummer.UI.Skills
                         int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = SkillsSection.CompareSkills(x, y);
                         }
@@ -892,7 +892,7 @@ namespace Chummer.UI.Skills
                         int intReturn = (await y.GetAttributeModifiersAsync(t).ConfigureAwait(false)).CompareTo(await x.GetAttributeModifiersAsync(t).ConfigureAwait(false));
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         }
@@ -901,7 +901,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>, IAsyncComparer<Skill>>(await LanguageManager.GetStringAsync("Skill_SortAttributeName", token: token).ConfigureAwait(false),
                     new SkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -909,7 +909,7 @@ namespace Chummer.UI.Skills
                     new AsyncSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -935,7 +935,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>, IAsyncComparer<Skill>>(await LanguageManager.GetStringAsync("Skill_SortCategory", token: token).ConfigureAwait(false),
                     new SkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -943,7 +943,7 @@ namespace Chummer.UI.Skills
                     new AsyncSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -1087,7 +1087,7 @@ namespace Chummer.UI.Skills
                         int intReturn = y.AttributeModifiers.CompareTo(x.AttributeModifiers);
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = SkillsSection.CompareSkills(x, y);
                         }
@@ -1099,7 +1099,7 @@ namespace Chummer.UI.Skills
                         int intReturn = (await y.GetAttributeModifiersAsync(t).ConfigureAwait(false)).CompareTo(await x.GetAttributeModifiersAsync(t).ConfigureAwait(false));
                         if (intReturn == 0)
                         {
-                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                            intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                             if (intReturn == 0)
                                 intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         }
@@ -1108,7 +1108,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>>(await LanguageManager.GetStringAsync("Skill_SortAttributeName", token: token).ConfigureAwait(false),
                     new KnowledgeSkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.DisplayAttribute, y.DisplayAttribute, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -1116,7 +1116,7 @@ namespace Chummer.UI.Skills
                     new AsyncKnowledgeSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetDisplayAttributeAsync(t).ConfigureAwait(false), await y.GetDisplayAttributeAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;
@@ -1124,7 +1124,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>>(await LanguageManager.GetStringAsync("Skill_SortCategory", token: token).ConfigureAwait(false),
                     new KnowledgeSkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
@@ -1132,7 +1132,7 @@ namespace Chummer.UI.Skills
                     new AsyncKnowledgeSkillSorter(async (x, y, t) =>
                     {
                         t.ThrowIfCancellationRequested();
-                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(await x.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), await y.GetCurrentDisplayCategoryAsync(t).ConfigureAwait(false), GlobalSettings.CultureInfo, CompareOptions.StringSort);
                         if (intReturn == 0)
                             intReturn = await SkillsSection.CompareSkillsAsync(x, y, t).ConfigureAwait(false);
                         return intReturn;

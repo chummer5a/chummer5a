@@ -241,10 +241,10 @@ namespace Chummer
             {
                 return string.CompareOrdinal(CultureInfo.ToString(), other.CultureInfo.ToString());
             }
-            int intCompareResult = string.Compare(Language, other.Language, false, CultureInfo);
+            int intCompareResult = string.Compare(Language, other.Language, CultureInfo, CompareOptions.StringSort);
             if (intCompareResult == 0)
             {
-                intCompareResult = string.Compare(Code, other.Code, false, CultureInfo);
+                intCompareResult = string.Compare(Code, other.Code, CultureInfo, CompareOptions.StringSort);
                 if (intCompareResult == 0)
                 {
                     return Page.CompareTo(other.Page);

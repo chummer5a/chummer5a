@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -146,7 +147,7 @@ namespace Chummer
                     return 0;
                 return -1;
             }
-            return ty == null ? 1 : string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalSettings.CultureInfo);
+            return ty == null ? 1 : string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
     }
 
@@ -178,7 +179,7 @@ namespace Chummer
         /// </summary>
         public static int CompareNames(ListItem objX, ListItem objY)
         {
-            return string.Compare(objX.Name, objY.Name, false, GlobalSettings.CultureInfo);
+            return string.Compare(objX.Name, objY.Name, GlobalSettings.CultureInfo, CompareOptions.StringSort);
         }
     }
 
@@ -237,13 +238,13 @@ namespace Chummer
                 {
                     string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape(_achrCachedNuyenSymbols);
                     string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape(_achrCachedNuyenSymbols);
-                    if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
+                    if (decimal.TryParse(strX, NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decX) &&
-                        decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
+                        decimal.TryParse(strY, NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decY))
                         intCompareResult = decimal.Compare(decX, decY);
                     else
-                        intCompareResult = string.Compare(strX, strY, true, GlobalSettings.CultureInfo);
+                        intCompareResult = string.Compare(strX, strY, GlobalSettings.CultureInfo, CompareOptions.StringSort | CompareOptions.IgnoreCase);
                 }
             }
 
@@ -318,7 +319,7 @@ namespace Chummer
                 intCompareResult = 1;
             }
             else
-                intCompareResult = string.Compare(strX, strY, true, GlobalSettings.CultureInfo);
+                intCompareResult = string.Compare(strX, strY, GlobalSettings.CultureInfo, CompareOptions.StringSort | CompareOptions.IgnoreCase);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)

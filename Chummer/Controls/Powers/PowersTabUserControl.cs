@@ -528,7 +528,7 @@ namespace Chummer.UI.Powers
                                 {
                                     return string.Compare((await name1.ConfigureAwait(false)).ToString(),
                                         (await name2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
-                                        CompareOptions.Ordinal);
+                                        CompareOptions.StringSort);
                                 }
                                 finally
                                 {
@@ -585,7 +585,7 @@ namespace Chummer.UI.Powers
                                 {
                                     return string.Compare((await action1.ConfigureAwait(false)).ToString(),
                                         (await action2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
-                                        CompareOptions.Ordinal);
+                                        CompareOptions.StringSort);
                                 }
                                 finally
                                 {
