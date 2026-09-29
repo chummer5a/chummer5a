@@ -23,7 +23,7 @@ namespace Chummer.Properties
 {
     public static class Contributors
     {
-        public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(_lstUsernames);
+        public static ReadOnlyCollection<string> Usernames => _lstUsernames.AsReadOnly();
 
         private static readonly string[] _lstUsernames = {
             "Chummer 5 Is Alive<chummer5a>",

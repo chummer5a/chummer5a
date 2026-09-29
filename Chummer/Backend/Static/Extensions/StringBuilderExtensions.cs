@@ -2338,9 +2338,9 @@ namespace Chummer
             return sbdInput;
         }
 
-        private static readonly ReadOnlyCollection<string> s_astrFormatNeedles2Args = Array.AsReadOnly(new string[2] { "{0}", "{1}" });
-        private static readonly ReadOnlyCollection<string> s_astrFormatNeedles3Args = Array.AsReadOnly(new string[3] { "{0}", "{1}", "{2}" });
-        private static readonly ReadOnlyCollection<string> s_astrFormatNeedles4Args = Array.AsReadOnly(new string[4] { "{0}", "{1}", "{2}", "{3}" });
+        private static readonly ReadOnlyCollection<string> s_astrFormatNeedles2Args = Array.AsReadOnly(new string[] { "{0}", "{1}" });
+        private static readonly ReadOnlyCollection<string> s_astrFormatNeedles3Args = Array.AsReadOnly(new string[] { "{0}", "{1}", "{2}" });
+        private static readonly ReadOnlyCollection<string> s_astrFormatNeedles4Args = Array.AsReadOnly(new string[] { "{0}", "{1}", "{2}", "{3}" });
 
 
         /// <summary>

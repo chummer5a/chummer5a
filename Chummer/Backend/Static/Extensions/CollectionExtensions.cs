@@ -18,15 +18,71 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Chummer
 {
     public static class CollectionExtensions
     {
+        /// <inheritdoc cref="List{T}.ToArray()"/>
+        public static T[] ToArray<T>(this ICollection<T> lstCollection)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+
+            int intLength = lstCollection.Count;
+            T[] aobjReturn = new T[intLength];
+            lstCollection.CopyTo(aobjReturn, 0);
+            return aobjReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="List{T}.ToArray()"/> that allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// </summary>
+        public static T[] ToPooledArray<T>(this ICollection<T> lstCollection, out int arrayLength) where T : unmanaged // DO NOT REMOVE UNMANAGED KEYWORD UNLESS YOU LIKE ADDING RANDOM MEMORY LEAKS VIA ARRAYPOOL<T>.SHARED!
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+
+            arrayLength = lstCollection.Count;
+            T[] aobjReturn = ArrayPool<T>.Shared.Rent(arrayLength);
+            try
+            {
+                lstCollection.CopyTo(aobjReturn, 0);
+                return aobjReturn;
+            }
+            catch
+            {
+                ArrayPool<T>.Shared.Return(aobjReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="List{T}.ToArray()"/> that allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// </summary>
+        public static string[] ToPooledArray(this ICollection<string> lstCollection, out int arrayLength)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+
+            arrayLength = lstCollection.Count;
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                lstCollection.CopyTo(astrReturn, 0);
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
         public static void AddRange<T>(this ICollection<T> lstCollection, IEnumerable<T> lstToAdd)
         {
             if (lstCollection == null)

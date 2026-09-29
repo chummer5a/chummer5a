@@ -41,14 +41,14 @@ namespace Chummer
         public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
                                                      IEnumerable<string> lstPropertyNames)
         {
-            objSubject.OnMultiplePropertiesChanged(lstPropertyNames.ToList());
+            objSubject.OnMultiplePropertiesChanged(lstPropertyNames.AsReadOnly());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
                                                      params string[] lstPropertyNames)
         {
-            objSubject.OnMultiplePropertiesChanged(Array.AsReadOnly(lstPropertyNames));
+            objSubject.OnMultiplePropertiesChanged(lstPropertyNames.AsReadOnly());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

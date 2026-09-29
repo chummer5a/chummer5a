@@ -106,7 +106,7 @@ namespace Chummer.Backend.Attributes
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
                         foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
                         {
@@ -126,7 +126,7 @@ namespace Chummer.Backend.Attributes
                     else if (MultiplePropertiesChanged != null)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         Utils.RunOnMainThread(() =>
                         {
                             // ReSharper disable once AccessToModifiedClosure
@@ -220,7 +220,7 @@ namespace Chummer.Backend.Attributes
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
@@ -234,7 +234,7 @@ namespace Chummer.Backend.Attributes
                     else if (MultiplePropertiesChanged != null)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         await Utils.RunOnMainThreadAsync(() =>
                         {
                             // ReSharper disable once AccessToModifiedClosure
@@ -2625,7 +2625,7 @@ namespace Chummer.Backend.Attributes
         {
             foreach (CharacterAttrib att in AttributeList)
             {
-                att.OnMultiplePropertiesChanged(Array.AsReadOnly(lstNames));
+                att.OnMultiplePropertiesChanged(lstNames);
             }
         }
 
@@ -2724,7 +2724,7 @@ namespace Chummer.Backend.Attributes
 
         internal Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, params string[] lstNames)
         {
-            ReadOnlyCollection<string> lstNamesToUse = Array.AsReadOnly(lstNames);
+            ReadOnlyCollection<string> lstNamesToUse = lstNames.AsReadOnly();
             return AttributeList.ForEachWithSideEffectsAsync(
                 (att, t) => att.OnMultiplePropertiesChangedAsync(lstNamesToUse, t), token);
         }

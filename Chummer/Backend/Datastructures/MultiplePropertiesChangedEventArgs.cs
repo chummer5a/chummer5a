@@ -26,18 +26,18 @@ namespace Chummer
 {
     public readonly struct MultiplePropertiesChangedEventArgs : IEquatable<MultiplePropertiesChangedEventArgs>
     {
-        private readonly string[] _astrPropertyNames;
 
-        public MultiplePropertiesChangedEventArgs(params string[] astrPropertyNames) => _astrPropertyNames = astrPropertyNames;
+        public MultiplePropertiesChangedEventArgs(params string[] astrPropertyNames) =>
+            PropertyNames = astrPropertyNames.AsReadOnly();
 
         public MultiplePropertiesChangedEventArgs(IEnumerable<string> astrPropertyNames) =>
-            _astrPropertyNames = astrPropertyNames.ToArray();
+            PropertyNames = astrPropertyNames.AsReadOnly();
 
-        public ReadOnlyCollection<string> PropertyNames => Array.AsReadOnly(_astrPropertyNames);
+        public ReadOnlyCollection<string> PropertyNames { get; }
 
         public bool Equals(MultiplePropertiesChangedEventArgs other)
         {
-            return _astrPropertyNames.CollectionEqual(other._astrPropertyNames);
+            return PropertyNames.CollectionEqual(other.PropertyNames);
         }
 
         public override bool Equals(object obj)
@@ -56,7 +56,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return _astrPropertyNames.GetEnsembleHashCode();
+            return PropertyNames.GetEnsembleHashCode();
         }
     }
 }

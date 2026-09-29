@@ -312,7 +312,7 @@ namespace Chummer
                 await cboXmlFiles.DoThreadSafeAsync(x =>
                 {
                     x.Items.Clear();
-                    x.Items.AddRange(Utils.BasicDataFileNames.ToArray<object>());
+                    x.Items.AddRange(Utils.BasicDataFileNames.ToArrayBetter());
                     if (x.Items.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);

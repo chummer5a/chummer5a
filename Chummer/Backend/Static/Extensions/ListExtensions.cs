@@ -19,7 +19,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
@@ -28,6 +30,15 @@ namespace Chummer
 {
     public static class ListExtensions
     {
+        /// <summary>
+        /// Syntactic sugar for <see cref="List{T}.AsReadOnly()" /> applied through the list interface.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlyCollection<T> AsReadOnly<T>(this IList<T> lstCollection)
+        {
+            return new ReadOnlyCollection<T>(lstCollection);
+        }
+
         /// <summary>
         /// Syntactic sugar to call <see cref="IList{T}.Insert(int, T)"/> in a sorted list and let it remain sorted.
         /// </summary>

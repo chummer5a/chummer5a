@@ -427,7 +427,7 @@ namespace Chummer
             return lstFiles.ToArray();
         });
 
-        public static ReadOnlyCollection<string> BasicDataFileNames => Array.AsReadOnly(s_astrBasicDataFileNames.Value);
+        public static ReadOnlyCollection<string> BasicDataFileNames => s_astrBasicDataFileNames.Value.AsReadOnly();
 
         /// <summary>
         /// Attempts to find any custom data files located in the base data directory (where they would be ignored) and move them to an appropriate directory.
@@ -2913,7 +2913,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
         {
-            return RunWithoutThreadLock(Array.AsReadOnly(afuncToRun), default);
+            return RunWithoutThreadLock(afuncToRun.AsReadOnly(), default);
         }
 
         /// <summary>
@@ -3244,7 +3244,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(params Func<Task>[] afuncToRun)
         {
-            RunWithoutThreadLock(Array.AsReadOnly(afuncToRun));
+            RunWithoutThreadLock(afuncToRun.AsReadOnly());
         }
 
         /// <summary>
@@ -3256,7 +3256,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(CancellationToken token, params Func<Task>[] afuncToRun)
         {
-            RunWithoutThreadLock(Array.AsReadOnly(afuncToRun), token);
+            RunWithoutThreadLock(afuncToRun.AsReadOnly(), token);
         }
 
         /// <summary>

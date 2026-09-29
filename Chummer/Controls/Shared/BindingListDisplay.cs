@@ -86,7 +86,11 @@ namespace Chummer.Controls.Shared
                 if (intMaxControlHeight > 0)
                     ListItemControlHeight = intMaxControlHeight;
 
-                pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+                int intLength = _lstContentList.Count;
+                Control[] aobjControls = new Control[intLength];
+                for (int i = 0; i < intLength; ++i)
+                    aobjControls[i] = _lstContentList[i].Control;
+                pnlDisplay.Controls.AddRange(aobjControls);
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 _comparisonAsync = null;
@@ -126,7 +130,11 @@ namespace Chummer.Controls.Shared
                 if (intMaxControlHeight > 0)
                     ListItemControlHeight = intMaxControlHeight;
 
-                pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+                int intLength = _lstContentList.Count;
+                Control[] aobjControls = new Control[intLength];
+                for (int i = 0; i < intLength; ++i)
+                    aobjControls[i] = _lstContentList[i].Control;
+                pnlDisplay.Controls.AddRange(aobjControls);
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 _comparisonAsync = null;
@@ -705,7 +713,10 @@ namespace Chummer.Controls.Shared
                         }
                         _lstContentList.Clear();
                         await Contents.ForEachWithSideEffectsAsync(async (objLoopTType, t) => _lstContentList.Add(await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, t).ConfigureAwait(false)), token).ConfigureAwait(false);
-                        Control[] aobjControls = _lstContentList.Select(y => y.Control).ToArray();
+                        int intLength = _lstContentList.Count;
+                        Control[] aobjControls = new Control[intLength];
+                        for (int i = 0; i < intLength; ++i)
+                            aobjControls[i] = _lstContentList[i].Control;
                         await pnlDisplay.DoThreadSafeAsync(x => x.Controls.AddRange(aobjControls), token).ConfigureAwait(false);
                     }
                     finally

@@ -30,7 +30,7 @@ namespace Chummer
     /// Structured array built for working properly as a key to dictionaries. Read-only to make sure keys remain immutable.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct KeyArray<T> : IReadOnlyList<T>, IEquatable<KeyArray<T>>
+    public readonly struct KeyArray<T> : IList<T>, IReadOnlyList<T>, IEquatable<KeyArray<T>>
     {
         private readonly T[] _aobjItems;
         private readonly int _intLength;
@@ -38,22 +38,23 @@ namespace Chummer
 
         public KeyArray(IEnumerable<T> lstItems)
         {
-            _aobjItems = lstItems.ToArray();
+            _aobjItems = lstItems.ToArrayBetter();
             _intLength = _aobjItems.Length;
             _intHashCode = _aobjItems.GetEnsembleHashCode();
         }
 
-        private KeyArray(T[] aobjItems)
+        private KeyArray(params T[] aobjItems)
         {
-            _aobjItems = aobjItems;
-            _intLength = _aobjItems.Length;
+            _intLength = aobjItems.Length;
+            _aobjItems = new T[_intLength];
+            Array.Copy(aobjItems, 0, _aobjItems, 0, _intLength);
             _intHashCode = _aobjItems.GetEnsembleHashCode();
         }
 
         public static async Task<KeyArray<T>> NewAsync(IAsyncEnumerable<T> lstItems, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return new KeyArray<T>((await lstItems.ToListAsync(token).ConfigureAwait(false)).ToArray());
+            return new KeyArray<T>(await lstItems.ToListAsync(token).ConfigureAwait(false));
         }
 
         /// <inheritdoc />
@@ -92,8 +93,17 @@ namespace Chummer
         /// <inheritdoc cref="Array.Length" />
         public int Length => _intLength;
 
+        /// <inheritdoc cref="Array.Length" />
+        public int Count => _intLength;
+
+        public bool IsReadOnly => true;
+
         /// <inheritdoc />
-        public T this[int index] => _aobjItems[index];
+        public T this[int index]
+        {
+            get => _aobjItems[index];
+            set => throw new NotSupportedException();
+        }
 
         /// <inheritdoc />
         public override int GetHashCode() => _intHashCode;
@@ -200,6 +210,36 @@ namespace Chummer
         public override bool Equals(object obj)
         {
             return obj != null && Equals((KeyArray<T>)obj);
+        }
+
+        public int IndexOf(T item)
+        {
+            return Array.IndexOf(_aobjItems, item);
+        }
+
+        public void Insert(int index, T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Add(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotSupportedException();
+        }
+
+        public bool Remove(T item)
+        {
+            throw new NotSupportedException();
         }
     }
 }
