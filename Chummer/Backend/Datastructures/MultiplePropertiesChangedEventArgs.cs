@@ -26,10 +26,12 @@ namespace Chummer
 {
     public readonly struct MultiplePropertiesChangedEventArgs : IEquatable<MultiplePropertiesChangedEventArgs>
     {
-
         public MultiplePropertiesChangedEventArgs(params string[] astrPropertyNames) =>
             PropertyNames = astrPropertyNames.AsReadOnly();
 
+        /// <summary>
+        /// NOTE: This will regularly only create a wrapper around the provided arguments, so be careful when using disposable collections for the argument!
+        /// </summary>
         public MultiplePropertiesChangedEventArgs(IEnumerable<string> astrPropertyNames) =>
             PropertyNames = astrPropertyNames.AsReadOnly();
 
