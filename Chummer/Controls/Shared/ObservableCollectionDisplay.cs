@@ -48,6 +48,7 @@ namespace Chummer.Controls.Shared
 
         private int _intSuspendLayoutCount;
         private readonly Func<TType, Control> _funcCreateControl;  //Function to create a control out of a item
+        private readonly Func<TType, CancellationToken, Control> _funcCreateControlWithCancel;  //Function to create a control out of a item
         private readonly bool _blnLoadVisibleOnly;
         private readonly List<ControlWithMetaData> _lstContentList = new List<ControlWithMetaData>(10);
         private readonly List<int> _lstDisplayIndex = new List<int>(10);
@@ -63,20 +64,23 @@ namespace Chummer.Controls.Shared
         private CancellationTokenSource _objFilterCancellationTokenSource;
         private CancellationTokenSource _objSortCancellationTokenSource;
 
-        public ObservableCollectionDisplay(ThreadSafeObservableCollection<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
+        public ObservableCollectionDisplay(ThreadSafeObservableCollection<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             InitializeComponent();
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _funcCreateControl = funcCreateControl;
+            _funcCreateControlWithCancel = null;
             _blnLoadVisibleOnly = blnLoadVisibleOnly;
             if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                 pnlDisplay.SuspendLayout();
             try
             {
+                token.ThrowIfCancellationRequested();
                 int intMaxControlHeight = 0;
                 foreach (TType objLoopTType in Contents.AsEnumerableWithSideEffects())
                 {
-                    ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
+                    ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false, token);
                     intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
                     _lstContentList.Add(objNewControl);
                 }
@@ -94,8 +98,53 @@ namespace Chummer.Controls.Shared
                 _comparisonAsync = null;
 
                 Contents.CollectionChangedAsync += OnCollectionChanged;
-                ComputeDisplayIndex();
-                LoadScreenContent();
+                ComputeDisplayIndex(token);
+                LoadScreenContent(token);
+                ObservableCollectionDisplay_SizeChanged(null, null);
+            }
+            finally
+            {
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
+                    pnlDisplay.ResumeLayout();
+            }
+        }
+
+        public ObservableCollectionDisplay(ThreadSafeObservableCollection<TType> contents, Func<TType, CancellationToken, Control> funcCreateControl, bool blnLoadVisibleOnly = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            InitializeComponent();
+            Contents = contents ?? throw new ArgumentNullException(nameof(contents));
+            _funcCreateControl = null;
+            _funcCreateControlWithCancel = funcCreateControl;
+            _blnLoadVisibleOnly = blnLoadVisibleOnly;
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.SuspendLayout();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intMaxControlHeight = 0;
+                foreach (TType objLoopTType in Contents.AsEnumerableWithSideEffects())
+                {
+                    ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false, token);
+                    intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
+                    _lstContentList.Add(objNewControl);
+                }
+
+                if (intMaxControlHeight > 0)
+                    ListItemControlHeight = intMaxControlHeight;
+
+                int intLength = _lstContentList.Count;
+                Control[] aobjControls = new Control[intLength];
+                for (int i = 0; i < intLength; ++i)
+                    aobjControls[i] = _lstContentList[i].Control;
+                pnlDisplay.Controls.AddRange(aobjControls);
+                _indexComparer = new IndexComparer(Contents);
+                _comparison = _comparison ?? _indexComparer;
+                _comparisonAsync = null;
+
+                Contents.CollectionChangedAsync += OnCollectionChanged;
+                ComputeDisplayIndex(token);
+                LoadScreenContent(token);
                 ObservableCollectionDisplay_SizeChanged(null, null);
             }
             finally
@@ -852,19 +901,19 @@ namespace Chummer.Controls.Shared
             private Control _control;
             private bool? _visible;
 
-            public ControlWithMetaData(TType item, ObservableCollectionDisplay<TType> parent, bool blnAddControlAfterCreation) : this(item, parent)
+            public ControlWithMetaData(TType item, ObservableCollectionDisplay<TType> parent, bool blnAddControlAfterCreation, CancellationToken token = default) : this(item, parent)
             {
                 // Because binding list displays generally involve syncing the name label of child controls after-the-fact,
                 // we need to create the control in the constructor (even if it isn't rendered) so that we can measure its
                 // elements' widths and/or heights
-                CreateControl(blnAddControlAfterCreation);
+                CreateControl(blnAddControlAfterCreation, token);
                 if (item is INotifyPropertyChangedAsync objItem)
                 {
                     if (objItem is IHasLockObject objHasLock)
                     {
                         try
                         {
-                            using (objHasLock.LockObject.EnterWriteLock())
+                            using (objHasLock.LockObject.EnterWriteLock(token))
                                 objItem.PropertyChangedAsync += item_ChangedEventAsync;
                         }
                         catch (ObjectDisposedException)
@@ -881,7 +930,7 @@ namespace Chummer.Controls.Shared
                     {
                         try
                         {
-                            using (objHasLock.LockObject.EnterWriteLock())
+                            using (objHasLock.LockObject.EnterWriteLock(token))
                                 prop.PropertyChanged += item_ChangedEvent;
                         }
                         catch (ObjectDisposedException)
@@ -1067,16 +1116,17 @@ namespace Chummer.Controls.Shared
                 }
             }
 
-            private Control CreateControl(bool blnAddControlAfterCreation = true)
+            private Control CreateControl(bool blnAddControlAfterCreation = true, CancellationToken token = default)
             {
-                Control objNewControl = _parent.DoThreadSafeFunc(x => x._funcCreateControl(Item));
+                token.ThrowIfCancellationRequested();
+                Control objNewControl = _parent.DoThreadSafeFunc((x, t) => x._funcCreateControlWithCancel != null ? x._funcCreateControlWithCancel(Item, t) : x._funcCreateControl(Item), token);
                 Control objOldControl = Interlocked.CompareExchange(ref _control, objNewControl, null);
                 if (objOldControl != null)
                 {
-                    objNewControl.DoThreadSafe(x => x.Dispose());
+                    objNewControl.DoThreadSafe(x => x.Dispose(), token);
                     objNewControl = objOldControl;
                 }
-                int intHeight = objNewControl.DoThreadSafeFunc(x => x.PreferredSize.Height);
+                int intHeight = objNewControl.DoThreadSafeFunc(x => x.PreferredSize.Height, token);
                 objNewControl.DoThreadSafe(x =>
                 {
                     x.SuspendLayout();
@@ -1100,17 +1150,17 @@ namespace Chummer.Controls.Shared
                     {
                         x.ResumeLayout();
                     }
-                });
+                }, token);
                 _parent.ListItemControlHeight = intHeight;
                 if (blnAddControlAfterCreation)
-                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Add(objNewControl));
+                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Add(objNewControl), token);
                 return objNewControl;
             }
 
             private async Task<Control> CreateControlAsync(bool blnAddControlAfterCreation = true, CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
-                Control objNewControl = await _parent.DoThreadSafeFuncAsync(x => x._funcCreateControl(Item), token: token).ConfigureAwait(false);
+                Control objNewControl = await _parent.DoThreadSafeFuncAsync((x, t) => x._funcCreateControlWithCancel != null ? x._funcCreateControlWithCancel(Item, t) : x._funcCreateControl(Item), token: token).ConfigureAwait(false);
                 Control objOldControl = Interlocked.CompareExchange(ref _control, objNewControl, null);
                 if (objOldControl != null)
                 {
