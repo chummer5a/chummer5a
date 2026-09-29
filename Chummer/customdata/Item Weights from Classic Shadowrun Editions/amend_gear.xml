@@ -23,12 +23,14 @@
     CC = Cannon Companion
     CS = Corporate Security
     GM2 = Grimoire, 2nd Edition
+    M3.0 = Matrix 3.0
     NGNA = Neo-Anarchists' Guide to North America
     NGRL = Neo-Anarchists' Guide to Real Life
-    R3 = Rigger 3.0
+    R3 = Rigger 3.0 (Revised)
     SB = Shadowbeat
     SotA = State of the Art 2063
     SotA2 = State of the Art 2064
+    VR2 = Virtual Realities 2.0
     -->
   <gears>
     <!-- Section Ammunition -->
@@ -569,6 +571,11 @@
 
     <!-- Section Weapon Accessories -->
     <gear>
+      <name>Smart Goggles (2050)</name>
+      <!-- Based on: Smart Goggles (CRB) -->
+      <weight>0.1</weight>
+    </gear>
+    <gear>
       <name>Spare Clip</name>
       <!-- Based on: Spare Clips (CRB) -->
       <weight>0.75</weight>
@@ -918,6 +925,131 @@
       <weight>2</weight>
     </gear>
 
+    <!-- Section Personal Electronics -->
+    <gear xpathfilter="category = 'Cyberdecks' and not(weight)">
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Radio Shack PCD-100 (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Allegiance Alpha (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Sony CTY-360 (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Fuchi Cyber-4 (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Fuchi Cyber-6 (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Fuchi Cyber-7 (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Fairlight Excalibur (2050)</name>
+      <!-- Based on: Personal Computer, Pocket (CRB) -->
+      <weight>1</weight>
+    </gear>
+    <gear xpathfilter="category = 'Rigger Command Consoles' and not(weight)">
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Radio Shack PCD-50, Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Microdesk Luggable, Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Sony CTY-180, Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Fuchi Cyber-3, Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Amalgamated Tech. und Tele., Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Microtrónica Azteca Maletin, Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Fairlight Sharur, Luggage (2050)</name>
+      <!-- Based on: Remote Control Deck (CRB) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Radio Shack DTU-2500, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Microdeck Deckmaster, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Sony R4J, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Fuchi Cyber-2, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>MTC Sarari-Man, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Renraku Desukuwa-Ku, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Fairlight Joyeuse, Terminal (2050)</name>
+      <!-- Based on: Breadboarded CPU weight (VR2) -->
+      <weight>10</weight>
+    </gear>
+    <gear>
+      <name>Chip Burner (2050)</name>
+      <!-- Based on: OCC Encoder (M3.0) -->
+      <weight>3</weight>
+    </gear>
+    <gear>
+      <name>Vidscreen Display (2050)</name>
+      <!-- Based on: Audio/Visual Screen Displays (CRB) -->
+      <weight>0.5</weight>
+    </gear>
+
     <!-- Section Misc. Gear -->
     <gear>
       <name>Chemsuit</name>
@@ -991,8 +1123,13 @@
     </gear>
     <gear>
       <name>Several Days' Worth of Ration Bars</name>
-      <!-- Based on: Ration Bars, 10 days (CRB) -->
+      <!-- Based on: Ration Bars (10 days) (CRB) -->
       <weight>1</weight>
+    </gear>
+    <gear>
+      <name>Extra Compressed Soy Bars (2050)</name>
+      <!-- Based on: Ration Bars (10 days) (CRB) -->
+      <weight>0.1</weight>
     </gear>
     <gear>
       <name>Fashion Respirator</name>
