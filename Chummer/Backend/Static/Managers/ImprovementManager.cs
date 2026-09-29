@@ -7439,7 +7439,7 @@ namespace Chummer
         /// <summary>
         /// Async typed allowlist. Prefers typed GetXxxAsync helpers where they exist.
         /// </summary>
-        private static async Task<(bool Found, object Value)> TryGetConditionValueAsync(
+        private static async ValueTask<(bool Found, object Value)> TryGetConditionValueAsync(
             object targetObject, string objectType, string propertyName, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -7616,10 +7616,12 @@ namespace Chummer
                         return CompareValues(propertyValue, convertedExpectedValue) < 0;
                     case ">=":
                     case "&GTE;":
+                    case "&GT;=":
                     case "&GT;&EQ;":
                         return CompareValues(propertyValue, convertedExpectedValue) >= 0;
                     case "<=":
                     case "&LTE;":
+                    case "&LT;=":
                     case "&LT;&EQ;":
                         return CompareValues(propertyValue, convertedExpectedValue) <= 0;
                     case "CONTAINS":
@@ -7635,7 +7637,7 @@ namespace Chummer
         /// <summary>
         /// Compares two values for ordering operations.
         /// </summary>
-        private static int CompareValues(IComparable value1, IComparable value2)
+        private static int CompareValues<T>(IComparable<T> value1, T value2)
         {
             return value1.CompareTo(value2);
         }
@@ -7643,10 +7645,66 @@ namespace Chummer
         /// <summary>
         /// Compares two values for ordering operations.
         /// </summary>
+        private static int CompareValues(string value1, string value2)
+        {
+            return string.CompareOrdinal(value1, value2);
+        }
+
+        /// <summary>
+        /// Compares two values for ordering operations.
+        /// </summary>
+        private static int CompareValues(IComparable<string> value1, string value2)
+        {
+            return value1.CompareTo(value2);
+        }
+
+        /// <summary>
+        /// Compares two values for ordering operations.
+        /// </summary>
+        private static int CompareValues(IComparable value1, object value2)
+        {
+            return value1.CompareTo(value2);
+        }
+
+        /// <summary>
+        /// Compares two values for ordering operations.
+        /// </summary>
+        private static int CompareValues(object value1, IComparable value2)
+        {
+            return -value2.CompareTo(value1);
+        }
+
+        /// <summary>
+        /// Compares two values for ordering operations.
+        /// </summary>
         private static int CompareValues(object value1, object value2)
         {
-            if (value1 is IComparable comparable1 && value2 is IComparable comparable2)
-                return CompareValues(comparable1, comparable2);
+            if (value1 == null)
+                return value2 == null ? 0 : -1;
+            if (value2 == null)
+                return 1;
+            switch (value1)
+            {
+                // Shortcut through the most common cases where things are working as intended
+                case string strValue1 when value2 is string strValue2:
+                    return CompareValues(strValue1, strValue2);
+                case IComparable<bool> comparablebln1 when value2 is bool blnValue2:
+                    return CompareValues(comparablebln1, blnValue2);
+                case IComparable<int> comparableint1 when value2 is int intValue2:
+                    return CompareValues(comparableint1, intValue2);
+                case IComparable<float> comparableflt1 when value2 is float fltValue2:
+                    return CompareValues(comparableflt1, fltValue2);
+                case IComparable<double> comparabledbl1 when value2 is double dblValue2:
+                    return CompareValues(comparabledbl1, dblValue2);
+                case IComparable<decimal> comparabledec1 when value2 is decimal decValue2:
+                    return CompareValues(comparabledec1, decValue2);
+                case IComparable<string> comparablestr1 when value2 is string strValue2:
+                    return CompareValues(comparablestr1, strValue2);
+                case IComparable comparable1:
+                    return CompareValues(comparable1, value2);
+            }
+            if (value2 is IComparable comparable2)
+                return CompareValues(value1, comparable2);
 
             return string.CompareOrdinal(value1.ToString(), value2.ToString());
         }
