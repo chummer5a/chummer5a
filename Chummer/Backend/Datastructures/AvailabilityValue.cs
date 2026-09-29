@@ -25,7 +25,7 @@ using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
-    public readonly struct AvailabilityValue : IComparable, IEquatable<AvailabilityValue>
+    public readonly struct AvailabilityValue : IComparable, IComparable<AvailabilityValue>, IEquatable<AvailabilityValue>
     {
         public bool AddToParent { get; }
         public bool IncludedInParent { get; }
