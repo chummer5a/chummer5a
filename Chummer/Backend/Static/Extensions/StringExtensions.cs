@@ -211,7 +211,7 @@ namespace Chummer
         /// </summary>
         public static string ConcatFast(params string[] lstStrings)
         {
-            return ConcatFast(Array.AsReadOnly(lstStrings));
+            return ConcatFast(lstStrings.AsReadOnly());
         }
 
         /// <summary>
@@ -887,7 +887,7 @@ namespace Chummer
         /// </summary>
         public static string ConcatFast(string[] lstStrings, int startIndex, int count)
         {
-            return ConcatFast(Array.AsReadOnly(lstStrings), startIndex, count);
+            return ConcatFast(lstStrings.AsReadOnly(), startIndex, count);
         }
 
         /// <summary>
@@ -5231,7 +5231,7 @@ namespace Chummer
         /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
         public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, params char[] achrChars)
         {
-            return IsLegalCharsOnly(strInput, blnWhitelist, Array.AsReadOnly(achrChars));
+            return IsLegalCharsOnly(strInput, blnWhitelist, achrChars.AsReadOnly());
         }
 
         /// <summary>
@@ -7290,10 +7290,10 @@ namespace Chummer
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
-            = Array.AsReadOnly(Path.GetInvalidPathChars());
+            = Path.GetInvalidPathChars().AsReadOnly();
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidFileNameChars
-            = Array.AsReadOnly(Path.GetInvalidFileNameChars());
+            = Path.GetInvalidFileNameChars().AsReadOnly();
 
         /// <summary>
         /// Replaces all the characters in a string that are invalid for file names with underscores.

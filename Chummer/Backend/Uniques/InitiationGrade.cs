@@ -34,7 +34,7 @@ namespace Chummer
     /// An Initiation Grade.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Grade) + "}")]
-    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove, IHasNotes, IHasCharacterObject
+    public class InitiationGrade : IHasInternalId, IComparable, IComparable<InitiationGrade>, ICanRemove, IHasNotes, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnGroup;

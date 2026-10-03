@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -29,6 +30,26 @@ namespace Chummer
 {
     public static class EnumerableExtensions
     {
+        /// <summary>
+        /// If the enumerable is a valid collection, wraps it in a read-only wrapper, akin to <see cref="List{T}.AsReadOnly()" /> or <see cref="Array.AsReadOnly{T}(T[])"/>.
+        /// Otherwise, creates a collection from the enumerable that is then wrapped in the read-only wrapper.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlyCollection<T> AsReadOnly<T>(this IEnumerable<T> lstCollection)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            switch (lstCollection)
+            {
+                case T[] lstCollection1:
+                    return lstCollection1.AsReadOnly();
+                case IList<T> lstCollection3:
+                    return lstCollection3.AsReadOnly();
+                default:
+                    return lstCollection.ToList().AsReadOnly();
+            }
+        }
+
         /// <summary>
         /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match.
         /// </summary>

@@ -42,13 +42,13 @@ namespace Chummer
         public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject,
             IEnumerable<string> lstPropertyNames, CancellationToken token = default)
         {
-            return objSubject.OnMultiplePropertiesChangedAsync(lstPropertyNames.ToList(), token);
+            return objSubject.OnMultiplePropertiesChangedAsync(lstPropertyNames.AsReadOnly(), token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, params string[] lstPropertyNames)
         {
-            return objSubject.OnMultiplePropertiesChangedAsync(Array.AsReadOnly(lstPropertyNames));
+            return objSubject.OnMultiplePropertiesChangedAsync(lstPropertyNames.AsReadOnly());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -115,7 +115,7 @@ namespace Chummer
         public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
             params string[] lstPropertyNames)
         {
-            return objSubject.OnMultiplePropertiesChangedAsync(Array.AsReadOnly(lstPropertyNames), token);
+            return objSubject.OnMultiplePropertiesChangedAsync(lstPropertyNames.AsReadOnly(), token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

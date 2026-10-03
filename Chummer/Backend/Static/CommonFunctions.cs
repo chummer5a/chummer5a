@@ -53,7 +53,7 @@ namespace Chummer
         private static readonly ConcurrentDictionary<string, ValueTuple<bool, object>> s_DicCompiledEvaluations =
             new ConcurrentDictionary<string, ValueTuple<bool, object>>();
 
-        private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray());
+        private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = "1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray().AsReadOnly();
 
         // Treat as ReadOnlyCollection please, it's only not that because string.IndexOfAny() cannot use a ReadOnlyCollection as its argument
         private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();

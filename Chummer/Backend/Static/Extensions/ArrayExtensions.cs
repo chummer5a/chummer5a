@@ -18,6 +18,10 @@
  */
 
 using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +29,41 @@ namespace Chummer
 {
     public static class ArrayExtensions
     {
+        /// <summary>
+        /// Syntactic sugar for <see cref="Array.AsReadOnly{T}(T[])" />.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlyCollection<T> AsReadOnly<T>(this T[] aobjCollection)
+        {
+            return Array.AsReadOnly(aobjCollection);
+        }
+
+        /// <summary>
+        /// Version of <see cref="List{T}.ToArray()"/> that allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// </summary>
+        public static T[] ToPooledArray<T>(this T[] aobjCollection, out int arrayLength) where T : unmanaged // DO NOT REMOVE UNMANAGED KEYWORD UNLESS YOU LIKE ADDING RANDOM MEMORY LEAKS VIA ARRAYPOOL<T>.SHARED!
+        {
+            if (aobjCollection == null)
+                throw new ArgumentNullException(nameof(aobjCollection));
+            arrayLength = aobjCollection.Length;
+            T[] aobjReturn = ArrayPool<T>.Shared.Rent(arrayLength);
+            Array.Copy(aobjCollection, 0, aobjReturn, 0, arrayLength);
+            return aobjReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="List{T}.ToArray()"/> that allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// </summary>
+        public static string[] ToPooledArray(this string[] astrCollection, out int arrayLength)
+        {
+            if (astrCollection == null)
+                throw new ArgumentNullException(nameof(astrCollection));
+            arrayLength = astrCollection.Length;
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            Array.Copy(astrCollection, 0, astrReturn, 0, arrayLength);
+            return astrReturn;
+        }
+
         /// <summary>
         /// Async copy of <see cref="Array.Sort(Array, Array, int, int, System.Collections.IComparer)"/> that supports an async comparer.
         /// Yes, the algorithm in <see cref="Array.Sort(Array, Array, int, int, System.Collections.IComparer)"/> isn't necessarily the most optimal for us, but it's better to keep it the same for consistency.

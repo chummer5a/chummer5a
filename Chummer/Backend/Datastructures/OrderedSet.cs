@@ -187,6 +187,12 @@ namespace Chummer
             _lstOrderedData.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc cref="List{T}.ToArray()" />
+        public T[] ToArray()
+        {
+            return _lstOrderedData.ToArray();
+        }
+
         /// <inheritdoc />
         public bool Remove(T item)
         {
@@ -200,10 +206,7 @@ namespace Chummer
         public bool IsReadOnly => false;
 
         /// <inheritdoc />
-        int ICollection<T>.Count => _lstOrderedData.Count;
-
-        /// <inheritdoc />
-        int IReadOnlyCollection<T>.Count => _lstOrderedData.Count;
+        public int Count => _lstOrderedData.Count;
 
         /// <inheritdoc />
         public int IndexOf(T item)

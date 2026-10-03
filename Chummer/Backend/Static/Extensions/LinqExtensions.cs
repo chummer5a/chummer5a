@@ -92,6 +92,29 @@ namespace Chummer
             return default;
         }
 
+        /// <summary>
+        /// Version of <see cref="Enumerable.ToArray{TSource}(IEnumerable{TSource})"/> that can shortcut through <see cref="List{T}"/> or other collections where we have a faster version of ToArray() that we can use.
+        /// </summary>
+        public static T[] ToArrayBetter<T>(this IEnumerable<T> lstCollection)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            switch (lstCollection)
+            {
+                case List<T> lstCollectionCast:
+                    return lstCollectionCast.ToArray();
+                case T[] aobjCollectionCast:
+                    int intLength = aobjCollectionCast.Length;
+                    T[] aobjReturn = new T[intLength];
+                    Array.Copy(aobjCollectionCast, 0, aobjReturn, 0, intLength);
+                    return aobjReturn;
+                case ICollection<T> lstCollectionCast2:
+                    return lstCollectionCast2.ToArray();
+                default:
+                    return lstCollection.ToArray();
+            }
+        }
+
         /// <inheritdoc cref="Enumerable.Select{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
         public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, CancellationToken, TResult> selector, CancellationToken token = default)
         {

@@ -3686,10 +3686,7 @@ namespace Chummer
                         return;
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
                     {
-                        if (lstCharacters is Character[] aobjCharacters)
-                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
-                        else
-                            lstNewCharacters = lstCharacters.ToList();
+                        lstNewCharacters = lstCharacters.AsReadOnly();
                     }
                     if (lstNewCharacters.Count == 0)
                         return;
@@ -4044,10 +4041,7 @@ namespace Chummer
                 {
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
                     {
-                        if (lstCharacters is Character[] aobjCharacters)
-                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
-                        else
-                            lstNewCharacters = lstCharacters.ToList();
+                        lstNewCharacters = lstCharacters.AsReadOnly();
                     }
                     if (lstNewCharacters.Count == 0)
                         return;
@@ -4417,10 +4411,7 @@ namespace Chummer
                 {
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
                     {
-                        if (lstCharacters is Character[] aobjCharacters)
-                            lstNewCharacters = Array.AsReadOnly(aobjCharacters);
-                        else
-                            lstNewCharacters = lstCharacters.ToList();
+                        lstNewCharacters = lstCharacters.AsReadOnly();
                     }
                     if (lstNewCharacters.Count == 0)
                         return;

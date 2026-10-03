@@ -50655,7 +50655,7 @@ namespace Chummer
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
                         foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
                         {
@@ -50675,7 +50675,7 @@ namespace Chummer
                     else if (MultiplePropertiesChanged != null)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         Utils.RunOnMainThread(() =>
                         {
                             // ReSharper disable once AccessToModifiedClosure
@@ -50929,7 +50929,7 @@ namespace Chummer
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
 
                         if (MultiplePropertiesChanged != null)
@@ -50944,7 +50944,7 @@ namespace Chummer
                     else if (MultiplePropertiesChanged != null)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
-                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
                         await Utils.RunOnMainThreadAsync(() =>
                         {
                             // ReSharper disable once AccessToModifiedClosure

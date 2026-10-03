@@ -413,7 +413,7 @@ namespace Chummer
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute").ConfigureAwait(false);
                     using (ThreadSafeForm<SelectAttribute> frmPickAttribute =
                            await ThreadSafeForm<SelectAttribute>.GetAsync(() =>
-                                                                              new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray())
+                                                                              new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes)
                                                                                   { Description = strDescription }).ConfigureAwait(false))
                     {
                         if (await frmPickAttribute.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
@@ -432,7 +432,7 @@ namespace Chummer
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute").ConfigureAwait(false);
                     using (ThreadSafeForm<SelectAttribute> frmPickAttribute =
                            await ThreadSafeForm<SelectAttribute>.GetAsync(() =>
-                                                                              new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray())
+                                                                              new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes)
                                                                                   { Description = strDescription }).ConfigureAwait(false))
                     {
                         if (await frmPickAttribute.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
