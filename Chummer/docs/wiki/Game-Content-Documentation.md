@@ -8,7 +8,9 @@ This section contains documentation about Shadowrun game content and how it's im
 - **[Armor](Armor)** - Armor types and mechanics
 - **[Bioware](Bioware)** - Bioware implants and modifications
 - **[Cyberware](Cyberware)** - Cybernetic implants and modifications
-- **[Gear](Gear)** - Equipment, weapons, and general gear
+- **[Gear](Gear)** - Equipment and general gear
+- **[Weapons](Weapons)** - Weapons, accessories, and ammunition clips
+- **[Drugs](Drugs)** - Premade drugs, grades, and custom drug components
 - **[Spells](Spells)** - Magic spells and traditions
 - **[Metatypes](Metatypes)** - Character races and metatypes
 - **[Vehicles](Vehicles)** - Vehicles, drones, and vehicle modifications
@@ -16,6 +18,7 @@ This section contains documentation about Shadowrun game content and how it's im
 ### Advanced Content
 - **[Books](Books)** - Source books and references
 - **[Conditions](Conditions)** - Game conditions and effects
+- **[Complex Forms](Complex-Forms)** - Technomancer complex forms
 - **[Critter Powers](Critter-Powers)** - Critter abilities and powers
 - **[Echoes](Echoes)** - Echoes and resonance effects
 - **[Errata](Errata)** - Official errata and corrections
@@ -23,7 +26,11 @@ This section contains documentation about Shadowrun game content and how it's im
 - **[Lifestyles](Lifestyles)** - Character lifestyles and living conditions
 - **[Martial Arts](Martial-Arts)** - Martial arts and combat techniques
 - **[Mentor Spirits](Mentor-Spirits)** - Mentor spirits and their benefits
-- **[Quality Levels](Quality-Levels)** - Character qualities and levels
+- **[Metamagic](Metamagic)** - Metamagics and arts
+- **[Powers](Powers)** - Adept powers and enhancements
+- **[Programs](Programs)** - AI programs
+- **[Qualities](Qualities)** - Character qualities
+- **[Quality Levels](Quality-Levels)** - Mutually exclusive quality ranks
 - **[Traditions and Streams](Traditions-and-Streams)** - Magic traditions and streams
 
 ## 🎮 Using This Documentation
