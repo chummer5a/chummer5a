@@ -134,6 +134,12 @@ Changed/New Strings:
 - MessageTitle_CustomDrug_CannotMixBtl
 - Message_DuplicateBtlWarning
 - Checkbox_Options_UseImprovementGroupNameInTooltips
+- Node_SelectedSpirits
+- Node_SelectedSprites
+- Label_LinkedFile
+- Button_LinkFile
+- Label_Sprite_Level
+- Label_Sprite_Rating
 
 Build 226
 Application Changes:

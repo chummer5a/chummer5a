@@ -4991,6 +4991,14 @@
       <text>Enchantments</text>
     </string>
     <string>
+      <key>Node_SelectedSpirits</key>
+      <text>Spirits</text>
+    </string>
+    <string>
+      <key>Node_SelectedSprites</key>
+      <text>Sprites</text>
+    </string>
+    <string>
       <key>Tip_SpellsSelectedSpells</key>
       <text>Each Spell costs {0} Karma.\n Mastery Qualities use 1 Free Spell Point per 5 Karma (MP).</text>
     </string>
@@ -6753,6 +6761,14 @@
       <text>Open the linked Contact save file.</text>
     </string>
     <string>
+      <key>Label_LinkedFile</key>
+      <text>Linked File:</text>
+    </string>
+    <string>
+      <key>Button_LinkFile</key>
+      <text>Link to File</text>
+    </string>
+    <string>
       <key>Tip_Contact_LinkContact</key>
       <text>Link this Contact to a Chummer save file.</text>
     </string>
@@ -6919,6 +6935,10 @@
       <text>Force:</text>
     </string>
     <string>
+      <key>Label_Sprite_Level</key>
+      <text>Level:</text>
+    </string>
+    <string>
       <key>Label_Spirit_ServicesOwed</key>
       <text>Services Owed:</text>
     </string>
@@ -6937,10 +6957,6 @@
     <string>
       <key>Checkbox_Sprite_Pet</key>
       <text>Sprite Pet</text>
-    </string>
-    <string>
-      <key>Label_Sprite_Rating</key>
-      <text>Rating:</text>
     </string>
     <string>
       <key>Label_Sprite_Registered</key>
