@@ -6543,11 +6543,6 @@ namespace Chummer.Backend.Equipment
         #region UI Methods
 
         /// <summary>
-        /// Collection of TreeNodes to update when a relevant property is changed
-        /// </summary>
-        public HashSet<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
-
-        /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
         /// </summary>
         /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
