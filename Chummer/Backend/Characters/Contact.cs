@@ -156,8 +156,6 @@ namespace Chummer
                     {
                         UpdateTrackedNodes_TypeData();
                         UpdateTrackedNodes_Location();
-                        UpdateTrackedNodes_Connection();
-                        UpdateTrackedNodes_Loyalty();
                     }
                     else if (EntityType == ContactType.Pet)
                     {
@@ -167,15 +165,10 @@ namespace Chummer
                     else
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(DisplayType))
-                            || setNamesOfChangedProperties.Contains(nameof(IsGroup)))
+                            || setNamesOfChangedProperties.Contains(nameof(QuickText)))
                             UpdateTrackedNodes_TypeData();
                         if (setNamesOfChangedProperties.Contains(nameof(Location)))
                             UpdateTrackedNodes_Location();
-                        if (setNamesOfChangedProperties.Contains(nameof(Connection)))
-                            UpdateTrackedNodes_Connection();
-                        if (setNamesOfChangedProperties.Contains(nameof(Loyalty))
-                            || setNamesOfChangedProperties.Contains(nameof(LoyaltyEnabled)))
-                            UpdateTrackedNodes_Loyalty();
                     }
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
@@ -323,8 +316,6 @@ namespace Chummer
                     {
                         await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
                         await UpdateTrackedNodes_LocationAsync(token).ConfigureAwait(false);
-                        await UpdateTrackedNodes_ConnectionAsync(token).ConfigureAwait(false);
-                        await UpdateTrackedNodes_LoyaltyAsync(token).ConfigureAwait(false);
                     }
                     else if (EntityType == ContactType.Pet)
                     {
@@ -334,15 +325,10 @@ namespace Chummer
                     else
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(DisplayType))
-                            || setNamesOfChangedProperties.Contains(nameof(IsGroup)))
+                            || setNamesOfChangedProperties.Contains(nameof(QuickText)))
                             await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
                         if (setNamesOfChangedProperties.Contains(nameof(Location)))
                             await UpdateTrackedNodes_LocationAsync(token).ConfigureAwait(false);
-                        if (setNamesOfChangedProperties.Contains(nameof(Connection)))
-                            await UpdateTrackedNodes_ConnectionAsync(token).ConfigureAwait(false);
-                        if (setNamesOfChangedProperties.Contains(nameof(Loyalty))
-                            || setNamesOfChangedProperties.Contains(nameof(LoyaltyEnabled)))
-                            await UpdateTrackedNodes_LoyaltyAsync(token).ConfigureAwait(false);
                     }
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
@@ -4165,19 +4151,10 @@ namespace Chummer
                 objNode.Nodes.Add("TypeData", await GetDisplayMetatypeAsync(token).ConfigureAwait(false));
             else
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                string strTypeText = await GetDisplayTypeAsync(token).ConfigureAwait(false);
-                if (await GetIsGroupAsync(token))
-                    strTypeText += strSpace + "(" + await LanguageManager.GetStringAsync("Checkbox_Contact_Group", token: token).ConfigureAwait(false) + ")";
-                objNode.Nodes.Add("TypeData", strTypeText);
+                objNode.Nodes.Add("TypeData", await GetDisplayTypeAsync(token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                    + await GetQuickTextAsync(token).ConfigureAwait(false));
                 objNode.Nodes.Add("Location", await GetLocationAsync(token).ConfigureAwait(false));
-                objNode.Nodes.Add("Connection", await LanguageManager.GetStringAsync("Label_Contact_Connection", token: token)
-                    + strSpace + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
-                if (await GetLoyaltyEnabledAsync(token).ConfigureAwait(false))
-                {
-                    objNode.Nodes.Add("Loyalty", await LanguageManager.GetStringAsync("Label_Contact_Loyalty", token: token)
-                        + strSpace + (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
-                }
             }
 
             return objNode;
@@ -4244,16 +4221,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_setNodesToTrackForUpdates.IsEmpty)
                 return;
-            string strText = string.Empty;
-            if (EntityType == ContactType.Pet)
-                strText = DisplayMetatype;
-            else
-            {
-                string strSpace = LanguageManager.GetString("String_Space", token: token);
-                strText = DisplayType;
-                if (IsGroup)
-                    strText += strSpace + "(" + LanguageManager.GetString("Checkbox_Contact_Group", token: token) + ")";
-            }
+            string strText = EntityType == ContactType.Pet
+                ? DisplayMetatype
+                : DisplayType + LanguageManager.GetString("String_Space", token: token) + QuickText;
             Utils.RunOnMainThread(t =>
             {
                 foreach (TreeNode objNode in _setNodesToTrackForUpdates)
@@ -4295,79 +4265,6 @@ namespace Chummer
                     if (objNode.Tag != this) // Sanity check
                         continue;
                     foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
-                        objInnerNode.Text = strText;
-                }
-            }, token: token);
-        }
-
-        public void UpdateTrackedNodes_Connection(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (EntityType == ContactType.Pet)
-            {
-                Utils.RunOnMainThread(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        objNode.Nodes.RemoveByKey("Connection");
-                    }
-                }, token: token);
-                return;
-            }
-            string strText = LanguageManager.GetString("Label_Contact_Connection", token: token)
-                    + LanguageManager.GetString("String_Space", token: token)
-                    + Connection.ToString(GlobalSettings.CultureInfo);
-            Utils.RunOnMainThread(t =>
-            {
-                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                {
-                    t.ThrowIfCancellationRequested();
-                    if (objNode.Tag != this) // Sanity check
-                        continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Connection", true))
-                        objInnerNode.Text = strText;
-                }
-            }, token: token);
-        }
-
-        public void UpdateTrackedNodes_Loyalty(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (EntityType == ContactType.Pet || !LoyaltyEnabled)
-            {
-                Utils.RunOnMainThread(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        objNode.Nodes.RemoveByKey("Loyalty");
-                    }
-                }, token: token);
-                return;
-            }
-            string strText = LanguageManager.GetString("Label_Contact_Loyalty", token: token)
-                    + LanguageManager.GetString("String_Space", token: token)
-                    + Connection.ToString(GlobalSettings.CultureInfo);
-            Utils.RunOnMainThread(t =>
-            {
-                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                {
-                    t.ThrowIfCancellationRequested();
-                    if (objNode.Tag != this) // Sanity check
-                        continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Loyalty", true))
                         objInnerNode.Text = strText;
                 }
             }, token: token);
@@ -4434,16 +4331,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_setNodesToTrackForUpdates.IsEmpty)
                 return;
-            string strText = string.Empty;
-            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
-                strText = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
-            else
-            {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                strText = await GetDisplayTypeAsync(token).ConfigureAwait(false);
-                if (await GetIsGroupAsync(token))
-                    strText += strSpace + "(" + await LanguageManager.GetStringAsync("Checkbox_Contact_Group", token: token).ConfigureAwait(false) + ")";
-            }
+            string strText = await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet
+                ? await GetDisplayMetatypeAsync(token).ConfigureAwait(false)
+                : await GetDisplayTypeAsync(token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                    + await GetQuickTextAsync(token).ConfigureAwait(false);
             await Utils.RunOnMainThreadAsync(t =>
             {
                 foreach (TreeNode objNode in _setNodesToTrackForUpdates)
@@ -4485,76 +4377,6 @@ namespace Chummer
                     if (objNode.Tag != this) // Sanity check
                         continue;
                     foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
-                        objInnerNode.Text = strText;
-                }
-            }, token: token).ConfigureAwait(false);
-        }
-
-        public async Task UpdateTrackedNodes_ConnectionAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
-            {
-                await Utils.RunOnMainThreadAsync(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        objNode.Nodes.RemoveByKey("Connection");
-                    }
-                }, token: token).ConfigureAwait(false);
-                return;
-            }
-            string strText = await LanguageManager.GetStringAsync("Label_Contact_Connection", token: token)
-                    + await LanguageManager.GetStringAsync("String_Space", token: token)
-                    + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-            await Utils.RunOnMainThreadAsync(t =>
-            {
-                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                {
-                    t.ThrowIfCancellationRequested();
-                    if (objNode.Tag != this) // Sanity check
-                        continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Connection", true))
-                        objInnerNode.Text = strText;
-                }
-            }, token: token).ConfigureAwait(false);
-        }
-
-        public async Task UpdateTrackedNodes_LoyaltyAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet || !await GetLoyaltyEnabledAsync(token).ConfigureAwait(false))
-            {
-                await Utils.RunOnMainThreadAsync(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        objNode.Nodes.RemoveByKey("Loyalty");
-                    }
-                }, token: token).ConfigureAwait(false);
-                return;
-            }
-            string strText = await LanguageManager.GetStringAsync("Label_Contact_Loyalty", token: token)
-                    + await LanguageManager.GetStringAsync("String_Space", token: token)
-                    + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-            await Utils.RunOnMainThreadAsync(t =>
-            {
-                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                {
-                    t.ThrowIfCancellationRequested();
-                    if (objNode.Tag != this) // Sanity check
-                        continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Loyalty", true))
                         objInnerNode.Text = strText;
                 }
             }, token: token).ConfigureAwait(false);

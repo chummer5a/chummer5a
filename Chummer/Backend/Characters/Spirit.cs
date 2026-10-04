@@ -2355,10 +2355,6 @@ namespace Chummer
                 + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
             objNode.Nodes.Add("Services", await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token)
                 + strSpace + (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
-            if (await GetBoundAsync(token).ConfigureAwait(false))
-                objNode.Nodes.Add("Bound", await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound", token: token));
-            if (await GetFetteredAsync(token).ConfigureAwait(false))
-                objNode.Nodes.Add("Fettered", await LanguageManager.GetStringAsync("Checkbox_Spirit_Fettered", token: token));
 
             return objNode;
         }
@@ -2461,73 +2457,6 @@ namespace Chummer
                 }
             }, token: token);
         }
-
-        public void UpdateTrackedNodes_Bound(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (Bound)
-            {
-                string strBound = LanguageManager.GetString("Checkbox_Spirit_Bound", token: token);
-                Utils.RunOnMainThread(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        if (!objNode.Nodes.ContainsKey("Bound"))
-                            objNode.Nodes.Add("Bound", strBound);
-                    }
-                }, token: token);
-            }
-            else
-            {
-                Utils.RunOnMainThread(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        objNode.Nodes.RemoveByKey("Bound");
-                    }
-                }, token: token);
-            }
-        }
-
-        public void UpdateTrackedNodes_Fettered(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (Fettered)
-            {
-                string strFettered = LanguageManager.GetString("Checkbox_Spirit_Fettered", token: token);
-                Utils.RunOnMainThread(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (!objNode.Nodes.ContainsKey("Fettered"))
-                            objNode.Nodes.Add("Fettered", strFettered);
-                    }
-                }, token: token);
-            }
-            else
-            {
-                Utils.RunOnMainThread(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        objNode.Nodes.RemoveByKey("Fettered");
-                    }
-                }, token: token);
-            }
-        }
-
         public async Task UpdateTrackedNodes_TextAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2625,72 +2554,6 @@ namespace Chummer
                         objInnerNode.Text = strText;
                 }
             }, token: token).ConfigureAwait(false);
-        }
-
-        public async Task UpdateTrackedNodes_BoundAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (await GetBoundAsync(token).ConfigureAwait(false))
-            {
-                string strBound = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound", token: token).ConfigureAwait(false);
-                await Utils.RunOnMainThreadAsync(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        if (!objNode.Nodes.ContainsKey("Bound"))
-                            objNode.Nodes.Add("Bound", strBound);
-                    }
-                }, token: token).ConfigureAwait(false);
-            }
-            else
-            {
-                await Utils.RunOnMainThreadAsync(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (objNode.Tag != this) // Sanity check
-                            continue;
-                        objNode.Nodes.RemoveByKey("Bound");
-                    }
-                }, token: token).ConfigureAwait(false);
-            }
-        }
-
-        public async Task UpdateTrackedNodes_FetteredAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_setNodesToTrackForUpdates.IsEmpty)
-                return;
-            if (await GetFetteredAsync(token).ConfigureAwait(false))
-            {
-                string strFettered = await LanguageManager.GetStringAsync("Checkbox_Spirit_Fettered", token: token).ConfigureAwait(false);
-                await Utils.RunOnMainThreadAsync(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        if (!objNode.Nodes.ContainsKey("Fettered"))
-                            objNode.Nodes.Add("Fettered", strFettered);
-                    }
-                }, token: token).ConfigureAwait(false);
-            }
-            else
-            {
-                await Utils.RunOnMainThreadAsync(t =>
-                {
-                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
-                    {
-                        t.ThrowIfCancellationRequested();
-                        objNode.Nodes.RemoveByKey("Fettered");
-                    }
-                }, token: token).ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -2810,10 +2673,6 @@ namespace Chummer
                         UpdateTrackedNodes_TypeData();
                     if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
                         UpdateTrackedNodes_ServicesOwed();
-                    if (setNamesOfChangedProperties.Contains(nameof(Bound)))
-                        UpdateTrackedNodes_Bound();
-                    if (setNamesOfChangedProperties.Contains(nameof(Fettered)))
-                        UpdateTrackedNodes_Fettered();
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
@@ -2934,10 +2793,6 @@ namespace Chummer
                         await UpdateTrackedNodes_TypeDataAsync(token);
                     if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
                         await UpdateTrackedNodes_ServicesOwedAsync(token);
-                    if (setNamesOfChangedProperties.Contains(nameof(Bound)))
-                        await UpdateTrackedNodes_BoundAsync(token);
-                    if (setNamesOfChangedProperties.Contains(nameof(Fettered)))
-                        await UpdateTrackedNodes_FetteredAsync(token);
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
