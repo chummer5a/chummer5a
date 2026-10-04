@@ -8774,6 +8774,19 @@ namespace Chummer
             }
         }
 
+        // Needs to be here to make WinForms Designer work properly
+        private async void btnAddDrug_Click(object _, EventArgs e)
+        {
+            try
+            {
+                await AddPremadeDrugAsync(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
         private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
             try
