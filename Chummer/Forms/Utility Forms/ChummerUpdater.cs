@@ -338,13 +338,11 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (File.Exists(_strTempLatestVersionChangelogPath))
                 {
-                    string strDocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">"
-                                             + (await FileExtensions
+                    string strDocumentText = await FileExtensions
                                                       .ReadAllTextAsync(_strTempLatestVersionChangelogPath, token)
-                                                      .ConfigureAwait(false)).CleanForHtml()
-                                             + "</font>";
+                                                      .ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    await webNotes.DoThreadSafeAsync(x => x.DocumentText = strDocumentText, token)
+                    await rtfNotes.DoThreadSafeAsync(x => x.Text = strDocumentText, token)
                                   .ConfigureAwait(false);
                 }
                 token.ThrowIfCancellationRequested();
