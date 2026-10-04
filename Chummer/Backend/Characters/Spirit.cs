@@ -2316,6 +2316,383 @@ namespace Chummer
             }
         }
 
+        private readonly ConcurrentHashSet<TreeNode> _setNodesToTrackForUpdates = new ConcurrentHashSet<TreeNode>();
+        public bool StartTrackingTreeNodeForUpdates(TreeNode objNode)
+        {
+            return _setNodesToTrackForUpdates.TryAdd(objNode);
+        }
+
+        public bool StopTrackingTreeNodeForUpdates(TreeNode objNode)
+        {
+            return _setNodesToTrackForUpdates.Remove(objNode);
+        }
+
+        /// <summary>
+        /// Build up the Tree for the current spirit.
+        /// </summary>
+        /// <param name="cmsSpirit">ContextMenuStrip for the Spirit to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsSpirit, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            string strNodeText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strNodeText))
+                strNodeText = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            TreeNode objNode = new TreeNode
+            {
+                Name = InternalId,
+                Text = strNodeText,
+                Tag = this,
+                ContextMenuStrip = cmsSpirit,
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
+            };
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            objNode.Nodes.Add("TypeData", await GetNameAsync(token).ConfigureAwait(false) + "," + strSpace
+                + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+            objNode.Nodes.Add("Services", await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token)
+                + strSpace + (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+            if (await GetBoundAsync(token).ConfigureAwait(false))
+                objNode.Nodes.Add("Bound", await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound", token: token));
+            if (await GetFetteredAsync(token).ConfigureAwait(false))
+                objNode.Nodes.Add("Fettered", await LanguageManager.GetStringAsync("Checkbox_Spirit_Fettered", token: token));
+
+            return objNode;
+        }
+
+        public void UpdateTrackedNodes_Text(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = CurrentDisplayName;
+            if (string.IsNullOrEmpty(strText))
+                strText = LanguageManager.GetString("String_Unknown", token: token);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.Text = strText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_Color(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            Color objColor = PreferredColor;
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ForeColor = objColor;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_ToolTipText(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strToolTipText = Notes.WordWrap();
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ToolTipText = strToolTipText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_TypeData(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strSpace = LanguageManager.GetString("String_Space", token: token);
+            string strText = Name + "," + strSpace
+                + LanguageManager.GetString(RatingLabel, token: token)
+                + strSpace + Force.ToString(GlobalSettings.CultureInfo);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_ServicesOwed(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = LanguageManager.GetString("Label_Spirit_ServicesOwed", token: token)
+                + LanguageManager.GetString("String_Space", token: token)
+                + ServicesOwed.ToString(GlobalSettings.CultureInfo);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Services", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_Bound(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            if (Bound)
+            {
+                string strBound = LanguageManager.GetString("Checkbox_Spirit_Bound", token: token);
+                Utils.RunOnMainThread(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (objNode.Tag != this) // Sanity check
+                            continue;
+                        if (!objNode.Nodes.ContainsKey("Bound"))
+                            objNode.Nodes.Add("Bound", strBound);
+                    }
+                }, token: token);
+            }
+            else
+            {
+                Utils.RunOnMainThread(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (objNode.Tag != this) // Sanity check
+                            continue;
+                        objNode.Nodes.RemoveByKey("Bound");
+                    }
+                }, token: token);
+            }
+        }
+
+        public void UpdateTrackedNodes_Fettered(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            if (Fettered)
+            {
+                string strFettered = LanguageManager.GetString("Checkbox_Spirit_Fettered", token: token);
+                Utils.RunOnMainThread(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (!objNode.Nodes.ContainsKey("Fettered"))
+                            objNode.Nodes.Add("Fettered", strFettered);
+                    }
+                }, token: token);
+            }
+            else
+            {
+                Utils.RunOnMainThread(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        objNode.Nodes.RemoveByKey("Fettered");
+                    }
+                }, token: token);
+            }
+        }
+
+        public async Task UpdateTrackedNodes_TextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strText))
+                strText = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            Color objColor = await GetPreferredColorAsync(token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ForeColor = objColor;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ToolTipTextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ToolTipText = strToolTipText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_TypeDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strText = await GetNameAsync(token).ConfigureAwait(false) + "," + strSpace
+                + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ServicesOwedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                + (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Services", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_BoundAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            if (await GetBoundAsync(token).ConfigureAwait(false))
+            {
+                string strBound = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound", token: token).ConfigureAwait(false);
+                await Utils.RunOnMainThreadAsync(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (objNode.Tag != this) // Sanity check
+                            continue;
+                        if (!objNode.Nodes.ContainsKey("Bound"))
+                            objNode.Nodes.Add("Bound", strBound);
+                    }
+                }, token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                await Utils.RunOnMainThreadAsync(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (objNode.Tag != this) // Sanity check
+                            continue;
+                        objNode.Nodes.RemoveByKey("Bound");
+                    }
+                }, token: token).ConfigureAwait(false);
+            }
+        }
+
+        public async Task UpdateTrackedNodes_FetteredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            if (await GetFetteredAsync(token).ConfigureAwait(false))
+            {
+                string strFettered = await LanguageManager.GetStringAsync("Checkbox_Spirit_Fettered", token: token).ConfigureAwait(false);
+                await Utils.RunOnMainThreadAsync(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (!objNode.Nodes.ContainsKey("Fettered"))
+                            objNode.Nodes.Add("Fettered", strFettered);
+                    }
+                }, token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                await Utils.RunOnMainThreadAsync(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        objNode.Nodes.RemoveByKey("Fettered");
+                    }
+                }, token: token).ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Color used by the Spirit's control in UI.
         /// Placeholder to prevent me having to deal with multiple interfaces.
@@ -2420,6 +2797,23 @@ namespace Chummer
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        UpdateTrackedNodes_Text();
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        UpdateTrackedNodes_Color();
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        UpdateTrackedNodes_ToolTipText();
+                    if (setNamesOfChangedProperties.Contains(nameof(Name))
+                        || setNamesOfChangedProperties.Contains(nameof(RatingLabel))
+                        || setNamesOfChangedProperties.Contains(nameof(Force)))
+                        UpdateTrackedNodes_TypeData();
+                    if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
+                        UpdateTrackedNodes_ServicesOwed();
+                    if (setNamesOfChangedProperties.Contains(nameof(Bound)))
+                        UpdateTrackedNodes_Bound();
+                    if (setNamesOfChangedProperties.Contains(nameof(Fettered)))
+                        UpdateTrackedNodes_Fettered();
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
@@ -2527,6 +2921,23 @@ namespace Chummer
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        await UpdateTrackedNodes_TextAsync(token);
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        await UpdateTrackedNodes_ColorAsync(token);
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        await UpdateTrackedNodes_ToolTipTextAsync(token);
+                    if (setNamesOfChangedProperties.Contains(nameof(Name))
+                        || setNamesOfChangedProperties.Contains(nameof(RatingLabel))
+                        || setNamesOfChangedProperties.Contains(nameof(Force)))
+                        await UpdateTrackedNodes_TypeDataAsync(token);
+                    if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
+                        await UpdateTrackedNodes_ServicesOwedAsync(token);
+                    if (setNamesOfChangedProperties.Contains(nameof(Bound)))
+                        await UpdateTrackedNodes_BoundAsync(token);
+                    if (setNamesOfChangedProperties.Contains(nameof(Fettered)))
+                        await UpdateTrackedNodes_FetteredAsync(token);
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
