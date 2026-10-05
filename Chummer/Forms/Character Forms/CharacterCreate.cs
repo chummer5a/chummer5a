@@ -64,6 +64,7 @@ namespace Chummer
         private void ConstructorCommon()
         {
             InitializeComponent();
+            lmtControl.MyToken = GenericToken;
             tabSkillsUc.MyToken = GenericToken;
             tabPowerUc.MyToken = GenericToken;
         }
