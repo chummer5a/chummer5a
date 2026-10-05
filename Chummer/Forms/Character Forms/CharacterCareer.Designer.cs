@@ -65,7 +65,9 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
             System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Rituals");
             System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Spirits");
             System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Sprites");
             System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
             System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Critter Powers");
             System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Weaknesses");
@@ -79,8 +81,6 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
             System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Selected Improvements");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Sprites");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Spirits");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterCareer));
             this.tabPowerUc = new Chummer.UI.Powers.PowersTabUserControl();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -525,6 +525,25 @@ namespace Chummer
             this.lblSpellDV = new Chummer.LabelWithToolTip();
             this.dpcSpellDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.tlpMagicianBottom = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpSelectedSpirit = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdSelectedSpiritLinkToFile = new System.Windows.Forms.Button();
+            this.lblSelectedSpiritServicesOwedLabel = new System.Windows.Forms.Label();
+            this.lblSelectedSpiritTypeLabel = new System.Windows.Forms.Label();
+            this.lblSelectedSpiritForceLabel = new System.Windows.Forms.Label();
+            this.cboSelectedSpiritType = new Chummer.ElasticComboBox();
+            this.nudSelectedSpiritForce = new Chummer.NumericUpDownEx();
+            this.nudSelectedSpiritServicesOwed = new Chummer.NumericUpDownEx();
+            this.chkSelectedSpiritBound = new Chummer.ColorableCheckBox();
+            this.chkSelectedSpiritFettered = new Chummer.ColorableCheckBox();
+            this.lblSelectedSpiritNameLabel = new System.Windows.Forms.Label();
+            this.txtSelectedSpiritName = new System.Windows.Forms.TextBox();
+            this.lblSelectedSpiritSourceLabel = new System.Windows.Forms.Label();
+            this.lblSelectedSpiritSource = new Chummer.LabelWithToolTip();
+            this.lblSelectedSpiritLinkedFileLabel = new System.Windows.Forms.Label();
+            this.txtSelectedSpiritLinkedFile = new System.Windows.Forms.TextBox();
+            this.treSpirits = new System.Windows.Forms.TreeView();
+            this.tlpMagicianSpiritButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdDeleteSpirit = new System.Windows.Forms.Button();
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.tabAdept = new System.Windows.Forms.TabPage();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
@@ -550,6 +569,25 @@ namespace Chummer
             this.lblFVLabel = new System.Windows.Forms.Label();
             this.lblFV = new Chummer.LabelWithToolTip();
             this.tlpTechnomancerBottom = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpSelectedSprite = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdSelectedSpriteLinkToFile = new System.Windows.Forms.Button();
+            this.lblSelectedSpriteTasksOwedLabel = new System.Windows.Forms.Label();
+            this.lblSelectedSpriteTypeLabel = new System.Windows.Forms.Label();
+            this.lblSelectedSpriteLevelLabel = new System.Windows.Forms.Label();
+            this.cboSelectedSpriteType = new Chummer.ElasticComboBox();
+            this.numericUpDownEx1 = new Chummer.NumericUpDownEx();
+            this.nudSelectedSpriteTasksOwed = new Chummer.NumericUpDownEx();
+            this.chkSelectedSpriteRegistered = new Chummer.ColorableCheckBox();
+            this.chkSelectedSpritePet = new Chummer.ColorableCheckBox();
+            this.lblSelectedSpriteNameLabel = new System.Windows.Forms.Label();
+            this.txtSelectedSpriteName = new System.Windows.Forms.TextBox();
+            this.lblSelectedSpriteSourceLabel = new System.Windows.Forms.Label();
+            this.lblSelectedSpriteSource = new Chummer.LabelWithToolTip();
+            this.lblSelectedSpriteLinkedFileLabel = new System.Windows.Forms.Label();
+            this.txtSelectedSpriteLinkedFile = new System.Windows.Forms.TextBox();
+            this.treSprites = new System.Windows.Forms.TreeView();
+            this.tlpTechnomancerSpriteButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdDeleteSprite = new System.Windows.Forms.Button();
             this.cmdAddSprite = new System.Windows.Forms.Button();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
             this.tlpAdvancedPrograms = new System.Windows.Forms.TableLayoutPanel();
@@ -1406,44 +1444,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsEditWeaponMount = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdDeleteSprite = new System.Windows.Forms.Button();
-            this.treSprites = new System.Windows.Forms.TreeView();
-            this.tlpSelectedSprite = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdSelectedSpriteLinkToFile = new System.Windows.Forms.Button();
-            this.lblSelectedSpriteTasksOwedLabel = new System.Windows.Forms.Label();
-            this.lblSelectedSpriteTypeLabel = new System.Windows.Forms.Label();
-            this.lblSelectedSpriteLevelLabel = new System.Windows.Forms.Label();
-            this.cboSelectedSpriteType = new Chummer.ElasticComboBox();
-            this.numericUpDownEx1 = new Chummer.NumericUpDownEx();
-            this.nudSelectedSpriteTasksOwed = new Chummer.NumericUpDownEx();
-            this.chkSelectedSpriteRegistered = new Chummer.ColorableCheckBox();
-            this.chkSelectedSpritePet = new Chummer.ColorableCheckBox();
-            this.lblSelectedSpriteNameLabel = new System.Windows.Forms.Label();
-            this.txtSelectedSpriteName = new System.Windows.Forms.TextBox();
-            this.lblSelectedSpriteSourceLabel = new System.Windows.Forms.Label();
-            this.lblSelectedSpriteSource = new Chummer.LabelWithToolTip();
-            this.lblSelectedSpriteLinkedFileLabel = new System.Windows.Forms.Label();
-            this.txtSelectedSpriteLinkedFile = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdDeleteSpirit = new System.Windows.Forms.Button();
-            this.treSpirits = new System.Windows.Forms.TreeView();
-            this.tlpSelectedSpirit = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdSelectedSpiritLinkToFile = new System.Windows.Forms.Button();
-            this.lblSelectedSpiritServicesOwedLabel = new System.Windows.Forms.Label();
-            this.lblSelectedSpiritTypeLabel = new System.Windows.Forms.Label();
-            this.lblSelectedSpiritForceLabel = new System.Windows.Forms.Label();
-            this.cboSelectedSpiritType = new Chummer.ElasticComboBox();
-            this.nudSelectedSpiritForce = new Chummer.NumericUpDownEx();
-            this.nudSelectedSpiritServicesOwed = new Chummer.NumericUpDownEx();
-            this.chkSelectedSpiritBound = new Chummer.ColorableCheckBox();
-            this.chkSelectedSpiritFettered = new Chummer.ColorableCheckBox();
-            this.lblSelectedSpiritNameLabel = new System.Windows.Forms.Label();
-            this.txtSelectedSpiritName = new System.Windows.Forms.TextBox();
-            this.lblSelectedSpiritSourceLabel = new System.Windows.Forms.Label();
-            this.lblSelectedSpiritSource = new Chummer.LabelWithToolTip();
-            this.lblSelectedSpiritLinkedFileLabel = new System.Windows.Forms.Label();
-            this.txtSelectedSpiritLinkedFile = new System.Windows.Forms.TextBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1531,6 +1531,10 @@ namespace Chummer
             this.tlpMagicianSpell.SuspendLayout();
             this.flpMagicianSpellButtons.SuspendLayout();
             this.tlpMagicianBottom.SuspendLayout();
+            this.tlpSelectedSpirit.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritForce)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritServicesOwed)).BeginInit();
+            this.tlpMagicianSpiritButtons.SuspendLayout();
             this.tabAdept.SuspendLayout();
             this.tabTechnomancer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitTechnomancer)).BeginInit();
@@ -1542,6 +1546,10 @@ namespace Chummer
             this.tlpComplexForms.SuspendLayout();
             this.tlpTechnomancerComplexForm.SuspendLayout();
             this.tlpTechnomancerBottom.SuspendLayout();
+            this.tlpSelectedSprite.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpriteTasksOwed)).BeginInit();
+            this.tlpTechnomancerSpriteButtons.SuspendLayout();
             this.tabAdvancedPrograms.SuspendLayout();
             this.tlpAdvancedPrograms.SuspendLayout();
             this.tlpAdvancedProgramsButtons.SuspendLayout();
@@ -1724,14 +1732,6 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.tlpSelectedSprite.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpriteTasksOwed)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tlpSelectedSpirit.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritForce)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritServicesOwed)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPowerUc
@@ -7351,7 +7351,7 @@ namespace Chummer
             // 
             this.lblMentorSpiritLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMentorSpiritLabel.AutoSize = true;
-            this.lblMentorSpiritLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblMentorSpiritLabel.Location = new System.Drawing.Point(3, 58);
             this.lblMentorSpiritLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMentorSpiritLabel.Name = "lblMentorSpiritLabel";
             this.lblMentorSpiritLabel.Size = new System.Drawing.Size(69, 13);
@@ -7364,7 +7364,7 @@ namespace Chummer
             this.lblMentorSpiritSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMentorSpiritSource.AutoSize = true;
             this.lblMentorSpiritSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblMentorSpiritSource.Location = new System.Drawing.Point(228, 6);
+            this.lblMentorSpiritSource.Location = new System.Drawing.Point(219, 58);
             this.lblMentorSpiritSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMentorSpiritSource.Name = "lblMentorSpiritSource";
             this.lblMentorSpiritSource.Size = new System.Drawing.Size(47, 13);
@@ -7376,7 +7376,7 @@ namespace Chummer
             // 
             this.lblMentorSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMentorSpirit.AutoSize = true;
-            this.lblMentorSpirit.Location = new System.Drawing.Point(78, 6);
+            this.lblMentorSpirit.Location = new System.Drawing.Point(78, 58);
             this.lblMentorSpirit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMentorSpirit.Name = "lblMentorSpirit";
             this.lblMentorSpirit.Size = new System.Drawing.Size(72, 13);
@@ -7387,7 +7387,7 @@ namespace Chummer
             // 
             this.lblMentorSpiritSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMentorSpiritSourceLabel.AutoSize = true;
-            this.lblMentorSpiritSourceLabel.Location = new System.Drawing.Point(178, 6);
+            this.lblMentorSpiritSourceLabel.Location = new System.Drawing.Point(169, 58);
             this.lblMentorSpiritSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMentorSpiritSourceLabel.Name = "lblMentorSpiritSourceLabel";
             this.lblMentorSpiritSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -8590,7 +8590,7 @@ namespace Chummer
             this.tlpMagicianBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMagicianBottom.Controls.Add(this.tlpSelectedSpirit, 1, 1);
             this.tlpMagicianBottom.Controls.Add(this.treSpirits, 0, 1);
-            this.tlpMagicianBottom.Controls.Add(this.tableLayoutPanel1, 0, 0);
+            this.tlpMagicianBottom.Controls.Add(this.tlpMagicianSpiritButtons, 0, 0);
             this.tlpMagicianBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMagicianBottom.Location = new System.Drawing.Point(0, 0);
             this.tlpMagicianBottom.Name = "tlpMagicianBottom";
@@ -8599,6 +8599,304 @@ namespace Chummer
             this.tlpMagicianBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMagicianBottom.Size = new System.Drawing.Size(971, 201);
             this.tlpMagicianBottom.TabIndex = 0;
+            // 
+            // tlpSelectedSpirit
+            // 
+            this.tlpSelectedSpirit.AutoSize = true;
+            this.tlpSelectedSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSelectedSpirit.ColumnCount = 7;
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSpirit.Controls.Add(this.cmdSelectedSpiritLinkToFile, 6, 3);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritServicesOwedLabel, 0, 2);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritTypeLabel, 0, 0);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritForceLabel, 0, 1);
+            this.tlpSelectedSpirit.Controls.Add(this.cboSelectedSpiritType, 1, 0);
+            this.tlpSelectedSpirit.Controls.Add(this.nudSelectedSpiritForce, 1, 1);
+            this.tlpSelectedSpirit.Controls.Add(this.nudSelectedSpiritServicesOwed, 1, 2);
+            this.tlpSelectedSpirit.Controls.Add(this.chkSelectedSpiritBound, 2, 1);
+            this.tlpSelectedSpirit.Controls.Add(this.chkSelectedSpiritFettered, 3, 1);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritNameLabel, 4, 1);
+            this.tlpSelectedSpirit.Controls.Add(this.txtSelectedSpiritName, 5, 1);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritSourceLabel, 4, 0);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritSource, 5, 0);
+            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritLinkedFileLabel, 0, 3);
+            this.tlpSelectedSpirit.Controls.Add(this.txtSelectedSpiritLinkedFile, 1, 3);
+            this.tlpSelectedSpirit.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpSelectedSpirit.Location = new System.Drawing.Point(310, 29);
+            this.tlpSelectedSpirit.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpSelectedSpirit.Name = "tlpSelectedSpirit";
+            this.tlpSelectedSpirit.RowCount = 4;
+            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSpirit.Size = new System.Drawing.Size(661, 107);
+            this.tlpSelectedSpirit.TabIndex = 73;
+            // 
+            // cmdSelectedSpiritLinkToFile
+            // 
+            this.cmdSelectedSpiritLinkToFile.AutoSize = true;
+            this.cmdSelectedSpiritLinkToFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSelectedSpiritLinkToFile.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdSelectedSpiritLinkToFile.Location = new System.Drawing.Point(577, 81);
+            this.cmdSelectedSpiritLinkToFile.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdSelectedSpiritLinkToFile.Name = "cmdSelectedSpiritLinkToFile";
+            this.cmdSelectedSpiritLinkToFile.Size = new System.Drawing.Size(80, 23);
+            this.cmdSelectedSpiritLinkToFile.TabIndex = 190;
+            this.cmdSelectedSpiritLinkToFile.Tag = "Button_LinkFile";
+            this.cmdSelectedSpiritLinkToFile.Text = "Link to File";
+            this.cmdSelectedSpiritLinkToFile.UseVisualStyleBackColor = true;
+            // 
+            // lblSelectedSpiritServicesOwedLabel
+            // 
+            this.lblSelectedSpiritServicesOwedLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpiritServicesOwedLabel.AutoSize = true;
+            this.lblSelectedSpiritServicesOwedLabel.Location = new System.Drawing.Point(3, 59);
+            this.lblSelectedSpiritServicesOwedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritServicesOwedLabel.Name = "lblSelectedSpiritServicesOwedLabel";
+            this.lblSelectedSpiritServicesOwedLabel.Size = new System.Drawing.Size(82, 13);
+            this.lblSelectedSpiritServicesOwedLabel.TabIndex = 182;
+            this.lblSelectedSpiritServicesOwedLabel.Tag = "Label_Spirit_ServicesOwed";
+            this.lblSelectedSpiritServicesOwedLabel.Text = "Services Owed:";
+            // 
+            // lblSelectedSpiritTypeLabel
+            // 
+            this.lblSelectedSpiritTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpiritTypeLabel.AutoSize = true;
+            this.lblSelectedSpiritTypeLabel.Location = new System.Drawing.Point(51, 7);
+            this.lblSelectedSpiritTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritTypeLabel.Name = "lblSelectedSpiritTypeLabel";
+            this.lblSelectedSpiritTypeLabel.Size = new System.Drawing.Size(34, 13);
+            this.lblSelectedSpiritTypeLabel.TabIndex = 148;
+            this.lblSelectedSpiritTypeLabel.Tag = "Label_Type";
+            this.lblSelectedSpiritTypeLabel.Text = "Type:";
+            // 
+            // lblSelectedSpiritForceLabel
+            // 
+            this.lblSelectedSpiritForceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpiritForceLabel.AutoSize = true;
+            this.lblSelectedSpiritForceLabel.Location = new System.Drawing.Point(48, 33);
+            this.lblSelectedSpiritForceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritForceLabel.Name = "lblSelectedSpiritForceLabel";
+            this.lblSelectedSpiritForceLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblSelectedSpiritForceLabel.TabIndex = 152;
+            this.lblSelectedSpiritForceLabel.Tag = "Label_Spirit_Force";
+            this.lblSelectedSpiritForceLabel.Text = "Force:";
+            // 
+            // cboSelectedSpiritType
+            // 
+            this.cboSelectedSpiritType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpSelectedSpirit.SetColumnSpan(this.cboSelectedSpiritType, 3);
+            this.cboSelectedSpiritType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectedSpiritType.FormattingEnabled = true;
+            this.cboSelectedSpiritType.Location = new System.Drawing.Point(91, 3);
+            this.cboSelectedSpiritType.Name = "cboSelectedSpiritType";
+            this.cboSelectedSpiritType.Size = new System.Drawing.Size(264, 21);
+            this.cboSelectedSpiritType.TabIndex = 184;
+            // 
+            // nudSelectedSpiritForce
+            // 
+            this.nudSelectedSpiritForce.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudSelectedSpiritForce.AutoSize = true;
+            this.nudSelectedSpiritForce.Enabled = false;
+            this.nudSelectedSpiritForce.Location = new System.Drawing.Point(91, 30);
+            this.nudSelectedSpiritForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.nudSelectedSpiritForce.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.nudSelectedSpiritForce.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudSelectedSpiritForce.Name = "nudSelectedSpiritForce";
+            this.nudSelectedSpiritForce.Size = new System.Drawing.Size(35, 20);
+            this.nudSelectedSpiritForce.TabIndex = 186;
+            this.nudSelectedSpiritForce.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudSelectedSpiritServicesOwed
+            // 
+            this.nudSelectedSpiritServicesOwed.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudSelectedSpiritServicesOwed.AutoSize = true;
+            this.tlpSelectedSpirit.SetColumnSpan(this.nudSelectedSpiritServicesOwed, 3);
+            this.nudSelectedSpiritServicesOwed.Location = new System.Drawing.Point(91, 55);
+            this.nudSelectedSpiritServicesOwed.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.nudSelectedSpiritServicesOwed.Maximum = new decimal(new int[] {
+            -1,
+            -1,
+            -1,
+            0});
+            this.nudSelectedSpiritServicesOwed.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudSelectedSpiritServicesOwed.Name = "nudSelectedSpiritServicesOwed";
+            this.nudSelectedSpiritServicesOwed.Size = new System.Drawing.Size(197, 20);
+            this.nudSelectedSpiritServicesOwed.TabIndex = 187;
+            this.nudSelectedSpiritServicesOwed.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            // 
+            // chkSelectedSpiritBound
+            // 
+            this.chkSelectedSpiritBound.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSelectedSpiritBound.AutoSize = true;
+            this.chkSelectedSpiritBound.DefaultColorScheme = true;
+            this.chkSelectedSpiritBound.Enabled = false;
+            this.chkSelectedSpiritBound.Location = new System.Drawing.Point(132, 31);
+            this.chkSelectedSpiritBound.Name = "chkSelectedSpiritBound";
+            this.chkSelectedSpiritBound.Size = new System.Drawing.Size(57, 17);
+            this.chkSelectedSpiritBound.TabIndex = 188;
+            this.chkSelectedSpiritBound.Tag = "Checkbox_Spirit_Bound";
+            this.chkSelectedSpiritBound.Text = "Bound";
+            this.chkSelectedSpiritBound.ToolTipText = "";
+            this.chkSelectedSpiritBound.UseVisualStyleBackColor = true;
+            // 
+            // chkSelectedSpiritFettered
+            // 
+            this.chkSelectedSpiritFettered.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSelectedSpiritFettered.AutoSize = true;
+            this.chkSelectedSpiritFettered.DefaultColorScheme = true;
+            this.chkSelectedSpiritFettered.Location = new System.Drawing.Point(195, 31);
+            this.chkSelectedSpiritFettered.Name = "chkSelectedSpiritFettered";
+            this.chkSelectedSpiritFettered.Size = new System.Drawing.Size(65, 17);
+            this.chkSelectedSpiritFettered.TabIndex = 189;
+            this.chkSelectedSpiritFettered.Tag = "Checkbox_Spirit_Fettered";
+            this.chkSelectedSpiritFettered.Text = "Fettered";
+            this.chkSelectedSpiritFettered.ToolTipText = "";
+            this.chkSelectedSpiritFettered.UseVisualStyleBackColor = true;
+            // 
+            // lblSelectedSpiritNameLabel
+            // 
+            this.lblSelectedSpiritNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpiritNameLabel.AutoSize = true;
+            this.lblSelectedSpiritNameLabel.Location = new System.Drawing.Point(367, 33);
+            this.lblSelectedSpiritNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritNameLabel.Name = "lblSelectedSpiritNameLabel";
+            this.lblSelectedSpiritNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblSelectedSpiritNameLabel.TabIndex = 150;
+            this.lblSelectedSpiritNameLabel.Tag = "Label_Name";
+            this.lblSelectedSpiritNameLabel.Text = "Name:";
+            // 
+            // txtSelectedSpiritName
+            // 
+            this.txtSelectedSpiritName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpSelectedSpirit.SetColumnSpan(this.txtSelectedSpiritName, 2);
+            this.txtSelectedSpiritName.Location = new System.Drawing.Point(411, 30);
+            this.txtSelectedSpiritName.Name = "txtSelectedSpiritName";
+            this.txtSelectedSpiritName.Size = new System.Drawing.Size(247, 20);
+            this.txtSelectedSpiritName.TabIndex = 185;
+            // 
+            // lblSelectedSpiritSourceLabel
+            // 
+            this.lblSelectedSpiritSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpiritSourceLabel.AutoSize = true;
+            this.lblSelectedSpiritSourceLabel.Location = new System.Drawing.Point(361, 7);
+            this.lblSelectedSpiritSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritSourceLabel.Name = "lblSelectedSpiritSourceLabel";
+            this.lblSelectedSpiritSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSelectedSpiritSourceLabel.TabIndex = 89;
+            this.lblSelectedSpiritSourceLabel.Tag = "Label_Source";
+            this.lblSelectedSpiritSourceLabel.Text = "Source:";
+            // 
+            // lblSelectedSpiritSource
+            // 
+            this.lblSelectedSpiritSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSelectedSpiritSource.AutoSize = true;
+            this.tlpSelectedSpirit.SetColumnSpan(this.lblSelectedSpiritSource, 2);
+            this.lblSelectedSpiritSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSelectedSpiritSource.Location = new System.Drawing.Point(411, 7);
+            this.lblSelectedSpiritSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritSource.Name = "lblSelectedSpiritSource";
+            this.lblSelectedSpiritSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSelectedSpiritSource.TabIndex = 90;
+            this.lblSelectedSpiritSource.Text = "[Source]";
+            this.lblSelectedSpiritSource.ToolTipText = "";
+            // 
+            // lblSelectedSpiritLinkedFileLabel
+            // 
+            this.lblSelectedSpiritLinkedFileLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpiritLinkedFileLabel.AutoSize = true;
+            this.lblSelectedSpiritLinkedFileLabel.Location = new System.Drawing.Point(24, 86);
+            this.lblSelectedSpiritLinkedFileLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpiritLinkedFileLabel.Name = "lblSelectedSpiritLinkedFileLabel";
+            this.lblSelectedSpiritLinkedFileLabel.Size = new System.Drawing.Size(61, 13);
+            this.lblSelectedSpiritLinkedFileLabel.TabIndex = 191;
+            this.lblSelectedSpiritLinkedFileLabel.Tag = "Label_LinkedFile";
+            this.lblSelectedSpiritLinkedFileLabel.Text = "Linked File:";
+            // 
+            // txtSelectedSpiritLinkedFile
+            // 
+            this.txtSelectedSpiritLinkedFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpSelectedSpirit.SetColumnSpan(this.txtSelectedSpiritLinkedFile, 5);
+            this.txtSelectedSpiritLinkedFile.Location = new System.Drawing.Point(91, 82);
+            this.txtSelectedSpiritLinkedFile.Name = "txtSelectedSpiritLinkedFile";
+            this.txtSelectedSpiritLinkedFile.ReadOnly = true;
+            this.txtSelectedSpiritLinkedFile.Size = new System.Drawing.Size(480, 20);
+            this.txtSelectedSpiritLinkedFile.TabIndex = 192;
+            // 
+            // treSpirits
+            // 
+            this.treSpirits.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treSpirits.HideSelection = false;
+            this.treSpirits.Location = new System.Drawing.Point(3, 32);
+            this.treSpirits.Name = "treSpirits";
+            treeNode12.Name = "nodSpiritsRoot";
+            treeNode12.Tag = "Node_SelectedSpirits";
+            treeNode12.Text = "Selected Spirits";
+            this.treSpirits.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode12});
+            this.treSpirits.ShowNodeToolTips = true;
+            this.treSpirits.ShowRootLines = false;
+            this.treSpirits.Size = new System.Drawing.Size(304, 166);
+            this.treSpirits.TabIndex = 72;
+            // 
+            // tlpMagicianSpiritButtons
+            // 
+            this.tlpMagicianSpiritButtons.AutoSize = true;
+            this.tlpMagicianSpiritButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMagicianSpiritButtons.ColumnCount = 2;
+            this.tlpMagicianBottom.SetColumnSpan(this.tlpMagicianSpiritButtons, 2);
+            this.tlpMagicianSpiritButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianSpiritButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianSpiritButtons.Controls.Add(this.cmdDeleteSpirit, 1, 0);
+            this.tlpMagicianSpiritButtons.Controls.Add(this.cmdAddSpirit, 0, 0);
+            this.tlpMagicianSpiritButtons.Location = new System.Drawing.Point(0, 0);
+            this.tlpMagicianSpiritButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpMagicianSpiritButtons.Name = "tlpMagicianSpiritButtons";
+            this.tlpMagicianSpiritButtons.RowCount = 1;
+            this.tlpMagicianSpiritButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianSpiritButtons.Size = new System.Drawing.Size(172, 29);
+            this.tlpMagicianSpiritButtons.TabIndex = 70;
+            // 
+            // cmdDeleteSpirit
+            // 
+            this.cmdDeleteSpirit.AutoSize = true;
+            this.cmdDeleteSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDeleteSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDeleteSpirit.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteSpirit.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdDeleteSpirit.Name = "cmdDeleteSpirit";
+            this.cmdDeleteSpirit.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteSpirit.TabIndex = 70;
+            this.cmdDeleteSpirit.Tag = "String_Delete";
+            this.cmdDeleteSpirit.Text = "Delete";
+            this.cmdDeleteSpirit.UseVisualStyleBackColor = true;
             // 
             // cmdAddSpirit
             // 
@@ -8982,7 +9280,7 @@ namespace Chummer
             this.tlpTechnomancerBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpTechnomancerBottom.Controls.Add(this.tlpSelectedSprite, 1, 1);
             this.tlpTechnomancerBottom.Controls.Add(this.treSprites, 0, 1);
-            this.tlpTechnomancerBottom.Controls.Add(this.tableLayoutPanel2, 0, 0);
+            this.tlpTechnomancerBottom.Controls.Add(this.tlpTechnomancerSpriteButtons, 0, 0);
             this.tlpTechnomancerBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTechnomancerBottom.Location = new System.Drawing.Point(0, 0);
             this.tlpTechnomancerBottom.Name = "tlpTechnomancerBottom";
@@ -8991,6 +9289,303 @@ namespace Chummer
             this.tlpTechnomancerBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpTechnomancerBottom.Size = new System.Drawing.Size(971, 201);
             this.tlpTechnomancerBottom.TabIndex = 0;
+            // 
+            // tlpSelectedSprite
+            // 
+            this.tlpSelectedSprite.AutoSize = true;
+            this.tlpSelectedSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSelectedSprite.ColumnCount = 7;
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSelectedSprite.Controls.Add(this.cmdSelectedSpriteLinkToFile, 6, 3);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteTasksOwedLabel, 0, 2);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteTypeLabel, 0, 0);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteLevelLabel, 0, 1);
+            this.tlpSelectedSprite.Controls.Add(this.cboSelectedSpriteType, 1, 0);
+            this.tlpSelectedSprite.Controls.Add(this.numericUpDownEx1, 1, 1);
+            this.tlpSelectedSprite.Controls.Add(this.nudSelectedSpriteTasksOwed, 1, 2);
+            this.tlpSelectedSprite.Controls.Add(this.chkSelectedSpriteRegistered, 2, 1);
+            this.tlpSelectedSprite.Controls.Add(this.chkSelectedSpritePet, 3, 1);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteNameLabel, 4, 1);
+            this.tlpSelectedSprite.Controls.Add(this.txtSelectedSpriteName, 5, 1);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteSourceLabel, 4, 0);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteSource, 5, 0);
+            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteLinkedFileLabel, 0, 3);
+            this.tlpSelectedSprite.Controls.Add(this.txtSelectedSpriteLinkedFile, 1, 3);
+            this.tlpSelectedSprite.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpSelectedSprite.Location = new System.Drawing.Point(310, 29);
+            this.tlpSelectedSprite.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpSelectedSprite.Name = "tlpSelectedSprite";
+            this.tlpSelectedSprite.RowCount = 4;
+            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSelectedSprite.Size = new System.Drawing.Size(661, 107);
+            this.tlpSelectedSprite.TabIndex = 193;
+            // 
+            // cmdSelectedSpriteLinkToFile
+            // 
+            this.cmdSelectedSpriteLinkToFile.AutoSize = true;
+            this.cmdSelectedSpriteLinkToFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSelectedSpriteLinkToFile.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdSelectedSpriteLinkToFile.Location = new System.Drawing.Point(577, 81);
+            this.cmdSelectedSpriteLinkToFile.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdSelectedSpriteLinkToFile.Name = "cmdSelectedSpriteLinkToFile";
+            this.cmdSelectedSpriteLinkToFile.Size = new System.Drawing.Size(80, 23);
+            this.cmdSelectedSpriteLinkToFile.TabIndex = 190;
+            this.cmdSelectedSpriteLinkToFile.Tag = "Button_LinkFile";
+            this.cmdSelectedSpriteLinkToFile.Text = "Link to File";
+            this.cmdSelectedSpriteLinkToFile.UseVisualStyleBackColor = true;
+            // 
+            // lblSelectedSpriteTasksOwedLabel
+            // 
+            this.lblSelectedSpriteTasksOwedLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpriteTasksOwedLabel.AutoSize = true;
+            this.lblSelectedSpriteTasksOwedLabel.Location = new System.Drawing.Point(3, 59);
+            this.lblSelectedSpriteTasksOwedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteTasksOwedLabel.Name = "lblSelectedSpriteTasksOwedLabel";
+            this.lblSelectedSpriteTasksOwedLabel.Size = new System.Drawing.Size(70, 13);
+            this.lblSelectedSpriteTasksOwedLabel.TabIndex = 182;
+            this.lblSelectedSpriteTasksOwedLabel.Tag = "Label_Sprite_TasksOwed";
+            this.lblSelectedSpriteTasksOwedLabel.Text = "Tasks Owed:";
+            // 
+            // lblSelectedSpriteTypeLabel
+            // 
+            this.lblSelectedSpriteTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpriteTypeLabel.AutoSize = true;
+            this.lblSelectedSpriteTypeLabel.Location = new System.Drawing.Point(39, 7);
+            this.lblSelectedSpriteTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteTypeLabel.Name = "lblSelectedSpriteTypeLabel";
+            this.lblSelectedSpriteTypeLabel.Size = new System.Drawing.Size(34, 13);
+            this.lblSelectedSpriteTypeLabel.TabIndex = 148;
+            this.lblSelectedSpriteTypeLabel.Tag = "Label_Type";
+            this.lblSelectedSpriteTypeLabel.Text = "Type:";
+            // 
+            // lblSelectedSpriteLevelLabel
+            // 
+            this.lblSelectedSpriteLevelLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpriteLevelLabel.AutoSize = true;
+            this.lblSelectedSpriteLevelLabel.Location = new System.Drawing.Point(37, 33);
+            this.lblSelectedSpriteLevelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteLevelLabel.Name = "lblSelectedSpriteLevelLabel";
+            this.lblSelectedSpriteLevelLabel.Size = new System.Drawing.Size(36, 13);
+            this.lblSelectedSpriteLevelLabel.TabIndex = 152;
+            this.lblSelectedSpriteLevelLabel.Tag = "Label_Sprite_Level";
+            this.lblSelectedSpriteLevelLabel.Text = "Level:";
+            // 
+            // cboSelectedSpriteType
+            // 
+            this.cboSelectedSpriteType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpSelectedSprite.SetColumnSpan(this.cboSelectedSpriteType, 3);
+            this.cboSelectedSpriteType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSelectedSpriteType.FormattingEnabled = true;
+            this.cboSelectedSpriteType.Location = new System.Drawing.Point(79, 3);
+            this.cboSelectedSpriteType.Name = "cboSelectedSpriteType";
+            this.cboSelectedSpriteType.Size = new System.Drawing.Size(280, 21);
+            this.cboSelectedSpriteType.TabIndex = 184;
+            // 
+            // numericUpDownEx1
+            // 
+            this.numericUpDownEx1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.numericUpDownEx1.AutoSize = true;
+            this.numericUpDownEx1.Enabled = false;
+            this.numericUpDownEx1.Location = new System.Drawing.Point(79, 30);
+            this.numericUpDownEx1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.numericUpDownEx1.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.numericUpDownEx1.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.numericUpDownEx1.Name = "numericUpDownEx1";
+            this.numericUpDownEx1.Size = new System.Drawing.Size(35, 20);
+            this.numericUpDownEx1.TabIndex = 186;
+            this.numericUpDownEx1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudSelectedSpriteTasksOwed
+            // 
+            this.nudSelectedSpriteTasksOwed.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudSelectedSpriteTasksOwed.AutoSize = true;
+            this.tlpSelectedSprite.SetColumnSpan(this.nudSelectedSpriteTasksOwed, 3);
+            this.nudSelectedSpriteTasksOwed.Location = new System.Drawing.Point(79, 55);
+            this.nudSelectedSpriteTasksOwed.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.nudSelectedSpriteTasksOwed.Maximum = new decimal(new int[] {
+            -1,
+            -1,
+            -1,
+            0});
+            this.nudSelectedSpriteTasksOwed.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudSelectedSpriteTasksOwed.Name = "nudSelectedSpriteTasksOwed";
+            this.nudSelectedSpriteTasksOwed.Size = new System.Drawing.Size(197, 20);
+            this.nudSelectedSpriteTasksOwed.TabIndex = 187;
+            this.nudSelectedSpriteTasksOwed.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            // 
+            // chkSelectedSpriteRegistered
+            // 
+            this.chkSelectedSpriteRegistered.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSelectedSpriteRegistered.AutoSize = true;
+            this.chkSelectedSpriteRegistered.DefaultColorScheme = true;
+            this.chkSelectedSpriteRegistered.Location = new System.Drawing.Point(120, 31);
+            this.chkSelectedSpriteRegistered.Name = "chkSelectedSpriteRegistered";
+            this.chkSelectedSpriteRegistered.Size = new System.Drawing.Size(77, 17);
+            this.chkSelectedSpriteRegistered.TabIndex = 188;
+            this.chkSelectedSpriteRegistered.Tag = "Label_Sprite_Registered";
+            this.chkSelectedSpriteRegistered.Text = "Registered";
+            this.chkSelectedSpriteRegistered.ToolTipText = "";
+            this.chkSelectedSpriteRegistered.UseVisualStyleBackColor = true;
+            // 
+            // chkSelectedSpritePet
+            // 
+            this.chkSelectedSpritePet.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSelectedSpritePet.AutoSize = true;
+            this.chkSelectedSpritePet.DefaultColorScheme = true;
+            this.chkSelectedSpritePet.Location = new System.Drawing.Point(203, 31);
+            this.chkSelectedSpritePet.Name = "chkSelectedSpritePet";
+            this.chkSelectedSpritePet.Size = new System.Drawing.Size(72, 17);
+            this.chkSelectedSpritePet.TabIndex = 189;
+            this.chkSelectedSpritePet.Tag = "Checkbox_Sprite_Pet";
+            this.chkSelectedSpritePet.Text = "Sprite Pet";
+            this.chkSelectedSpritePet.ToolTipText = "";
+            this.chkSelectedSpritePet.UseVisualStyleBackColor = true;
+            // 
+            // lblSelectedSpriteNameLabel
+            // 
+            this.lblSelectedSpriteNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpriteNameLabel.AutoSize = true;
+            this.lblSelectedSpriteNameLabel.Location = new System.Drawing.Point(371, 33);
+            this.lblSelectedSpriteNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteNameLabel.Name = "lblSelectedSpriteNameLabel";
+            this.lblSelectedSpriteNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblSelectedSpriteNameLabel.TabIndex = 150;
+            this.lblSelectedSpriteNameLabel.Tag = "Label_Name";
+            this.lblSelectedSpriteNameLabel.Text = "Name:";
+            // 
+            // txtSelectedSpriteName
+            // 
+            this.txtSelectedSpriteName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpSelectedSprite.SetColumnSpan(this.txtSelectedSpriteName, 2);
+            this.txtSelectedSpriteName.Location = new System.Drawing.Point(415, 30);
+            this.txtSelectedSpriteName.Name = "txtSelectedSpriteName";
+            this.txtSelectedSpriteName.Size = new System.Drawing.Size(243, 20);
+            this.txtSelectedSpriteName.TabIndex = 185;
+            // 
+            // lblSelectedSpriteSourceLabel
+            // 
+            this.lblSelectedSpriteSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpriteSourceLabel.AutoSize = true;
+            this.lblSelectedSpriteSourceLabel.Location = new System.Drawing.Point(365, 7);
+            this.lblSelectedSpriteSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteSourceLabel.Name = "lblSelectedSpriteSourceLabel";
+            this.lblSelectedSpriteSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSelectedSpriteSourceLabel.TabIndex = 89;
+            this.lblSelectedSpriteSourceLabel.Tag = "Label_Source";
+            this.lblSelectedSpriteSourceLabel.Text = "Source:";
+            // 
+            // lblSelectedSpriteSource
+            // 
+            this.lblSelectedSpriteSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSelectedSpriteSource.AutoSize = true;
+            this.tlpSelectedSprite.SetColumnSpan(this.lblSelectedSpriteSource, 2);
+            this.lblSelectedSpriteSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSelectedSpriteSource.Location = new System.Drawing.Point(415, 7);
+            this.lblSelectedSpriteSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteSource.Name = "lblSelectedSpriteSource";
+            this.lblSelectedSpriteSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSelectedSpriteSource.TabIndex = 90;
+            this.lblSelectedSpriteSource.Text = "[Source]";
+            this.lblSelectedSpriteSource.ToolTipText = "";
+            // 
+            // lblSelectedSpriteLinkedFileLabel
+            // 
+            this.lblSelectedSpriteLinkedFileLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSelectedSpriteLinkedFileLabel.AutoSize = true;
+            this.lblSelectedSpriteLinkedFileLabel.Location = new System.Drawing.Point(12, 86);
+            this.lblSelectedSpriteLinkedFileLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSelectedSpriteLinkedFileLabel.Name = "lblSelectedSpriteLinkedFileLabel";
+            this.lblSelectedSpriteLinkedFileLabel.Size = new System.Drawing.Size(61, 13);
+            this.lblSelectedSpriteLinkedFileLabel.TabIndex = 191;
+            this.lblSelectedSpriteLinkedFileLabel.Tag = "Label_LinkedFile";
+            this.lblSelectedSpriteLinkedFileLabel.Text = "Linked File:";
+            // 
+            // txtSelectedSpriteLinkedFile
+            // 
+            this.txtSelectedSpriteLinkedFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpSelectedSprite.SetColumnSpan(this.txtSelectedSpriteLinkedFile, 5);
+            this.txtSelectedSpriteLinkedFile.Location = new System.Drawing.Point(79, 82);
+            this.txtSelectedSpriteLinkedFile.Name = "txtSelectedSpriteLinkedFile";
+            this.txtSelectedSpriteLinkedFile.ReadOnly = true;
+            this.txtSelectedSpriteLinkedFile.Size = new System.Drawing.Size(492, 20);
+            this.txtSelectedSpriteLinkedFile.TabIndex = 192;
+            // 
+            // treSprites
+            // 
+            this.treSprites.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treSprites.HideSelection = false;
+            this.treSprites.Location = new System.Drawing.Point(3, 32);
+            this.treSprites.Name = "treSprites";
+            treeNode14.Name = "nodSpritesRoot";
+            treeNode14.Tag = "Node_SelectedSprites";
+            treeNode14.Text = "Selected Sprites";
+            this.treSprites.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode14});
+            this.treSprites.ShowNodeToolTips = true;
+            this.treSprites.ShowRootLines = false;
+            this.treSprites.Size = new System.Drawing.Size(304, 166);
+            this.treSprites.TabIndex = 192;
+            // 
+            // tlpTechnomancerSpriteButtons
+            // 
+            this.tlpTechnomancerSpriteButtons.AutoSize = true;
+            this.tlpTechnomancerSpriteButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTechnomancerSpriteButtons.ColumnCount = 2;
+            this.tlpTechnomancerBottom.SetColumnSpan(this.tlpTechnomancerSpriteButtons, 2);
+            this.tlpTechnomancerSpriteButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTechnomancerSpriteButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTechnomancerSpriteButtons.Controls.Add(this.cmdDeleteSprite, 1, 0);
+            this.tlpTechnomancerSpriteButtons.Controls.Add(this.cmdAddSprite, 0, 0);
+            this.tlpTechnomancerSpriteButtons.Location = new System.Drawing.Point(0, 0);
+            this.tlpTechnomancerSpriteButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTechnomancerSpriteButtons.Name = "tlpTechnomancerSpriteButtons";
+            this.tlpTechnomancerSpriteButtons.RowCount = 1;
+            this.tlpTechnomancerSpriteButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTechnomancerSpriteButtons.Size = new System.Drawing.Size(172, 29);
+            this.tlpTechnomancerSpriteButtons.TabIndex = 191;
+            // 
+            // cmdDeleteSprite
+            // 
+            this.cmdDeleteSprite.AutoSize = true;
+            this.cmdDeleteSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDeleteSprite.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDeleteSprite.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteSprite.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdDeleteSprite.Name = "cmdDeleteSprite";
+            this.cmdDeleteSprite.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteSprite.TabIndex = 31;
+            this.cmdDeleteSprite.Tag = "String_Delete";
+            this.cmdDeleteSprite.Text = "Delete";
+            this.cmdDeleteSprite.UseVisualStyleBackColor = true;
             // 
             // cmdAddSprite
             // 
@@ -22757,601 +23352,6 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tlpTechnomancerBottom.SetColumnSpan(this.tableLayoutPanel2, 2);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.cmdDeleteSprite, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cmdAddSprite, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(172, 29);
-            this.tableLayoutPanel2.TabIndex = 191;
-            // 
-            // cmdDeleteSprite
-            // 
-            this.cmdDeleteSprite.AutoSize = true;
-            this.cmdDeleteSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDeleteSprite.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteSprite.Location = new System.Drawing.Point(89, 3);
-            this.cmdDeleteSprite.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdDeleteSprite.Name = "cmdDeleteSprite";
-            this.cmdDeleteSprite.Size = new System.Drawing.Size(80, 23);
-            this.cmdDeleteSprite.TabIndex = 31;
-            this.cmdDeleteSprite.Tag = "String_Delete";
-            this.cmdDeleteSprite.Text = "Delete";
-            this.cmdDeleteSprite.UseVisualStyleBackColor = true;
-            // 
-            // treSprites
-            // 
-            this.treSprites.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treSprites.HideSelection = false;
-            this.treSprites.Location = new System.Drawing.Point(3, 32);
-            this.treSprites.Name = "treSprites";
-            treeNode14.Name = "nodSpritesRoot";
-            treeNode14.Tag = "Node_SelectedSprites";
-            treeNode14.Text = "Selected Sprites";
-            this.treSprites.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode14});
-            this.treSprites.ShowNodeToolTips = true;
-            this.treSprites.ShowRootLines = false;
-            this.treSprites.Size = new System.Drawing.Size(304, 166);
-            this.treSprites.TabIndex = 192;
-            // 
-            // tlpSelectedSprite
-            // 
-            this.tlpSelectedSprite.AutoSize = true;
-            this.tlpSelectedSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpSelectedSprite.ColumnCount = 7;
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpSelectedSprite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSprite.Controls.Add(this.cmdSelectedSpriteLinkToFile, 6, 3);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteTasksOwedLabel, 0, 2);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteTypeLabel, 0, 0);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteLevelLabel, 0, 1);
-            this.tlpSelectedSprite.Controls.Add(this.cboSelectedSpriteType, 1, 0);
-            this.tlpSelectedSprite.Controls.Add(this.numericUpDownEx1, 1, 1);
-            this.tlpSelectedSprite.Controls.Add(this.nudSelectedSpriteTasksOwed, 1, 2);
-            this.tlpSelectedSprite.Controls.Add(this.chkSelectedSpriteRegistered, 2, 1);
-            this.tlpSelectedSprite.Controls.Add(this.chkSelectedSpritePet, 3, 1);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteNameLabel, 4, 1);
-            this.tlpSelectedSprite.Controls.Add(this.txtSelectedSpriteName, 5, 1);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteSourceLabel, 4, 0);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteSource, 5, 0);
-            this.tlpSelectedSprite.Controls.Add(this.lblSelectedSpriteLinkedFileLabel, 0, 3);
-            this.tlpSelectedSprite.Controls.Add(this.txtSelectedSpriteLinkedFile, 1, 3);
-            this.tlpSelectedSprite.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tlpSelectedSprite.Location = new System.Drawing.Point(310, 29);
-            this.tlpSelectedSprite.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpSelectedSprite.Name = "tlpSelectedSprite";
-            this.tlpSelectedSprite.RowCount = 4;
-            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSprite.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSprite.Size = new System.Drawing.Size(661, 107);
-            this.tlpSelectedSprite.TabIndex = 193;
-            // 
-            // cmdSelectedSpriteLinkToFile
-            // 
-            this.cmdSelectedSpriteLinkToFile.AutoSize = true;
-            this.cmdSelectedSpriteLinkToFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdSelectedSpriteLinkToFile.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cmdSelectedSpriteLinkToFile.Location = new System.Drawing.Point(577, 81);
-            this.cmdSelectedSpriteLinkToFile.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdSelectedSpriteLinkToFile.Name = "cmdSelectedSpriteLinkToFile";
-            this.cmdSelectedSpriteLinkToFile.Size = new System.Drawing.Size(80, 23);
-            this.cmdSelectedSpriteLinkToFile.TabIndex = 190;
-            this.cmdSelectedSpriteLinkToFile.Tag = "Button_LinkFile";
-            this.cmdSelectedSpriteLinkToFile.Text = "Link to File";
-            this.cmdSelectedSpriteLinkToFile.UseVisualStyleBackColor = true;
-            // 
-            // lblSelectedSpriteTasksOwedLabel
-            // 
-            this.lblSelectedSpriteTasksOwedLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpriteTasksOwedLabel.AutoSize = true;
-            this.lblSelectedSpriteTasksOwedLabel.Location = new System.Drawing.Point(3, 59);
-            this.lblSelectedSpriteTasksOwedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteTasksOwedLabel.Name = "lblSelectedSpriteTasksOwedLabel";
-            this.lblSelectedSpriteTasksOwedLabel.Size = new System.Drawing.Size(70, 13);
-            this.lblSelectedSpriteTasksOwedLabel.TabIndex = 182;
-            this.lblSelectedSpriteTasksOwedLabel.Tag = "Label_Sprite_TasksOwed";
-            this.lblSelectedSpriteTasksOwedLabel.Text = "Tasks Owed:";
-            // 
-            // lblSelectedSpriteTypeLabel
-            // 
-            this.lblSelectedSpriteTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpriteTypeLabel.AutoSize = true;
-            this.lblSelectedSpriteTypeLabel.Location = new System.Drawing.Point(39, 7);
-            this.lblSelectedSpriteTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteTypeLabel.Name = "lblSelectedSpriteTypeLabel";
-            this.lblSelectedSpriteTypeLabel.Size = new System.Drawing.Size(34, 13);
-            this.lblSelectedSpriteTypeLabel.TabIndex = 148;
-            this.lblSelectedSpriteTypeLabel.Tag = "Label_Type";
-            this.lblSelectedSpriteTypeLabel.Text = "Type:";
-            // 
-            // lblSelectedSpriteLevelLabel
-            // 
-            this.lblSelectedSpriteLevelLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpriteLevelLabel.AutoSize = true;
-            this.lblSelectedSpriteLevelLabel.Location = new System.Drawing.Point(37, 33);
-            this.lblSelectedSpriteLevelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteLevelLabel.Name = "lblSelectedSpriteLevelLabel";
-            this.lblSelectedSpriteLevelLabel.Size = new System.Drawing.Size(36, 13);
-            this.lblSelectedSpriteLevelLabel.TabIndex = 152;
-            this.lblSelectedSpriteLevelLabel.Tag = "Label_Sprite_Level";
-            this.lblSelectedSpriteLevelLabel.Text = "Level:";
-            // 
-            // cboSelectedSpriteType
-            // 
-            this.cboSelectedSpriteType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpSelectedSprite.SetColumnSpan(this.cboSelectedSpriteType, 3);
-            this.cboSelectedSpriteType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSelectedSpriteType.FormattingEnabled = true;
-            this.cboSelectedSpriteType.Location = new System.Drawing.Point(79, 3);
-            this.cboSelectedSpriteType.Name = "cboSelectedSpriteType";
-            this.cboSelectedSpriteType.Size = new System.Drawing.Size(280, 21);
-            this.cboSelectedSpriteType.TabIndex = 184;
-            // 
-            // numericUpDownEx1
-            // 
-            this.numericUpDownEx1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numericUpDownEx1.AutoSize = true;
-            this.numericUpDownEx1.Enabled = false;
-            this.numericUpDownEx1.Location = new System.Drawing.Point(79, 30);
-            this.numericUpDownEx1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.numericUpDownEx1.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.numericUpDownEx1.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.numericUpDownEx1.Name = "numericUpDownEx1";
-            this.numericUpDownEx1.Size = new System.Drawing.Size(35, 20);
-            this.numericUpDownEx1.TabIndex = 186;
-            this.numericUpDownEx1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // nudSelectedSpriteTasksOwed
-            // 
-            this.nudSelectedSpriteTasksOwed.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudSelectedSpriteTasksOwed.AutoSize = true;
-            this.tlpSelectedSprite.SetColumnSpan(this.nudSelectedSpriteTasksOwed, 3);
-            this.nudSelectedSpriteTasksOwed.Location = new System.Drawing.Point(79, 55);
-            this.nudSelectedSpriteTasksOwed.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.nudSelectedSpriteTasksOwed.Maximum = new decimal(new int[] {
-            -1,
-            -1,
-            -1,
-            0});
-            this.nudSelectedSpriteTasksOwed.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudSelectedSpriteTasksOwed.Name = "nudSelectedSpriteTasksOwed";
-            this.nudSelectedSpriteTasksOwed.Size = new System.Drawing.Size(197, 20);
-            this.nudSelectedSpriteTasksOwed.TabIndex = 187;
-            this.nudSelectedSpriteTasksOwed.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            // 
-            // chkSelectedSpriteRegistered
-            // 
-            this.chkSelectedSpriteRegistered.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkSelectedSpriteRegistered.AutoSize = true;
-            this.chkSelectedSpriteRegistered.DefaultColorScheme = true;
-            this.chkSelectedSpriteRegistered.Location = new System.Drawing.Point(120, 31);
-            this.chkSelectedSpriteRegistered.Name = "chkSelectedSpriteRegistered";
-            this.chkSelectedSpriteRegistered.Size = new System.Drawing.Size(77, 17);
-            this.chkSelectedSpriteRegistered.TabIndex = 188;
-            this.chkSelectedSpriteRegistered.Tag = "Label_Sprite_Registered";
-            this.chkSelectedSpriteRegistered.Text = "Registered";
-            this.chkSelectedSpriteRegistered.ToolTipText = "";
-            this.chkSelectedSpriteRegistered.UseVisualStyleBackColor = true;
-            // 
-            // chkSelectedSpritePet
-            // 
-            this.chkSelectedSpritePet.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkSelectedSpritePet.AutoSize = true;
-            this.chkSelectedSpritePet.DefaultColorScheme = true;
-            this.chkSelectedSpritePet.Location = new System.Drawing.Point(203, 31);
-            this.chkSelectedSpritePet.Name = "chkSelectedSpritePet";
-            this.chkSelectedSpritePet.Size = new System.Drawing.Size(72, 17);
-            this.chkSelectedSpritePet.TabIndex = 189;
-            this.chkSelectedSpritePet.Tag = "Checkbox_Sprite_Pet";
-            this.chkSelectedSpritePet.Text = "Sprite Pet";
-            this.chkSelectedSpritePet.ToolTipText = "";
-            this.chkSelectedSpritePet.UseVisualStyleBackColor = true;
-            // 
-            // lblSelectedSpriteNameLabel
-            // 
-            this.lblSelectedSpriteNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpriteNameLabel.AutoSize = true;
-            this.lblSelectedSpriteNameLabel.Location = new System.Drawing.Point(371, 33);
-            this.lblSelectedSpriteNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteNameLabel.Name = "lblSelectedSpriteNameLabel";
-            this.lblSelectedSpriteNameLabel.Size = new System.Drawing.Size(38, 13);
-            this.lblSelectedSpriteNameLabel.TabIndex = 150;
-            this.lblSelectedSpriteNameLabel.Tag = "Label_Name";
-            this.lblSelectedSpriteNameLabel.Text = "Name:";
-            // 
-            // txtSelectedSpriteName
-            // 
-            this.txtSelectedSpriteName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpSelectedSprite.SetColumnSpan(this.txtSelectedSpriteName, 2);
-            this.txtSelectedSpriteName.Location = new System.Drawing.Point(415, 30);
-            this.txtSelectedSpriteName.Name = "txtSelectedSpriteName";
-            this.txtSelectedSpriteName.Size = new System.Drawing.Size(243, 20);
-            this.txtSelectedSpriteName.TabIndex = 185;
-            // 
-            // lblSelectedSpriteSourceLabel
-            // 
-            this.lblSelectedSpriteSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpriteSourceLabel.AutoSize = true;
-            this.lblSelectedSpriteSourceLabel.Location = new System.Drawing.Point(365, 7);
-            this.lblSelectedSpriteSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteSourceLabel.Name = "lblSelectedSpriteSourceLabel";
-            this.lblSelectedSpriteSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSelectedSpriteSourceLabel.TabIndex = 89;
-            this.lblSelectedSpriteSourceLabel.Tag = "Label_Source";
-            this.lblSelectedSpriteSourceLabel.Text = "Source:";
-            // 
-            // lblSelectedSpriteSource
-            // 
-            this.lblSelectedSpriteSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSelectedSpriteSource.AutoSize = true;
-            this.tlpSelectedSprite.SetColumnSpan(this.lblSelectedSpriteSource, 2);
-            this.lblSelectedSpriteSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSelectedSpriteSource.Location = new System.Drawing.Point(415, 7);
-            this.lblSelectedSpriteSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteSource.Name = "lblSelectedSpriteSource";
-            this.lblSelectedSpriteSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSelectedSpriteSource.TabIndex = 90;
-            this.lblSelectedSpriteSource.Text = "[Source]";
-            this.lblSelectedSpriteSource.ToolTipText = "";
-            // 
-            // lblSelectedSpriteLinkedFileLabel
-            // 
-            this.lblSelectedSpriteLinkedFileLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpriteLinkedFileLabel.AutoSize = true;
-            this.lblSelectedSpriteLinkedFileLabel.Location = new System.Drawing.Point(12, 86);
-            this.lblSelectedSpriteLinkedFileLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpriteLinkedFileLabel.Name = "lblSelectedSpriteLinkedFileLabel";
-            this.lblSelectedSpriteLinkedFileLabel.Size = new System.Drawing.Size(61, 13);
-            this.lblSelectedSpriteLinkedFileLabel.TabIndex = 191;
-            this.lblSelectedSpriteLinkedFileLabel.Tag = "Label_LinkedFile";
-            this.lblSelectedSpriteLinkedFileLabel.Text = "Linked File:";
-            // 
-            // txtSelectedSpriteLinkedFile
-            // 
-            this.txtSelectedSpriteLinkedFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpSelectedSprite.SetColumnSpan(this.txtSelectedSpriteLinkedFile, 5);
-            this.txtSelectedSpriteLinkedFile.Location = new System.Drawing.Point(79, 82);
-            this.txtSelectedSpriteLinkedFile.Name = "txtSelectedSpriteLinkedFile";
-            this.txtSelectedSpriteLinkedFile.ReadOnly = true;
-            this.txtSelectedSpriteLinkedFile.Size = new System.Drawing.Size(492, 20);
-            this.txtSelectedSpriteLinkedFile.TabIndex = 192;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tlpMagicianBottom.SetColumnSpan(this.tableLayoutPanel1, 2);
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.cmdDeleteSpirit, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdAddSpirit, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(172, 29);
-            this.tableLayoutPanel1.TabIndex = 70;
-            // 
-            // cmdDeleteSpirit
-            // 
-            this.cmdDeleteSpirit.AutoSize = true;
-            this.cmdDeleteSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDeleteSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteSpirit.Location = new System.Drawing.Point(89, 3);
-            this.cmdDeleteSpirit.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdDeleteSpirit.Name = "cmdDeleteSpirit";
-            this.cmdDeleteSpirit.Size = new System.Drawing.Size(80, 23);
-            this.cmdDeleteSpirit.TabIndex = 70;
-            this.cmdDeleteSpirit.Tag = "String_Delete";
-            this.cmdDeleteSpirit.Text = "Delete";
-            this.cmdDeleteSpirit.UseVisualStyleBackColor = true;
-            // 
-            // treSpirits
-            // 
-            this.treSpirits.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treSpirits.HideSelection = false;
-            this.treSpirits.Location = new System.Drawing.Point(3, 32);
-            this.treSpirits.Name = "treSpirits";
-            treeNode12.Name = "nodSpiritsRoot";
-            treeNode12.Tag = "Node_SelectedSpirits";
-            treeNode12.Text = "Selected Spirits";
-            this.treSpirits.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode12});
-            this.treSpirits.ShowNodeToolTips = true;
-            this.treSpirits.ShowRootLines = false;
-            this.treSpirits.Size = new System.Drawing.Size(304, 166);
-            this.treSpirits.TabIndex = 72;
-            // 
-            // tlpSelectedSpirit
-            // 
-            this.tlpSelectedSpirit.AutoSize = true;
-            this.tlpSelectedSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpSelectedSpirit.ColumnCount = 7;
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpSelectedSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSelectedSpirit.Controls.Add(this.cmdSelectedSpiritLinkToFile, 6, 3);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritServicesOwedLabel, 0, 2);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritTypeLabel, 0, 0);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritForceLabel, 0, 1);
-            this.tlpSelectedSpirit.Controls.Add(this.cboSelectedSpiritType, 1, 0);
-            this.tlpSelectedSpirit.Controls.Add(this.nudSelectedSpiritForce, 1, 1);
-            this.tlpSelectedSpirit.Controls.Add(this.nudSelectedSpiritServicesOwed, 1, 2);
-            this.tlpSelectedSpirit.Controls.Add(this.chkSelectedSpiritBound, 2, 1);
-            this.tlpSelectedSpirit.Controls.Add(this.chkSelectedSpiritFettered, 3, 1);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritNameLabel, 4, 1);
-            this.tlpSelectedSpirit.Controls.Add(this.txtSelectedSpiritName, 5, 1);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritSourceLabel, 4, 0);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritSource, 5, 0);
-            this.tlpSelectedSpirit.Controls.Add(this.lblSelectedSpiritLinkedFileLabel, 0, 3);
-            this.tlpSelectedSpirit.Controls.Add(this.txtSelectedSpiritLinkedFile, 1, 3);
-            this.tlpSelectedSpirit.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tlpSelectedSpirit.Location = new System.Drawing.Point(310, 29);
-            this.tlpSelectedSpirit.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpSelectedSpirit.Name = "tlpSelectedSpirit";
-            this.tlpSelectedSpirit.RowCount = 4;
-            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSpirit.Size = new System.Drawing.Size(661, 107);
-            this.tlpSelectedSpirit.TabIndex = 73;
-            // 
-            // cmdSelectedSpiritLinkToFile
-            // 
-            this.cmdSelectedSpiritLinkToFile.AutoSize = true;
-            this.cmdSelectedSpiritLinkToFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdSelectedSpiritLinkToFile.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cmdSelectedSpiritLinkToFile.Location = new System.Drawing.Point(577, 81);
-            this.cmdSelectedSpiritLinkToFile.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdSelectedSpiritLinkToFile.Name = "cmdSelectedSpiritLinkToFile";
-            this.cmdSelectedSpiritLinkToFile.Size = new System.Drawing.Size(80, 23);
-            this.cmdSelectedSpiritLinkToFile.TabIndex = 190;
-            this.cmdSelectedSpiritLinkToFile.Tag = "Button_LinkFile";
-            this.cmdSelectedSpiritLinkToFile.Text = "Link to File";
-            this.cmdSelectedSpiritLinkToFile.UseVisualStyleBackColor = true;
-            // 
-            // lblSelectedSpiritServicesOwedLabel
-            // 
-            this.lblSelectedSpiritServicesOwedLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpiritServicesOwedLabel.AutoSize = true;
-            this.lblSelectedSpiritServicesOwedLabel.Location = new System.Drawing.Point(3, 59);
-            this.lblSelectedSpiritServicesOwedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritServicesOwedLabel.Name = "lblSelectedSpiritServicesOwedLabel";
-            this.lblSelectedSpiritServicesOwedLabel.Size = new System.Drawing.Size(82, 13);
-            this.lblSelectedSpiritServicesOwedLabel.TabIndex = 182;
-            this.lblSelectedSpiritServicesOwedLabel.Tag = "Label_Spirit_ServicesOwed";
-            this.lblSelectedSpiritServicesOwedLabel.Text = "Services Owed:";
-            // 
-            // lblSelectedSpiritTypeLabel
-            // 
-            this.lblSelectedSpiritTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpiritTypeLabel.AutoSize = true;
-            this.lblSelectedSpiritTypeLabel.Location = new System.Drawing.Point(51, 7);
-            this.lblSelectedSpiritTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritTypeLabel.Name = "lblSelectedSpiritTypeLabel";
-            this.lblSelectedSpiritTypeLabel.Size = new System.Drawing.Size(34, 13);
-            this.lblSelectedSpiritTypeLabel.TabIndex = 148;
-            this.lblSelectedSpiritTypeLabel.Tag = "Label_Type";
-            this.lblSelectedSpiritTypeLabel.Text = "Type:";
-            // 
-            // lblSelectedSpiritForceLabel
-            // 
-            this.lblSelectedSpiritForceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpiritForceLabel.AutoSize = true;
-            this.lblSelectedSpiritForceLabel.Location = new System.Drawing.Point(48, 33);
-            this.lblSelectedSpiritForceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritForceLabel.Name = "lblSelectedSpiritForceLabel";
-            this.lblSelectedSpiritForceLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblSelectedSpiritForceLabel.TabIndex = 152;
-            this.lblSelectedSpiritForceLabel.Tag = "Label_Spirit_Force";
-            this.lblSelectedSpiritForceLabel.Text = "Force:";
-            // 
-            // cboSelectedSpiritType
-            // 
-            this.cboSelectedSpiritType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpSelectedSpirit.SetColumnSpan(this.cboSelectedSpiritType, 3);
-            this.cboSelectedSpiritType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSelectedSpiritType.FormattingEnabled = true;
-            this.cboSelectedSpiritType.Location = new System.Drawing.Point(91, 3);
-            this.cboSelectedSpiritType.Name = "cboSelectedSpiritType";
-            this.cboSelectedSpiritType.Size = new System.Drawing.Size(264, 21);
-            this.cboSelectedSpiritType.TabIndex = 184;
-            // 
-            // nudSelectedSpiritForce
-            // 
-            this.nudSelectedSpiritForce.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudSelectedSpiritForce.AutoSize = true;
-            this.nudSelectedSpiritForce.Enabled = false;
-            this.nudSelectedSpiritForce.Location = new System.Drawing.Point(91, 30);
-            this.nudSelectedSpiritForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.nudSelectedSpiritForce.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.nudSelectedSpiritForce.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudSelectedSpiritForce.Name = "nudSelectedSpiritForce";
-            this.nudSelectedSpiritForce.Size = new System.Drawing.Size(35, 20);
-            this.nudSelectedSpiritForce.TabIndex = 186;
-            this.nudSelectedSpiritForce.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // nudSelectedSpiritServicesOwed
-            // 
-            this.nudSelectedSpiritServicesOwed.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudSelectedSpiritServicesOwed.AutoSize = true;
-            this.tlpSelectedSpirit.SetColumnSpan(this.nudSelectedSpiritServicesOwed, 3);
-            this.nudSelectedSpiritServicesOwed.Location = new System.Drawing.Point(91, 55);
-            this.nudSelectedSpiritServicesOwed.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.nudSelectedSpiritServicesOwed.Maximum = new decimal(new int[] {
-            -1,
-            -1,
-            -1,
-            0});
-            this.nudSelectedSpiritServicesOwed.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudSelectedSpiritServicesOwed.Name = "nudSelectedSpiritServicesOwed";
-            this.nudSelectedSpiritServicesOwed.Size = new System.Drawing.Size(197, 20);
-            this.nudSelectedSpiritServicesOwed.TabIndex = 187;
-            this.nudSelectedSpiritServicesOwed.Value = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            // 
-            // chkSelectedSpiritBound
-            // 
-            this.chkSelectedSpiritBound.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkSelectedSpiritBound.AutoSize = true;
-            this.chkSelectedSpiritBound.DefaultColorScheme = true;
-            this.chkSelectedSpiritBound.Enabled = false;
-            this.chkSelectedSpiritBound.Location = new System.Drawing.Point(132, 31);
-            this.chkSelectedSpiritBound.Name = "chkSelectedSpiritBound";
-            this.chkSelectedSpiritBound.Size = new System.Drawing.Size(57, 17);
-            this.chkSelectedSpiritBound.TabIndex = 188;
-            this.chkSelectedSpiritBound.Tag = "Checkbox_Spirit_Bound";
-            this.chkSelectedSpiritBound.Text = "Bound";
-            this.chkSelectedSpiritBound.ToolTipText = "";
-            this.chkSelectedSpiritBound.UseVisualStyleBackColor = true;
-            // 
-            // chkSelectedSpiritFettered
-            // 
-            this.chkSelectedSpiritFettered.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkSelectedSpiritFettered.AutoSize = true;
-            this.chkSelectedSpiritFettered.DefaultColorScheme = true;
-            this.chkSelectedSpiritFettered.Location = new System.Drawing.Point(195, 31);
-            this.chkSelectedSpiritFettered.Name = "chkSelectedSpiritFettered";
-            this.chkSelectedSpiritFettered.Size = new System.Drawing.Size(65, 17);
-            this.chkSelectedSpiritFettered.TabIndex = 189;
-            this.chkSelectedSpiritFettered.Tag = "Checkbox_Spirit_Fettered";
-            this.chkSelectedSpiritFettered.Text = "Fettered";
-            this.chkSelectedSpiritFettered.ToolTipText = "";
-            this.chkSelectedSpiritFettered.UseVisualStyleBackColor = true;
-            // 
-            // lblSelectedSpiritNameLabel
-            // 
-            this.lblSelectedSpiritNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpiritNameLabel.AutoSize = true;
-            this.lblSelectedSpiritNameLabel.Location = new System.Drawing.Point(367, 33);
-            this.lblSelectedSpiritNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritNameLabel.Name = "lblSelectedSpiritNameLabel";
-            this.lblSelectedSpiritNameLabel.Size = new System.Drawing.Size(38, 13);
-            this.lblSelectedSpiritNameLabel.TabIndex = 150;
-            this.lblSelectedSpiritNameLabel.Tag = "Label_Name";
-            this.lblSelectedSpiritNameLabel.Text = "Name:";
-            // 
-            // txtSelectedSpiritName
-            // 
-            this.txtSelectedSpiritName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpSelectedSpirit.SetColumnSpan(this.txtSelectedSpiritName, 2);
-            this.txtSelectedSpiritName.Location = new System.Drawing.Point(411, 30);
-            this.txtSelectedSpiritName.Name = "txtSelectedSpiritName";
-            this.txtSelectedSpiritName.Size = new System.Drawing.Size(247, 20);
-            this.txtSelectedSpiritName.TabIndex = 185;
-            // 
-            // lblSelectedSpiritSourceLabel
-            // 
-            this.lblSelectedSpiritSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpiritSourceLabel.AutoSize = true;
-            this.lblSelectedSpiritSourceLabel.Location = new System.Drawing.Point(361, 7);
-            this.lblSelectedSpiritSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritSourceLabel.Name = "lblSelectedSpiritSourceLabel";
-            this.lblSelectedSpiritSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSelectedSpiritSourceLabel.TabIndex = 89;
-            this.lblSelectedSpiritSourceLabel.Tag = "Label_Source";
-            this.lblSelectedSpiritSourceLabel.Text = "Source:";
-            // 
-            // lblSelectedSpiritSource
-            // 
-            this.lblSelectedSpiritSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSelectedSpiritSource.AutoSize = true;
-            this.tlpSelectedSpirit.SetColumnSpan(this.lblSelectedSpiritSource, 2);
-            this.lblSelectedSpiritSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSelectedSpiritSource.Location = new System.Drawing.Point(411, 7);
-            this.lblSelectedSpiritSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritSource.Name = "lblSelectedSpiritSource";
-            this.lblSelectedSpiritSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSelectedSpiritSource.TabIndex = 90;
-            this.lblSelectedSpiritSource.Text = "[Source]";
-            this.lblSelectedSpiritSource.ToolTipText = "";
-            // 
-            // lblSelectedSpiritLinkedFileLabel
-            // 
-            this.lblSelectedSpiritLinkedFileLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSelectedSpiritLinkedFileLabel.AutoSize = true;
-            this.lblSelectedSpiritLinkedFileLabel.Location = new System.Drawing.Point(24, 86);
-            this.lblSelectedSpiritLinkedFileLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSelectedSpiritLinkedFileLabel.Name = "lblSelectedSpiritLinkedFileLabel";
-            this.lblSelectedSpiritLinkedFileLabel.Size = new System.Drawing.Size(61, 13);
-            this.lblSelectedSpiritLinkedFileLabel.TabIndex = 191;
-            this.lblSelectedSpiritLinkedFileLabel.Tag = "Label_LinkedFile";
-            this.lblSelectedSpiritLinkedFileLabel.Text = "Linked File:";
-            // 
-            // txtSelectedSpiritLinkedFile
-            // 
-            this.txtSelectedSpiritLinkedFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpSelectedSpirit.SetColumnSpan(this.txtSelectedSpiritLinkedFile, 5);
-            this.txtSelectedSpiritLinkedFile.Location = new System.Drawing.Point(91, 82);
-            this.txtSelectedSpiritLinkedFile.Name = "txtSelectedSpiritLinkedFile";
-            this.txtSelectedSpiritLinkedFile.ReadOnly = true;
-            this.txtSelectedSpiritLinkedFile.Size = new System.Drawing.Size(480, 20);
-            this.txtSelectedSpiritLinkedFile.TabIndex = 192;
-            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -23501,6 +23501,12 @@ namespace Chummer
             this.flpMagicianSpellButtons.PerformLayout();
             this.tlpMagicianBottom.ResumeLayout(false);
             this.tlpMagicianBottom.PerformLayout();
+            this.tlpSelectedSpirit.ResumeLayout(false);
+            this.tlpSelectedSpirit.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritForce)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritServicesOwed)).EndInit();
+            this.tlpMagicianSpiritButtons.ResumeLayout(false);
+            this.tlpMagicianSpiritButtons.PerformLayout();
             this.tabAdept.ResumeLayout(false);
             this.tabAdept.PerformLayout();
             this.tabTechnomancer.ResumeLayout(false);
@@ -23520,6 +23526,12 @@ namespace Chummer
             this.tlpTechnomancerComplexForm.PerformLayout();
             this.tlpTechnomancerBottom.ResumeLayout(false);
             this.tlpTechnomancerBottom.PerformLayout();
+            this.tlpSelectedSprite.ResumeLayout(false);
+            this.tlpSelectedSprite.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpriteTasksOwed)).EndInit();
+            this.tlpTechnomancerSpriteButtons.ResumeLayout(false);
+            this.tlpTechnomancerSpriteButtons.PerformLayout();
             this.tabAdvancedPrograms.ResumeLayout(false);
             this.tabAdvancedPrograms.PerformLayout();
             this.tlpAdvancedPrograms.ResumeLayout(false);
@@ -23843,18 +23855,6 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.tlpSelectedSprite.ResumeLayout(false);
-            this.tlpSelectedSprite.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpriteTasksOwed)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tlpSelectedSpirit.ResumeLayout(false);
-            this.tlpSelectedSpirit.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritForce)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSelectedSpiritServicesOwed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -25186,7 +25186,7 @@ namespace Chummer
         private UI.Shared.Components.DicePoolControl dpcDrainAttributes;
         private Label lblDrainAttributes;
         private ElasticComboBox cboDrain;
-        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel tlpTechnomancerSpriteButtons;
         private Button cmdDeleteSprite;
         private TreeView treSprites;
         private TableLayoutPanel tlpSelectedSprite;
@@ -25205,7 +25205,7 @@ namespace Chummer
         private LabelWithToolTip lblSelectedSpriteSource;
         private Label lblSelectedSpriteLinkedFileLabel;
         private TextBox txtSelectedSpriteLinkedFile;
-        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tlpMagicianSpiritButtons;
         private Button cmdDeleteSpirit;
         private TreeView treSpirits;
         private TableLayoutPanel tlpSelectedSpirit;
