@@ -4803,6 +4803,7 @@ namespace Chummer
             // 
             // tlpCommonRightSide
             // 
+            this.tlpCommonRightSide.AutoScroll = true;
             this.tlpCommonRightSide.AutoSize = true;
             this.tlpCommonRightSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCommonRightSide.ColumnCount = 2;
@@ -4854,7 +4855,6 @@ namespace Chummer
             // 
             // tlpMentorSpirit
             // 
-            this.tlpMentorSpirit.AutoScroll = true;
             this.tlpMentorSpirit.AutoSize = true;
             this.tlpMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMentorSpirit.ColumnCount = 1;

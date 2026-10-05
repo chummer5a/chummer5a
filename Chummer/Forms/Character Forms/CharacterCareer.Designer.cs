@@ -7200,6 +7200,7 @@ namespace Chummer
             // 
             // tlpCommonRightSide
             // 
+            this.tlpCommonRightSide.AutoScroll = true;
             this.tlpCommonRightSide.AutoSize = true;
             this.tlpCommonRightSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCommonRightSide.ColumnCount = 2;
@@ -7280,7 +7281,6 @@ namespace Chummer
             // 
             // tlpMagicianMentorSpiritHeader
             // 
-            this.tlpMagicianMentorSpiritHeader.AutoScroll = true;
             this.tlpMagicianMentorSpiritHeader.AutoSize = true;
             this.tlpMagicianMentorSpiritHeader.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMagicianMentorSpiritHeader.ColumnCount = 4;
