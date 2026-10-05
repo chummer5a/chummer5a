@@ -190,6 +190,7 @@ namespace Chummer
             this.tsWeaponAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponName = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl();
             this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearButtonAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsGearButtonReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -337,6 +338,37 @@ namespace Chummer
             this.lblAlias = new System.Windows.Forms.Label();
             this.txtAlias = new System.Windows.Forms.TextBox();
             this.tlpCommonRightSide = new System.Windows.Forms.TableLayoutPanel();
+            this.gpbMentorSpirit = new System.Windows.Forms.GroupBox();
+            this.tlpMentorSpirit = new System.Windows.Forms.TableLayoutPanel();
+            this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
+            this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
+            this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
+            this.lblMentorSpiritSourceLabel = new System.Windows.Forms.Label();
+            this.lblMentorSpirit = new System.Windows.Forms.Label();
+            this.lblMentorSpiritSource = new Chummer.LabelWithToolTip();
+            this.gpbTradition = new System.Windows.Forms.GroupBox();
+            this.tlpTradition = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTraditionLabel = new System.Windows.Forms.Label();
+            this.cboSpiritCombat = new Chummer.ElasticComboBox();
+            this.tlpDrainAttributes = new System.Windows.Forms.TableLayoutPanel();
+            this.lblDrainAttributesValue = new Chummer.LabelWithToolTip();
+            this.lblDrainAttributes = new System.Windows.Forms.Label();
+            this.cboDrain = new Chummer.ElasticComboBox();
+            this.lblDrainAttributesLabel = new System.Windows.Forms.Label();
+            this.lblTraditionName = new System.Windows.Forms.Label();
+            this.txtTraditionName = new System.Windows.Forms.TextBox();
+            this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
+            this.lblTraditionSource = new Chummer.LabelWithToolTip();
+            this.lblSpiritCombat = new System.Windows.Forms.Label();
+            this.lblSpiritDetection = new System.Windows.Forms.Label();
+            this.lblSpiritHealth = new System.Windows.Forms.Label();
+            this.lblSpiritIllusion = new System.Windows.Forms.Label();
+            this.lblSpiritManipulation = new System.Windows.Forms.Label();
+            this.cboSpiritDetection = new Chummer.ElasticComboBox();
+            this.cboSpiritHealth = new Chummer.ElasticComboBox();
+            this.cboSpiritIllusion = new Chummer.ElasticComboBox();
+            this.cboSpiritManipulation = new Chummer.ElasticComboBox();
+            this.cboTradition = new Chummer.ElasticComboBox();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.lblStolenNuyen = new System.Windows.Forms.Label();
             this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
@@ -365,8 +397,9 @@ namespace Chummer
             this.splitMagician = new System.Windows.Forms.SplitContainer();
             this.tlpMagicianTop = new System.Windows.Forms.TableLayoutPanel();
             this.treSpells = new System.Windows.Forms.TreeView();
-            this.flpMagician = new System.Windows.Forms.FlowLayoutPanel();
-            this.gpbMagicianSpell = new System.Windows.Forms.GroupBox();
+            this.tlpMagicianButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdAddSpell = new Chummer.SplitButton();
+            this.cmdDeleteSpell = new System.Windows.Forms.Button();
             this.tlpMagicianSpell = new System.Windows.Forms.TableLayoutPanel();
             this.lblSpellDescriptorsLabel = new System.Windows.Forms.Label();
             this.lblSpellDescriptors = new System.Windows.Forms.Label();
@@ -386,40 +419,6 @@ namespace Chummer
             this.lblSpellDicePool = new Chummer.LabelWithToolTip();
             this.lblSpellSource = new Chummer.LabelWithToolTip();
             this.lblSpellSourceLabel = new System.Windows.Forms.Label();
-            this.gpbMagicianTradition = new System.Windows.Forms.GroupBox();
-            this.tlpMagicianTradition = new System.Windows.Forms.TableLayoutPanel();
-            this.lblTraditionLabel = new System.Windows.Forms.Label();
-            this.cboTradition = new Chummer.ElasticComboBox();
-            this.lblDrainAttributesLabel = new System.Windows.Forms.Label();
-            this.lblTraditionName = new System.Windows.Forms.Label();
-            this.lblTraditionSource = new Chummer.LabelWithToolTip();
-            this.cboSpiritManipulation = new Chummer.ElasticComboBox();
-            this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
-            this.txtTraditionName = new System.Windows.Forms.TextBox();
-            this.lblSpiritCombat = new System.Windows.Forms.Label();
-            this.lblSpiritManipulation = new System.Windows.Forms.Label();
-            this.cboSpiritCombat = new Chummer.ElasticComboBox();
-            this.cboSpiritIllusion = new Chummer.ElasticComboBox();
-            this.lblSpiritDetection = new System.Windows.Forms.Label();
-            this.cboSpiritDetection = new Chummer.ElasticComboBox();
-            this.lblSpiritIllusion = new System.Windows.Forms.Label();
-            this.cboSpiritHealth = new Chummer.ElasticComboBox();
-            this.lblSpiritHealth = new System.Windows.Forms.Label();
-            this.tlpDrainAttributes = new System.Windows.Forms.TableLayoutPanel();
-            this.lblDrainAttributesValue = new Chummer.LabelWithToolTip();
-            this.lblDrainAttributes = new System.Windows.Forms.Label();
-            this.cboDrain = new Chummer.ElasticComboBox();
-            this.gpbMagicianMentorSpirit = new System.Windows.Forms.GroupBox();
-            this.tlpMagicianMentorSpirit = new System.Windows.Forms.TableLayoutPanel();
-            this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
-            this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
-            this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
-            this.lblMentorSpiritSourceLabel = new System.Windows.Forms.Label();
-            this.lblMentorSpirit = new System.Windows.Forms.Label();
-            this.lblMentorSpiritSource = new Chummer.LabelWithToolTip();
-            this.tlpMagicianButtons = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdAddSpell = new Chummer.SplitButton();
-            this.cmdDeleteSpell = new System.Windows.Forms.Button();
             this.tlpMagicianBottom = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.tabAdept = new System.Windows.Forms.TabPage();
@@ -428,8 +427,9 @@ namespace Chummer
             this.splitTechnomancer = new System.Windows.Forms.SplitContainer();
             this.tlpTechnomancerTop = new System.Windows.Forms.TableLayoutPanel();
             this.treComplexForms = new System.Windows.Forms.TreeView();
-            this.flpTechnomancer = new System.Windows.Forms.FlowLayoutPanel();
-            this.gpbTechnomancerComplexForm = new System.Windows.Forms.GroupBox();
+            this.tlpTechnomancerButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdAddComplexForm = new System.Windows.Forms.Button();
+            this.cmdDeleteComplexForm = new System.Windows.Forms.Button();
             this.tlpTechnomancerComplexForm = new System.Windows.Forms.TableLayoutPanel();
             this.lblComplexFormDicePool = new Chummer.LabelWithToolTip();
             this.lblComplexFormDicePoolLabel = new System.Windows.Forms.Label();
@@ -441,25 +441,6 @@ namespace Chummer
             this.lblFV = new Chummer.LabelWithToolTip();
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
             this.lblComplexFormSource = new Chummer.LabelWithToolTip();
-            this.gpbTechnomancerStream = new System.Windows.Forms.GroupBox();
-            this.tlpTechnomancerStream = new System.Windows.Forms.TableLayoutPanel();
-            this.lblStreamLabel = new System.Windows.Forms.Label();
-            this.cboStream = new Chummer.ElasticComboBox();
-            this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
-            this.flpFadingAttributesValue = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblFadingAttributes = new System.Windows.Forms.Label();
-            this.lblFadingAttributesValue = new Chummer.LabelWithToolTip();
-            this.gpbTechnomancerParagon = new System.Windows.Forms.GroupBox();
-            this.tlpTechnomancerParagon = new System.Windows.Forms.TableLayoutPanel();
-            this.lblParagonInformation = new System.Windows.Forms.Label();
-            this.tlpTechnomancerParagonHeader = new System.Windows.Forms.TableLayoutPanel();
-            this.lblParagonLabel = new System.Windows.Forms.Label();
-            this.lblParagonSourceLabel = new System.Windows.Forms.Label();
-            this.lblParagon = new System.Windows.Forms.Label();
-            this.lblParagonSource = new Chummer.LabelWithToolTip();
-            this.tlpTechnomancerButtons = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdAddComplexForm = new System.Windows.Forms.Button();
-            this.cmdDeleteComplexForm = new System.Windows.Forms.Button();
             this.tlpTechnomancerBottom = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddSprite = new System.Windows.Forms.Button();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
@@ -1201,6 +1182,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityLevel)).BeginInit();
             this.tlpAlias.SuspendLayout();
             this.tlpCommonRightSide.SuspendLayout();
+            this.gpbMentorSpirit.SuspendLayout();
+            this.tlpMentorSpirit.SuspendLayout();
+            this.tlpMagicianMentorSpiritHeader.SuspendLayout();
+            this.gpbTradition.SuspendLayout();
+            this.tlpTradition.SuspendLayout();
+            this.tlpDrainAttributes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).BeginInit();
             this.flpNuyen.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).BeginInit();
@@ -1216,16 +1203,8 @@ namespace Chummer
             this.splitMagician.Panel2.SuspendLayout();
             this.splitMagician.SuspendLayout();
             this.tlpMagicianTop.SuspendLayout();
-            this.flpMagician.SuspendLayout();
-            this.gpbMagicianSpell.SuspendLayout();
-            this.tlpMagicianSpell.SuspendLayout();
-            this.gpbMagicianTradition.SuspendLayout();
-            this.tlpMagicianTradition.SuspendLayout();
-            this.tlpDrainAttributes.SuspendLayout();
-            this.gpbMagicianMentorSpirit.SuspendLayout();
-            this.tlpMagicianMentorSpirit.SuspendLayout();
-            this.tlpMagicianMentorSpiritHeader.SuspendLayout();
             this.tlpMagicianButtons.SuspendLayout();
+            this.tlpMagicianSpell.SuspendLayout();
             this.tlpMagicianBottom.SuspendLayout();
             this.tabAdept.SuspendLayout();
             this.tabTechnomancer.SuspendLayout();
@@ -1234,16 +1213,8 @@ namespace Chummer
             this.splitTechnomancer.Panel2.SuspendLayout();
             this.splitTechnomancer.SuspendLayout();
             this.tlpTechnomancerTop.SuspendLayout();
-            this.flpTechnomancer.SuspendLayout();
-            this.gpbTechnomancerComplexForm.SuspendLayout();
-            this.tlpTechnomancerComplexForm.SuspendLayout();
-            this.gpbTechnomancerStream.SuspendLayout();
-            this.tlpTechnomancerStream.SuspendLayout();
-            this.flpFadingAttributesValue.SuspendLayout();
-            this.gpbTechnomancerParagon.SuspendLayout();
-            this.tlpTechnomancerParagon.SuspendLayout();
-            this.tlpTechnomancerParagonHeader.SuspendLayout();
             this.tlpTechnomancerButtons.SuspendLayout();
+            this.tlpTechnomancerComplexForm.SuspendLayout();
             this.tlpTechnomancerBottom.SuspendLayout();
             this.tabAdvancedPrograms.SuspendLayout();
             this.tlpAdvancedPrograms.SuspendLayout();
@@ -4883,6 +4854,8 @@ namespace Chummer
             this.tlpCommonRightSide.ColumnCount = 2;
             this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
             this.tlpCommonRightSide.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            this.tlpCommonRightSide.Controls.Add(this.gpbMentorSpirit, 0, 6);
+            this.tlpCommonRightSide.Controls.Add(this.gpbTradition, 0, 4);
             this.tlpCommonRightSide.Controls.Add(this.lblMetatypeLabel, 0, 0);
             this.tlpCommonRightSide.Controls.Add(this.lblStolenNuyen, 1, 3);
             this.tlpCommonRightSide.Controls.Add(this.lblMysticAdeptAssignment, 0, 5);
@@ -4903,11 +4876,446 @@ namespace Chummer
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCommonRightSide.Size = new System.Drawing.Size(331, 625);
             this.tlpCommonRightSide.TabIndex = 104;
+            // 
+            // gpbMentorSpirit
+            // 
+            this.gpbMentorSpirit.AutoSize = true;
+            this.gpbMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpCommonRightSide.SetColumnSpan(this.gpbMentorSpirit, 2);
+            this.gpbMentorSpirit.Controls.Add(this.tlpMentorSpirit);
+            this.gpbMentorSpirit.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gpbMentorSpirit.Location = new System.Drawing.Point(0, 361);
+            this.gpbMentorSpirit.Margin = new System.Windows.Forms.Padding(0);
+            this.gpbMentorSpirit.Name = "gpbMentorSpirit";
+            this.gpbMentorSpirit.Size = new System.Drawing.Size(331, 69);
+            this.gpbMentorSpirit.TabIndex = 93;
+            this.gpbMentorSpirit.TabStop = false;
+            this.gpbMentorSpirit.Tag = "String_MentorSpirit";
+            this.gpbMentorSpirit.Text = "Mentor Spirit";
+            // 
+            // tlpMentorSpirit
+            // 
+            this.tlpMentorSpirit.AutoScroll = true;
+            this.tlpMentorSpirit.AutoSize = true;
+            this.tlpMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMentorSpirit.ColumnCount = 1;
+            this.tlpMentorSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMentorSpirit.Controls.Add(this.lblMentorSpiritInformation, 0, 1);
+            this.tlpMentorSpirit.Controls.Add(this.tlpMagicianMentorSpiritHeader, 0, 0);
+            this.tlpMentorSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMentorSpirit.Location = new System.Drawing.Point(3, 16);
+            this.tlpMentorSpirit.Name = "tlpMentorSpirit";
+            this.tlpMentorSpirit.RowCount = 2;
+            this.tlpMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMentorSpirit.Size = new System.Drawing.Size(325, 50);
+            this.tlpMentorSpirit.TabIndex = 0;
+            // 
+            // lblMentorSpiritInformation
+            // 
+            this.lblMentorSpiritInformation.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMentorSpiritInformation.AutoSize = true;
+            this.lblMentorSpiritInformation.Location = new System.Drawing.Point(3, 31);
+            this.lblMentorSpiritInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMentorSpiritInformation.Name = "lblMentorSpiritInformation";
+            this.lblMentorSpiritInformation.Size = new System.Drawing.Size(127, 13);
+            this.lblMentorSpiritInformation.TabIndex = 94;
+            this.lblMentorSpiritInformation.Text = "[Mentor Spirit Information]";
+            // 
+            // tlpMagicianMentorSpiritHeader
+            // 
+            this.tlpMagicianMentorSpiritHeader.AutoSize = true;
+            this.tlpMagicianMentorSpiritHeader.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMagicianMentorSpiritHeader.ColumnCount = 4;
+            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpiritLabel, 0, 0);
+            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpiritSourceLabel, 2, 0);
+            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpirit, 1, 0);
+            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpiritSource, 3, 0);
+            this.tlpMagicianMentorSpiritHeader.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMagicianMentorSpiritHeader.Location = new System.Drawing.Point(0, 0);
+            this.tlpMagicianMentorSpiritHeader.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpMagicianMentorSpiritHeader.Name = "tlpMagicianMentorSpiritHeader";
+            this.tlpMagicianMentorSpiritHeader.RowCount = 1;
+            this.tlpMagicianMentorSpiritHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMagicianMentorSpiritHeader.Size = new System.Drawing.Size(325, 25);
+            this.tlpMagicianMentorSpiritHeader.TabIndex = 99;
+            // 
+            // lblMentorSpiritLabel
+            // 
+            this.lblMentorSpiritLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMentorSpiritLabel.AutoSize = true;
+            this.lblMentorSpiritLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblMentorSpiritLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMentorSpiritLabel.Name = "lblMentorSpiritLabel";
+            this.lblMentorSpiritLabel.Size = new System.Drawing.Size(69, 13);
+            this.lblMentorSpiritLabel.TabIndex = 95;
+            this.lblMentorSpiritLabel.Tag = "Label_MentorSpirit";
+            this.lblMentorSpiritLabel.Text = "Mentor Spirit:";
+            // 
+            // lblMentorSpiritSourceLabel
+            // 
+            this.lblMentorSpiritSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMentorSpiritSourceLabel.AutoSize = true;
+            this.lblMentorSpiritSourceLabel.Location = new System.Drawing.Point(178, 6);
+            this.lblMentorSpiritSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMentorSpiritSourceLabel.Name = "lblMentorSpiritSourceLabel";
+            this.lblMentorSpiritSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblMentorSpiritSourceLabel.TabIndex = 97;
+            this.lblMentorSpiritSourceLabel.Tag = "Label_Source";
+            this.lblMentorSpiritSourceLabel.Text = "Source:";
+            // 
+            // lblMentorSpirit
+            // 
+            this.lblMentorSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMentorSpirit.AutoSize = true;
+            this.lblMentorSpirit.Location = new System.Drawing.Point(78, 6);
+            this.lblMentorSpirit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMentorSpirit.Name = "lblMentorSpirit";
+            this.lblMentorSpirit.Size = new System.Drawing.Size(72, 13);
+            this.lblMentorSpirit.TabIndex = 96;
+            this.lblMentorSpirit.Text = "[Mentor Spirit]";
+            // 
+            // lblMentorSpiritSource
+            // 
+            this.lblMentorSpiritSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMentorSpiritSource.AutoSize = true;
+            this.lblMentorSpiritSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblMentorSpiritSource.Location = new System.Drawing.Point(228, 6);
+            this.lblMentorSpiritSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMentorSpiritSource.Name = "lblMentorSpiritSource";
+            this.lblMentorSpiritSource.Size = new System.Drawing.Size(47, 13);
+            this.lblMentorSpiritSource.TabIndex = 98;
+            this.lblMentorSpiritSource.Text = "[Source]";
+            this.lblMentorSpiritSource.ToolTipText = "";
+            // 
+            // gpbTradition
+            // 
+            this.gpbTradition.AutoSize = true;
+            this.gpbTradition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpCommonRightSide.SetColumnSpan(this.gpbTradition, 2);
+            this.gpbTradition.Controls.Add(this.tlpTradition);
+            this.gpbTradition.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbTradition.Location = new System.Drawing.Point(0, 101);
+            this.gpbTradition.Margin = new System.Windows.Forms.Padding(0);
+            this.gpbTradition.Name = "gpbTradition";
+            this.gpbTradition.Size = new System.Drawing.Size(331, 234);
+            this.gpbTradition.TabIndex = 92;
+            this.gpbTradition.TabStop = false;
+            this.gpbTradition.Tag = "String_Tradition";
+            this.gpbTradition.Text = "Tradition";
+            // 
+            // tlpTradition
+            // 
+            this.tlpTradition.AutoSize = true;
+            this.tlpTradition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTradition.ColumnCount = 4;
+            this.tlpTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTradition.Controls.Add(this.lblTraditionLabel, 0, 0);
+            this.tlpTradition.Controls.Add(this.cboSpiritCombat, 1, 3);
+            this.tlpTradition.Controls.Add(this.tlpDrainAttributes, 1, 2);
+            this.tlpTradition.Controls.Add(this.lblDrainAttributesLabel, 0, 2);
+            this.tlpTradition.Controls.Add(this.lblTraditionName, 0, 1);
+            this.tlpTradition.Controls.Add(this.txtTraditionName, 1, 1);
+            this.tlpTradition.Controls.Add(this.lblTraditionSourceLabel, 2, 0);
+            this.tlpTradition.Controls.Add(this.lblTraditionSource, 3, 0);
+            this.tlpTradition.Controls.Add(this.lblSpiritCombat, 0, 3);
+            this.tlpTradition.Controls.Add(this.lblSpiritDetection, 0, 4);
+            this.tlpTradition.Controls.Add(this.lblSpiritHealth, 0, 5);
+            this.tlpTradition.Controls.Add(this.lblSpiritIllusion, 0, 6);
+            this.tlpTradition.Controls.Add(this.lblSpiritManipulation, 0, 7);
+            this.tlpTradition.Controls.Add(this.cboSpiritDetection, 1, 4);
+            this.tlpTradition.Controls.Add(this.cboSpiritHealth, 1, 5);
+            this.tlpTradition.Controls.Add(this.cboSpiritIllusion, 1, 6);
+            this.tlpTradition.Controls.Add(this.cboSpiritManipulation, 1, 7);
+            this.tlpTradition.Controls.Add(this.cboTradition, 1, 0);
+            this.tlpTradition.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTradition.Location = new System.Drawing.Point(3, 16);
+            this.tlpTradition.Name = "tlpTradition";
+            this.tlpTradition.RowCount = 8;
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTradition.Size = new System.Drawing.Size(325, 215);
+            this.tlpTradition.TabIndex = 0;
+            // 
+            // lblTraditionLabel
+            // 
+            this.lblTraditionLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTraditionLabel.AutoSize = true;
+            this.lblTraditionLabel.Location = new System.Drawing.Point(41, 7);
+            this.lblTraditionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTraditionLabel.Name = "lblTraditionLabel";
+            this.lblTraditionLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblTraditionLabel.TabIndex = 89;
+            this.lblTraditionLabel.Tag = "Label_Tradition";
+            this.lblTraditionLabel.Text = "Tradition:";
+            // 
+            // cboSpiritCombat
+            // 
+            this.cboSpiritCombat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpTradition.SetColumnSpan(this.cboSpiritCombat, 3);
+            this.cboSpiritCombat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSpiritCombat.FormattingEnabled = true;
+            this.cboSpiritCombat.Location = new System.Drawing.Point(98, 83);
+            this.cboSpiritCombat.Name = "cboSpiritCombat";
+            this.cboSpiritCombat.Size = new System.Drawing.Size(224, 21);
+            this.cboSpiritCombat.TabIndex = 145;
+            this.cboSpiritCombat.Visible = false;
+            // 
+            // tlpDrainAttributes
+            // 
+            this.tlpDrainAttributes.AutoSize = true;
+            this.tlpDrainAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpDrainAttributes.ColumnCount = 3;
+            this.tlpTradition.SetColumnSpan(this.tlpDrainAttributes, 3);
+            this.tlpDrainAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpDrainAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpDrainAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpDrainAttributes.Controls.Add(this.lblDrainAttributesValue, 2, 0);
+            this.tlpDrainAttributes.Controls.Add(this.lblDrainAttributes, 1, 0);
+            this.tlpDrainAttributes.Controls.Add(this.cboDrain, 0, 0);
+            this.tlpDrainAttributes.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tlpDrainAttributes.Location = new System.Drawing.Point(95, 53);
+            this.tlpDrainAttributes.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpDrainAttributes.Name = "tlpDrainAttributes";
+            this.tlpDrainAttributes.RowCount = 1;
+            this.tlpDrainAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpDrainAttributes.Size = new System.Drawing.Size(230, 27);
+            this.tlpDrainAttributes.TabIndex = 156;
+            // 
+            // lblDrainAttributesValue
+            // 
+            this.lblDrainAttributesValue.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrainAttributesValue.AutoSize = true;
+            this.lblDrainAttributesValue.Location = new System.Drawing.Point(190, 7);
+            this.lblDrainAttributesValue.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrainAttributesValue.Name = "lblDrainAttributesValue";
+            this.lblDrainAttributesValue.Size = new System.Drawing.Size(37, 13);
+            this.lblDrainAttributesValue.TabIndex = 93;
+            this.lblDrainAttributesValue.Text = "[Total]";
+            this.lblDrainAttributesValue.ToolTipText = "";
+            // 
+            // lblDrainAttributes
+            // 
+            this.lblDrainAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrainAttributes.AutoSize = true;
+            this.lblDrainAttributes.Location = new System.Drawing.Point(127, 7);
+            this.lblDrainAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrainAttributes.Name = "lblDrainAttributes";
+            this.lblDrainAttributes.Size = new System.Drawing.Size(57, 13);
+            this.lblDrainAttributes.TabIndex = 92;
+            this.lblDrainAttributes.Text = "[Attributes]";
+            // 
+            // cboDrain
+            // 
+            this.cboDrain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboDrain.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDrain.FormattingEnabled = true;
+            this.cboDrain.Location = new System.Drawing.Point(3, 3);
+            this.cboDrain.Name = "cboDrain";
+            this.cboDrain.Size = new System.Drawing.Size(118, 21);
+            this.cboDrain.TabIndex = 143;
+            this.cboDrain.Visible = false;
+            // 
+            // lblDrainAttributesLabel
+            // 
+            this.lblDrainAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDrainAttributesLabel.AutoSize = true;
+            this.lblDrainAttributesLabel.Location = new System.Drawing.Point(3, 60);
+            this.lblDrainAttributesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrainAttributesLabel.Name = "lblDrainAttributesLabel";
+            this.lblDrainAttributesLabel.Size = new System.Drawing.Size(89, 13);
+            this.lblDrainAttributesLabel.TabIndex = 91;
+            this.lblDrainAttributesLabel.Tag = "Label_ResistDrain";
+            this.lblDrainAttributesLabel.Text = "Resist Drain with:";
+            // 
+            // lblTraditionName
+            // 
+            this.lblTraditionName.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTraditionName.AutoSize = true;
+            this.lblTraditionName.Location = new System.Drawing.Point(54, 33);
+            this.lblTraditionName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTraditionName.Name = "lblTraditionName";
+            this.lblTraditionName.Size = new System.Drawing.Size(38, 13);
+            this.lblTraditionName.TabIndex = 141;
+            this.lblTraditionName.Tag = "Label_TraditionName";
+            this.lblTraditionName.Text = "Name:";
+            this.lblTraditionName.Visible = false;
+            // 
+            // txtTraditionName
+            // 
+            this.txtTraditionName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpTradition.SetColumnSpan(this.txtTraditionName, 3);
+            this.txtTraditionName.Location = new System.Drawing.Point(98, 30);
+            this.txtTraditionName.Name = "txtTraditionName";
+            this.txtTraditionName.Size = new System.Drawing.Size(224, 20);
+            this.txtTraditionName.TabIndex = 142;
+            this.txtTraditionName.Visible = false;
+            // 
+            // lblTraditionSourceLabel
+            // 
+            this.lblTraditionSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTraditionSourceLabel.AutoSize = true;
+            this.lblTraditionSourceLabel.Location = new System.Drawing.Point(225, 7);
+            this.lblTraditionSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTraditionSourceLabel.Name = "lblTraditionSourceLabel";
+            this.lblTraditionSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblTraditionSourceLabel.TabIndex = 154;
+            this.lblTraditionSourceLabel.Tag = "Label_Source";
+            this.lblTraditionSourceLabel.Text = "Source:";
+            // 
+            // lblTraditionSource
+            // 
+            this.lblTraditionSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTraditionSource.AutoSize = true;
+            this.lblTraditionSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblTraditionSource.Location = new System.Drawing.Point(275, 7);
+            this.lblTraditionSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTraditionSource.Name = "lblTraditionSource";
+            this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
+            this.lblTraditionSource.TabIndex = 155;
+            this.lblTraditionSource.Text = "[Source]";
+            this.lblTraditionSource.ToolTipText = "";
+            // 
+            // lblSpiritCombat
+            // 
+            this.lblSpiritCombat.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpiritCombat.AutoSize = true;
+            this.lblSpiritCombat.Location = new System.Drawing.Point(46, 87);
+            this.lblSpiritCombat.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpiritCombat.Name = "lblSpiritCombat";
+            this.lblSpiritCombat.Size = new System.Drawing.Size(46, 13);
+            this.lblSpiritCombat.TabIndex = 144;
+            this.lblSpiritCombat.Tag = "Label_SpiritCombat";
+            this.lblSpiritCombat.Text = "Combat:";
+            this.lblSpiritCombat.Visible = false;
+            // 
+            // lblSpiritDetection
+            // 
+            this.lblSpiritDetection.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpiritDetection.AutoSize = true;
+            this.lblSpiritDetection.Location = new System.Drawing.Point(36, 114);
+            this.lblSpiritDetection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpiritDetection.Name = "lblSpiritDetection";
+            this.lblSpiritDetection.Size = new System.Drawing.Size(56, 13);
+            this.lblSpiritDetection.TabIndex = 146;
+            this.lblSpiritDetection.Tag = "Label_SpiritDetection";
+            this.lblSpiritDetection.Text = "Detection:";
+            this.lblSpiritDetection.Visible = false;
+            // 
+            // lblSpiritHealth
+            // 
+            this.lblSpiritHealth.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpiritHealth.AutoSize = true;
+            this.lblSpiritHealth.Location = new System.Drawing.Point(51, 141);
+            this.lblSpiritHealth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpiritHealth.Name = "lblSpiritHealth";
+            this.lblSpiritHealth.Size = new System.Drawing.Size(41, 13);
+            this.lblSpiritHealth.TabIndex = 148;
+            this.lblSpiritHealth.Tag = "Label_SpiritHealth";
+            this.lblSpiritHealth.Text = "Health:";
+            this.lblSpiritHealth.Visible = false;
+            // 
+            // lblSpiritIllusion
+            // 
+            this.lblSpiritIllusion.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpiritIllusion.AutoSize = true;
+            this.lblSpiritIllusion.Location = new System.Drawing.Point(50, 168);
+            this.lblSpiritIllusion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpiritIllusion.Name = "lblSpiritIllusion";
+            this.lblSpiritIllusion.Size = new System.Drawing.Size(42, 13);
+            this.lblSpiritIllusion.TabIndex = 150;
+            this.lblSpiritIllusion.Tag = "Label_SpiritIllusion";
+            this.lblSpiritIllusion.Text = "Illusion:";
+            this.lblSpiritIllusion.Visible = false;
+            // 
+            // lblSpiritManipulation
+            // 
+            this.lblSpiritManipulation.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpiritManipulation.AutoSize = true;
+            this.lblSpiritManipulation.Location = new System.Drawing.Point(22, 195);
+            this.lblSpiritManipulation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpiritManipulation.Name = "lblSpiritManipulation";
+            this.lblSpiritManipulation.Size = new System.Drawing.Size(70, 13);
+            this.lblSpiritManipulation.TabIndex = 152;
+            this.lblSpiritManipulation.Tag = "Label_SpiritManipulation";
+            this.lblSpiritManipulation.Text = "Manipulation:";
+            this.lblSpiritManipulation.Visible = false;
+            // 
+            // cboSpiritDetection
+            // 
+            this.cboSpiritDetection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpTradition.SetColumnSpan(this.cboSpiritDetection, 3);
+            this.cboSpiritDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSpiritDetection.FormattingEnabled = true;
+            this.cboSpiritDetection.Location = new System.Drawing.Point(98, 110);
+            this.cboSpiritDetection.Name = "cboSpiritDetection";
+            this.cboSpiritDetection.Size = new System.Drawing.Size(224, 21);
+            this.cboSpiritDetection.TabIndex = 147;
+            this.cboSpiritDetection.Visible = false;
+            // 
+            // cboSpiritHealth
+            // 
+            this.cboSpiritHealth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpTradition.SetColumnSpan(this.cboSpiritHealth, 3);
+            this.cboSpiritHealth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSpiritHealth.FormattingEnabled = true;
+            this.cboSpiritHealth.Location = new System.Drawing.Point(98, 137);
+            this.cboSpiritHealth.Name = "cboSpiritHealth";
+            this.cboSpiritHealth.Size = new System.Drawing.Size(224, 21);
+            this.cboSpiritHealth.TabIndex = 149;
+            this.cboSpiritHealth.Visible = false;
+            // 
+            // cboSpiritIllusion
+            // 
+            this.cboSpiritIllusion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpTradition.SetColumnSpan(this.cboSpiritIllusion, 3);
+            this.cboSpiritIllusion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSpiritIllusion.FormattingEnabled = true;
+            this.cboSpiritIllusion.Location = new System.Drawing.Point(98, 164);
+            this.cboSpiritIllusion.Name = "cboSpiritIllusion";
+            this.cboSpiritIllusion.Size = new System.Drawing.Size(224, 21);
+            this.cboSpiritIllusion.TabIndex = 151;
+            this.cboSpiritIllusion.Visible = false;
+            // 
+            // cboSpiritManipulation
+            // 
+            this.cboSpiritManipulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpTradition.SetColumnSpan(this.cboSpiritManipulation, 3);
+            this.cboSpiritManipulation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSpiritManipulation.FormattingEnabled = true;
+            this.cboSpiritManipulation.Location = new System.Drawing.Point(98, 191);
+            this.cboSpiritManipulation.Name = "cboSpiritManipulation";
+            this.cboSpiritManipulation.Size = new System.Drawing.Size(224, 21);
+            this.cboSpiritManipulation.TabIndex = 153;
+            this.cboSpiritManipulation.Visible = false;
+            // 
+            // cboTradition
+            // 
+            this.cboTradition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboTradition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTradition.FormattingEnabled = true;
+            this.cboTradition.Location = new System.Drawing.Point(98, 3);
+            this.cboTradition.Name = "cboTradition";
+            this.cboTradition.Size = new System.Drawing.Size(121, 21);
+            this.cboTradition.TabIndex = 90;
             // 
             // lblMetatypeLabel
             // 
@@ -4939,7 +5347,7 @@ namespace Chummer
             // 
             this.lblMysticAdeptAssignment.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMysticAdeptAssignment.AutoSize = true;
-            this.lblMysticAdeptAssignment.Location = new System.Drawing.Point(12, 207);
+            this.lblMysticAdeptAssignment.Location = new System.Drawing.Point(12, 341);
             this.lblMysticAdeptAssignment.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMysticAdeptAssignment.Name = "lblMysticAdeptAssignment";
             this.lblMysticAdeptAssignment.Size = new System.Drawing.Size(133, 13);
@@ -4952,7 +5360,7 @@ namespace Chummer
             // 
             this.nudMysticAdeptMAGMagician.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMysticAdeptMAGMagician.AutoSize = true;
-            this.nudMysticAdeptMAGMagician.Location = new System.Drawing.Point(151, 204);
+            this.nudMysticAdeptMAGMagician.Location = new System.Drawing.Point(151, 338);
             this.nudMysticAdeptMAGMagician.Maximum = new decimal(new int[] {
             100,
             0,
@@ -5323,8 +5731,8 @@ namespace Chummer
             this.tlpMagicianTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
             this.tlpMagicianTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
             this.tlpMagicianTop.Controls.Add(this.treSpells, 0, 1);
-            this.tlpMagicianTop.Controls.Add(this.flpMagician, 1, 1);
             this.tlpMagicianTop.Controls.Add(this.tlpMagicianButtons, 0, 0);
+            this.tlpMagicianTop.Controls.Add(this.tlpMagicianSpell, 1, 1);
             this.tlpMagicianTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMagicianTop.Location = new System.Drawing.Point(0, 0);
             this.tlpMagicianTop.Name = "tlpMagicianTop";
@@ -5376,710 +5784,6 @@ namespace Chummer
             this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
             this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treSpells.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
-            // 
-            // flpMagician
-            // 
-            this.flpMagician.AutoScroll = true;
-            this.flpMagician.Controls.Add(this.gpbMagicianSpell);
-            this.flpMagician.Controls.Add(this.gpbMagicianTradition);
-            this.flpMagician.Controls.Add(this.gpbMagicianMentorSpirit);
-            this.flpMagician.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpMagician.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpMagician.Location = new System.Drawing.Point(310, 29);
-            this.flpMagician.Margin = new System.Windows.Forms.Padding(0);
-            this.flpMagician.Name = "flpMagician";
-            this.flpMagician.Size = new System.Drawing.Size(661, 391);
-            this.flpMagician.TabIndex = 157;
-            this.flpMagician.WrapContents = false;
-            // 
-            // gpbMagicianSpell
-            // 
-            this.gpbMagicianSpell.AutoSize = true;
-            this.gpbMagicianSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbMagicianSpell.Controls.Add(this.tlpMagicianSpell);
-            this.gpbMagicianSpell.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbMagicianSpell.Location = new System.Drawing.Point(3, 3);
-            this.gpbMagicianSpell.Name = "gpbMagicianSpell";
-            this.gpbMagicianSpell.Size = new System.Drawing.Size(561, 144);
-            this.gpbMagicianSpell.TabIndex = 0;
-            this.gpbMagicianSpell.TabStop = false;
-            this.gpbMagicianSpell.Text = "Spell";
-            this.gpbMagicianSpell.Visible = false;
-            // 
-            // tlpMagicianSpell
-            // 
-            this.tlpMagicianSpell.AutoSize = true;
-            this.tlpMagicianSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMagicianSpell.ColumnCount = 4;
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptorsLabel, 0, 0);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptors, 1, 0);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellTypeLabel, 2, 0);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDV, 3, 2);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellType, 3, 0);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDamageLabel, 2, 1);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDamage, 3, 1);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellCategoryLabel, 0, 1);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellCategory, 1, 1);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellRangeLabel, 0, 2);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellRange, 1, 2);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDVLabel, 2, 2);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDuration, 3, 3);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDurationLabel, 2, 3);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDicePoolLabel, 0, 3);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellDicePool, 1, 3);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellSource, 1, 4);
-            this.tlpMagicianSpell.Controls.Add(this.lblSpellSourceLabel, 0, 4);
-            this.tlpMagicianSpell.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMagicianSpell.Location = new System.Drawing.Point(3, 16);
-            this.tlpMagicianSpell.Name = "tlpMagicianSpell";
-            this.tlpMagicianSpell.RowCount = 5;
-            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianSpell.Size = new System.Drawing.Size(555, 125);
-            this.tlpMagicianSpell.TabIndex = 0;
-            // 
-            // lblSpellDescriptorsLabel
-            // 
-            this.lblSpellDescriptorsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellDescriptorsLabel.AutoSize = true;
-            this.lblSpellDescriptorsLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblSpellDescriptorsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDescriptorsLabel.Name = "lblSpellDescriptorsLabel";
-            this.lblSpellDescriptorsLabel.Size = new System.Drawing.Size(63, 13);
-            this.lblSpellDescriptorsLabel.TabIndex = 71;
-            this.lblSpellDescriptorsLabel.Tag = "Label_Descriptors";
-            this.lblSpellDescriptorsLabel.Text = "Descriptors:";
-            // 
-            // lblSpellDescriptors
-            // 
-            this.lblSpellDescriptors.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellDescriptors.AutoSize = true;
-            this.lblSpellDescriptors.Location = new System.Drawing.Point(72, 6);
-            this.lblSpellDescriptors.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDescriptors.Name = "lblSpellDescriptors";
-            this.lblSpellDescriptors.Size = new System.Drawing.Size(66, 13);
-            this.lblSpellDescriptors.TabIndex = 72;
-            this.lblSpellDescriptors.Text = "[Descriptors]";
-            // 
-            // lblSpellTypeLabel
-            // 
-            this.lblSpellTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellTypeLabel.AutoSize = true;
-            this.lblSpellTypeLabel.Location = new System.Drawing.Point(303, 6);
-            this.lblSpellTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellTypeLabel.Name = "lblSpellTypeLabel";
-            this.lblSpellTypeLabel.Size = new System.Drawing.Size(34, 13);
-            this.lblSpellTypeLabel.TabIndex = 83;
-            this.lblSpellTypeLabel.Tag = "Label_Type";
-            this.lblSpellTypeLabel.Text = "Type:";
-            // 
-            // lblSpellDV
-            // 
-            this.lblSpellDV.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellDV.AutoSize = true;
-            this.lblSpellDV.Location = new System.Drawing.Point(343, 56);
-            this.lblSpellDV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDV.Name = "lblSpellDV";
-            this.lblSpellDV.Size = new System.Drawing.Size(28, 13);
-            this.lblSpellDV.TabIndex = 82;
-            this.lblSpellDV.Text = "[DV]";
-            this.lblSpellDV.ToolTipText = "";
-            // 
-            // lblSpellType
-            // 
-            this.lblSpellType.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellType.AutoSize = true;
-            this.lblSpellType.Location = new System.Drawing.Point(343, 6);
-            this.lblSpellType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellType.Name = "lblSpellType";
-            this.lblSpellType.Size = new System.Drawing.Size(37, 13);
-            this.lblSpellType.TabIndex = 84;
-            this.lblSpellType.Text = "[Type]";
-            // 
-            // lblSpellDamageLabel
-            // 
-            this.lblSpellDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellDamageLabel.AutoSize = true;
-            this.lblSpellDamageLabel.Location = new System.Drawing.Point(287, 31);
-            this.lblSpellDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDamageLabel.Name = "lblSpellDamageLabel";
-            this.lblSpellDamageLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblSpellDamageLabel.TabIndex = 77;
-            this.lblSpellDamageLabel.Tag = "Label_Damage";
-            this.lblSpellDamageLabel.Text = "Damage:";
-            // 
-            // lblSpellDamage
-            // 
-            this.lblSpellDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellDamage.AutoSize = true;
-            this.lblSpellDamage.Location = new System.Drawing.Point(343, 31);
-            this.lblSpellDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDamage.Name = "lblSpellDamage";
-            this.lblSpellDamage.Size = new System.Drawing.Size(53, 13);
-            this.lblSpellDamage.TabIndex = 78;
-            this.lblSpellDamage.Text = "[Damage]";
-            // 
-            // lblSpellCategoryLabel
-            // 
-            this.lblSpellCategoryLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellCategoryLabel.AutoSize = true;
-            this.lblSpellCategoryLabel.Location = new System.Drawing.Point(14, 31);
-            this.lblSpellCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellCategoryLabel.Name = "lblSpellCategoryLabel";
-            this.lblSpellCategoryLabel.Size = new System.Drawing.Size(52, 13);
-            this.lblSpellCategoryLabel.TabIndex = 73;
-            this.lblSpellCategoryLabel.Tag = "Label_Category";
-            this.lblSpellCategoryLabel.Text = "Category:";
-            // 
-            // lblSpellCategory
-            // 
-            this.lblSpellCategory.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellCategory.AutoSize = true;
-            this.lblSpellCategory.Location = new System.Drawing.Point(72, 31);
-            this.lblSpellCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellCategory.Name = "lblSpellCategory";
-            this.lblSpellCategory.Size = new System.Drawing.Size(55, 13);
-            this.lblSpellCategory.TabIndex = 74;
-            this.lblSpellCategory.Text = "[Category]";
-            // 
-            // lblSpellRangeLabel
-            // 
-            this.lblSpellRangeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellRangeLabel.AutoSize = true;
-            this.lblSpellRangeLabel.Location = new System.Drawing.Point(24, 56);
-            this.lblSpellRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellRangeLabel.Name = "lblSpellRangeLabel";
-            this.lblSpellRangeLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblSpellRangeLabel.TabIndex = 75;
-            this.lblSpellRangeLabel.Tag = "Label_Range";
-            this.lblSpellRangeLabel.Text = "Range:";
-            // 
-            // lblSpellRange
-            // 
-            this.lblSpellRange.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellRange.AutoSize = true;
-            this.lblSpellRange.Location = new System.Drawing.Point(72, 56);
-            this.lblSpellRange.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellRange.Name = "lblSpellRange";
-            this.lblSpellRange.Size = new System.Drawing.Size(45, 13);
-            this.lblSpellRange.TabIndex = 76;
-            this.lblSpellRange.Text = "[Range]";
-            // 
-            // lblSpellDVLabel
-            // 
-            this.lblSpellDVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellDVLabel.AutoSize = true;
-            this.lblSpellDVLabel.Location = new System.Drawing.Point(312, 56);
-            this.lblSpellDVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDVLabel.Name = "lblSpellDVLabel";
-            this.lblSpellDVLabel.Size = new System.Drawing.Size(25, 13);
-            this.lblSpellDVLabel.TabIndex = 81;
-            this.lblSpellDVLabel.Tag = "Label_DV";
-            this.lblSpellDVLabel.Text = "DV:";
-            // 
-            // lblSpellDuration
-            // 
-            this.lblSpellDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellDuration.AutoSize = true;
-            this.lblSpellDuration.Location = new System.Drawing.Point(343, 81);
-            this.lblSpellDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDuration.Name = "lblSpellDuration";
-            this.lblSpellDuration.Size = new System.Drawing.Size(53, 13);
-            this.lblSpellDuration.TabIndex = 80;
-            this.lblSpellDuration.Text = "[Duration]";
-            // 
-            // lblSpellDurationLabel
-            // 
-            this.lblSpellDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellDurationLabel.AutoSize = true;
-            this.lblSpellDurationLabel.Location = new System.Drawing.Point(287, 81);
-            this.lblSpellDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDurationLabel.Name = "lblSpellDurationLabel";
-            this.lblSpellDurationLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblSpellDurationLabel.TabIndex = 79;
-            this.lblSpellDurationLabel.Tag = "Label_Duration";
-            this.lblSpellDurationLabel.Text = "Duration:";
-            // 
-            // lblSpellDicePoolLabel
-            // 
-            this.lblSpellDicePoolLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellDicePoolLabel.AutoSize = true;
-            this.lblSpellDicePoolLabel.Location = new System.Drawing.Point(10, 81);
-            this.lblSpellDicePoolLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDicePoolLabel.Name = "lblSpellDicePoolLabel";
-            this.lblSpellDicePoolLabel.Size = new System.Drawing.Size(56, 13);
-            this.lblSpellDicePoolLabel.TabIndex = 106;
-            this.lblSpellDicePoolLabel.Tag = "Label_DicePool";
-            this.lblSpellDicePoolLabel.Text = "Dice Pool:";
-            // 
-            // lblSpellDicePool
-            // 
-            this.lblSpellDicePool.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellDicePool.AutoSize = true;
-            this.lblSpellDicePool.Location = new System.Drawing.Point(72, 81);
-            this.lblSpellDicePool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellDicePool.Name = "lblSpellDicePool";
-            this.lblSpellDicePool.Size = new System.Drawing.Size(59, 13);
-            this.lblSpellDicePool.TabIndex = 107;
-            this.lblSpellDicePool.Text = "[Dice Pool]";
-            this.lblSpellDicePool.ToolTipText = "";
-            // 
-            // lblSpellSource
-            // 
-            this.lblSpellSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSpellSource.AutoSize = true;
-            this.lblSpellSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSpellSource.Location = new System.Drawing.Point(72, 106);
-            this.lblSpellSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellSource.Name = "lblSpellSource";
-            this.lblSpellSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSpellSource.TabIndex = 88;
-            this.lblSpellSource.Text = "[Source]";
-            this.lblSpellSource.ToolTipText = "";
-            this.lblSpellSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // lblSpellSourceLabel
-            // 
-            this.lblSpellSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpellSourceLabel.AutoSize = true;
-            this.lblSpellSourceLabel.Location = new System.Drawing.Point(22, 106);
-            this.lblSpellSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpellSourceLabel.Name = "lblSpellSourceLabel";
-            this.lblSpellSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSpellSourceLabel.TabIndex = 87;
-            this.lblSpellSourceLabel.Tag = "Label_Source";
-            this.lblSpellSourceLabel.Text = "Source:";
-            // 
-            // gpbMagicianTradition
-            // 
-            this.gpbMagicianTradition.AutoSize = true;
-            this.gpbMagicianTradition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbMagicianTradition.Controls.Add(this.tlpMagicianTradition);
-            this.gpbMagicianTradition.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbMagicianTradition.Location = new System.Drawing.Point(3, 153);
-            this.gpbMagicianTradition.Name = "gpbMagicianTradition";
-            this.gpbMagicianTradition.Size = new System.Drawing.Size(561, 181);
-            this.gpbMagicianTradition.TabIndex = 1;
-            this.gpbMagicianTradition.TabStop = false;
-            this.gpbMagicianTradition.Tag = "String_Tradition";
-            this.gpbMagicianTradition.Text = "Tradition";
-            // 
-            // tlpMagicianTradition
-            // 
-            this.tlpMagicianTradition.AutoSize = true;
-            this.tlpMagicianTradition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMagicianTradition.ColumnCount = 4;
-            this.tlpMagicianTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMagicianTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMagicianTradition.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianTradition.Controls.Add(this.lblTraditionLabel, 0, 0);
-            this.tlpMagicianTradition.Controls.Add(this.cboTradition, 1, 0);
-            this.tlpMagicianTradition.Controls.Add(this.lblDrainAttributesLabel, 0, 1);
-            this.tlpMagicianTradition.Controls.Add(this.lblTraditionName, 2, 0);
-            this.tlpMagicianTradition.Controls.Add(this.lblTraditionSource, 1, 5);
-            this.tlpMagicianTradition.Controls.Add(this.cboSpiritManipulation, 3, 5);
-            this.tlpMagicianTradition.Controls.Add(this.lblTraditionSourceLabel, 0, 5);
-            this.tlpMagicianTradition.Controls.Add(this.txtTraditionName, 3, 0);
-            this.tlpMagicianTradition.Controls.Add(this.lblSpiritCombat, 2, 1);
-            this.tlpMagicianTradition.Controls.Add(this.lblSpiritManipulation, 2, 5);
-            this.tlpMagicianTradition.Controls.Add(this.cboSpiritCombat, 3, 1);
-            this.tlpMagicianTradition.Controls.Add(this.cboSpiritIllusion, 3, 4);
-            this.tlpMagicianTradition.Controls.Add(this.lblSpiritDetection, 2, 2);
-            this.tlpMagicianTradition.Controls.Add(this.cboSpiritDetection, 3, 2);
-            this.tlpMagicianTradition.Controls.Add(this.lblSpiritIllusion, 2, 4);
-            this.tlpMagicianTradition.Controls.Add(this.cboSpiritHealth, 3, 3);
-            this.tlpMagicianTradition.Controls.Add(this.lblSpiritHealth, 2, 3);
-            this.tlpMagicianTradition.Controls.Add(this.tlpDrainAttributes, 1, 1);
-            this.tlpMagicianTradition.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMagicianTradition.Location = new System.Drawing.Point(3, 16);
-            this.tlpMagicianTradition.Name = "tlpMagicianTradition";
-            this.tlpMagicianTradition.RowCount = 6;
-            this.tlpMagicianTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTradition.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianTradition.Size = new System.Drawing.Size(555, 162);
-            this.tlpMagicianTradition.TabIndex = 0;
-            // 
-            // lblTraditionLabel
-            // 
-            this.lblTraditionLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblTraditionLabel.AutoSize = true;
-            this.lblTraditionLabel.Location = new System.Drawing.Point(41, 7);
-            this.lblTraditionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblTraditionLabel.Name = "lblTraditionLabel";
-            this.lblTraditionLabel.Size = new System.Drawing.Size(51, 13);
-            this.lblTraditionLabel.TabIndex = 89;
-            this.lblTraditionLabel.Tag = "Label_Tradition";
-            this.lblTraditionLabel.Text = "Tradition:";
-            // 
-            // cboTradition
-            // 
-            this.cboTradition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboTradition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTradition.FormattingEnabled = true;
-            this.cboTradition.Location = new System.Drawing.Point(98, 3);
-            this.cboTradition.Name = "cboTradition";
-            this.cboTradition.Size = new System.Drawing.Size(186, 21);
-            this.cboTradition.TabIndex = 90;
-            this.cboTradition.SelectedIndexChanged += new System.EventHandler(this.cboTradition_SelectedIndexChanged);
-            // 
-            // lblDrainAttributesLabel
-            // 
-            this.lblDrainAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDrainAttributesLabel.AutoSize = true;
-            this.lblDrainAttributesLabel.Location = new System.Drawing.Point(3, 34);
-            this.lblDrainAttributesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDrainAttributesLabel.Name = "lblDrainAttributesLabel";
-            this.lblDrainAttributesLabel.Size = new System.Drawing.Size(89, 13);
-            this.lblDrainAttributesLabel.TabIndex = 91;
-            this.lblDrainAttributesLabel.Tag = "Label_ResistDrain";
-            this.lblDrainAttributesLabel.Text = "Resist Drain with:";
-            // 
-            // lblTraditionName
-            // 
-            this.lblTraditionName.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblTraditionName.AutoSize = true;
-            this.lblTraditionName.Location = new System.Drawing.Point(322, 7);
-            this.lblTraditionName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblTraditionName.Name = "lblTraditionName";
-            this.lblTraditionName.Size = new System.Drawing.Size(38, 13);
-            this.lblTraditionName.TabIndex = 141;
-            this.lblTraditionName.Tag = "Label_TraditionName";
-            this.lblTraditionName.Text = "Name:";
-            this.lblTraditionName.Visible = false;
-            // 
-            // lblTraditionSource
-            // 
-            this.lblTraditionSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTraditionSource.AutoSize = true;
-            this.lblTraditionSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblTraditionSource.Location = new System.Drawing.Point(98, 142);
-            this.lblTraditionSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblTraditionSource.Name = "lblTraditionSource";
-            this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
-            this.lblTraditionSource.TabIndex = 155;
-            this.lblTraditionSource.Text = "[Source]";
-            this.lblTraditionSource.ToolTipText = "";
-            this.lblTraditionSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // cboSpiritManipulation
-            // 
-            this.cboSpiritManipulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSpiritManipulation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSpiritManipulation.FormattingEnabled = true;
-            this.cboSpiritManipulation.Location = new System.Drawing.Point(366, 138);
-            this.cboSpiritManipulation.Name = "cboSpiritManipulation";
-            this.cboSpiritManipulation.Size = new System.Drawing.Size(186, 21);
-            this.cboSpiritManipulation.TabIndex = 153;
-            this.cboSpiritManipulation.Visible = false;
-            // 
-            // lblTraditionSourceLabel
-            // 
-            this.lblTraditionSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblTraditionSourceLabel.AutoSize = true;
-            this.lblTraditionSourceLabel.Location = new System.Drawing.Point(48, 142);
-            this.lblTraditionSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblTraditionSourceLabel.Name = "lblTraditionSourceLabel";
-            this.lblTraditionSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblTraditionSourceLabel.TabIndex = 154;
-            this.lblTraditionSourceLabel.Tag = "Label_Source";
-            this.lblTraditionSourceLabel.Text = "Source:";
-            // 
-            // txtTraditionName
-            // 
-            this.txtTraditionName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTraditionName.Location = new System.Drawing.Point(366, 3);
-            this.txtTraditionName.Name = "txtTraditionName";
-            this.txtTraditionName.Size = new System.Drawing.Size(186, 20);
-            this.txtTraditionName.TabIndex = 142;
-            this.txtTraditionName.Visible = false;
-            // 
-            // lblSpiritCombat
-            // 
-            this.lblSpiritCombat.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpiritCombat.AutoSize = true;
-            this.lblSpiritCombat.Location = new System.Drawing.Point(314, 34);
-            this.lblSpiritCombat.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpiritCombat.Name = "lblSpiritCombat";
-            this.lblSpiritCombat.Size = new System.Drawing.Size(46, 13);
-            this.lblSpiritCombat.TabIndex = 144;
-            this.lblSpiritCombat.Tag = "Label_SpiritCombat";
-            this.lblSpiritCombat.Text = "Combat:";
-            this.lblSpiritCombat.Visible = false;
-            // 
-            // lblSpiritManipulation
-            // 
-            this.lblSpiritManipulation.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpiritManipulation.AutoSize = true;
-            this.lblSpiritManipulation.Location = new System.Drawing.Point(290, 142);
-            this.lblSpiritManipulation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpiritManipulation.Name = "lblSpiritManipulation";
-            this.lblSpiritManipulation.Size = new System.Drawing.Size(70, 13);
-            this.lblSpiritManipulation.TabIndex = 152;
-            this.lblSpiritManipulation.Tag = "Label_SpiritManipulation";
-            this.lblSpiritManipulation.Text = "Manipulation:";
-            this.lblSpiritManipulation.Visible = false;
-            // 
-            // cboSpiritCombat
-            // 
-            this.cboSpiritCombat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSpiritCombat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSpiritCombat.FormattingEnabled = true;
-            this.cboSpiritCombat.Location = new System.Drawing.Point(366, 30);
-            this.cboSpiritCombat.Name = "cboSpiritCombat";
-            this.cboSpiritCombat.Size = new System.Drawing.Size(186, 21);
-            this.cboSpiritCombat.TabIndex = 145;
-            this.cboSpiritCombat.Visible = false;
-            // 
-            // cboSpiritIllusion
-            // 
-            this.cboSpiritIllusion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSpiritIllusion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSpiritIllusion.FormattingEnabled = true;
-            this.cboSpiritIllusion.Location = new System.Drawing.Point(366, 111);
-            this.cboSpiritIllusion.Name = "cboSpiritIllusion";
-            this.cboSpiritIllusion.Size = new System.Drawing.Size(186, 21);
-            this.cboSpiritIllusion.TabIndex = 151;
-            this.cboSpiritIllusion.Visible = false;
-            // 
-            // lblSpiritDetection
-            // 
-            this.lblSpiritDetection.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpiritDetection.AutoSize = true;
-            this.lblSpiritDetection.Location = new System.Drawing.Point(304, 61);
-            this.lblSpiritDetection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpiritDetection.Name = "lblSpiritDetection";
-            this.lblSpiritDetection.Size = new System.Drawing.Size(56, 13);
-            this.lblSpiritDetection.TabIndex = 146;
-            this.lblSpiritDetection.Tag = "Label_SpiritDetection";
-            this.lblSpiritDetection.Text = "Detection:";
-            this.lblSpiritDetection.Visible = false;
-            // 
-            // cboSpiritDetection
-            // 
-            this.cboSpiritDetection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSpiritDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSpiritDetection.FormattingEnabled = true;
-            this.cboSpiritDetection.Location = new System.Drawing.Point(366, 57);
-            this.cboSpiritDetection.Name = "cboSpiritDetection";
-            this.cboSpiritDetection.Size = new System.Drawing.Size(186, 21);
-            this.cboSpiritDetection.TabIndex = 147;
-            this.cboSpiritDetection.Visible = false;
-            // 
-            // lblSpiritIllusion
-            // 
-            this.lblSpiritIllusion.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpiritIllusion.AutoSize = true;
-            this.lblSpiritIllusion.Location = new System.Drawing.Point(318, 115);
-            this.lblSpiritIllusion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpiritIllusion.Name = "lblSpiritIllusion";
-            this.lblSpiritIllusion.Size = new System.Drawing.Size(42, 13);
-            this.lblSpiritIllusion.TabIndex = 150;
-            this.lblSpiritIllusion.Tag = "Label_SpiritIllusion";
-            this.lblSpiritIllusion.Text = "Illusion:";
-            this.lblSpiritIllusion.Visible = false;
-            // 
-            // cboSpiritHealth
-            // 
-            this.cboSpiritHealth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSpiritHealth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSpiritHealth.FormattingEnabled = true;
-            this.cboSpiritHealth.Location = new System.Drawing.Point(366, 84);
-            this.cboSpiritHealth.Name = "cboSpiritHealth";
-            this.cboSpiritHealth.Size = new System.Drawing.Size(186, 21);
-            this.cboSpiritHealth.TabIndex = 149;
-            this.cboSpiritHealth.Visible = false;
-            // 
-            // lblSpiritHealth
-            // 
-            this.lblSpiritHealth.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpiritHealth.AutoSize = true;
-            this.lblSpiritHealth.Location = new System.Drawing.Point(319, 88);
-            this.lblSpiritHealth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSpiritHealth.Name = "lblSpiritHealth";
-            this.lblSpiritHealth.Size = new System.Drawing.Size(41, 13);
-            this.lblSpiritHealth.TabIndex = 148;
-            this.lblSpiritHealth.Tag = "Label_SpiritHealth";
-            this.lblSpiritHealth.Text = "Health:";
-            this.lblSpiritHealth.Visible = false;
-            // 
-            // tlpDrainAttributes
-            // 
-            this.tlpDrainAttributes.AutoSize = true;
-            this.tlpDrainAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpDrainAttributes.ColumnCount = 3;
-            this.tlpDrainAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpDrainAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpDrainAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpDrainAttributes.Controls.Add(this.lblDrainAttributesValue, 2, 0);
-            this.tlpDrainAttributes.Controls.Add(this.lblDrainAttributes, 1, 0);
-            this.tlpDrainAttributes.Controls.Add(this.cboDrain, 0, 0);
-            this.tlpDrainAttributes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpDrainAttributes.Location = new System.Drawing.Point(95, 27);
-            this.tlpDrainAttributes.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpDrainAttributes.Name = "tlpDrainAttributes";
-            this.tlpDrainAttributes.RowCount = 1;
-            this.tlpDrainAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpDrainAttributes.Size = new System.Drawing.Size(192, 27);
-            this.tlpDrainAttributes.TabIndex = 156;
-            // 
-            // lblDrainAttributesValue
-            // 
-            this.lblDrainAttributesValue.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblDrainAttributesValue.AutoSize = true;
-            this.lblDrainAttributesValue.Location = new System.Drawing.Point(152, 7);
-            this.lblDrainAttributesValue.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDrainAttributesValue.Name = "lblDrainAttributesValue";
-            this.lblDrainAttributesValue.Size = new System.Drawing.Size(37, 13);
-            this.lblDrainAttributesValue.TabIndex = 93;
-            this.lblDrainAttributesValue.Text = "[Total]";
-            this.lblDrainAttributesValue.ToolTipText = "";
-            // 
-            // lblDrainAttributes
-            // 
-            this.lblDrainAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblDrainAttributes.AutoSize = true;
-            this.lblDrainAttributes.Location = new System.Drawing.Point(89, 7);
-            this.lblDrainAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDrainAttributes.Name = "lblDrainAttributes";
-            this.lblDrainAttributes.Size = new System.Drawing.Size(57, 13);
-            this.lblDrainAttributes.TabIndex = 92;
-            this.lblDrainAttributes.Text = "[Attributes]";
-            // 
-            // cboDrain
-            // 
-            this.cboDrain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboDrain.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDrain.FormattingEnabled = true;
-            this.cboDrain.Location = new System.Drawing.Point(3, 3);
-            this.cboDrain.Name = "cboDrain";
-            this.cboDrain.Size = new System.Drawing.Size(80, 21);
-            this.cboDrain.TabIndex = 143;
-            this.cboDrain.Visible = false;
-            // 
-            // gpbMagicianMentorSpirit
-            // 
-            this.gpbMagicianMentorSpirit.AutoSize = true;
-            this.gpbMagicianMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbMagicianMentorSpirit.Controls.Add(this.tlpMagicianMentorSpirit);
-            this.gpbMagicianMentorSpirit.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbMagicianMentorSpirit.Location = new System.Drawing.Point(3, 340);
-            this.gpbMagicianMentorSpirit.Name = "gpbMagicianMentorSpirit";
-            this.gpbMagicianMentorSpirit.Size = new System.Drawing.Size(561, 69);
-            this.gpbMagicianMentorSpirit.TabIndex = 2;
-            this.gpbMagicianMentorSpirit.TabStop = false;
-            this.gpbMagicianMentorSpirit.Tag = "String_MentorSpirit";
-            this.gpbMagicianMentorSpirit.Text = "Mentor Spirit";
-            // 
-            // tlpMagicianMentorSpirit
-            // 
-            this.tlpMagicianMentorSpirit.AutoSize = true;
-            this.tlpMagicianMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMagicianMentorSpirit.ColumnCount = 1;
-            this.tlpMagicianMentorSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMagicianMentorSpirit.Controls.Add(this.lblMentorSpiritInformation, 0, 1);
-            this.tlpMagicianMentorSpirit.Controls.Add(this.tlpMagicianMentorSpiritHeader, 0, 0);
-            this.tlpMagicianMentorSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMagicianMentorSpirit.Location = new System.Drawing.Point(3, 16);
-            this.tlpMagicianMentorSpirit.Name = "tlpMagicianMentorSpirit";
-            this.tlpMagicianMentorSpirit.RowCount = 2;
-            this.tlpMagicianMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMagicianMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMagicianMentorSpirit.Size = new System.Drawing.Size(555, 50);
-            this.tlpMagicianMentorSpirit.TabIndex = 0;
-            // 
-            // lblMentorSpiritInformation
-            // 
-            this.lblMentorSpiritInformation.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMentorSpiritInformation.AutoSize = true;
-            this.lblMentorSpiritInformation.Location = new System.Drawing.Point(3, 31);
-            this.lblMentorSpiritInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritInformation.Name = "lblMentorSpiritInformation";
-            this.lblMentorSpiritInformation.Size = new System.Drawing.Size(127, 13);
-            this.lblMentorSpiritInformation.TabIndex = 94;
-            this.lblMentorSpiritInformation.Text = "[Mentor Spirit Information]";
-            // 
-            // tlpMagicianMentorSpiritHeader
-            // 
-            this.tlpMagicianMentorSpiritHeader.AutoSize = true;
-            this.tlpMagicianMentorSpiritHeader.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMagicianMentorSpiritHeader.ColumnCount = 4;
-            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMagicianMentorSpiritHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpiritLabel, 0, 0);
-            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpiritSourceLabel, 2, 0);
-            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpirit, 1, 0);
-            this.tlpMagicianMentorSpiritHeader.Controls.Add(this.lblMentorSpiritSource, 3, 0);
-            this.tlpMagicianMentorSpiritHeader.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMagicianMentorSpiritHeader.Location = new System.Drawing.Point(0, 0);
-            this.tlpMagicianMentorSpiritHeader.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpMagicianMentorSpiritHeader.Name = "tlpMagicianMentorSpiritHeader";
-            this.tlpMagicianMentorSpiritHeader.RowCount = 1;
-            this.tlpMagicianMentorSpiritHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMagicianMentorSpiritHeader.Size = new System.Drawing.Size(555, 25);
-            this.tlpMagicianMentorSpiritHeader.TabIndex = 99;
-            // 
-            // lblMentorSpiritLabel
-            // 
-            this.lblMentorSpiritLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMentorSpiritLabel.AutoSize = true;
-            this.lblMentorSpiritLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblMentorSpiritLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritLabel.Name = "lblMentorSpiritLabel";
-            this.lblMentorSpiritLabel.Size = new System.Drawing.Size(69, 13);
-            this.lblMentorSpiritLabel.TabIndex = 95;
-            this.lblMentorSpiritLabel.Tag = "Label_MentorSpirit";
-            this.lblMentorSpiritLabel.Text = "Mentor Spirit:";
-            // 
-            // lblMentorSpiritSourceLabel
-            // 
-            this.lblMentorSpiritSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMentorSpiritSourceLabel.AutoSize = true;
-            this.lblMentorSpiritSourceLabel.Location = new System.Drawing.Point(293, 6);
-            this.lblMentorSpiritSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritSourceLabel.Name = "lblMentorSpiritSourceLabel";
-            this.lblMentorSpiritSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblMentorSpiritSourceLabel.TabIndex = 97;
-            this.lblMentorSpiritSourceLabel.Tag = "Label_Source";
-            this.lblMentorSpiritSourceLabel.Text = "Source:";
-            // 
-            // lblMentorSpirit
-            // 
-            this.lblMentorSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMentorSpirit.AutoSize = true;
-            this.lblMentorSpirit.Location = new System.Drawing.Point(78, 6);
-            this.lblMentorSpirit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpirit.Name = "lblMentorSpirit";
-            this.lblMentorSpirit.Size = new System.Drawing.Size(72, 13);
-            this.lblMentorSpirit.TabIndex = 96;
-            this.lblMentorSpirit.Text = "[Mentor Spirit]";
-            // 
-            // lblMentorSpiritSource
-            // 
-            this.lblMentorSpiritSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMentorSpiritSource.AutoSize = true;
-            this.lblMentorSpiritSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblMentorSpiritSource.Location = new System.Drawing.Point(343, 6);
-            this.lblMentorSpiritSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritSource.Name = "lblMentorSpiritSource";
-            this.lblMentorSpiritSource.Size = new System.Drawing.Size(47, 13);
-            this.lblMentorSpiritSource.TabIndex = 98;
-            this.lblMentorSpiritSource.Text = "[Source]";
-            this.lblMentorSpiritSource.ToolTipText = "";
-            this.lblMentorSpiritSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // tlpMagicianButtons
             // 
@@ -6136,6 +5840,258 @@ namespace Chummer
             this.cmdDeleteSpell.Text = "Delete";
             this.cmdDeleteSpell.UseVisualStyleBackColor = true;
             this.cmdDeleteSpell.Click += new System.EventHandler(this.cmdDeleteSpell_Click);
+            // 
+            // tlpMagicianSpell
+            // 
+            this.tlpMagicianSpell.AutoSize = true;
+            this.tlpMagicianSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMagicianSpell.ColumnCount = 4;
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptorsLabel, 0, 0);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptors, 1, 0);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellTypeLabel, 2, 0);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDV, 3, 2);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellType, 3, 0);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDamageLabel, 2, 1);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDamage, 3, 1);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellCategoryLabel, 0, 1);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellCategory, 1, 1);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellRangeLabel, 0, 2);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellRange, 1, 2);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDVLabel, 2, 2);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDuration, 3, 3);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDurationLabel, 2, 3);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDicePoolLabel, 0, 3);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellDicePool, 1, 3);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellSource, 1, 4);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellSourceLabel, 0, 4);
+            this.tlpMagicianSpell.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpMagicianSpell.Location = new System.Drawing.Point(310, 29);
+            this.tlpMagicianSpell.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpMagicianSpell.Name = "tlpMagicianSpell";
+            this.tlpMagicianSpell.RowCount = 5;
+            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMagicianSpell.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMagicianSpell.Size = new System.Drawing.Size(661, 125);
+            this.tlpMagicianSpell.TabIndex = 0;
+            // 
+            // lblSpellDescriptorsLabel
+            // 
+            this.lblSpellDescriptorsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellDescriptorsLabel.AutoSize = true;
+            this.lblSpellDescriptorsLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSpellDescriptorsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDescriptorsLabel.Name = "lblSpellDescriptorsLabel";
+            this.lblSpellDescriptorsLabel.Size = new System.Drawing.Size(63, 13);
+            this.lblSpellDescriptorsLabel.TabIndex = 71;
+            this.lblSpellDescriptorsLabel.Tag = "Label_Descriptors";
+            this.lblSpellDescriptorsLabel.Text = "Descriptors:";
+            // 
+            // lblSpellDescriptors
+            // 
+            this.lblSpellDescriptors.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellDescriptors.AutoSize = true;
+            this.lblSpellDescriptors.Location = new System.Drawing.Point(72, 6);
+            this.lblSpellDescriptors.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDescriptors.Name = "lblSpellDescriptors";
+            this.lblSpellDescriptors.Size = new System.Drawing.Size(66, 13);
+            this.lblSpellDescriptors.TabIndex = 72;
+            this.lblSpellDescriptors.Text = "[Descriptors]";
+            // 
+            // lblSpellTypeLabel
+            // 
+            this.lblSpellTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellTypeLabel.AutoSize = true;
+            this.lblSpellTypeLabel.Location = new System.Drawing.Point(356, 6);
+            this.lblSpellTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellTypeLabel.Name = "lblSpellTypeLabel";
+            this.lblSpellTypeLabel.Size = new System.Drawing.Size(34, 13);
+            this.lblSpellTypeLabel.TabIndex = 83;
+            this.lblSpellTypeLabel.Tag = "Label_Type";
+            this.lblSpellTypeLabel.Text = "Type:";
+            // 
+            // lblSpellDV
+            // 
+            this.lblSpellDV.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellDV.AutoSize = true;
+            this.lblSpellDV.Location = new System.Drawing.Point(396, 56);
+            this.lblSpellDV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDV.Name = "lblSpellDV";
+            this.lblSpellDV.Size = new System.Drawing.Size(28, 13);
+            this.lblSpellDV.TabIndex = 82;
+            this.lblSpellDV.Text = "[DV]";
+            this.lblSpellDV.ToolTipText = "";
+            // 
+            // lblSpellType
+            // 
+            this.lblSpellType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellType.AutoSize = true;
+            this.lblSpellType.Location = new System.Drawing.Point(396, 6);
+            this.lblSpellType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellType.Name = "lblSpellType";
+            this.lblSpellType.Size = new System.Drawing.Size(37, 13);
+            this.lblSpellType.TabIndex = 84;
+            this.lblSpellType.Text = "[Type]";
+            // 
+            // lblSpellDamageLabel
+            // 
+            this.lblSpellDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellDamageLabel.AutoSize = true;
+            this.lblSpellDamageLabel.Location = new System.Drawing.Point(340, 31);
+            this.lblSpellDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDamageLabel.Name = "lblSpellDamageLabel";
+            this.lblSpellDamageLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblSpellDamageLabel.TabIndex = 77;
+            this.lblSpellDamageLabel.Tag = "Label_Damage";
+            this.lblSpellDamageLabel.Text = "Damage:";
+            // 
+            // lblSpellDamage
+            // 
+            this.lblSpellDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellDamage.AutoSize = true;
+            this.lblSpellDamage.Location = new System.Drawing.Point(396, 31);
+            this.lblSpellDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDamage.Name = "lblSpellDamage";
+            this.lblSpellDamage.Size = new System.Drawing.Size(53, 13);
+            this.lblSpellDamage.TabIndex = 78;
+            this.lblSpellDamage.Text = "[Damage]";
+            // 
+            // lblSpellCategoryLabel
+            // 
+            this.lblSpellCategoryLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellCategoryLabel.AutoSize = true;
+            this.lblSpellCategoryLabel.Location = new System.Drawing.Point(14, 31);
+            this.lblSpellCategoryLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellCategoryLabel.Name = "lblSpellCategoryLabel";
+            this.lblSpellCategoryLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblSpellCategoryLabel.TabIndex = 73;
+            this.lblSpellCategoryLabel.Tag = "Label_Category";
+            this.lblSpellCategoryLabel.Text = "Category:";
+            // 
+            // lblSpellCategory
+            // 
+            this.lblSpellCategory.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellCategory.AutoSize = true;
+            this.lblSpellCategory.Location = new System.Drawing.Point(72, 31);
+            this.lblSpellCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellCategory.Name = "lblSpellCategory";
+            this.lblSpellCategory.Size = new System.Drawing.Size(55, 13);
+            this.lblSpellCategory.TabIndex = 74;
+            this.lblSpellCategory.Text = "[Category]";
+            // 
+            // lblSpellRangeLabel
+            // 
+            this.lblSpellRangeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellRangeLabel.AutoSize = true;
+            this.lblSpellRangeLabel.Location = new System.Drawing.Point(24, 56);
+            this.lblSpellRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellRangeLabel.Name = "lblSpellRangeLabel";
+            this.lblSpellRangeLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblSpellRangeLabel.TabIndex = 75;
+            this.lblSpellRangeLabel.Tag = "Label_Range";
+            this.lblSpellRangeLabel.Text = "Range:";
+            // 
+            // lblSpellRange
+            // 
+            this.lblSpellRange.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellRange.AutoSize = true;
+            this.lblSpellRange.Location = new System.Drawing.Point(72, 56);
+            this.lblSpellRange.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellRange.Name = "lblSpellRange";
+            this.lblSpellRange.Size = new System.Drawing.Size(45, 13);
+            this.lblSpellRange.TabIndex = 76;
+            this.lblSpellRange.Text = "[Range]";
+            // 
+            // lblSpellDVLabel
+            // 
+            this.lblSpellDVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellDVLabel.AutoSize = true;
+            this.lblSpellDVLabel.Location = new System.Drawing.Point(365, 56);
+            this.lblSpellDVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDVLabel.Name = "lblSpellDVLabel";
+            this.lblSpellDVLabel.Size = new System.Drawing.Size(25, 13);
+            this.lblSpellDVLabel.TabIndex = 81;
+            this.lblSpellDVLabel.Tag = "Label_DV";
+            this.lblSpellDVLabel.Text = "DV:";
+            // 
+            // lblSpellDuration
+            // 
+            this.lblSpellDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellDuration.AutoSize = true;
+            this.lblSpellDuration.Location = new System.Drawing.Point(396, 81);
+            this.lblSpellDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDuration.Name = "lblSpellDuration";
+            this.lblSpellDuration.Size = new System.Drawing.Size(53, 13);
+            this.lblSpellDuration.TabIndex = 80;
+            this.lblSpellDuration.Text = "[Duration]";
+            // 
+            // lblSpellDurationLabel
+            // 
+            this.lblSpellDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellDurationLabel.AutoSize = true;
+            this.lblSpellDurationLabel.Location = new System.Drawing.Point(340, 81);
+            this.lblSpellDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDurationLabel.Name = "lblSpellDurationLabel";
+            this.lblSpellDurationLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblSpellDurationLabel.TabIndex = 79;
+            this.lblSpellDurationLabel.Tag = "Label_Duration";
+            this.lblSpellDurationLabel.Text = "Duration:";
+            // 
+            // lblSpellDicePoolLabel
+            // 
+            this.lblSpellDicePoolLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellDicePoolLabel.AutoSize = true;
+            this.lblSpellDicePoolLabel.Location = new System.Drawing.Point(10, 81);
+            this.lblSpellDicePoolLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDicePoolLabel.Name = "lblSpellDicePoolLabel";
+            this.lblSpellDicePoolLabel.Size = new System.Drawing.Size(56, 13);
+            this.lblSpellDicePoolLabel.TabIndex = 106;
+            this.lblSpellDicePoolLabel.Tag = "Label_DicePool";
+            this.lblSpellDicePoolLabel.Text = "Dice Pool:";
+            // 
+            // lblSpellDicePool
+            // 
+            this.lblSpellDicePool.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellDicePool.AutoSize = true;
+            this.lblSpellDicePool.Location = new System.Drawing.Point(72, 81);
+            this.lblSpellDicePool.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellDicePool.Name = "lblSpellDicePool";
+            this.lblSpellDicePool.Size = new System.Drawing.Size(59, 13);
+            this.lblSpellDicePool.TabIndex = 107;
+            this.lblSpellDicePool.Text = "[Dice Pool]";
+            this.lblSpellDicePool.ToolTipText = "";
+            // 
+            // lblSpellSource
+            // 
+            this.lblSpellSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellSource.AutoSize = true;
+            this.lblSpellSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSpellSource.Location = new System.Drawing.Point(72, 106);
+            this.lblSpellSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellSource.Name = "lblSpellSource";
+            this.lblSpellSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSpellSource.TabIndex = 88;
+            this.lblSpellSource.Text = "[Source]";
+            this.lblSpellSource.ToolTipText = "";
+            this.lblSpellSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
+            // 
+            // lblSpellSourceLabel
+            // 
+            this.lblSpellSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellSourceLabel.AutoSize = true;
+            this.lblSpellSourceLabel.Location = new System.Drawing.Point(22, 106);
+            this.lblSpellSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellSourceLabel.Name = "lblSpellSourceLabel";
+            this.lblSpellSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSpellSourceLabel.TabIndex = 87;
+            this.lblSpellSourceLabel.Tag = "Label_Source";
+            this.lblSpellSourceLabel.Text = "Source:";
             // 
             // tlpMagicianBottom
             // 
@@ -6241,8 +6197,8 @@ namespace Chummer
             this.tlpTechnomancerTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
             this.tlpTechnomancerTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
             this.tlpTechnomancerTop.Controls.Add(this.treComplexForms, 0, 1);
-            this.tlpTechnomancerTop.Controls.Add(this.flpTechnomancer, 1, 1);
             this.tlpTechnomancerTop.Controls.Add(this.tlpTechnomancerButtons, 0, 0);
+            this.tlpTechnomancerTop.Controls.Add(this.tlpTechnomancerComplexForm, 1, 1);
             this.tlpTechnomancerTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTechnomancerTop.Location = new System.Drawing.Point(0, 0);
             this.tlpTechnomancerTop.Name = "tlpTechnomancerTop";
@@ -6271,35 +6227,54 @@ namespace Chummer
             this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treComplexForms.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
-            // flpTechnomancer
+            // tlpTechnomancerButtons
             // 
-            this.flpTechnomancer.AutoScroll = true;
-            this.flpTechnomancer.Controls.Add(this.gpbTechnomancerComplexForm);
-            this.flpTechnomancer.Controls.Add(this.gpbTechnomancerStream);
-            this.flpTechnomancer.Controls.Add(this.gpbTechnomancerParagon);
-            this.flpTechnomancer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTechnomancer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpTechnomancer.Location = new System.Drawing.Point(310, 29);
-            this.flpTechnomancer.Margin = new System.Windows.Forms.Padding(0);
-            this.flpTechnomancer.Name = "flpTechnomancer";
-            this.flpTechnomancer.Size = new System.Drawing.Size(661, 391);
-            this.flpTechnomancer.TabIndex = 188;
-            this.flpTechnomancer.WrapContents = false;
+            this.tlpTechnomancerButtons.AutoSize = true;
+            this.tlpTechnomancerButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTechnomancerButtons.ColumnCount = 2;
+            this.tlpTechnomancerTop.SetColumnSpan(this.tlpTechnomancerButtons, 2);
+            this.tlpTechnomancerButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTechnomancerButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTechnomancerButtons.Controls.Add(this.cmdAddComplexForm, 0, 0);
+            this.tlpTechnomancerButtons.Controls.Add(this.cmdDeleteComplexForm, 1, 0);
+            this.tlpTechnomancerButtons.Location = new System.Drawing.Point(0, 0);
+            this.tlpTechnomancerButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTechnomancerButtons.Name = "tlpTechnomancerButtons";
+            this.tlpTechnomancerButtons.RowCount = 1;
+            this.tlpTechnomancerButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTechnomancerButtons.Size = new System.Drawing.Size(222, 29);
+            this.tlpTechnomancerButtons.TabIndex = 189;
             // 
-            // gpbTechnomancerComplexForm
+            // cmdAddComplexForm
             // 
-            this.gpbTechnomancerComplexForm.AutoSize = true;
-            this.gpbTechnomancerComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbTechnomancerComplexForm.Controls.Add(this.tlpTechnomancerComplexForm);
-            this.gpbTechnomancerComplexForm.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbTechnomancerComplexForm.Location = new System.Drawing.Point(3, 3);
-            this.gpbTechnomancerComplexForm.Name = "gpbTechnomancerComplexForm";
-            this.gpbTechnomancerComplexForm.Size = new System.Drawing.Size(500, 144);
-            this.gpbTechnomancerComplexForm.TabIndex = 0;
-            this.gpbTechnomancerComplexForm.TabStop = false;
-            this.gpbTechnomancerComplexForm.Tag = "String_ExpenseComplexForm";
-            this.gpbTechnomancerComplexForm.Text = "Complex Form";
-            this.gpbTechnomancerComplexForm.Visible = false;
+            this.cmdAddComplexForm.AutoSize = true;
+            this.cmdAddComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddComplexForm.ContextMenuStrip = this.cmsComplexForm;
+            this.cmdAddComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdAddComplexForm.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddComplexForm.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdAddComplexForm.Name = "cmdAddComplexForm";
+            this.cmdAddComplexForm.Size = new System.Drawing.Size(105, 23);
+            this.cmdAddComplexForm.TabIndex = 147;
+            this.cmdAddComplexForm.Tag = "Button_AddComplexForm";
+            this.cmdAddComplexForm.Text = "Add Complex Form";
+            this.cmdAddComplexForm.UseVisualStyleBackColor = true;
+            this.cmdAddComplexForm.Click += new System.EventHandler(this.cmdAddComplexForm_Click);
+            // 
+            // cmdDeleteComplexForm
+            // 
+            this.cmdDeleteComplexForm.AutoSize = true;
+            this.cmdDeleteComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDeleteComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDeleteComplexForm.Location = new System.Drawing.Point(114, 3);
+            this.cmdDeleteComplexForm.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdDeleteComplexForm.Name = "cmdDeleteComplexForm";
+            this.cmdDeleteComplexForm.Size = new System.Drawing.Size(105, 23);
+            this.cmdDeleteComplexForm.TabIndex = 31;
+            this.cmdDeleteComplexForm.Tag = "String_Delete";
+            this.cmdDeleteComplexForm.Text = "Delete";
+            this.cmdDeleteComplexForm.UseVisualStyleBackColor = true;
+            this.cmdDeleteComplexForm.Click += new System.EventHandler(this.cmdDeleteComplexForm_Click);
             // 
             // tlpTechnomancerComplexForm
             // 
@@ -6318,8 +6293,9 @@ namespace Chummer
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblFV, 1, 2);
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblComplexFormSourceLabel, 0, 4);
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblComplexFormSource, 1, 4);
-            this.tlpTechnomancerComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTechnomancerComplexForm.Location = new System.Drawing.Point(3, 16);
+            this.tlpTechnomancerComplexForm.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpTechnomancerComplexForm.Location = new System.Drawing.Point(310, 29);
+            this.tlpTechnomancerComplexForm.Margin = new System.Windows.Forms.Padding(0);
             this.tlpTechnomancerComplexForm.Name = "tlpTechnomancerComplexForm";
             this.tlpTechnomancerComplexForm.RowCount = 5;
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -6328,7 +6304,7 @@ namespace Chummer
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpTechnomancerComplexForm.Size = new System.Drawing.Size(494, 125);
+            this.tlpTechnomancerComplexForm.Size = new System.Drawing.Size(661, 125);
             this.tlpTechnomancerComplexForm.TabIndex = 0;
             // 
             // lblComplexFormDicePool
@@ -6450,277 +6426,6 @@ namespace Chummer
             this.lblComplexFormSource.Text = "[Source]";
             this.lblComplexFormSource.ToolTipText = "";
             this.lblComplexFormSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // gpbTechnomancerStream
-            // 
-            this.gpbTechnomancerStream.AutoSize = true;
-            this.gpbTechnomancerStream.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbTechnomancerStream.Controls.Add(this.tlpTechnomancerStream);
-            this.gpbTechnomancerStream.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbTechnomancerStream.Location = new System.Drawing.Point(3, 153);
-            this.gpbTechnomancerStream.Name = "gpbTechnomancerStream";
-            this.gpbTechnomancerStream.Size = new System.Drawing.Size(500, 71);
-            this.gpbTechnomancerStream.TabIndex = 1;
-            this.gpbTechnomancerStream.TabStop = false;
-            this.gpbTechnomancerStream.Tag = "String_Stream";
-            this.gpbTechnomancerStream.Text = "Stream";
-            // 
-            // tlpTechnomancerStream
-            // 
-            this.tlpTechnomancerStream.AutoSize = true;
-            this.tlpTechnomancerStream.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTechnomancerStream.ColumnCount = 2;
-            this.tlpTechnomancerStream.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpTechnomancerStream.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancerStream.Controls.Add(this.lblStreamLabel, 0, 0);
-            this.tlpTechnomancerStream.Controls.Add(this.cboStream, 1, 0);
-            this.tlpTechnomancerStream.Controls.Add(this.lblFadingAttributesLabel, 0, 1);
-            this.tlpTechnomancerStream.Controls.Add(this.flpFadingAttributesValue, 1, 1);
-            this.tlpTechnomancerStream.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTechnomancerStream.Location = new System.Drawing.Point(3, 16);
-            this.tlpTechnomancerStream.Name = "tlpTechnomancerStream";
-            this.tlpTechnomancerStream.RowCount = 2;
-            this.tlpTechnomancerStream.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerStream.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerStream.Size = new System.Drawing.Size(494, 52);
-            this.tlpTechnomancerStream.TabIndex = 0;
-            // 
-            // lblStreamLabel
-            // 
-            this.lblStreamLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblStreamLabel.AutoSize = true;
-            this.lblStreamLabel.Location = new System.Drawing.Point(56, 7);
-            this.lblStreamLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblStreamLabel.Name = "lblStreamLabel";
-            this.lblStreamLabel.Size = new System.Drawing.Size(43, 13);
-            this.lblStreamLabel.TabIndex = 100;
-            this.lblStreamLabel.Tag = "Label_Stream";
-            this.lblStreamLabel.Text = "Stream:";
-            // 
-            // cboStream
-            // 
-            this.cboStream.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboStream.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboStream.FormattingEnabled = true;
-            this.cboStream.Location = new System.Drawing.Point(105, 3);
-            this.cboStream.Name = "cboStream";
-            this.cboStream.Size = new System.Drawing.Size(386, 21);
-            this.cboStream.TabIndex = 101;
-            this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
-            // 
-            // lblFadingAttributesLabel
-            // 
-            this.lblFadingAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblFadingAttributesLabel.AutoSize = true;
-            this.lblFadingAttributesLabel.Location = new System.Drawing.Point(3, 33);
-            this.lblFadingAttributesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFadingAttributesLabel.Name = "lblFadingAttributesLabel";
-            this.lblFadingAttributesLabel.Size = new System.Drawing.Size(96, 13);
-            this.lblFadingAttributesLabel.TabIndex = 96;
-            this.lblFadingAttributesLabel.Tag = "Label_ResistFading";
-            this.lblFadingAttributesLabel.Text = "Resist Fading with:";
-            // 
-            // flpFadingAttributesValue
-            // 
-            this.flpFadingAttributesValue.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpFadingAttributesValue.AutoSize = true;
-            this.flpFadingAttributesValue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpFadingAttributesValue.Controls.Add(this.lblFadingAttributes);
-            this.flpFadingAttributesValue.Controls.Add(this.lblFadingAttributesValue);
-            this.flpFadingAttributesValue.Location = new System.Drawing.Point(102, 27);
-            this.flpFadingAttributesValue.Margin = new System.Windows.Forms.Padding(0);
-            this.flpFadingAttributesValue.Name = "flpFadingAttributesValue";
-            this.flpFadingAttributesValue.Size = new System.Drawing.Size(106, 25);
-            this.flpFadingAttributesValue.TabIndex = 187;
-            this.flpFadingAttributesValue.WrapContents = false;
-            // 
-            // lblFadingAttributes
-            // 
-            this.lblFadingAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblFadingAttributes.AutoSize = true;
-            this.lblFadingAttributes.Location = new System.Drawing.Point(3, 6);
-            this.lblFadingAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFadingAttributes.Name = "lblFadingAttributes";
-            this.lblFadingAttributes.Size = new System.Drawing.Size(57, 13);
-            this.lblFadingAttributes.TabIndex = 97;
-            this.lblFadingAttributes.Text = "[Attributes]";
-            // 
-            // lblFadingAttributesValue
-            // 
-            this.lblFadingAttributesValue.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblFadingAttributesValue.AutoSize = true;
-            this.lblFadingAttributesValue.Location = new System.Drawing.Point(66, 6);
-            this.lblFadingAttributesValue.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFadingAttributesValue.Name = "lblFadingAttributesValue";
-            this.lblFadingAttributesValue.Size = new System.Drawing.Size(37, 13);
-            this.lblFadingAttributesValue.TabIndex = 98;
-            this.lblFadingAttributesValue.Text = "[Total]";
-            this.lblFadingAttributesValue.ToolTipText = "";
-            // 
-            // gpbTechnomancerParagon
-            // 
-            this.gpbTechnomancerParagon.AutoSize = true;
-            this.gpbTechnomancerParagon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbTechnomancerParagon.Controls.Add(this.tlpTechnomancerParagon);
-            this.gpbTechnomancerParagon.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbTechnomancerParagon.Location = new System.Drawing.Point(3, 230);
-            this.gpbTechnomancerParagon.MinimumSize = new System.Drawing.Size(500, 0);
-            this.gpbTechnomancerParagon.Name = "gpbTechnomancerParagon";
-            this.gpbTechnomancerParagon.Size = new System.Drawing.Size(500, 69);
-            this.gpbTechnomancerParagon.TabIndex = 2;
-            this.gpbTechnomancerParagon.TabStop = false;
-            this.gpbTechnomancerParagon.Tag = "String_Paragon";
-            this.gpbTechnomancerParagon.Text = "Paragon";
-            // 
-            // tlpTechnomancerParagon
-            // 
-            this.tlpTechnomancerParagon.AutoSize = true;
-            this.tlpTechnomancerParagon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTechnomancerParagon.ColumnCount = 1;
-            this.tlpTechnomancerParagon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancerParagon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpTechnomancerParagon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpTechnomancerParagon.Controls.Add(this.lblParagonInformation, 0, 1);
-            this.tlpTechnomancerParagon.Controls.Add(this.tlpTechnomancerParagonHeader, 0, 0);
-            this.tlpTechnomancerParagon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTechnomancerParagon.Location = new System.Drawing.Point(3, 16);
-            this.tlpTechnomancerParagon.Name = "tlpTechnomancerParagon";
-            this.tlpTechnomancerParagon.RowCount = 2;
-            this.tlpTechnomancerParagon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerParagon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancerParagon.Size = new System.Drawing.Size(494, 50);
-            this.tlpTechnomancerParagon.TabIndex = 0;
-            // 
-            // lblParagonInformation
-            // 
-            this.lblParagonInformation.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblParagonInformation.AutoSize = true;
-            this.lblParagonInformation.Location = new System.Drawing.Point(3, 31);
-            this.lblParagonInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagonInformation.Name = "lblParagonInformation";
-            this.lblParagonInformation.Size = new System.Drawing.Size(108, 13);
-            this.lblParagonInformation.TabIndex = 184;
-            this.lblParagonInformation.Text = "[Paragon Information]";
-            // 
-            // tlpTechnomancerParagonHeader
-            // 
-            this.tlpTechnomancerParagonHeader.AutoSize = true;
-            this.tlpTechnomancerParagonHeader.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTechnomancerParagonHeader.ColumnCount = 4;
-            this.tlpTechnomancerParagonHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpTechnomancerParagonHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpTechnomancerParagonHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpTechnomancerParagonHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpTechnomancerParagonHeader.Controls.Add(this.lblParagonLabel, 0, 0);
-            this.tlpTechnomancerParagonHeader.Controls.Add(this.lblParagonSourceLabel, 2, 0);
-            this.tlpTechnomancerParagonHeader.Controls.Add(this.lblParagon, 1, 0);
-            this.tlpTechnomancerParagonHeader.Controls.Add(this.lblParagonSource, 3, 0);
-            this.tlpTechnomancerParagonHeader.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTechnomancerParagonHeader.Location = new System.Drawing.Point(0, 0);
-            this.tlpTechnomancerParagonHeader.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpTechnomancerParagonHeader.Name = "tlpTechnomancerParagonHeader";
-            this.tlpTechnomancerParagonHeader.RowCount = 1;
-            this.tlpTechnomancerParagonHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancerParagonHeader.Size = new System.Drawing.Size(494, 25);
-            this.tlpTechnomancerParagonHeader.TabIndex = 189;
-            // 
-            // lblParagonLabel
-            // 
-            this.lblParagonLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblParagonLabel.AutoSize = true;
-            this.lblParagonLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblParagonLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagonLabel.Name = "lblParagonLabel";
-            this.lblParagonLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblParagonLabel.TabIndex = 185;
-            this.lblParagonLabel.Tag = "Label_Paragon";
-            this.lblParagonLabel.Text = "Paragon:";
-            // 
-            // lblParagonSourceLabel
-            // 
-            this.lblParagonSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblParagonSourceLabel.AutoSize = true;
-            this.lblParagonSourceLabel.Location = new System.Drawing.Point(253, 6);
-            this.lblParagonSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagonSourceLabel.Name = "lblParagonSourceLabel";
-            this.lblParagonSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblParagonSourceLabel.TabIndex = 187;
-            this.lblParagonSourceLabel.Tag = "Label_Source";
-            this.lblParagonSourceLabel.Text = "Source:";
-            // 
-            // lblParagon
-            // 
-            this.lblParagon.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblParagon.AutoSize = true;
-            this.lblParagon.Location = new System.Drawing.Point(59, 6);
-            this.lblParagon.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagon.Name = "lblParagon";
-            this.lblParagon.Size = new System.Drawing.Size(53, 13);
-            this.lblParagon.TabIndex = 186;
-            this.lblParagon.Text = "[Paragon]";
-            // 
-            // lblParagonSource
-            // 
-            this.lblParagonSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblParagonSource.AutoSize = true;
-            this.lblParagonSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblParagonSource.Location = new System.Drawing.Point(303, 6);
-            this.lblParagonSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblParagonSource.Name = "lblParagonSource";
-            this.lblParagonSource.Size = new System.Drawing.Size(47, 13);
-            this.lblParagonSource.TabIndex = 188;
-            this.lblParagonSource.Text = "[Source]";
-            this.lblParagonSource.ToolTipText = "";
-            this.lblParagonSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // tlpTechnomancerButtons
-            // 
-            this.tlpTechnomancerButtons.AutoSize = true;
-            this.tlpTechnomancerButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTechnomancerButtons.ColumnCount = 2;
-            this.tlpTechnomancerTop.SetColumnSpan(this.tlpTechnomancerButtons, 2);
-            this.tlpTechnomancerButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpTechnomancerButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpTechnomancerButtons.Controls.Add(this.cmdAddComplexForm, 0, 0);
-            this.tlpTechnomancerButtons.Controls.Add(this.cmdDeleteComplexForm, 1, 0);
-            this.tlpTechnomancerButtons.Location = new System.Drawing.Point(0, 0);
-            this.tlpTechnomancerButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpTechnomancerButtons.Name = "tlpTechnomancerButtons";
-            this.tlpTechnomancerButtons.RowCount = 1;
-            this.tlpTechnomancerButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpTechnomancerButtons.Size = new System.Drawing.Size(222, 29);
-            this.tlpTechnomancerButtons.TabIndex = 189;
-            // 
-            // cmdAddComplexForm
-            // 
-            this.cmdAddComplexForm.AutoSize = true;
-            this.cmdAddComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdAddComplexForm.ContextMenuStrip = this.cmsComplexForm;
-            this.cmdAddComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddComplexForm.Location = new System.Drawing.Point(3, 3);
-            this.cmdAddComplexForm.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdAddComplexForm.Name = "cmdAddComplexForm";
-            this.cmdAddComplexForm.Size = new System.Drawing.Size(105, 23);
-            this.cmdAddComplexForm.TabIndex = 147;
-            this.cmdAddComplexForm.Tag = "Button_AddComplexForm";
-            this.cmdAddComplexForm.Text = "Add Complex Form";
-            this.cmdAddComplexForm.UseVisualStyleBackColor = true;
-            this.cmdAddComplexForm.Click += new System.EventHandler(this.cmdAddComplexForm_Click);
-            // 
-            // cmdDeleteComplexForm
-            // 
-            this.cmdDeleteComplexForm.AutoSize = true;
-            this.cmdDeleteComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDeleteComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteComplexForm.Location = new System.Drawing.Point(114, 3);
-            this.cmdDeleteComplexForm.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdDeleteComplexForm.Name = "cmdDeleteComplexForm";
-            this.cmdDeleteComplexForm.Size = new System.Drawing.Size(105, 23);
-            this.cmdDeleteComplexForm.TabIndex = 31;
-            this.cmdDeleteComplexForm.Tag = "String_Delete";
-            this.cmdDeleteComplexForm.Text = "Delete";
-            this.cmdDeleteComplexForm.UseVisualStyleBackColor = true;
-            this.cmdDeleteComplexForm.Click += new System.EventHandler(this.cmdDeleteComplexForm_Click);
             // 
             // tlpTechnomancerBottom
             // 
@@ -16938,6 +16643,18 @@ namespace Chummer
             this.tlpAlias.PerformLayout();
             this.tlpCommonRightSide.ResumeLayout(false);
             this.tlpCommonRightSide.PerformLayout();
+            this.gpbMentorSpirit.ResumeLayout(false);
+            this.gpbMentorSpirit.PerformLayout();
+            this.tlpMentorSpirit.ResumeLayout(false);
+            this.tlpMentorSpirit.PerformLayout();
+            this.tlpMagicianMentorSpiritHeader.ResumeLayout(false);
+            this.tlpMagicianMentorSpiritHeader.PerformLayout();
+            this.gpbTradition.ResumeLayout(false);
+            this.gpbTradition.PerformLayout();
+            this.tlpTradition.ResumeLayout(false);
+            this.tlpTradition.PerformLayout();
+            this.tlpDrainAttributes.ResumeLayout(false);
+            this.tlpDrainAttributes.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
             this.flpNuyen.ResumeLayout(false);
             this.flpNuyen.PerformLayout();
@@ -16962,26 +16679,10 @@ namespace Chummer
             this.splitMagician.ResumeLayout(false);
             this.tlpMagicianTop.ResumeLayout(false);
             this.tlpMagicianTop.PerformLayout();
-            this.flpMagician.ResumeLayout(false);
-            this.flpMagician.PerformLayout();
-            this.gpbMagicianSpell.ResumeLayout(false);
-            this.gpbMagicianSpell.PerformLayout();
-            this.tlpMagicianSpell.ResumeLayout(false);
-            this.tlpMagicianSpell.PerformLayout();
-            this.gpbMagicianTradition.ResumeLayout(false);
-            this.gpbMagicianTradition.PerformLayout();
-            this.tlpMagicianTradition.ResumeLayout(false);
-            this.tlpMagicianTradition.PerformLayout();
-            this.tlpDrainAttributes.ResumeLayout(false);
-            this.tlpDrainAttributes.PerformLayout();
-            this.gpbMagicianMentorSpirit.ResumeLayout(false);
-            this.gpbMagicianMentorSpirit.PerformLayout();
-            this.tlpMagicianMentorSpirit.ResumeLayout(false);
-            this.tlpMagicianMentorSpirit.PerformLayout();
-            this.tlpMagicianMentorSpiritHeader.ResumeLayout(false);
-            this.tlpMagicianMentorSpiritHeader.PerformLayout();
             this.tlpMagicianButtons.ResumeLayout(false);
             this.tlpMagicianButtons.PerformLayout();
+            this.tlpMagicianSpell.ResumeLayout(false);
+            this.tlpMagicianSpell.PerformLayout();
             this.tlpMagicianBottom.ResumeLayout(false);
             this.tlpMagicianBottom.PerformLayout();
             this.tabAdept.ResumeLayout(false);
@@ -16995,26 +16696,10 @@ namespace Chummer
             this.splitTechnomancer.ResumeLayout(false);
             this.tlpTechnomancerTop.ResumeLayout(false);
             this.tlpTechnomancerTop.PerformLayout();
-            this.flpTechnomancer.ResumeLayout(false);
-            this.flpTechnomancer.PerformLayout();
-            this.gpbTechnomancerComplexForm.ResumeLayout(false);
-            this.gpbTechnomancerComplexForm.PerformLayout();
-            this.tlpTechnomancerComplexForm.ResumeLayout(false);
-            this.tlpTechnomancerComplexForm.PerformLayout();
-            this.gpbTechnomancerStream.ResumeLayout(false);
-            this.gpbTechnomancerStream.PerformLayout();
-            this.tlpTechnomancerStream.ResumeLayout(false);
-            this.tlpTechnomancerStream.PerformLayout();
-            this.flpFadingAttributesValue.ResumeLayout(false);
-            this.flpFadingAttributesValue.PerformLayout();
-            this.gpbTechnomancerParagon.ResumeLayout(false);
-            this.gpbTechnomancerParagon.PerformLayout();
-            this.tlpTechnomancerParagon.ResumeLayout(false);
-            this.tlpTechnomancerParagon.PerformLayout();
-            this.tlpTechnomancerParagonHeader.ResumeLayout(false);
-            this.tlpTechnomancerParagonHeader.PerformLayout();
             this.tlpTechnomancerButtons.ResumeLayout(false);
             this.tlpTechnomancerButtons.PerformLayout();
+            this.tlpTechnomancerComplexForm.ResumeLayout(false);
+            this.tlpTechnomancerComplexForm.PerformLayout();
             this.tlpTechnomancerBottom.ResumeLayout(false);
             this.tlpTechnomancerBottom.PerformLayout();
             this.tabAdvancedPrograms.ResumeLayout(false);
@@ -17546,11 +17231,6 @@ namespace Chummer
         private LabelWithToolTip lblComplexFormSource;
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private System.Windows.Forms.TreeView treComplexForms;
-        private ElasticComboBox cboStream;
-        private LabelWithToolTip lblFadingAttributesValue;
-        private System.Windows.Forms.Label lblFadingAttributes;
-        private System.Windows.Forms.Label lblFadingAttributesLabel;
-        private System.Windows.Forms.Label lblStreamLabel;
         private System.Windows.Forms.ContextMenuStrip cmsComplexForm;
         private System.Windows.Forms.Label lblWeaponConceal;
         private System.Windows.Forms.Label lblWeaponConcealLabel;
@@ -17660,14 +17340,6 @@ namespace Chummer
         private SplitButton cmdAddVehicle;
         private LabelWithToolTip lblSpellDicePool;
         private System.Windows.Forms.Label lblSpellDicePoolLabel;
-        private System.Windows.Forms.Label lblMentorSpirit;
-        private System.Windows.Forms.Label lblMentorSpiritLabel;
-        private System.Windows.Forms.Label lblMentorSpiritInformation;
-        private LabelWithToolTip lblDrainAttributesValue;
-        private System.Windows.Forms.Label lblDrainAttributes;
-        private System.Windows.Forms.Label lblDrainAttributesLabel;
-        private ElasticComboBox cboTradition;
-        private System.Windows.Forms.Label lblTraditionLabel;
         private LabelWithToolTip lblSpellSource;
         private System.Windows.Forms.Label lblSpellSourceLabel;
         private System.Windows.Forms.Label lblSpellType;
@@ -17724,19 +17396,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblArmorAttackLabel;
         private System.Windows.Forms.Label lblArmorDeviceRating;
         private System.Windows.Forms.Label lblArmorDeviceRatingLabel;
-	    private ElasticComboBox cboDrain;
-		private System.Windows.Forms.TextBox txtTraditionName;
-        private System.Windows.Forms.Label lblTraditionName;
-        private ElasticComboBox cboSpiritCombat;
-        private System.Windows.Forms.Label lblSpiritCombat;
-        private ElasticComboBox cboSpiritManipulation;
-        private System.Windows.Forms.Label lblSpiritManipulation;
-        private ElasticComboBox cboSpiritIllusion;
-        private System.Windows.Forms.Label lblSpiritIllusion;
-        private ElasticComboBox cboSpiritHealth;
-        private System.Windows.Forms.Label lblSpiritHealth;
-        private ElasticComboBox cboSpiritDetection;
-        private System.Windows.Forms.Label lblSpiritDetection;
         private System.Windows.Forms.Label lblAttributesKarma;
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
@@ -17822,8 +17481,6 @@ namespace Chummer
         private ColorableCheckBox chkIsMainMugshot;
         private System.Windows.Forms.Label lblNumMugshots;
         private Chummer.NumericUpDownEx nudMugshotIndex;
-        private LabelWithToolTip lblTraditionSource;
-        private System.Windows.Forms.Label lblTraditionSourceLabel;
         private PowersTabUserControl tabPowerUc;
         private LabelWithToolTip lblBuildRitualsBPLabel;
         private LabelWithToolTip lblBuildRitualsBP;
@@ -17883,7 +17540,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblDrugEffect;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianTop;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerTop;
-        private System.Windows.Forms.Label lblParagonInformation;
         private System.Windows.Forms.TableLayoutPanel tlpAdvancedPrograms;
         private System.Windows.Forms.TableLayoutPanel tlpCommon;
         private System.Windows.Forms.TableLayoutPanel tlpCommonLeftSide;
@@ -17959,8 +17615,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtGroupName;
         private ColorableCheckBox chkJoinGroup;
         private System.Windows.Forms.GroupBox gpbInitiationType;
-        private System.Windows.Forms.FlowLayoutPanel flpMagician;
-        private System.Windows.Forms.GroupBox gpbMagicianSpell;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianSpell;
         private System.Windows.Forms.GroupBox gpbMagicianTradition;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianTradition;
@@ -17973,10 +17627,6 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gpbTechnomancerComplexForm;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerComplexForm;
         private System.Windows.Forms.Label lblComplexFormDicePoolLabel;
-        private System.Windows.Forms.GroupBox gpbTechnomancerStream;
-        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerStream;
-        private System.Windows.Forms.GroupBox gpbTechnomancerParagon;
-        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagon;
         private LabelWithToolTip lblComplexFormDicePool;
         private ColorableCheckBox chkCyberwareStolen;
         private ColorableCheckBox chkGearStolen;
@@ -18015,7 +17665,6 @@ namespace Chummer
         private LabelWithToolTip lblWildReputationTotal;
         private System.Windows.Forms.TableLayoutPanel tlpMartialArtsButtons;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianButtons;
-        private System.Windows.Forms.TableLayoutPanel tlpDrainAttributes;
         private System.Windows.Forms.TableLayoutPanel tlpMugshotButtons;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerButtons;
         private System.Windows.Forms.TableLayoutPanel tlpAdvancedProgramsButtons;
@@ -18135,12 +17784,6 @@ namespace Chummer
         private ColorableCheckBox chkVehicleHomeNode;
         private ColorableCheckBox chkVehicleActiveCommlink;
         private System.Windows.Forms.TreeView treVehicles;
-        private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpiritHeader;
-        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagonHeader;
-        private System.Windows.Forms.Label lblParagonLabel;
-        private System.Windows.Forms.Label lblParagonSourceLabel;
-        private System.Windows.Forms.Label lblParagon;
-        private LabelWithToolTip lblParagonSource;
         private System.Windows.Forms.FlowLayoutPanel flpNuyen;
         private System.Windows.Forms.TableLayoutPanel tlpVehiclesButtons;
         private System.Windows.Forms.TableLayoutPanel tlpContactsTop;
@@ -18327,6 +17970,37 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryGearNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponAccessoryGearNotes;
         private NumericUpDownEx nudWeaponRating;
+        private System.Windows.Forms.GroupBox gpbTradition;
+        private System.Windows.Forms.TableLayoutPanel tlpTradition;
+        private System.Windows.Forms.Label lblTraditionLabel;
+        private ElasticComboBox cboTradition;
+        private System.Windows.Forms.Label lblTraditionName;
+        private LabelWithToolTip lblTraditionSource;
+        private ElasticComboBox cboSpiritManipulation;
+        private System.Windows.Forms.Label lblTraditionSourceLabel;
+        private System.Windows.Forms.TextBox txtTraditionName;
+        private System.Windows.Forms.Label lblSpiritCombat;
+        private System.Windows.Forms.Label lblSpiritManipulation;
+        private ElasticComboBox cboSpiritCombat;
+        private ElasticComboBox cboSpiritIllusion;
+        private System.Windows.Forms.Label lblSpiritDetection;
+        private ElasticComboBox cboSpiritDetection;
+        private System.Windows.Forms.Label lblSpiritIllusion;
+        private ElasticComboBox cboSpiritHealth;
+        private System.Windows.Forms.Label lblSpiritHealth;
+        private System.Windows.Forms.TableLayoutPanel tlpDrainAttributes;
+        private LabelWithToolTip lblDrainAttributesValue;
+        private System.Windows.Forms.Label lblDrainAttributes;
+        private ElasticComboBox cboDrain;
+        private System.Windows.Forms.Label lblDrainAttributesLabel;
+        private System.Windows.Forms.GroupBox gpbMentorSpirit;
+        private System.Windows.Forms.TableLayoutPanel tlpMentorSpirit;
+        private System.Windows.Forms.Label lblMentorSpiritInformation;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpiritHeader;
+        private System.Windows.Forms.Label lblMentorSpiritLabel;
+        private System.Windows.Forms.Label lblMentorSpiritSourceLabel;
+        private System.Windows.Forms.Label lblMentorSpirit;
+        private LabelWithToolTip lblMentorSpiritSource;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button cmdDeleteSpirit;
         private System.Windows.Forms.TreeView treSpirits;

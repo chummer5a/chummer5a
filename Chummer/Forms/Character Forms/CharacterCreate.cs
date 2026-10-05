@@ -64,6 +64,7 @@ namespace Chummer
         private void ConstructorCommon()
         {
             InitializeComponent();
+            lmtControl.MyToken = GenericToken;
             tabSkillsUc.MyToken = GenericToken;
             tabPowerUc.MyToken = GenericToken;
         }
@@ -677,7 +678,9 @@ namespace Chummer
                                         // Populate the Magician Traditions list.
                                         XPathNavigator xmlTraditionsBaseChummerNode =
                                             (await CharacterObject.LoadDataXPathAsync(
-                                                "traditions.xml", token: GenericToken).ConfigureAwait(false))
+                                                await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false)
+                                                    ? "streams.xml"
+                                                    : "traditions.xml", token: GenericToken).ConfigureAwait(false))
                                             .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
                                         using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                    out List<ListItem> lstTraditions))
@@ -731,6 +734,35 @@ namespace Chummer
                                                 }, GenericToken).ConfigureAwait(false);
                                             }
                                         }
+
+                                        // Set up databindings toggling between drain and fading labels.
+                                        await gpbTradition.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.RESEnabled),
+                                            async (x, t) =>
+                                                await LanguageManager.GetStringAsync(await x.GetRESEnabledAsync(t).ConfigureAwait(false)
+                                                ? "String_Stream"
+                                                : "String_Tradition", token: t).ConfigureAwait(false),
+                                            GenericToken).ConfigureAwait(false);
+                                        await lblTraditionLabel.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.RESEnabled),
+                                            async (x, t) =>
+                                                await LanguageManager.GetStringAsync(await x.GetRESEnabledAsync(t).ConfigureAwait(false)
+                                                ? "Label_Stream"
+                                                : "Label_Tradition", token: t).ConfigureAwait(false),
+                                            GenericToken).ConfigureAwait(false);
+                                        await lblDrainAttributesLabel.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.RESEnabled),
+                                            async (x, t) =>
+                                                await LanguageManager.GetStringAsync(await x.GetRESEnabledAsync(t).ConfigureAwait(false)
+                                                ? "Label_ResistFading"
+                                                : "Label_ResistDrain", token: t).ConfigureAwait(false),
+                                            GenericToken).ConfigureAwait(false);
 
                                         // Populate the Magician Custom Drain Options list.
                                         using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
@@ -800,25 +832,6 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                         await objTradition.SetSourceDetailAsync(
                                             lblTraditionSource, GenericToken).ConfigureAwait(false);
-
-                                        await lblFadingAttributes.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Text = y,
-                                                objTradition,
-                                                nameof(Tradition.DisplayDrainExpression),
-                                                x => x.GetDisplayDrainExpressionAsync(GenericToken), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await lblFadingAttributesValue.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo),
-                                                objTradition,
-                                                nameof(Tradition.DrainValue),
-                                                x => x.GetDrainValueAsync(GenericToken), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await lblFadingAttributesValue.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.ToolTipText = y,
-                                                objTradition,
-                                                nameof(Tradition.DrainValueToolTip),
-                                                x => x.GetDrainValueToolTipAsync(GenericToken), GenericToken)
-                                            .ConfigureAwait(false);
 
                                         using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                    out HashSet<string> limit))
@@ -935,63 +948,6 @@ namespace Chummer
                                             }
                                         }
 
-                                        // Populate the Technomancer Streams list.
-                                        xmlTraditionsBaseChummerNode =
-                                            (await CharacterObject.LoadDataXPathAsync(
-                                                "streams.xml", token: GenericToken).ConfigureAwait(false))
-                                            .SelectSingleNodeAndCacheExpression("/chummer", GenericToken);
-                                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                   out List<ListItem> lstStreams))
-                                        {
-                                            if (xmlTraditionsBaseChummerNode != null)
-                                            {
-                                                foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode
-                                                             .Select(
-                                                                 "traditions/tradition["
-                                                                 + await CharacterObjectSettings
-                                                                     .BookXPathAsync(token: GenericToken)
-                                                                     .ConfigureAwait(false)
-                                                                 + "]"))
-                                                {
-                                                    string strName
-                                                        = xmlTradition.SelectSingleNodeAndCacheExpression(
-                                                                "name", GenericToken)
-                                                            ?.Value;
-                                                    if (!string.IsNullOrEmpty(strName))
-                                                        lstStreams.Add(new ListItem(
-                                                            xmlTradition
-                                                                .SelectSingleNodeAndCacheExpression(
-                                                                    "id", GenericToken)
-                                                                ?.Value
-                                                            ?? strName,
-                                                            xmlTradition
-                                                                .SelectSingleNodeAndCacheExpression(
-                                                                    "translate", GenericToken)
-                                                                ?.Value ?? strName));
-                                                }
-                                            }
-
-                                            if (lstStreams.Count > 1)
-                                            {
-                                                lstStreams.Sort(CompareListItems.CompareNames);
-                                                lstStreams.Insert(0,
-                                                    new ListItem(
-                                                        "None",
-                                                        await LanguageManager.GetStringAsync("String_None",
-                                                                token: GenericToken)
-                                                            .ConfigureAwait(false)));
-                                                await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken)
-                                                    .ConfigureAwait(false);
-                                            }
-                                            else
-                                            {
-                                                await cboStream.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
-                                                    .ConfigureAwait(false);
-                                                await lblStreamLabel.DoThreadSafeAsync(
-                                                    x => x.Visible = false, GenericToken).ConfigureAwait(false);
-                                            }
-                                        }
-
                                         await nudMysticAdeptMAGMagician.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Maximum = y, await CharacterObject.GetAttributeAsync("MAG", token: GenericToken).ConfigureAwait(false),
                                                 nameof(CharacterAttrib.TotalValue),
@@ -1006,21 +962,12 @@ namespace Chummer
                                             (x, y) => x.SetMysticAdeptPowerPointsAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
-                                        TraditionType eTraditionType = await objTradition.GetTypeAsync(GenericToken)
-                                            .ConfigureAwait(false);
                                         string strTraditionSourceIdString =
                                             await objTradition.GetSourceIDStringAsync(GenericToken)
                                                 .ConfigureAwait(false);
                                         await cboTradition.DoThreadSafeAsync(x =>
                                         {
-                                            if (eTraditionType == TraditionType.MAG && !string.IsNullOrEmpty(strTraditionSourceIdString))
-                                                x.SelectedValue = strTraditionSourceIdString;
-                                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                                x.SelectedIndex = 0;
-                                        }, GenericToken).ConfigureAwait(false);
-                                        await cboStream.DoThreadSafeAsync(x =>
-                                        {
-                                            if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                            if (!string.IsNullOrEmpty(strTraditionSourceIdString))
                                                 x.SelectedValue = strTraditionSourceIdString;
                                             if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                 x.SelectedIndex = 0;
@@ -1369,15 +1316,24 @@ namespace Chummer
                                             nameof(Character.FirstMentorSpiritDisplayInformation),
                                             x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken),
                                             GenericToken).ConfigureAwait(false);
-                                        await lblParagon.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Text = y, CharacterObject,
-                                                nameof(Character.FirstMentorSpiritDisplayName),
-                                                x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken)
-                                            .ConfigureAwait(false);
-                                        await lblParagonInformation.RegisterOneWayAsyncDataBindingAsync(
-                                            (x, y) => x.Text = y, CharacterObject,
-                                            nameof(Character.FirstMentorSpiritDisplayInformation),
-                                            x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken),
+                                        // Set up databindings toggling between mentor spirit and paragon labels.
+                                        await gpbMentorSpirit.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.RESEnabled),
+                                            async (x, t) =>
+                                                await LanguageManager.GetStringAsync(await x.GetRESEnabledAsync(t).ConfigureAwait(false)
+                                                ? "String_Paragon"
+                                                : "String_MentorSpirit", token: t).ConfigureAwait(false),
+                                            GenericToken).ConfigureAwait(false);
+                                        await lblMentorSpiritLabel.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Text = y,
+                                            CharacterObject,
+                                            nameof(Character.RESEnabled),
+                                            async (x, t) =>
+                                                await LanguageManager.GetStringAsync(await x.GetRESEnabledAsync(t).ConfigureAwait(false)
+                                                ? "Label_Paragon"
+                                                : "Label_MentorSpirit", token: t).ConfigureAwait(false),
                                             GenericToken).ConfigureAwait(false);
 
                                         await lblSurprise.RegisterOneWayAsyncDataBindingAsync(
@@ -2711,17 +2667,14 @@ namespace Chummer
                     {
                         await objMentor.SetSourceDetailAsync(lblMentorSpiritSource, token)
                             .ConfigureAwait(false);
-                        await objMentor.SetSourceDetailAsync(lblParagonSource, token).ConfigureAwait(false);
                     }
                 }
 
                 if (e.PropertyNames.Contains(nameof(Character.HasMentorSpirit)))
                 {
                     bool blnHasMentorSpirit = await CharacterObject.GetHasMentorSpiritAsync(token).ConfigureAwait(false);
-                    await gpbMagicianMentorSpirit.DoThreadSafeAsync(
+                    await gpbMentorSpirit.DoThreadSafeAsync(
                         x => x.Visible = blnHasMentorSpirit, token).ConfigureAwait(false);
-                    await gpbTechnomancerParagon.DoThreadSafeAsync(x => x.Visible = blnHasMentorSpirit,
-                        token).ConfigureAwait(false);
                 }
 
                 if (e.PropertyNames.Contains(nameof(Character.UseMysticAdeptPPs)))
@@ -2944,7 +2897,9 @@ namespace Chummer
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
                                 (await CharacterObject.LoadDataXPathAsync(
-                                    "traditions.xml", token: token).ConfigureAwait(false))
+                                    await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false)
+                                        ? "streams.xml"
+                                        : "traditions.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token);
                             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -2992,14 +2947,12 @@ namespace Chummer
                                         Tradition objTradition =
                                             await CharacterObject.GetMagicTraditionAsync(token)
                                                 .ConfigureAwait(false);
-                                        TraditionType eTraditionType = await objTradition.GetTypeAsync(token)
-                                            .ConfigureAwait(false);
                                         string strTraditionSourceIdString =
                                             await objTradition.GetSourceIDStringAsync(token)
                                                 .ConfigureAwait(false);
                                         await cboTradition.DoThreadSafeAsync(x =>
                                         {
-                                            if (eTraditionType == TraditionType.MAG && !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                            if (!string.IsNullOrEmpty(strTraditionSourceIdString))
                                                 x.SelectedValue = strTraditionSourceIdString;
                                             if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                 x.SelectedIndex = 0;
@@ -3097,81 +3050,6 @@ namespace Chummer
                                         .ConfigureAwait(false);
                                     await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, token)
                                         .ConfigureAwait(false);
-                                }
-                            }
-
-                            // Populate the Technomancer Streams list.
-                            xmlTraditionsBaseChummerNode =
-                                (await CharacterObject.LoadDataXPathAsync("streams.xml", token: token)
-                                    .ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpression("/chummer", token);
-                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstStreams))
-                            {
-                                if (xmlTraditionsBaseChummerNode != null)
-                                {
-                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                 "traditions/tradition["
-                                                 + await CharacterObjectSettings.BookXPathAsync(token: token)
-                                                     .ConfigureAwait(false)
-                                                 + "]"))
-                                    {
-                                        string strName
-                                            = xmlTradition
-                                                .SelectSingleNodeAndCacheExpression("name", token)
-                                                ?.Value;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            lstStreams.Add(new ListItem(
-                                                xmlTradition
-                                                    .SelectSingleNodeAndCacheExpression(
-                                                        "id", token)
-                                                    ?.Value ?? strName,
-                                                xmlTradition
-                                                    .SelectSingleNodeAndCacheExpression(
-                                                        "translate", token)
-                                                    ?.Value ?? strName));
-                                    }
-                                }
-
-                                if (lstStreams.Count > 1)
-                                {
-                                    lstStreams.Sort(CompareListItems.CompareNames);
-                                    lstStreams.Insert(
-                                        0,
-                                        new ListItem(
-                                            "None",
-                                            await LanguageManager.GetStringAsync("String_None", token: token)
-                                                .ConfigureAwait(false)));
-                                    if (!lstStreams.SequenceEqual(
-                                            await cboStream.DoThreadSafeFuncAsync(
-                                                x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
-                                    {
-                                        await cboStream.PopulateWithListItemsAsync(lstStreams, token)
-                                            .ConfigureAwait(false);
-                                        Tradition objTradition =
-                                            await CharacterObject.GetMagicTraditionAsync(token)
-                                                .ConfigureAwait(false);
-                                        TraditionType eTraditionType = await objTradition.GetTypeAsync(token)
-                                            .ConfigureAwait(false);
-                                        string strTraditionSourceIdString =
-                                            await objTradition.GetSourceIDStringAsync(token)
-                                                .ConfigureAwait(false);
-                                        await cboStream.DoThreadSafeAsync(x =>
-                                        {
-                                            if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
-                                                x.SelectedValue = strTraditionSourceIdString;
-                                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                                x.SelectedIndex = 0;
-                                        }, token).ConfigureAwait(false);
-                                    }
-                                }
-                                else
-                                {
-                                    await this.DoThreadSafeAsync(() =>
-                                    {
-                                        cboStream.Visible = false;
-                                        lblStreamLabel.Visible = false;
-                                    }, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -12226,7 +12104,11 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strSelectedId))
                     return;
 
-                XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml", token: GenericToken)
+                bool blnUseTechnoTraditions = await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false);
+                XmlNode xmlTradition = (await CharacterObject.LoadDataAsync(
+                    blnUseTechnoTraditions
+                                                    ? "streams.xml"
+                                                    : "traditions.xml", token: GenericToken)
                                                              .ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
 
@@ -12259,7 +12141,7 @@ namespace Chummer
                     await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                                .ConfigureAwait(false);
 
-                    if (await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false) == TraditionType.MAG)
+                    if (await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false) != TraditionType.None)
                     {
                         await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
@@ -12329,44 +12211,44 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
                 }
-                else if (await objTradition.CreateAsync(xmlTradition, token: GenericToken).ConfigureAwait(false))
+                else if (await objTradition.CreateAsync(xmlTradition, blnUseTechnoTraditions, token: GenericToken).ConfigureAwait(false))
                 {
                     await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                           .ConfigureAwait(false);
                     await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                           .ConfigureAwait(false);
-                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true, GenericToken).ConfigureAwait(false);
-                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true, GenericToken)
+                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = !blnUseTechnoTraditions, GenericToken).ConfigureAwait(false);
+                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = !blnUseTechnoTraditions, GenericToken)
                                             .ConfigureAwait(false);
-                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true, GenericToken).ConfigureAwait(false);
-                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true, GenericToken)
+                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = !blnUseTechnoTraditions, GenericToken).ConfigureAwait(false);
+                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = !blnUseTechnoTraditions, GenericToken)
                                            .ConfigureAwait(false);
-                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true, GenericToken)
+                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = !blnUseTechnoTraditions, GenericToken)
                                                .ConfigureAwait(false);
                     await cboSpiritCombat.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
-                        x.Visible = true;
+                        x.Visible = !blnUseTechnoTraditions;
                     }, GenericToken).ConfigureAwait(false);
                     await cboSpiritDetection.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
-                        x.Visible = true;
+                        x.Visible = !blnUseTechnoTraditions;
                     }, GenericToken).ConfigureAwait(false);
                     await cboSpiritHealth.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
-                        x.Visible = true;
+                        x.Visible = !blnUseTechnoTraditions;
                     }, GenericToken).ConfigureAwait(false);
                     await cboSpiritIllusion.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
-                        x.Visible = true;
+                        x.Visible = !blnUseTechnoTraditions;
                     }, GenericToken).ConfigureAwait(false);
                     await cboSpiritManipulation.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
-                        x.Visible = true;
+                        x.Visible = !blnUseTechnoTraditions;
                     }, GenericToken).ConfigureAwait(false);
 
                     await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true, GenericToken)
@@ -12412,63 +12294,6 @@ namespace Chummer
             try
             {
                 await RefreshSelectedComplexForm(GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private async void cboStream_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsLoading || IsRefreshing)
-                return;
-            try
-            {
-                string strSelectedId = await cboStream
-                                             .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken)
-                                             .ConfigureAwait(false);
-                if (string.IsNullOrEmpty(strSelectedId))
-                    return;
-
-                XmlNode xmlNewStreamNode = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken)
-                        .ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
-
-                Tradition objTradition =
-                    await CharacterObject.GetMagicTraditionAsync(GenericToken).ConfigureAwait(false);
-                if (strSelectedId == await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
-                    return;
-                if (xmlNewStreamNode == null)
-                {
-                    if (await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false) == TraditionType.RES)
-                    {
-                        await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
-                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
-                    }
-
-                    string strSourceIDString =
-                        await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(strSourceIDString))
-                        await cboStream
-                            .DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString,
-                                GenericToken).ConfigureAwait(false);
-                }
-                else if (await objTradition.CreateAsync(xmlNewStreamNode, true, token: GenericToken)
-                             .ConfigureAwait(false))
-                {
-                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
-                    string strSourceIDString =
-                        await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(strSourceIDString))
-                        await cboStream
-                            .DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString,
-                                GenericToken).ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -14183,23 +14008,12 @@ namespace Chummer
 
                                     Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(GenericToken)
                                         .ConfigureAwait(false);
-                                    TraditionType eTraditionType = await objTradition.GetTypeAsync(GenericToken)
-                                        .ConfigureAwait(false);
                                     string strTraditionSourceIdString =
                                         await objTradition.GetSourceIDStringAsync(GenericToken)
                                             .ConfigureAwait(false);
                                     await cboTradition.DoThreadSafeAsync(x =>
                                     {
-                                        if (eTraditionType == TraditionType.MAG &&
-                                            !string.IsNullOrEmpty(strTraditionSourceIdString))
-                                            x.SelectedValue = strTraditionSourceIdString;
-                                        if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                            x.SelectedIndex = 0;
-                                    }, GenericToken).ConfigureAwait(false);
-                                    await cboStream.DoThreadSafeAsync(x =>
-                                    {
-                                        if (eTraditionType == TraditionType.RES &&
-                                            !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                        if (!string.IsNullOrEmpty(strTraditionSourceIdString))
                                             x.SelectedValue = strTraditionSourceIdString;
                                         if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                             x.SelectedIndex = 0;
@@ -19766,7 +19580,7 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                await tlpMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
                 {
                     TreeNode objSelectedNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
@@ -19774,7 +19588,7 @@ namespace Chummer
                     object objSelectedNodeTag = objSelectedNode?.Tag;
                     if (objSelectedNodeTag is Spell objSpell && objSelectedNode.Level > 0)
                     {
-                        await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        await tlpMagicianSpell.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0, token)
                                             .ConfigureAwait(false);
                         string strText = await objSpell.DisplayDescriptorsAsync(GlobalSettings.Language, token)
@@ -19812,14 +19626,14 @@ namespace Chummer
                     }
                     else
                     {
-                        await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await tlpMagicianSpell.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token)
                                             .ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await gpbMagicianSpell.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    await tlpMagicianSpell.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -19837,7 +19651,7 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                await tlpTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
                 {
                     TreeNode objSelectedNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
@@ -19845,7 +19659,7 @@ namespace Chummer
                     object objSelectedNodeTag = objSelectedNode?.Tag;
                     if (objSelectedNodeTag is ComplexForm objComplexForm && objSelectedNode.Level > 0)
                     {
-                        await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true, token)
+                        await tlpTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                         await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0, token)
                                                   .ConfigureAwait(false);
@@ -19871,7 +19685,7 @@ namespace Chummer
                     }
                     else
                     {
-                        await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false, token)
+                        await tlpTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false, token)
                                                         .ConfigureAwait(false);
                         await cmdDeleteComplexForm
                               .DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token)
@@ -19880,7 +19694,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
+                    await tlpTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
                                                     .ConfigureAwait(false);
                 }
             }
@@ -20361,7 +20175,7 @@ namespace Chummer
                     // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
                     if ((await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false)
                          || await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
-                        && (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).Type
+                        && await (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).GetTypeAsync(token).ConfigureAwait(false)
                         != TraditionType.MAG)
                     {
                         blnValid = false;
@@ -20390,7 +20204,7 @@ namespace Chummer
 
                     // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
                     if (await CharacterObject.GetTechnomancerEnabledAsync(token).ConfigureAwait(false)
-                        && (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).Type
+                        && await (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).GetTypeAsync(token).ConfigureAwait(false)
                         != TraditionType.RES)
                     {
                         blnValid = false;
