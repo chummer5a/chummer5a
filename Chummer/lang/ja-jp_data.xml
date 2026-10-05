@@ -1244,6 +1244,276 @@
       </armor>
     </armors>
     <mods>
+      <mod>
+        <id>9ee8e6ad-2472-485d-ae42-d1978749b456</id>
+        <name>Electrochromic Clothing</name>
+        <translate>エレクトロクロミック・クロージング</translate>
+      </mod>
+      <mod>
+        <id>3fdd4706-9052-4c6b-8c2c-61dbb5c1f16f</id>
+        <name>Feedback Clothing</name>
+        <translate>フィードバック・クロージング</translate>
+      </mod>
+      <mod>
+        <id>142031f9-ab13-4dd0-a5a4-2cc4d06055ea</id>
+        <name>(Synth)Leather</name>
+        <translate>（合成）レザー</translate>
+      </mod>
+      <mod>
+        <id>480b7c5d-758b-4833-8bfd-9487e2455f7d</id>
+        <name>Chemical Protection</name>
+        <translate>化学防護</translate>
+      </mod>
+      <mod>
+        <id>1e002d2e-cd93-4cef-a666-b6c6449f4e9f</id>
+        <name>Chemical Seal</name>
+        <translate>化学遮断</translate>
+      </mod>
+      <mod>
+        <id>dd246520-7306-40fb-88b4-c9cb031208fc</id>
+        <name>Fire Resistance</name>
+        <translate>耐火</translate>
+      </mod>
+      <mod>
+        <id>497b5d6b-df0c-401d-91de-42a224b1fa87</id>
+        <name>Insulation</name>
+        <translate>断熱</translate>
+      </mod>
+      <mod>
+        <id>0cfb049a-a1bd-4daa-96be-9468c37d9c3c</id>
+        <name>Nonconductivity</name>
+        <translate>非導電</translate>
+      </mod>
+      <mod>
+        <id>ba32a6e9-4e6f-47fe-8fd7-c3194a5174d6</id>
+        <name>Thermal Damping</name>
+        <translate>熱感知抑制</translate>
+      </mod>
+      <mod>
+        <id>71c20b15-de11-49eb-93fe-f4d7491283e3</id>
+        <name>Full Body Armor: Helmet</name>
+        <translate>フルボディアーマー：ヘルメット</translate>
+      </mod>
+      <mod>
+        <id>69423033-a7f8-4b80-96c6-0c4a91cd32aa</id>
+        <name>Full Body Armor: Chemical Seal</name>
+        <translate>フルボディアーマー：化学遮断</translate>
+      </mod>
+      <mod>
+        <id>ab16b276-00b3-402e-8629-b38e2905e12f</id>
+        <name>Full Body Armor: Environment Adaptation</name>
+        <translate>フルボディアーマー：環境適応</translate>
+      </mod>
+      <mod>
+        <id>812a7926-3980-4c26-9935-5f1b66abacda</id>
+        <name>Urban Explorer Jumpsuit: Helmet</name>
+        <translate>アーバンエクスプローラー・ジャンプスーツ：ヘルメット</translate>
+      </mod>
+      <mod>
+        <id>dbdaf817-9bfa-4938-a195-b53c63b53e7c</id>
+        <name>Shock Frills</name>
+        <translate>ショックフリル</translate>
+      </mod>
+      <mod>
+        <id>84c3dbd2-6d47-4045-a5d6-7dc926b3ff42</id>
+        <name>Liner - Fire Resistance (6)</name>
+        <translate>ライナー - 耐火 (6)</translate>
+      </mod>
+      <mod>
+        <id>0cbf733c-1fd0-48ae-be2c-b3afe0036fd0</id>
+        <name>Liner - Chemical Protection (6)</name>
+        <translate>ライナー - 化学防護 (6)</translate>
+      </mod>
+      <mod>
+        <id>af3208a9-05b5-47bb-92a1-f3d2ea82f6f0</id>
+        <name>Liner - Insulation (6)</name>
+        <translate>ライナー - 断熱 (6)</translate>
+      </mod>
+      <mod>
+        <id>a2d20826-cc8f-4cb7-84b9-70aee5daae71</id>
+        <name>Liner - Fire Resistance (5)</name>
+        <translate>ライナー - 耐火 (5)</translate>
+      </mod>
+      <mod>
+        <id>995423dc-2fb4-405c-943f-261e6f52df15</id>
+        <name>Liner - Chemical Protection (5)</name>
+        <translate>ライナー - 化学防護 (5)</translate>
+      </mod>
+      <mod>
+        <id>53669b97-36a8-4c54-b894-76c507933be9</id>
+        <name>Liner - Insulation (5)</name>
+        <translate>ライナー - 断熱 (5)</translate>
+      </mod>
+      <mod>
+        <id>b3965c7d-3e19-4aad-9dc0-1ec5b62daea5</id>
+        <name>Liner - Fire Resistance (4)</name>
+        <translate>ライナー - 耐火 (4)</translate>
+      </mod>
+      <mod>
+        <id>ca385470-fdfb-4ac2-bb4d-f88de768541b</id>
+        <name>Liner - Chemical Protection (4)</name>
+        <translate>ライナー - 化学防護 (4)</translate>
+      </mod>
+      <mod>
+        <id>a0043353-1825-42cb-94b2-ddf35b3089b5</id>
+        <name>Liner - Insulation (4)</name>
+        <translate>ライナー - 断熱 (4)</translate>
+      </mod>
+      <mod>
+        <id>f22cd9de-78ce-4ec1-9485-932c47638f52</id>
+        <name>Liner - Fire Resistance (3)</name>
+        <translate>ライナー - 耐火 (3)</translate>
+      </mod>
+      <mod>
+        <id>ba6e7ab8-9e19-41ea-b124-bad6c8d1a515</id>
+        <name>Liner - Chemical Protection (3)</name>
+        <translate>ライナー - 化学防護 (3)</translate>
+      </mod>
+      <mod>
+        <id>cee9f035-3668-4736-b0f2-7607d7156995</id>
+        <name>Liner - Insulation (3)</name>
+        <translate>ライナー - 断熱 (3)</translate>
+      </mod>
+      <mod>
+        <id>8a119129-4c6f-40ab-9832-a61295ee715f</id>
+        <name>Liner - Fire Resistance (2)</name>
+        <translate>ライナー - 耐火 (2)</translate>
+      </mod>
+      <mod>
+        <id>fed9e56c-c1b8-4c68-a16a-4bceb011bc62</id>
+        <name>Liner - Chemical Protection (2)</name>
+        <translate>ライナー - 化学防護 (2)</translate>
+      </mod>
+      <mod>
+        <id>1bff09e4-ea20-4705-ac7b-5bea4a03d925</id>
+        <name>Liner - Insulation (2)</name>
+        <translate>ライナー - 断熱 (2)</translate>
+      </mod>
+      <mod>
+        <id>825652da-5c82-4362-b84e-9fee4c5c6fe1</id>
+        <name>Liner - Fire Resistance (1)</name>
+        <translate>ライナー - 耐火 (1)</translate>
+      </mod>
+      <mod>
+        <id>38942921-ff61-4cdc-937e-3afc951dfcc8</id>
+        <name>Liner - Chemical Protection (1)</name>
+        <translate>ライナー - 化学防護 (1)</translate>
+      </mod>
+      <mod>
+        <id>2cd3a1ed-e44e-4e62-a1d8-9d7271e97575</id>
+        <name>Liner - Insulation (1)</name>
+        <translate>ライナー - 断熱 (1)</translate>
+      </mod>
+      <mod>
+        <id>38168e21-833e-4ab3-8e5c-186468b70ef9</id>
+        <name>Custom Fit</name>
+        <translate>カスタムフィット</translate>
+      </mod>
+      <mod>
+        <id>0d74f2f6-74bf-4c7e-afdf-d44f24c3ac12</id>
+        <name>Custom Fit (Stack)</name>
+        <translate>カスタムフィット(累積)</translate>
+      </mod>
+      <mod>
+        <id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
+        <name>Gear Access</name>
+        <translate>装備アクセス</translate>
+      </mod>
+      <mod>
+        <id>13835ff2-7b9e-47c3-9d8b-7b9a2dbe499d</id>
+        <name>Newest Model</name>
+        <translate>最新モデル</translate>
+      </mod>
+      <mod>
+        <id>a164ac4e-4225-4d82-9785-02ffd39f6566</id>
+        <name>Illuminating</name>
+        <translate>発光</translate>
+      </mod>
+      <mod>
+        <id>8be2bd6a-5fe5-4931-8d6e-9cb95a0b959f</id>
+        <name>Restrictive</name>
+        <translate>動きにくい</translate>
+      </mod>
+      <mod>
+        <id>ebabbd5f-6fd9-4b9a-9350-a251e8652b4b</id>
+        <name>Padded</name>
+        <translate>急所保護</translate>
+      </mod>
+      <mod>
+        <id>53a61bf1-65c3-4c28-b47f-026de40973a4</id>
+        <name>Rapid Transit: Elite</name>
+        <translate>ラピッド・トランジット：エリート</translate>
+      </mod>
+      <mod>
+        <id>a071b454-8a50-4c76-a162-8e086b0ec001</id>
+        <name>Rapid Transit: Platinum</name>
+        <translate>ラピッド・トランジット：プラチナ</translate>
+      </mod>
+      <mod>
+        <id>9a1a569f-4c0c-4291-af5b-89e1334e95b4</id>
+        <name>Rapid Transit: Diamond</name>
+        <translate>ラピッド・トランジット：ダイヤモンド</translate>
+      </mod>
+      <mod>
+        <id>a7d97d66-1f6e-4521-a283-907ca1cd7436</id>
+        <name>Nightshade IR and Contacts</name>
+        <translate>ナイトシェードIRとコンタクト</translate>
+      </mod>
+      <mod>
+        <id>5a0965bd-759c-4e41-8c47-2b87c9de06d6</id>
+        <name>Auto-Injector</name>
+        <translate>自動注射器</translate>
+      </mod>
+      <mod>
+        <id>1a76f859-9511-42cc-85a7-560b813f6a92</id>
+        <name>Fresnel Fabric</name>
+        <translate>フレネル布</translate>
+      </mod>
+      <mod>
+        <id>6c18ff9b-7b46-4311-ac4b-a57733d01df7</id>
+        <name>Pulse Weave</name>
+        <translate>パルス・ウィーブ</translate>
+      </mod>
+      <mod>
+        <id>13047906-3ea3-425c-a3ff-4666cb1a05f5</id>
+        <name>Shock Weave</name>
+        <translate>ショック・ウィーブ</translate>
+      </mod>
+      <mod>
+        <id>c5a66977-3a0b-489f-b7e5-e30965171f8b</id>
+        <name>Universal Mirror Material</name>
+        <translate>自在反射材</translate>
+      </mod>
+      <mod>
+        <id>cf8accf5-4117-4419-ab73-957489038ab9</id>
+        <name>YNT Softweave Armor</name>
+        <translate>YNT ソフトウィーブ・アーマー</translate>
+      </mod>
+      <mod>
+        <id>63f94362-9778-47a6-8317-f306b199277e</id>
+        <name>Ruthenium Polymer Coating</name>
+        <translate>ルテニウム・ポリマー・コーティング</translate>
+      </mod>
+      <mod>
+        <id>b5283cb0-3676-44d3-a7e9-dee099416295</id>
+        <name>Radiation Shielding</name>
+        <translate>放射線遮蔽</translate>
+      </mod>
+      <mod>
+        <id>ed43ded4-1b2f-410a-9322-166c39306d03</id>
+        <name>Gel Packs</name>
+        <translate>ゲルパック</translate>
+      </mod>
+      <mod>
+        <id>a523fbcf-58d5-4727-9dd5-6fbe6b4acbdf</id>
+        <name>Responsive Interface Gear: Armor</name>
+        <translate>レスポンシブ・インターフェース・ギア(RIG)：アーマー</translate>
+      </mod>
+      <mod>
+        <id>a9c0aeb2-e7c5-4cc3-819e-f865545c7b66</id>
+        <name>Responsive Interface Gear: Helmet</name>
+        <translate>レスポンシブ・インターフェース・ギア(RIG)：ヘルメット</translate>
+      </mod>
     </mods>
   </chummer>
   <chummer file="bioware.xml">
