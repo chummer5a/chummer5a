@@ -8440,11 +8440,11 @@ namespace Chummer
                                             if (blnSync)
                                             {
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                if (!_objTradition.Create(xmlTraditionDataNode))
+                                                if (!_objTradition.Create(xmlTraditionDataNode, true))
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _objTradition.ResetTradition();
                                             }
-                                            else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                            else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
                                                 await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                         }
                                         else
@@ -8457,11 +8457,11 @@ namespace Chummer
                                                 if (blnSync)
                                                 {
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    if (!_objTradition.Create(xmlTraditionDataNode))
+                                                    if (!_objTradition.Create(xmlTraditionDataNode, true))
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _objTradition.ResetTradition();
                                                 }
-                                                else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                                else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
                                                     await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                             }
                                             else
@@ -8473,11 +8473,11 @@ namespace Chummer
                                                     if (blnSync)
                                                     {
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        if (!_objTradition.Create(xmlTraditionDataNode))
+                                                        if (!_objTradition.Create(xmlTraditionDataNode, true))
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             _objTradition.ResetTradition();
                                                     }
-                                                    else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                                    else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
                                                         await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
                                             }

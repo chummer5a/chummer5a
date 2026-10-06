@@ -32,13 +32,18 @@ namespace Chummer.UI.Shared
     public partial class LimitTabUserControl : UserControl
     {
         private Character _objCharacter;
-        private readonly CancellationToken _objMyToken;
 
         public event EventHandlerExtensions.SafeAsyncEventHandler MakeDirty;
 
-        public LimitTabUserControl(CancellationToken objMyToken = default)
+        public CancellationToken MyToken { get; set; }
+
+        public LimitTabUserControl() : this(default)
         {
-            _objMyToken = objMyToken;
+            // Need to set up constructors like this so that the WinForms designer doesn't freak out
+        }
+
+        public LimitTabUserControl(CancellationToken objMyToken)
+        {
             InitializeComponent();
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
@@ -54,6 +59,8 @@ namespace Chummer.UI.Shared
                 tssItem.UpdateLightDarkMode(objMyToken);
                 tssItem.TranslateToolStripItemsRecursively(token: objMyToken);
             }
+
+            MyToken = objMyToken;
         }
 
         private async void LimitTabUserControl_Load(object sender, EventArgs e)
@@ -62,10 +69,10 @@ namespace Chummer.UI.Shared
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                 try
                 {
-                    await RealLoad(_objMyToken).ConfigureAwait(false);
+                    await RealLoad(MyToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -101,28 +108,28 @@ namespace Chummer.UI.Shared
                 return;
 
             await lblPhysical.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitPhysical), x => x.GetLimitPhysicalAsync(_objMyToken), token)
+                    nameof(Character.LimitPhysical), x => x.GetLimitPhysicalAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblPhysical.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitPhysicalToolTip), x => x.GetLimitPhysicalToolTipAsync(_objMyToken), token)
+                    nameof(Character.LimitPhysicalToolTip), x => x.GetLimitPhysicalToolTipAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblMental.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitMental), x => x.GetLimitMentalAsync(_objMyToken), token)
+                    nameof(Character.LimitMental), x => x.GetLimitMentalAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblMental.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitMentalToolTip), x => x.GetLimitMentalToolTipAsync(_objMyToken), token)
+                    nameof(Character.LimitMentalToolTip), x => x.GetLimitMentalToolTipAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblSocial.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitSocial), x => x.GetLimitSocialAsync(_objMyToken), token)
+                    nameof(Character.LimitSocial), x => x.GetLimitSocialAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblSocial.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitSocialToolTip), x => x.GetLimitSocialToolTipAsync(_objMyToken), token)
+                    nameof(Character.LimitSocialToolTip), x => x.GetLimitSocialToolTipAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblAstral.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objCharacter,
-                    nameof(Character.LimitAstral), x => x.GetLimitAstralAsync(_objMyToken), token)
+                    nameof(Character.LimitAstral), x => x.GetLimitAstralAsync(MyToken), token)
                 .ConfigureAwait(false);
             await lblAstral.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objCharacter,
-                    nameof(Character.LimitAstralToolTip), x => x.GetLimitAstralToolTipAsync(_objMyToken), token)
+                    nameof(Character.LimitAstralToolTip), x => x.GetLimitAstralToolTipAsync(MyToken), token)
                 .ConfigureAwait(false);
 
             _objCharacter.LimitModifiers.CollectionChangedAsync += LimitModifierCollectionChanged;
@@ -137,10 +144,10 @@ namespace Chummer.UI.Shared
             {
                 using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
                        await ThreadSafeForm<SelectLimitModifier>.GetAsync(() =>
-                               new SelectLimitModifier(null, "Physical", "Mental", "Social"), _objMyToken)
+                               new SelectLimitModifier(null, "Physical", "Mental", "Social"), MyToken)
                            .ConfigureAwait(false))
                 {
-                    if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter, _objMyToken)
+                    if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter, MyToken)
                             .ConfigureAwait(false) == DialogResult.Cancel)
                         return;
 
@@ -152,7 +159,7 @@ namespace Chummer.UI.Shared
                     if (objLimitModifier.InternalId.IsEmptyGuid())
                         return;
 
-                    await _objCharacter.LimitModifiers.AddAsync(objLimitModifier, _objMyToken).ConfigureAwait(false);
+                    await _objCharacter.LimitModifiers.AddAsync(objLimitModifier, MyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -165,11 +172,11 @@ namespace Chummer.UI.Shared
         {
             try
             {
-                _objMyToken.ThrowIfCancellationRequested();
-                if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: _objMyToken)
+                MyToken.ThrowIfCancellationRequested();
+                if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: MyToken)
                         .ConfigureAwait(false) is ICanRemove selectedObject))
                     return;
-                await selectedObject.RemoveAsync(token: _objMyToken).ConfigureAwait(false);
+                await selectedObject.RemoveAsync(token: MyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -183,11 +190,11 @@ namespace Chummer.UI.Shared
             {
                 try
                 {
-                    _objMyToken.ThrowIfCancellationRequested();
-                    if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: _objMyToken)
+                    MyToken.ThrowIfCancellationRequested();
+                    if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: MyToken)
                             .ConfigureAwait(false) is ICanRemove selectedObject))
                         return;
-                    await selectedObject.RemoveAsync(token: _objMyToken).ConfigureAwait(false);
+                    await selectedObject.RemoveAsync(token: MyToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -200,7 +207,7 @@ namespace Chummer.UI.Shared
         {
             try
             {
-                TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token: _objMyToken)
+                TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token: MyToken)
                     .ConfigureAwait(false);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
                 switch (objSelectedNodeTag)
@@ -208,7 +215,7 @@ namespace Chummer.UI.Shared
                     case null:
                         return;
                     case IHasNotes objNotes:
-                        await WriteNotes(objNotes, objSelectedNode, _objMyToken).ConfigureAwait(false);
+                        await WriteNotes(objNotes, objSelectedNode, MyToken).ConfigureAwait(false);
                         break;
                     default:
                     {
@@ -244,7 +251,7 @@ namespace Chummer.UI.Shared
                             }, token: t).ConfigureAwait(false);
                             if (MakeDirty != null)
                                 await MakeDirty.Invoke(this, EventArgs.Empty, t).ConfigureAwait(false);
-                        }, token: _objMyToken).ConfigureAwait(false);
+                        }, token: MyToken).ConfigureAwait(false);
 
                         break;
                     }
@@ -260,7 +267,7 @@ namespace Chummer.UI.Shared
         {
             try
             {
-                await UpdateLimitModifier(_objMyToken).ConfigureAwait(false);
+                await UpdateLimitModifier(MyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -6229,21 +6229,6 @@ namespace Chummer
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Opens the premade drug selection dialog when the Add Drug button is clicked.
-        /// </summary>
-        protected async void btnAddDrug_Click(object _, EventArgs e)
-        {
-            try
-            {
-                await AddPremadeDrugAsync(GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
         protected async Task RefreshDrugs(TreeView treDrugs, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

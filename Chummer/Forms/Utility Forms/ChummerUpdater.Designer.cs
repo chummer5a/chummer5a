@@ -34,7 +34,6 @@ namespace Chummer
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChummerUpdater));
-            this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();
             this.pgbOverallProgress = new System.Windows.Forms.ProgressBar();
             this.cmdCleanReinstall = new System.Windows.Forms.Button();
@@ -43,21 +42,10 @@ namespace Chummer
             this.cmdRestart = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpBottom = new System.Windows.Forms.TableLayoutPanel();
+            this.rtfNotes = new System.Windows.Forms.RichTextBox();
             this.tlpMain.SuspendLayout();
             this.tlpBottom.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // webNotes
-            // 
-            this.webNotes.AllowNavigation = false;
-            this.tlpMain.SetColumnSpan(this.webNotes, 2);
-            this.webNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webNotes.Location = new System.Drawing.Point(3, 3);
-            this.webNotes.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webNotes.Name = "webNotes";
-            this.webNotes.Size = new System.Drawing.Size(760, 483);
-            this.webNotes.TabIndex = 0;
-            this.webNotes.WebBrowserShortcutsEnabled = false;
             // 
             // cmdUpdate
             // 
@@ -149,10 +137,10 @@ namespace Chummer
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Controls.Add(this.webNotes, 0, 0);
             this.tlpMain.Controls.Add(this.lblUpdaterStatus, 1, 1);
             this.tlpMain.Controls.Add(this.lblUpdaterStatusLabel, 0, 1);
             this.tlpMain.Controls.Add(this.tlpBottom, 0, 2);
+            this.tlpMain.Controls.Add(this.rtfNotes, 0, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -187,6 +175,20 @@ namespace Chummer
             this.tlpBottom.Size = new System.Drawing.Size(766, 29);
             this.tlpBottom.TabIndex = 107;
             // 
+            // rtfNotes
+            // 
+            this.rtfNotes.BackColor = System.Drawing.SystemColors.Window;
+            this.tlpMain.SetColumnSpan(this.rtfNotes, 2);
+            this.rtfNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtfNotes.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtfNotes.Location = new System.Drawing.Point(3, 3);
+            this.rtfNotes.Name = "rtfNotes";
+            this.rtfNotes.ReadOnly = true;
+            this.rtfNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtfNotes.Size = new System.Drawing.Size(760, 483);
+            this.rtfNotes.TabIndex = 108;
+            this.rtfNotes.Text = "";
+            // 
             // ChummerUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -212,8 +214,6 @@ namespace Chummer
         }
 
         #endregion
-
-        private System.Windows.Forms.WebBrowser webNotes;
         private System.Windows.Forms.Button cmdUpdate;
         private System.Windows.Forms.ProgressBar pgbOverallProgress;
         private System.Windows.Forms.Button cmdCleanReinstall;
@@ -222,5 +222,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdRestart;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpBottom;
+        private System.Windows.Forms.RichTextBox rtfNotes;
     }
 }

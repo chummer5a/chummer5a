@@ -33,6 +33,7 @@ Application:
 - Attempting to copy data no longer causes the program to crash.
 - Fixed a bug allowing skills that should not be able to take specializations being allowed to do so when loading in an existing character save before making any changes to it.
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
+- Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 
 Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
