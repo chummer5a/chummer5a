@@ -8704,7 +8704,6 @@ namespace Chummer
             // 
             this.nudSpiritForce.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudSpiritForce.AutoSize = true;
-            this.nudSpiritForce.Enabled = false;
             this.nudSpiritForce.Location = new System.Drawing.Point(91, 30);
             this.nudSpiritForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudSpiritForce.Maximum = new decimal(new int[] {
@@ -9538,7 +9537,6 @@ namespace Chummer
             // 
             this.nudSpriteLevel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudSpriteLevel.AutoSize = true;
-            this.nudSpriteLevel.Enabled = false;
             this.nudSpriteLevel.Location = new System.Drawing.Point(79, 30);
             this.nudSpriteLevel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudSpriteLevel.Maximum = new decimal(new int[] {
