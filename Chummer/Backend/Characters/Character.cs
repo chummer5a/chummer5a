@@ -199,6 +199,9 @@ namespace Chummer
         private string _strPriorityTalent = string.Empty;
         private readonly ThreadSafeList<string> _lstPrioritySkills;
 
+        private readonly SkillsSection _objSkillsSection;
+        private readonly AttributeSection _objAttributeSection;
+
         // Lists.
         private readonly ThreadSafeObservableCollection<Improvement> _lstImprovements;
         private readonly ThreadSafeObservableCollection<MentorSpirit> _lstMentorSpirits;
@@ -250,6 +253,8 @@ namespace Chummer
 
         private readonly LockingOrderedSet<Func<Character, bool>> _setDoOnSaveCompleted;
         private readonly LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> _setDoOnSaveCompletedAsync;
+        private readonly ConcurrentHashSet<Func<CancellationToken, bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<CancellationToken, bool>>();
+        private readonly ConcurrentHashSet<Func<CancellationToken, Task<bool>>> _setPostLoadAsyncMethods = new ConcurrentHashSet<Func<CancellationToken, Task<bool>>>();
 
         /// <summary>
         /// Set of unique methods to run after a <see cref="Save"/> or <see cref="SaveAsync"/> call is otherwise finished.
@@ -49550,6 +49555,68 @@ namespace Chummer
             }
         }
 
+        public bool AllowAdeptWayPowerDiscount
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!AnyPowerAdeptWayDiscountEnabled)
+                        return false;
+
+                    decimal decMAG;
+                    if (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute)
+                    {
+                        // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+                        decMAG = MAGAdept.TotalValue;
+                    }
+                    else
+                    {
+                        // The character is just an Adept, so use the full value.
+                        decMAG = MAG.TotalValue;
+                    }
+
+                    return Powers.Count(p => p.DiscountedAdeptWay) < (decMAG / 2).ToInt32();
+                }
+            }
+        }
+
+        public async Task<bool> GetAllowAdeptWayPowerDiscountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+
+                if (!await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
+                    return false;
+
+                decimal decMAG;
+                if (await GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
+                    await (await GetSettingsAsync(token).ConfigureAwait(false))
+                        .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                {
+                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
+                    decMAG = await (await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    // The character is just an Adept, so use the full value.
+                    decMAG = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                }
+
+                return await (await GetPowersAsync(token).ConfigureAwait(false)).CountAsync((p, t) => p.GetDiscountedAdeptWayAsync(t), token: token)
+                    .ConfigureAwait(false) < (decMAG / 2).ToInt32();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range.
         /// </summary>
@@ -55209,10 +55276,6 @@ namespace Chummer
 
         private SourceString _objCachedSourceDetail;
         private readonly AsyncFriendlyReaderWriterLock _objCachedSourceDetailLock;
-        private readonly SkillsSection _objSkillsSection;
-        private readonly AttributeSection _objAttributeSection;
-        private readonly ConcurrentHashSet<Func<CancellationToken, bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<CancellationToken, bool>>();
-        private readonly ConcurrentHashSet<Func<CancellationToken, Task<bool>>> _setPostLoadAsyncMethods = new ConcurrentHashSet<Func<CancellationToken, Task<bool>>>();
 
         public SourceString SourceDetail
         {
@@ -55321,68 +55384,6 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        public bool AllowAdeptWayPowerDiscount
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                {
-                    if (!AnyPowerAdeptWayDiscountEnabled)
-                        return false;
-
-                    decimal decMAG;
-                    if (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute)
-                    {
-                        // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                        decMAG = MAGAdept.TotalValue;
-                    }
-                    else
-                    {
-                        // The character is just an Adept, so use the full value.
-                        decMAG = MAG.TotalValue;
-                    }
-
-                    return Powers.Count(p => p.DiscountedAdeptWay) < (decMAG / 2).ToInt32();
-                }
-            }
-        }
-
-        public async Task<bool> GetAllowAdeptWayPowerDiscountAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-
-                if (!await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
-                    return false;
-
-                decimal decMAG;
-                if (await GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
-                    await (await GetSettingsAsync(token).ConfigureAwait(false))
-                        .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
-                {
-                    // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    decMAG = await (await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                        .GetTotalValueAsync(token).ConfigureAwait(false);
-                }
-                else
-                {
-                    // The character is just an Adept, so use the full value.
-                    decMAG = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
-                        .GetTotalValueAsync(token).ConfigureAwait(false);
-                }
-
-                return await (await GetPowersAsync(token).ConfigureAwait(false)).CountAsync((p, t) => p.GetDiscountedAdeptWayAsync(t), token: token)
-                    .ConfigureAwait(false) < (decMAG / 2).ToInt32();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
