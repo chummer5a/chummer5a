@@ -19774,7 +19774,6 @@ namespace Chummer
                         {
                             x.MaximumAsInt = intMaxForce;
                             x.ValueAsInt = Math.Min(intForce, intMaxForce);
-
                         }, token).ConfigureAwait(false);
 
                         bool blnBound = await objSpirit.GetBoundAsync(token).ConfigureAwait(false);
@@ -19867,13 +19866,12 @@ namespace Chummer
                         string strSelectedType = await objSprite.GetNameAsync(token).ConfigureAwait(false);
                         await cboSpriteType.DoThreadSafeAsync(x => x.SelectedValue = strSelectedType, token).ConfigureAwait(false);
 
-                        int intLevel = await objSpirit.GetForceAsync(token).ConfigureAwait(false);
+                        int intLevel = await objSprite.GetForceAsync(token).ConfigureAwait(false);
                         int intMaxLevel = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false);
                         await nudSpriteLevel.DoThreadSafeAsync(x =>
                         {
                             x.MaximumAsInt = intMaxLevel;
                             x.ValueAsInt = Math.Min(intLevel, intMaxLevel);
-
                         }, token).ConfigureAwait(false);
 
                         bool blnRegistered = await objSprite.GetBoundAsync(token).ConfigureAwait(false);
