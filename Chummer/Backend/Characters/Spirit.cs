@@ -889,33 +889,56 @@ namespace Chummer
 
         private void RefreshIgnoreBoundSpiritLimitFromData(CancellationToken token = default)
         {
-            // Avoid GetNode() here: callers often already hold LockObject write lock.
-            bool blnIgnore = false;
-            if (!string.IsNullOrEmpty(_strName))
+            token.ThrowIfCancellationRequested();
+            // Avoid GetNode() here: callers often already hold LockObject write lock, but we should still set locks, just in case.
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                XPathNavigator objNode = CharacterObject
-                    .LoadDataXPath(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
-                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
-                objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                bool blnIgnore = false;
+                if (!string.IsNullOrEmpty(_strName))
+                {
+                    XPathNavigator objNode = CharacterObject
+                        .LoadDataXPath(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
+                        .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
+                    objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                }
+                using (LockObject.EnterWriteLock(token))
+                    _blnIgnoreBoundSpiritLimit = blnIgnore;
             }
-            _blnIgnoreBoundSpiritLimit = blnIgnore;
         }
 
         private async Task RefreshIgnoreBoundSpiritLimitFromDataAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Avoid GetNodeAsync() here: callers often already hold LockObject write lock.
-            bool blnIgnore = false;
-            if (!string.IsNullOrEmpty(_strName))
+            // Avoid GetNodeAsync() here: callers often already hold LockObject write lock, but we should still set locks, just in case.
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                SpiritType eType = _eEntityType;
-                XPathNavigator objNode = (await CharacterObject
-                        .LoadDataXPathAsync(eType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
-                        .ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
-                objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                token.ThrowIfCancellationRequested();
+                bool blnIgnore = false;
+                if (!string.IsNullOrEmpty(_strName))
+                {
+                    SpiritType eType = _eEntityType;
+                    XPathNavigator objNode = (await CharacterObject
+                            .LoadDataXPathAsync(eType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
+                            .ConfigureAwait(false))
+                        .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
+                    objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                }
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnIgnoreBoundSpiritLimit = blnIgnore;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
-            _blnIgnoreBoundSpiritLimit = blnIgnore;
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>

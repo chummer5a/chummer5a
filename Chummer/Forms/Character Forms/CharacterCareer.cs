@@ -1641,7 +1641,7 @@ namespace Chummer
                                     {
                                         await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
                                             token: GenericToken).ConfigureAwait(false);
-                                        await RefreshSpirits(panSpirits, panSprites, token: GenericToken)
+                                        await RefreshSpirits(treSpirits, treSprites, cmsSpirit, cmsSprite, token: GenericToken)
                                             .ConfigureAwait(false);
                                         await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes,
                                             token: GenericToken).ConfigureAwait(false);
@@ -2196,7 +2196,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshSpiritsClearBindings(panSpirits, panSprites, token).ConfigureAwait(false);
+                await RefreshSpiritsClearBindings(treSpirits, treSprites, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -2208,7 +2208,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshSpirits(panSpirits, panSprites, e, token).ConfigureAwait(false);
+                await RefreshSpirits(treSpirits, treSprites, cmsSpirit, cmsSprite, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -2601,7 +2601,7 @@ namespace Chummer
                                     RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
                                     RefreshContactsClearBindings(panContacts, panEnemies, panPets,
                                         CancellationToken.None),
-                                    RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                    RefreshSpiritsClearBindings(treSpirits, treSprites,
                                         CancellationToken.None),
                                     RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
                                         flpSustainedCritterPowers,
@@ -3092,11 +3092,8 @@ namespace Chummer
                     }
 
                     await cmdAddSpirit
-                        .DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled, token)
+                        .DoThreadSafeAsync(x => x.Enabled = blnMagicianEnabled, token)
                         .ConfigureAwait(false);
-                    await panSpirits
-                            .DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled, token)
-                            .ConfigureAwait(false);
                 }
 
                 if (e.PropertyNames.Contains(nameof(Character.AdeptEnabled)))
@@ -3514,6 +3511,27 @@ namespace Chummer
                         .ConfigureAwait(false);
                 }
 
+                if (e.PropertyNames.Contains(nameof(Character.MagicTradition))
+                    || e.PropertyNames.Contains(nameof(Character.SpiritTypeListChanged)))
+                {
+                    Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false);
+                    if (await objTradition.GetTypeAsync(token).ConfigureAwait(false) == TraditionType.MAG)
+                    {
+                        await RebuildSpiritList(objTradition, cboSpiritType, token).ConfigureAwait(false);
+                        await cboSpriteType.PopulateWithListItemAsync(ListItem.Blank, token).ConfigureAwait(false);
+                    }
+                    else if (await objTradition.GetTypeAsync(token).ConfigureAwait(false) == TraditionType.RES)
+                    {
+                        await cboSpiritType.PopulateWithListItemAsync(ListItem.Blank, token).ConfigureAwait(false);
+                        await RebuildSpiritList(objTradition, cboSpriteType, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await cboSpiritType.PopulateWithListItemAsync(ListItem.Blank, token).ConfigureAwait(false);
+                        await cboSpriteType.PopulateWithListItemAsync(ListItem.Blank, token).ConfigureAwait(false);
+                    }
+                }
+
                 if (e.PropertyNames.Contains(nameof(Character.NuyenBP))
                     || e.PropertyNames.Contains(nameof(Character.MetatypeBP))
                     || e.PropertyNames.Contains(nameof(Character.ContactPoints))
@@ -3638,7 +3656,7 @@ namespace Chummer
                             // Refresh all trees because enabled sources can change the nodes that are visible
                             await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
                                 token: token).ConfigureAwait(false);
-                            await RefreshSpirits(panSpirits, panSprites, token: token)
+                            await RefreshSpirits(treSpirits, treSprites, cmsSpirit, cmsSprite, token: token)
                                 .ConfigureAwait(false);
                             await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes,
                                 token: token).ConfigureAwait(false);
@@ -17312,6 +17330,309 @@ namespace Chummer
             }
         }
 
+        private async void tsSpiritNotes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await WriteNotes(
+                    await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false),
+                    GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cboSpiritType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await objSpirit.SetNameAsync(await cboSpiritType.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void nudSpiritForce_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await objSpirit.SetForceAsync(await nudSpiritForce.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkSpiritBound_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await objSpirit.SetBoundAsync(await chkSpiritBound.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkSpiritFettered_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await objSpirit.SetFetteredAsync(await chkSpiritFettered.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void txtSpiritName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void nudSpiritServicesOwed_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await objSpirit.SetServicesOwedAsync(await nudSpiritServicesOwed.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpiritLinkToFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await LinkSpiritToFile(objSpirit, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpiritOpenLinkedFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await OpenSpiritLinkedFile(objSpirit, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpiritRemoveLinkedFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await RemoveSpiritLinkedFile(objSpirit, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdDeleteSpirit_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await DeleteSpirit(objSpirit, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Node.Checked)
@@ -18026,6 +18347,309 @@ namespace Chummer
             try
             {
                 await RefreshSelectedSprite(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsSpriteNotes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await WriteNotes(
+                    await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false),
+                    GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cboSpriteType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await objSprite.SetNameAsync(await cboSpriteType.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void nudSpriteLevel_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await objSprite.SetForceAsync(await nudSpriteLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkSpriteRegistered_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await objSprite.SetBoundAsync(await chkSpriteRegistered.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkSpritePet_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await objSprite.SetFetteredAsync(await chkSpritePet.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void txtSpriteName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void nudSpriteTasksOwed_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await objSprite.SetServicesOwedAsync(await nudSpriteTasksOwed.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpriteLinkToFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await LinkSpiritToFile(objSprite, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpriteOpenLinkedFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await OpenSpiritLinkedFile(objSprite, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpriteRemoveLinkedFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await RemoveSpiritLinkedFile(objSprite, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdDeleteSprite_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await DeleteSpirit(objSprite, GenericToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {

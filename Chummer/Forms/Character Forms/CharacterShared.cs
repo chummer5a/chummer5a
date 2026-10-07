@@ -36,6 +36,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Enums;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Uniques;
 using Chummer.UI.Attributes;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -11321,59 +11322,38 @@ namespace Chummer
 
         #endregion Additional Relationships Tab Control Events
 
-        public async Task RefreshSpiritsClearBindings(Panel panSpirits, Panel panSprites, CancellationToken token = default)
+        public async Task RefreshSpiritsClearBindings(TreeView treSpirits, TreeView treSprites, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (treSpirits == null && treSprites == null)
+                return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 SkipUpdate = true;
                 try
                 {
-                    if (panSpirits != null)
+                    if (treSpirits != null)
                     {
-                        await panSpirits.DoThreadSafeAsync((x, t) =>
+                        foreach (TreeNode objParentNode in await treSpirits.DoThreadSafeFuncAsync(x => x.Nodes, token).ConfigureAwait(false))
                         {
-                            x.SuspendLayout();
-                            try
+                            foreach (TreeNode objNode in objParentNode.Nodes)
                             {
-                                for (int i = x.Controls.Count - 1; i >= 0; --i)
-                                {
-                                    t.ThrowIfCancellationRequested();
-                                    if (!(x.Controls[i] is SpiritControl objSpiritControl))
-                                        continue;
-                                    objSpiritControl.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                }
+                                if (objNode.Tag is Spirit objSpirit)
+                                    objSpirit.StopTrackingTreeNodeForUpdates(objNode);
                             }
-                            finally
-                            {
-                                x.ResumeLayout();
-                            }
-                        }, token).ConfigureAwait(false);
+                        }
                     }
-
-                    if (panSprites != null)
+                    if (treSprites != null)
                     {
-                        await panSprites.DoThreadSafeAsync((x, t) =>
+                        foreach (TreeNode objParentNode in await treSprites.DoThreadSafeFuncAsync(x => x.Nodes, token).ConfigureAwait(false))
                         {
-                            x.SuspendLayout();
-                            try
+                            foreach (TreeNode objNode in objParentNode.Nodes)
                             {
-                                for (int i = x.Controls.Count - 1; i >= 0; --i)
-                                {
-                                    t.ThrowIfCancellationRequested();
-                                    if (!(x.Controls[i] is SpiritControl objSpiritControl))
-                                        continue;
-                                    objSpiritControl.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                }
+                                if (objNode.Tag is Spirit objSpirit)
+                                    objSpirit.StopTrackingTreeNodeForUpdates(objNode);
                             }
-                            finally
-                            {
-                                x.ResumeLayout();
-                            }
-                        }, token).ConfigureAwait(false);
+                        }
                     }
                 }
                 finally
@@ -11387,10 +11367,10 @@ namespace Chummer
             }
         }
 
-        public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
+        public async Task RefreshSpirits(TreeView treSpirits, TreeView treSprites, ContextMenuStrip cmsSpirit, ContextMenuStrip cmsSprite, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (panSpirits == null && panSprites == null)
+            if (treSpirits == null && treSprites == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -11398,346 +11378,251 @@ namespace Chummer
                 SkipUpdate = true;
                 try
                 {
+                    string strSelectedSpiritId = string.Empty;
+                    string strSelectedSpriteId = string.Empty;
+                    if (treSpirits != null)
+                    {
+                        for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                              .ConfigureAwait(false);
+                                                              objSelectedNode != null;
+                                                              objSelectedNode = objSelectedNode.Parent)
+                        {
+                            if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
+                            {
+                                strSelectedSpiritId = objSelectedId.InternalId;
+                                break;
+                            }
+                        }
+                    }
+                    if (treSprites != null)
+                    {
+                        for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                              .ConfigureAwait(false);
+                                                              objSelectedNode != null;
+                                                              objSelectedNode = objSelectedNode.Parent)
+                        {
+                            if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
+                            {
+                                strSelectedSpriteId = objSelectedId.InternalId;
+                                break;
+                            }
+                        }
+                    }
+
+                    TreeNode objSpiritsParentNode = null;
+                    TreeNode objSpritesParentNode = null;
+
                     if (e == null ||
                         e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        if (panSpirits != null)
-                            await panSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                        if (panSprites != null)
-                            await panSprites.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        if (treSpirits != null)
+                            await treSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        if (treSprites != null)
+                            await treSprites.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                         try
                         {
-                            if (panSpirits != null)
-                                await panSpirits.DoThreadSafeAsync(x => x.Controls.Clear(), token)
-                                    .ConfigureAwait(false);
-                            if (panSprites != null)
-                                await panSprites.DoThreadSafeAsync(x => x.Controls.Clear(), token)
-                                    .ConfigureAwait(false);
-                            int intSpirits = -1;
-                            int intSprites = -1;
-                            await CharacterObject.Spirits.ForEachAsync(async (objSpirit, t) =>
+                            await treSpirits.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+
+                            await CharacterObject.Spirits.ForEachWithSideEffectsAsync((objSpirit, t) => AddToTree(objSpirit, false, t), token).ConfigureAwait(false);
+
+                            if (treSpirits != null && !string.IsNullOrEmpty(strSelectedSpiritId))
                             {
-                                bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(t).ConfigureAwait(false) ==
-                                                   SpiritType.Spirit;
-                                if (blnIsSpirit)
-                                {
-                                    if (panSpirits == null)
-                                        return;
-                                }
-                                else if (panSprites == null)
-                                    return;
-
-                                SpiritControl objSpiritControl
-                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit, GenericToken),
-                                            t)
-                                        .ConfigureAwait(false);
-
-                                // Attach an EventHandler for the ServicesOwedChanged Event.
-                                objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-                                objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, t)
-                                    .ConfigureAwait(false);
-
-                                if (blnIsSpirit)
-                                {
-                                    int index = Interlocked.Increment(ref intSpirits);
-                                    await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = index * x.Height, t).ConfigureAwait(false);
-                                    await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), t)
-                                        .ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    int index = Interlocked.Increment(ref intSprites);
-                                    await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = index * x.Height, t).ConfigureAwait(false);
-                                    await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), t)
-                                        .ConfigureAwait(false);
-                                }
-                            }, token).ConfigureAwait(false);
+                                TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedSpiritId), token).ConfigureAwait(false);
+                                if (objSelectedNode != null)
+                                    await treSpirits.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
+                            }
+                            if (treSprites != null && !string.IsNullOrEmpty(strSelectedSpriteId))
+                            {
+                                TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedSpriteId), token).ConfigureAwait(false);
+                                if (objSelectedNode != null)
+                                    await treSprites.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
+                            }
                         }
                         finally
                         {
-                            if (panSpirits != null)
-                                await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token)
-                                    .ConfigureAwait(false);
-                            if (panSprites != null)
-                                await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token)
-                                    .ConfigureAwait(false);
+                            if (treSpirits != null)
+                                await treSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            if (treSprites != null)
+                                await treSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                         }
                     }
                     else
                     {
+                        if (treSpirits != null)
+                        {
+                            objSpiritsParentNode
+                                = await treSpirits.DoThreadSafeFuncAsync(
+                                    x => x.FindNode("Node_SelectedSpirits", false),
+                                    token).ConfigureAwait(false);
+                        }
+                        if (treSpirits != null)
+                        {
+                            objSpritesParentNode
+                                = await treSprites.DoThreadSafeFuncAsync(
+                                    x => x.FindNode("Node_SelectedSprites", false),
+                                    token).ConfigureAwait(false);
+                        }
                         switch (e.Action)
                         {
                             case NotifyCollectionChangedAction.Add:
-                            {
-                                int intSpirits = panSpirits != null
-                                    ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
-                                        .ConfigureAwait(false)
-                                    : 0;
-                                int intSprites = panSprites != null
-                                    ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
-                                        .ConfigureAwait(false)
-                                    : 0;
-                                foreach (Spirit objSpirit in e.NewItems)
                                 {
-                                    bool blnIsSpirit =
-                                        await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
-                                        SpiritType.Spirit;
-                                    if (blnIsSpirit)
+                                    foreach (Spirit objSpirit in e.NewItems)
                                     {
-                                        if (panSpirits == null)
-                                            continue;
-                                    }
-                                    else if (panSprites == null)
-                                        continue;
-
-                                    SpiritControl objSpiritControl
-                                        = await this.DoThreadSafeFuncAsync(
-                                            () => new SpiritControl(objSpirit, GenericToken),
-                                            token).ConfigureAwait(false);
-
-                                    // Attach an EventHandler for the ServicesOwedChanged Event.
-                                    objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-                                    objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-                                    await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
-                                        .ConfigureAwait(false);
-
-                                    if (blnIsSpirit)
-                                    {
-                                        int index = Interlocked.Increment(ref intSpirits);
-                                        await objSpiritControl.DoThreadSafeAsync(
-                                            x => x.Top = index * x.Height, token).ConfigureAwait(false);
-                                        await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                            token).ConfigureAwait(false);
-                                    }
-                                    else
-                                    {
-                                        int index = Interlocked.Increment(ref intSprites) - 1;
-                                        await objSpiritControl.DoThreadSafeAsync(
-                                            x => x.Top = index * x.Height, token).ConfigureAwait(false);
-                                        await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                            token).ConfigureAwait(false);
+                                        await AddToTree(objSpirit, innerToken: token).ConfigureAwait(false);
                                     }
                                 }
-                            }
                                 break;
 
                             case NotifyCollectionChangedAction.Remove:
-                            {
-                                foreach (Spirit objSpirit in e.OldItems)
                                 {
-                                    int intMoveUpAmount = 0;
-                                    if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
-                                        SpiritType.Spirit)
+                                    foreach (Spirit objSpirit in e.OldItems)
                                     {
-                                        if (panSpirits == null)
-                                            continue;
-                                        int intSpirits
-                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
-                                                .ConfigureAwait(false);
-                                        for (int i = 0; i < intSpirits; ++i)
+                                        TreeView treToProcess = null;
+                                        switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
                                         {
-                                            int i1 = i;
-                                            Control objLoopControl
-                                                = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
-                                                    .ConfigureAwait(false);
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            case SpiritType.Spirit:
+                                                treToProcess = treSpirits;
+                                                break;
+                                            case SpiritType.Sprite:
+                                                treToProcess = treSprites;
+                                                break;
+                                        }
+                                        if (treToProcess != null)
+                                        {
+                                            TreeNode objRemoved = await treToProcess.DoThreadSafeFuncAsync(x =>
                                             {
-                                                intMoveUpAmount
-                                                    = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                        x => x.Height, token).ConfigureAwait(false);
-                                                await panSpirits.DoThreadSafeAsync(
-                                                    x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
+                                                TreeNode objNode = x.FindNodeByTag(objSpirit);
+                                                if (objNode != null)
                                                 {
-                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, token).ConfigureAwait(false);
-                                                --i;
-                                                --intSpirits;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                int intAmount = intMoveUpAmount;
-                                                await objLoopControl.DoThreadSafeAsync(
-                                                    x => x.Top -= intAmount, token).ConfigureAwait(false);
-                                            }
+                                                    TreeNode objParent = objNode.Parent;
+                                                    objNode.Remove();
+                                                    if (objParent.Nodes.Count == 0)
+                                                        objParent.Remove();
+                                                    return objNode;
+                                                }
+                                                return null;
+                                            }, token).ConfigureAwait(false);
+                                            if (objRemoved != null)
+                                                objSpirit.StopTrackingTreeNodeForUpdates(objRemoved);
                                         }
                                     }
-                                    else if (panSprites != null)
-                                    {
-                                        int intSprites = await panSprites
-                                            .DoThreadSafeFuncAsync(x => x.Controls.Count, token).ConfigureAwait(false);
-                                        for (int i = 0; i < intSprites; ++i)
-                                        {
-                                            int i1 = i;
-                                            Control objLoopControl
-                                                = await panSprites.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
-                                                    .ConfigureAwait(false);
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
-                                            {
-                                                intMoveUpAmount
-                                                    = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                        x => x.Height, token).ConfigureAwait(false);
-                                                await panSprites.DoThreadSafeAsync(
-                                                    x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
-                                                {
-                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, token).ConfigureAwait(false);
-                                                --i;
-                                                --intSprites;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                int intAmount = intMoveUpAmount;
-                                                await objLoopControl.DoThreadSafeAsync(
-                                                    x => x.Top -= intAmount, token).ConfigureAwait(false);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                                break;
 
+                                    break;
+                                }
                             case NotifyCollectionChangedAction.Replace:
-                            {
-                                int intSpirits = panSpirits != null
-                                    ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
-                                        .ConfigureAwait(false)
-                                    : 0;
-                                int intSprites = panSprites != null
-                                    ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
-                                        .ConfigureAwait(false)
-                                    : 0;
-                                foreach (Spirit objSpirit in e.OldItems)
                                 {
-                                    int intMoveUpAmount = 0;
-                                    if (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
-                                        SpiritType.Spirit)
+                                    List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                    foreach (Spirit objSpirit in e.OldItems)
                                     {
-                                        if (panSpirits == null)
-                                            continue;
-                                        for (int i = 0; i < intSpirits; ++i)
+                                        TreeView treToProcess = null;
+                                        switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
                                         {
-                                            int i1 = i;
-                                            Control objLoopControl
-                                                = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
-                                                    .ConfigureAwait(false);
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            case SpiritType.Spirit:
+                                                treToProcess = treSpirits;
+                                                break;
+                                            case SpiritType.Sprite:
+                                                treToProcess = treSprites;
+                                                break;
+                                        }
+                                        if (treToProcess != null)
+                                        {
+                                            TreeNode objRemoved = await treToProcess.DoThreadSafeFuncAsync(x =>
                                             {
-                                                intMoveUpAmount
-                                                    = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                        x => x.Height, token).ConfigureAwait(false);
-                                                await panSpirits.DoThreadSafeAsync(
-                                                    x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
+                                                TreeNode objNode = x.FindNodeByTag(objSpirit);
+                                                if (objNode != null)
                                                 {
-                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, token).ConfigureAwait(false);
-                                                --i;
-                                                --intSpirits;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                int intAmount = intMoveUpAmount;
-                                                await objLoopControl.DoThreadSafeAsync(
-                                                    x => x.Top -= intAmount, token).ConfigureAwait(false);
-                                            }
+                                                    objNode.Remove();
+                                                    lstOldParents.Add(objNode.Parent);
+                                                    return objNode;
+                                                }
+                                                return null;
+                                            }, token).ConfigureAwait(false);
+                                            if (objRemoved != null)
+                                                objSpirit.StopTrackingTreeNodeForUpdates(objRemoved);
                                         }
                                     }
-                                    else if (panSprites != null)
+
+                                    foreach (Spirit objSpirit in e.NewItems)
                                     {
-                                        for (int i = 0; i < intSprites; ++i)
+                                        await AddToTree(objSpirit, innerToken: token).ConfigureAwait(false);
+                                    }
+
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Nodes.Count == 0 && objOldParent.TreeView != null)
                                         {
-                                            int i1 = i;
-                                            Control objLoopControl = await panSprites
-                                                .DoThreadSafeFuncAsync(x => x.Controls[i1], token)
-                                                .ConfigureAwait(false);
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
-                                            {
-                                                intMoveUpAmount
-                                                    = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                        x => x.Height, token).ConfigureAwait(false);
-                                                await panSprites.DoThreadSafeAsync(
-                                                    x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
-                                                {
-                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, token).ConfigureAwait(false);
-                                                --i;
-                                                --intSprites;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                int intAmount = intMoveUpAmount;
-                                                await objLoopControl.DoThreadSafeAsync(
-                                                    x => x.Top -= intAmount, token).ConfigureAwait(false);
-                                            }
+                                            await objOldParent.TreeView.DoThreadSafeAsync(() => objOldParent.Remove(), token).ConfigureAwait(false);
                                         }
                                     }
                                 }
-
-                                foreach (Spirit objSpirit in e.NewItems)
-                                {
-                                    bool blnIsSpirit =
-                                        await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
-                                        SpiritType.Spirit;
-                                    if (blnIsSpirit)
-                                    {
-                                        if (panSpirits == null)
-                                            continue;
-                                    }
-                                    else if (panSprites == null)
-                                        continue;
-
-                                    SpiritControl objSpiritControl
-                                        = await this.DoThreadSafeFuncAsync(
-                                            () => new SpiritControl(objSpirit, GenericToken),
-                                            token).ConfigureAwait(false);
-
-                                    // Attach an EventHandler for the ServicesOwedChanged Event.
-                                    objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-                                    objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-                                    await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
-                                        .ConfigureAwait(false);
-
-                                    if (blnIsSpirit)
-                                    {
-                                        int index = Interlocked.Increment(ref intSpirits) - 1;
-                                        await objSpiritControl.DoThreadSafeAsync(
-                                            x => x.Top = index * x.Height, token).ConfigureAwait(false);
-                                        await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                            token).ConfigureAwait(false);
-                                    }
-                                    else
-                                    {
-                                        int index = Interlocked.Increment(ref intSprites) - 1;
-                                        await objSpiritControl.DoThreadSafeAsync(
-                                            x => x.Top = index * x.Height, token).ConfigureAwait(false);
-                                        await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                            token).ConfigureAwait(false);
-                                    }
-                                }
-                            }
                                 break;
                         }
+                    }
+
+                    async Task AddToTree(Spirit objSpirit, bool blnSingleAdd = true, CancellationToken innerToken = default)
+                    {
+                        bool blnIsSprite = await objSpirit.GetEntityTypeAsync(innerToken).ConfigureAwait(false) == SpiritType.Sprite;
+                        TreeView treToProcess = blnIsSprite ? treSprites : treSpirits;
+                        if (treToProcess == null)
+                            return;
+                        TreeNode objNode = await objSpirit.CreateTreeNode(blnIsSprite ? cmsSprite : cmsSpirit, innerToken);
+                        if (objNode == null)
+                            return;
+                        
+                        TreeNode objParentNode = null;
+                        if (blnIsSprite)
+                        {
+                            if (objSpritesParentNode == null)
+                            {
+                                objSpritesParentNode = new TreeNode
+                                {
+                                    Tag = "Node_SelectedSprites",
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedSprites", token: innerToken)
+                                        .ConfigureAwait(false)
+                                };
+                                await treToProcess.DoThreadSafeAsync(x =>
+                                {
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    x.Nodes.Insert(0, objSpritesParentNode);
+                                    objSpritesParentNode.Expand();
+                                }, innerToken).ConfigureAwait(false);
+                            }
+
+                            objParentNode = objSpritesParentNode;
+                        }
+                        else
+                        {
+                            if (objSpiritsParentNode == null)
+                            {
+                                objSpiritsParentNode = new TreeNode
+                                {
+                                    Tag = "Node_SelectedSpirits",
+                                    Text = await LanguageManager
+                                        .GetStringAsync("Node_SelectedSpirits", token: innerToken).ConfigureAwait(false)
+                                };
+                                await treToProcess.DoThreadSafeAsync(x =>
+                                {
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    x.Nodes.Insert(0, objSpiritsParentNode);
+                                    objSpiritsParentNode.Expand();
+                                }, innerToken).ConfigureAwait(false);
+                            }
+
+                            objParentNode = objSpiritsParentNode;
+                        }
+
+                        if (objParentNode == null)
+                            return;
+
+                        objSpirit.StartTrackingTreeNodeForUpdates(objNode);
+                        await treToProcess.DoThreadSafeAsync(x =>
+                        {
+                            objParentNode.Nodes.Add(objNode);
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
+                            objParentNode.Expand();
+                        }, innerToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -11845,11 +11730,9 @@ namespace Chummer
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
-        protected async Task DeleteSpirit(object sender, EventArgs e, CancellationToken token = default)
+        protected async Task DeleteSpirit(Spirit objSpirit, CancellationToken token = default)
         {
             if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
-                return;
-            if (!(sender is SpiritControl objSender))
                 return;
             CancellationTokenSource objSource = null;
             if (token != GenericToken)
@@ -11860,7 +11743,6 @@ namespace Chummer
 
             try
             {
-                Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) ==
                                    SpiritType.Spirit;
                 if (!await CommonFunctions
@@ -11869,10 +11751,379 @@ namespace Chummer
                                 .GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite",
                                     token: token).ConfigureAwait(false), token).ConfigureAwait(false))
                     return;
-                await objSpirit.SetFetteredAsync(false, GenericToken)
+                await objSpirit.SetFetteredAsync(false, token)
                     .ConfigureAwait(false); // Fettered spirits consume MAG.
                 await CharacterObject.Spirits.RemoveAsync(objSpirit, token: token).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
+        protected async Task RebuildSpiritList(Tradition objTradition, ElasticComboBox cboSpirits, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objTradition == null)
+                return;
+            bool blnTechnomancerTradition = await objTradition.GetTypeAsync(token) == TraditionType.RES;
+            string strCurrentValue = await cboSpirits.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+
+            XPathNavigator objXmlDocument = await CharacterObject.LoadDataXPathAsync(
+                blnTechnomancerTradition
+                    ? "streams.xml"
+                    : "traditions.xml", token: token).ConfigureAwait(false);
+
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string> setLimitCategories))
+            {
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             CharacterObject, Improvement.ImprovementType.LimitSpiritCategory, token: token).ConfigureAwait(false))
+                {
+                    setLimitCategories.Add(objImprovement.ImprovedName);
+                }
+
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
+                {
+                    if (objTradition.IsCustomTradition)
+                    {
+                        string strSpiritCombat = objTradition.SpiritCombat;
+                        string strSpiritDetection = objTradition.SpiritDetection;
+                        string strSpiritHealth = objTradition.SpiritHealth;
+                        string strSpiritIllusion = objTradition.SpiritIllusion;
+                        string strSpiritManipulation = objTradition.SpiritManipulation;
+
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritCombat))
+                            && !string.IsNullOrWhiteSpace(strSpiritCombat))
+                        {
+                            XPathNavigator objXmlCritterNode
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + "]");
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? strSpiritCombat
+                                : strSpiritCombat;
+                            lstCritters.Add(new ListItem(strSpiritCombat, strTranslatedName));
+                        }
+
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritDetection))
+                            && !string.IsNullOrWhiteSpace(strSpiritDetection))
+                        {
+                            XPathNavigator objXmlCritterNode
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + "]");
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? strSpiritDetection
+                                : strSpiritDetection;
+                            lstCritters.Add(new ListItem(strSpiritDetection, strTranslatedName));
+                        }
+
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritHealth))
+                            && !string.IsNullOrWhiteSpace(strSpiritHealth))
+                        {
+                            XPathNavigator objXmlCritterNode
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + "]");
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? strSpiritHealth
+                                : strSpiritHealth;
+                            lstCritters.Add(new ListItem(strSpiritHealth, strTranslatedName));
+                        }
+
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritIllusion))
+                            && !string.IsNullOrWhiteSpace(strSpiritIllusion))
+                        {
+                            XPathNavigator objXmlCritterNode
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + "]");
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? strSpiritIllusion
+                                : strSpiritIllusion;
+                            lstCritters.Add(new ListItem(strSpiritIllusion, strTranslatedName));
+                        }
+
+                        if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritManipulation))
+                            && !string.IsNullOrWhiteSpace(strSpiritManipulation))
+                        {
+                            XPathNavigator objXmlCritterNode
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + "]");
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? strSpiritManipulation
+                                : strSpiritManipulation;
+                            lstCritters.Add(new ListItem(strSpiritManipulation, strTranslatedName));
+                        }
+                    }
+                    else
+                    {
+                        XPathNavigator objDataNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                        if (objDataNode?.SelectSingleNodeAndCacheExpression("spirits/spirit[. = \"All\"]", token) != null)
+                        {
+                            if (setLimitCategories.Count == 0)
+                            {
+                                foreach (XPathNavigator objXmlCritterNode in objXmlDocument.SelectAndCacheExpression(
+                                             "/chummer/spirits/spirit", token: token))
+                                {
+                                    string strSpiritName = objXmlCritterNode.SelectSingleNodeAndCacheExpression("name", token: token)
+                                                                            ?.Value;
+                                    lstCritters.Add(new ListItem(strSpiritName,
+                                                                 objXmlCritterNode
+                                                                     .SelectSingleNodeAndCacheExpression("translate", token: token)
+                                                                     ?.Value
+                                                                 ?? strSpiritName));
+                                }
+                            }
+                            else
+                            {
+                                foreach (string strSpiritName in setLimitCategories)
+                                {
+                                    XPathNavigator objXmlCritterNode
+                                        = objXmlDocument.SelectSingleNode(
+                                            "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + "]");
+                                    string strTranslatedName = objXmlCritterNode != null
+                                        ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                          ?? strSpiritName
+                                        : strSpiritName;
+                                    lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            XPathNavigator objTraditionNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                            XPathNodeIterator xmlSpiritList = objTraditionNode?.SelectAndCacheExpression("spirits/*", token);
+                            if (xmlSpiritList != null)
+                            {
+                                foreach (XPathNavigator objXmlSpirit in xmlSpiritList)
+                                {
+                                    string strSpiritName = objXmlSpirit.Value;
+                                    if (setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritName))
+                                    {
+                                        XPathNavigator objXmlCritterNode
+                                            = objXmlDocument.SelectSingleNode(
+                                                "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath()
+                                                + "]");
+                                        string strTranslatedName = objXmlCritterNode != null
+                                            ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                              ?? strSpiritName
+                                            : strSpiritName;
+                                        lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Add any additional Spirits and Sprites the character has Access to through improvements.
+                    if (blnTechnomancerTradition)
+                    {
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject, Improvement.ImprovementType.AddSprite, token: token).ConfigureAwait(false))
+                        {
+                            string strImprovedName = objImprovement.ImprovedName;
+                            if (!string.IsNullOrEmpty(strImprovedName))
+                            {
+                                lstCritters.Add(new ListItem(strImprovedName,
+                                                             objXmlDocument
+                                                                 .SelectSingleNode(
+                                                                     "/chummer/spirits/spirit[name = "
+                                                                     + strImprovedName.CleanXPath() + "]/translate")
+                                                                 ?.Value
+                                                             ?? strImprovedName));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                         CharacterObject, Improvement.ImprovementType.AddSpirit, token: token).ConfigureAwait(false))
+                        {
+                            string strImprovedName = objImprovement.ImprovedName;
+                            if (!string.IsNullOrEmpty(strImprovedName))
+                            {
+                                lstCritters.Add(new ListItem(strImprovedName,
+                                                             objXmlDocument
+                                                                 .SelectSingleNode(
+                                                                     "/chummer/spirits/spirit[name = "
+                                                                     + strImprovedName.CleanXPath() + "]/translate")
+                                                                 ?.Value
+                                                             ?? strImprovedName));
+                            }
+                        }
+                    }
+
+                    await cboSpirits.PopulateWithListItemsAsync(lstCritters, token: token).ConfigureAwait(false);
+                    // Set the control back to its original value.
+                    if (!string.IsNullOrEmpty(strCurrentValue))
+                        await cboSpirits.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue, token: token).ConfigureAwait(false);
+                }
+            }
+        }
+
+        protected async Task LinkSpiritToFile(Spirit objSpirit, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                string strFileName = string.Empty;
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                // Prompt the user to select a save file to associate with this Contact.
+                string strOldFileName = await objSpirit.GetFileNameAsync(token).ConfigureAwait(false);
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                {
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                    {
+                        dlgOpenFile.Filter = strFilter;
+                        if (!string.IsNullOrEmpty(strOldFileName) && File.Exists(strOldFileName))
+                        {
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strOldFileName);
+                            dlgOpenFile.FileName = Path.GetFileName(strOldFileName);
+                        }
+
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
+                    }
+                }, token: token).ConfigureAwait(false);
+
+                if (eResult != DialogResult.OK)
+                    return;
+                await objSpirit.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        protected async Task OpenSpiritLinkedFile(Spirit objSpirit, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                string strFileName;
+                Character objOpenCharacter = null;
+                Character objLinkedCharacter = await objSpirit.GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter == null)
+                {
+                    // Make sure the file still exists before attempting to load it.
+                    strFileName = await objSpirit.GetFileNameAsync(token).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
+                    {
+                        // If the file doesn't exist, use the relative path if one is available.
+                        string strRelativeFileName = await objSpirit.GetRelativeFileNameAsync(token).ConfigureAwait(false);
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                StringExtensions.FastFormat(
+                                    await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
+                                        .ConfigureAwait(false), strFileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
+                    }
+                }
+                else
+                {
+                    strFileName = await objLinkedCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                    if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, token).ConfigureAwait(false))
+                        objOpenCharacter = objLinkedCharacter;
+                }
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: token).ConfigureAwait(false);
+                try
+                {
+                    if (objOpenCharacter == null)
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                       strFileName, Character.NumLoadingSections, token)
+                                   .ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                    strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: token)
+                                .ConfigureAwait(false);
+                    }
+
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        protected async Task RemoveSpiritLinkedFile(Spirit objSpirit, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                if (await Program.ShowScrollableMessageBoxAsync(
+                            await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation", token: token)
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation", token: token)
+                                .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false)
+                        == DialogResult.Yes)
+                {
+                    await objSpirit.SetFileNameAsync(string.Empty, token).ConfigureAwait(false);
+                    await objSpirit.SetRelativeFileNameAsync(string.Empty, token).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
