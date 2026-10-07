@@ -19769,17 +19769,35 @@ namespace Chummer
                         await cboSpiritType.DoThreadSafeAsync(x => x.SelectedValue = strSelectedType, token).ConfigureAwait(false);
 
                         int intForce = await objSpirit.GetForceAsync(token).ConfigureAwait(false);
-                        await nudSpiritForce.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+                        int intMaxForce = await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false);
+                        await nudSpiritForce.DoThreadSafeAsync(x =>
+                        {
+                            x.MaximumAsInt = intMaxForce;
+                            x.ValueAsInt = Math.Min(intForce, intMaxForce);
+
+                        }, token).ConfigureAwait(false);
+
                         bool blnBound = await objSpirit.GetBoundAsync(token).ConfigureAwait(false);
                         await chkSpiritBound.DoThreadSafeAsync(x => x.Checked = blnBound, token).ConfigureAwait(false);
+
+                        bool blnAllowFettered = await objSpirit.GetAllowFetteringAsync(token).ConfigureAwait(false);
                         bool blnFettered = await objSpirit.GetFetteredAsync(token).ConfigureAwait(false);
-                        await chkSpiritFettered.DoThreadSafeAsync(x => x.Checked = blnFettered, token).ConfigureAwait(false);
+                        await chkSpiritFettered.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = blnAllowFettered;
+                            x.Checked = blnFettered;
+                        }, token).ConfigureAwait(false);
 
                         int intServices = await objSpirit.GetServicesOwedAsync(token).ConfigureAwait(false);
-                        await nudSpiritServicesOwed.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+                        await nudSpiritServicesOwed.DoThreadSafeAsync(x => x.ValueAsInt = intServices, token).ConfigureAwait(false);
 
+                        bool blnSpiritNameEnabled = await objSpirit.GetNoLinkedCharacterAsync(token).ConfigureAwait(false);
                         string strName = await objSpirit.GetCritterNameAsync(token).ConfigureAwait(false);
-                        await txtSpiritName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+                        await txtSpiritName.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strName;
+                            x.Enabled = blnSpiritNameEnabled;
+                        }, token).ConfigureAwait(false);
 
                         string strFile = await objSpirit.GetDisplayFileNameAsync(token).ConfigureAwait(false);
                         await txtSpiritLinkedFile.DoThreadSafeAsync(x => x.Text = strFile, token).ConfigureAwait(false);
@@ -19849,18 +19867,36 @@ namespace Chummer
                         string strSelectedType = await objSprite.GetNameAsync(token).ConfigureAwait(false);
                         await cboSpriteType.DoThreadSafeAsync(x => x.SelectedValue = strSelectedType, token).ConfigureAwait(false);
 
-                        int intForce = await objSprite.GetForceAsync(token).ConfigureAwait(false);
-                        await nudSpriteLevel.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
-                        bool blnBound = await objSprite.GetBoundAsync(token).ConfigureAwait(false);
-                        await chkSpriteRegistered.DoThreadSafeAsync(x => x.Checked = blnBound, token).ConfigureAwait(false);
-                        bool blnFettered = await objSprite.GetFetteredAsync(token).ConfigureAwait(false);
-                        await chkSpritePet.DoThreadSafeAsync(x => x.Checked = blnFettered, token).ConfigureAwait(false);
+                        int intLevel = await objSpirit.GetForceAsync(token).ConfigureAwait(false);
+                        int intMaxLevel = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false);
+                        await nudSpriteLevel.DoThreadSafeAsync(x =>
+                        {
+                            x.MaximumAsInt = intMaxLevel;
+                            x.ValueAsInt = Math.Min(intLevel, intMaxLevel);
 
-                        int intServices = await objSprite.GetServicesOwedAsync(token).ConfigureAwait(false);
-                        await nudSpriteTasksOwed.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
 
+                        bool blnRegistered = await objSprite.GetBoundAsync(token).ConfigureAwait(false);
+                        await chkSpriteRegistered.DoThreadSafeAsync(x => x.Checked = blnRegistered, token).ConfigureAwait(false);
+
+                        bool blnAllowPet = await objSprite.GetAllowFetteringAsync(token).ConfigureAwait(false);
+                        bool blnPet = await objSprite.GetFetteredAsync(token).ConfigureAwait(false);
+                        await chkSpritePet.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = blnAllowPet;
+                            x.Checked = blnPet;
+                        }, token).ConfigureAwait(false);
+
+                        int intTasks = await objSprite.GetServicesOwedAsync(token).ConfigureAwait(false);
+                        await nudSpriteTasksOwed.DoThreadSafeAsync(x => x.ValueAsInt = intTasks, token).ConfigureAwait(false);
+
+                        bool blnSpriteNameEnabled = await objSprite.GetNoLinkedCharacterAsync(token).ConfigureAwait(false);
                         string strName = await objSprite.GetCritterNameAsync(token).ConfigureAwait(false);
-                        await txtSpriteName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+                        await txtSpriteName.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strName;
+                            x.Enabled = blnSpriteNameEnabled;
+                        }, token).ConfigureAwait(false);
 
                         string strFile = await objSprite.GetDisplayFileNameAsync(token).ConfigureAwait(false);
                         await txtSpriteLinkedFile.DoThreadSafeAsync(x => x.Text = strFile, token).ConfigureAwait(false);
