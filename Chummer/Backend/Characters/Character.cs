@@ -25839,7 +25839,7 @@ namespace Chummer
                 if (_decCachedPowerPointsUsed != decimal.MinValue)
                     return _decCachedPowerPointsUsed;
                 IAsyncDisposable objLocker2 =
-                    await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    await _objCachedPowerPointsUsedLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
