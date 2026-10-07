@@ -6769,6 +6769,14 @@
       <text>Link to File</text>
     </string>
     <string>
+      <key>Button_OpenLinkedFile</key>
+      <text>Open Linked File</text>
+    </string>
+    <string>
+      <key>Button_RemoveLinkedFile</key>
+      <text>Remove Linked File</text>
+    </string>
+    <string>
       <key>Tip_Contact_LinkContact</key>
       <text>Link this Contact to a Chummer save file.</text>
     </string>

@@ -63,6 +63,9 @@ namespace Chummer
         private readonly ThreadSafeList<Image> _lstMugshots;
         private int _intMainMugshotIndex = -1;
 
+        private string _strSource;
+        private string _strPage;
+
         #region Helper Methods
 
         /// <summary>
@@ -1623,6 +1626,46 @@ namespace Chummer
             }
         }
 
+        public string DisplayFileName
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    string strReturn = FileName;
+                    if (!File.Exists(strReturn))
+                    {
+                        strReturn = RelativeFileName;
+                        if (!string.IsNullOrEmpty(strReturn))
+                            strReturn = Path.GetFullPath(strReturn);
+                    }
+                    return strReturn;
+                }
+            }
+        }
+
+        public async Task<string> GetDisplayFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strReturn = await GetFileNameAsync(token).ConfigureAwait(false);
+                if (!File.Exists(strReturn))
+                {
+                    strReturn = await GetRelativeFileNameAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn = Path.GetFullPath(strReturn);
+                }
+                return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Name of the save file for this Spirit/Sprite.
         /// </summary>
@@ -2782,17 +2825,17 @@ namespace Chummer
                         return;
 
                     if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
-                        await UpdateTrackedNodes_TextAsync(token);
+                        await UpdateTrackedNodes_TextAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
-                        await UpdateTrackedNodes_ColorAsync(token);
+                        await UpdateTrackedNodes_ColorAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(Notes)))
-                        await UpdateTrackedNodes_ToolTipTextAsync(token);
+                        await UpdateTrackedNodes_ToolTipTextAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(Name))
                         || setNamesOfChangedProperties.Contains(nameof(RatingLabel))
                         || setNamesOfChangedProperties.Contains(nameof(Force)))
-                        await UpdateTrackedNodes_TypeDataAsync(token);
+                        await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
-                        await UpdateTrackedNodes_ServicesOwedAsync(token);
+                        await UpdateTrackedNodes_ServicesOwedAsync(token).ConfigureAwait(false);
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
@@ -2885,6 +2928,10 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
+                ),
+                new DependencyGraphNode<string, Spirit>(nameof(DisplayFileName),
+                    new DependencyGraphNode<string, Spirit>(nameof(FileName)),
+                    new DependencyGraphNode<string, Spirit>(nameof(RelativeFileName))
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, Spirit>(nameof(CritterName),
@@ -3870,6 +3917,7 @@ namespace Chummer
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
+                _objCachedSourceDetailLock.Dispose();
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -3894,6 +3942,12 @@ namespace Chummer
                     await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstMugshots.DisposeAsync().ConfigureAwait(false);
+                await _objCachedSourceDetailLock.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {
@@ -3902,6 +3956,180 @@ namespace Chummer
         }
 
         #endregion IHasMugshots
+
+        #region Source
+
+        private SourceString _objCachedSourceDetail;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedSourceDetailLock;
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                using (_objCachedSourceDetailLock.EnterReadLock())
+                {
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+                }
+
+                using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
+                {
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+                    using (_objCachedSourceDetailLock.EnterWriteLock())
+                    {
+                        return _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            CharacterObject);
+                    }
+                }
+            }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedSourceDetailLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                    return _objCachedSourceDetail;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker =
+                await _objCachedSourceDetailLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                    return _objCachedSourceDetail;
+                IAsyncDisposable objLocker2 =
+                    await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        CharacterObject, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strSource;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _strSource, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strPage;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _strPage, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage, CancellationToken token = default)
+        {
+            using (LockObject.EnterReadLock(token))
+            {
+                if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    return Page;
+                string s = this.GetNodeXPath(token)?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns></returns>
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    return Page;
+                string s = (await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation.
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
+
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        {
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
+        }
+
+        #endregion Source
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }

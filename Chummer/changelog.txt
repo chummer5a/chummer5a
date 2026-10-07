@@ -139,6 +139,8 @@ Changed/New Strings:
 - Node_SelectedSprites
 - Label_LinkedFile
 - Button_LinkFile
+- Button_OpenLinkedFile
+- Button_RemoveLinkedFile
 - Label_Sprite_Level
 - Label_Sprite_Rating
 

@@ -11613,6 +11613,20 @@ namespace Chummer
             }
         }
 
+        private async void treSpirits_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                await RefreshSelectedSpirit(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Node.Checked)
@@ -12294,6 +12308,20 @@ namespace Chummer
             try
             {
                 await RefreshSelectedComplexForm(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void treSprites_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                await RefreshSelectedSprite(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -14180,6 +14208,7 @@ namespace Chummer
                                     RefreshSelectedLifestyle(token),
                                     RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
                                     RefreshSelectedSpell(token),
+                                    RefreshSelectedSpirit(token), RefreshSelectedSprite(token),
                                     RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
                                     RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                     RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
@@ -19696,6 +19725,168 @@ namespace Chummer
                 {
                     await tlpTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
                                                     .ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        /// <summary>
+        /// Refresh the information for the currently selected Spirit
+        /// </summary>
+        private async Task RefreshSelectedSpirit(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IsRefreshing = true;
+            try
+            {
+                await tlpSpirit.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                try
+                {
+                    object objSelectedNodeTag = null;
+                    Spirit objSpirit = null;
+                    for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                              .ConfigureAwait(false);
+                                                              objSelectedNode != null;
+                                                              objSelectedNode = objSelectedNode.Parent)
+                    {
+                        objSelectedNodeTag = objSelectedNode?.Tag;
+                        if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                        {
+                            objSpirit = objSelectedSpirit;
+                            break;
+                        }
+                    }
+                    if (objSpirit != null)
+                    {
+                        await tlpSpirit.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        await cmdDeleteSpirit.DoThreadSafeAsync(x => x.Enabled = true, token)
+                                            .ConfigureAwait(false);
+
+                        string strSelectedType = await objSpirit.GetNameAsync(token).ConfigureAwait(false);
+                        await cboSpiritType.DoThreadSafeAsync(x => x.SelectedValue = strSelectedType, token).ConfigureAwait(false);
+
+                        int intForce = await objSpirit.GetForceAsync(token).ConfigureAwait(false);
+                        await nudSpiritForce.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+                        bool blnBound = await objSpirit.GetBoundAsync(token).ConfigureAwait(false);
+                        await chkSpiritBound.DoThreadSafeAsync(x => x.Checked = blnBound, token).ConfigureAwait(false);
+                        bool blnFettered = await objSpirit.GetFetteredAsync(token).ConfigureAwait(false);
+                        await chkSpiritFettered.DoThreadSafeAsync(x => x.Checked = blnFettered, token).ConfigureAwait(false);
+
+                        int intServices = await objSpirit.GetServicesOwedAsync(token).ConfigureAwait(false);
+                        await nudSpiritServicesOwed.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+
+                        string strName = await objSpirit.GetCritterNameAsync(token).ConfigureAwait(false);
+                        await txtSpiritName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+
+                        string strFile = await objSpirit.GetDisplayFileNameAsync(token).ConfigureAwait(false);
+                        await txtSpiritLinkedFile.DoThreadSafeAsync(x => x.Text = strFile, token).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strFile))
+                        {
+                            await cmdSpiritOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                            await cmdSpiritRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await cmdSpiritOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                            await cmdSpiritRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                        }
+
+                        await objSpirit.SetSourceDetailAsync(lblSpiritSource, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await tlpSpirit.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await cmdDeleteSpirit.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token)
+                                            .ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await tlpSpirit.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        /// <summary>
+        /// Refresh the information for the currently selected Sprite
+        /// </summary>
+        private async Task RefreshSelectedSprite(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IsRefreshing = true;
+            try
+            {
+                await tlpSprite.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                try
+                {
+                    object objSelectedNodeTag = null;
+                    Spirit objSprite = null;
+                    for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                              .ConfigureAwait(false);
+                                                              objSelectedNode != null;
+                                                              objSelectedNode = objSelectedNode.Parent)
+                    {
+                        objSelectedNodeTag = objSelectedNode?.Tag;
+                        if (objSelectedNodeTag is Spirit objSelectedSprite)
+                        {
+                            objSprite = objSelectedSprite;
+                            break;
+                        }
+                    }
+                    if (objSprite != null)
+                    {
+                        await tlpSprite.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        await cmdDeleteSprite.DoThreadSafeAsync(x => x.Enabled = true, token)
+                                            .ConfigureAwait(false);
+
+                        string strSelectedType = await objSprite.GetNameAsync(token).ConfigureAwait(false);
+                        await cboSpriteType.DoThreadSafeAsync(x => x.SelectedValue = strSelectedType, token).ConfigureAwait(false);
+
+                        int intForce = await objSprite.GetForceAsync(token).ConfigureAwait(false);
+                        await nudSpriteLevel.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+                        bool blnBound = await objSprite.GetBoundAsync(token).ConfigureAwait(false);
+                        await chkSpriteRegistered.DoThreadSafeAsync(x => x.Checked = blnBound, token).ConfigureAwait(false);
+                        bool blnFettered = await objSprite.GetFetteredAsync(token).ConfigureAwait(false);
+                        await chkSpritePet.DoThreadSafeAsync(x => x.Checked = blnFettered, token).ConfigureAwait(false);
+
+                        int intServices = await objSprite.GetServicesOwedAsync(token).ConfigureAwait(false);
+                        await nudSpriteTasksOwed.DoThreadSafeAsync(x => x.ValueAsInt = intForce, token).ConfigureAwait(false);
+
+                        string strName = await objSprite.GetCritterNameAsync(token).ConfigureAwait(false);
+                        await txtSpriteName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+
+                        string strFile = await objSprite.GetDisplayFileNameAsync(token).ConfigureAwait(false);
+                        await txtSpriteLinkedFile.DoThreadSafeAsync(x => x.Text = strFile, token).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strFile))
+                        {
+                            await cmdSpriteOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                            await cmdSpriteRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await cmdSpriteOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                            await cmdSpriteRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                        }
+
+                        await objSprite.SetSourceDetailAsync(lblSpriteSource, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await tlpSprite.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await cmdDeleteSprite.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token)
+                                            .ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await tlpSprite.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
