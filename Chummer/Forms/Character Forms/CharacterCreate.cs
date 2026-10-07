@@ -39,6 +39,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
 using NLog;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -59,6 +60,9 @@ namespace Chummer
         private readonly Font _fntNormal;
         private readonly Font _fntStrikeout;
 
+        private readonly Timer _tmrSpiritName;
+        private readonly Timer _tmrSpriteName;
+
         #region Form Events
 
         private void ConstructorCommon()
@@ -75,6 +79,14 @@ namespace Chummer
             ConstructorCommon();
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
+            _tmrSpiritName = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrSpriteName = new Timer(components)
+            {
+                Interval = 1000
+            };
         }
 
         public CharacterCreate(Character objCharacter) : base(objCharacter)
@@ -82,6 +94,14 @@ namespace Chummer
             ConstructorCommon();
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
+            _tmrSpiritName = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrSpriteName = new Timer(components)
+            {
+                Interval = 1000
+            };
             tabSkillsUc.CachedCharacter = objCharacter;
             tabPowerUc.CachedCharacter = objCharacter;
             this.UpdateLightDarkMode();
@@ -155,6 +175,8 @@ namespace Chummer
             tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
+            _tmrSpiritName.Tick += tmrSpiritName_Tick;
+            _tmrSpriteName.Tick += tmrSpriteName_Tick;
         }
 
         private async void TreeView_KeyDown(object sender, KeyEventArgs e)
@@ -11790,7 +11812,44 @@ namespace Chummer
 
         private async void txtSpiritName_TextChanged(object sender, EventArgs e)
         {
+            if (_tmrSpiritName.Enabled)
+                _tmrSpiritName.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrSpiritName.Start();
+        }
 
+        private async void tmrSpiritName_Tick(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrSpiritName.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSpirit = null;
+                for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSpirit)
+                    {
+                        objSpirit = objSelectedSpirit;
+                        break;
+                    }
+                }
+                if (objSpirit != null)
+                {
+                    await objSpirit.SetCritterNameAsync(await txtSpiritName.DoThreadSafeFuncAsync(x => x.Text, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void nudSpiritServicesOwed_ValueChanged(object sender, EventArgs e)
@@ -12795,7 +12854,44 @@ namespace Chummer
 
         private async void txtSpriteName_TextChanged(object sender, EventArgs e)
         {
+            if (_tmrSpriteName.Enabled)
+                _tmrSpriteName.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrSpriteName.Start();
+        }
 
+        private async void tmrSpriteName_Tick(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrSpriteName.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Spirit objSprite = null;
+                for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Spirit objSelectedSprite)
+                    {
+                        objSprite = objSelectedSprite;
+                        break;
+                    }
+                }
+                if (objSprite != null)
+                {
+                    await objSprite.SetCritterNameAsync(await txtSpriteName.DoThreadSafeFuncAsync(x => x.Text, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void nudSpriteTasksOwed_ValueChanged(object sender, EventArgs e)
