@@ -6496,22 +6496,26 @@ namespace Chummer.Backend.Equipment
         public int GetMinRating(bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            int intReturn = 0;
+            int intReturn = 1;
             using (LockObject.EnterReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
+                if (GetMaxRating(blnForAttributeEvaluation) > 0)
+                    intReturn = 1;
                 string strRating = MinRatingString;
-
-                // Not a simple integer, so we need to start mucking around with strings
-                if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                if (!string.IsNullOrEmpty(strRating))
                 {
-                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation, token);
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating, token);
-                    if (blnIsSuccess)
-                        intReturn = ((double)objProcess).StandardRound();
+                    // Not a simple integer, so we need to start mucking around with strings
+                    if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation, token);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating, token);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    else
+                        intReturn = decValue.StandardRound();
                 }
-                else
-                    intReturn = decValue.StandardRound();
             }
 
             return intReturn;
@@ -6532,21 +6536,25 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
+                if (await GetMaxRatingAsync(blnForAttributeEvaluation, token).ConfigureAwait(false) > 0)
+                    intReturn = 1;
                 string strRating = MinRatingString;
-
-                // Not a simple integer, so we need to start mucking around with strings
-                if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                if (!string.IsNullOrEmpty(strRating))
                 {
-                    strRating = await ProcessAttributesInXPathAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
+                    // Not a simple integer, so we need to start mucking around with strings
+                    if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        strRating = await ProcessAttributesInXPathAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
 
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                   .EvaluateInvariantXPathAsync(strRating, token)
-                                                                   .ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intReturn = ((double)objProcess).StandardRound();
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                                                                       .EvaluateInvariantXPathAsync(strRating, token)
+                                                                       .ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    else
+                        intReturn = decValue.StandardRound();
                 }
-                else
-                    intReturn = decValue.StandardRound();
             }
             finally
             {
@@ -6589,21 +6597,23 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 string strRating = MaxRatingString;
-
-                // Not a simple integer, so we need to start mucking around with strings
-                if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                if (!string.IsNullOrEmpty(strRating))
                 {
-                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation, token);
+                    // Not a simple integer, so we need to start mucking around with strings
+                    if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation, token);
 
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating, token);
-                    if (blnIsSuccess)
-                        intReturn = ((double)objProcess).StandardRound();
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating, token);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    else
+                        intReturn = decValue.StandardRound();
                 }
-                else
-                    intReturn = decValue.StandardRound();
-            }
 
-            return intReturn;
+                return intReturn;
+            }
         }
 
         /// <summary>
@@ -6622,27 +6632,29 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 string strRating = MaxRatingString;
-
-                // Not a simple integer, so we need to start mucking around with strings
-                if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                if (!string.IsNullOrEmpty(strRating))
                 {
-                    strRating = await ProcessAttributesInXPathAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
+                    // Not a simple integer, so we need to start mucking around with strings
+                    if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                    {
+                        strRating = await ProcessAttributesInXPathAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
 
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions
-                                                                   .EvaluateInvariantXPathAsync(strRating, token)
-                                                                   .ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intReturn = ((double)objProcess).StandardRound();
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                                                                       .EvaluateInvariantXPathAsync(strRating, token)
+                                                                       .ConfigureAwait(false);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    else
+                        intReturn = decValue.StandardRound();
                 }
-                else
-                    intReturn = decValue.StandardRound();
+
+                return intReturn;
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            return intReturn;
         }
 
         /// <summary>
