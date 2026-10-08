@@ -191,6 +191,7 @@ namespace Chummer
             // 
             // tlpMain
             // 
+            this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
@@ -1385,6 +1386,7 @@ namespace Chummer
             this.Load += new System.EventHandler(this.SelectVehicle_Load);
             this.tabViews.ResumeLayout(false);
             this.tabListView.ResumeLayout(false);
+            this.tabListView.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.gpbCostFilter.ResumeLayout(false);
