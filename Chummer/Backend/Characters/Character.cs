@@ -25904,6 +25904,14 @@ namespace Chummer
                 .AnyAsync((x, t) => x.GetAdeptWayDiscountEnabledAsync(t), token: token).ConfigureAwait(false);
         }
 
+        public bool ShouldHaveTradition => MAGEnabled || RESEnabled;
+
+        public async Task<bool> GetShouldHaveTraditionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GetMAGEnabledAsync(token).ConfigureAwait(false) || await GetRESEnabledAsync(token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Magician's Tradition.
         /// </summary>
@@ -49829,6 +49837,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(AddInitiationsAllowed),
                         new DependencyGraphNode<string, Character>(nameof(IgnoreRules)),
                         new DependencyGraphNode<string, Character>(nameof(Created))
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(ShouldHaveTradition),
+                        new DependencyGraphNode<string, Character>(nameof(MAGEnabled)),
+                        new DependencyGraphNode<string, Character>(nameof(RESEnabled))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(InitiationEnabled),
                         new DependencyGraphNode<string, Character>(nameof(MAGEnabled)),

@@ -737,6 +737,12 @@ namespace Chummer
 
                                         // Set up databindings toggling between drain and fading labels.
                                         await gpbTradition.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Visible = y,
+                                            CharacterObject,
+                                            nameof(Character.ShouldHaveTradition),
+                                            (x, t) => x.GetShouldHaveTraditionAsync(t),
+                                            GenericToken).ConfigureAwait(false);
+                                        await gpbTradition.RegisterOneWayAsyncDataBindingAsync(
                                             (x, y) => x.Text = y,
                                             CharacterObject,
                                             nameof(Character.RESEnabled),
@@ -20172,17 +20178,35 @@ namespace Chummer
                         }
                     }
 
-                    // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
-                    if ((await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false)
-                         || await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
-                        && await (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).GetTypeAsync(token).ConfigureAwait(false)
-                        != TraditionType.MAG)
+                    if (await CharacterObject.GetShouldHaveTraditionAsync(token).ConfigureAwait(false))
                     {
-                        blnValid = false;
-                        sbdMessage.AppendLine().Append('\t')
-                                  .Append(await LanguageManager
-                                                .GetStringAsync("Message_InvalidNoTradition", token: token)
-                                                .ConfigureAwait(false));
+                        TraditionType eTraditionType = await (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).GetTypeAsync(token).ConfigureAwait(false);
+                        if (eTraditionType == TraditionType.None)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t')
+                                .Append(await LanguageManager.GetStringAsync(await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false)
+                                    ? "Message_InvalidNoStream"
+                                    : "Message_InvalidNoTradition", token: token)
+                                .ConfigureAwait(false));
+                        }
+                        else if (await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
+                            if (eTraditionType != TraditionType.RES)
+                            {
+                                blnValid = false;
+                                sbdMessage.AppendLine().Append('\t')
+                                    .Append(await LanguageManager.GetStringAsync("Message_InvalidNoStream", token: token).ConfigureAwait(false));
+                            }
+                        }
+                        // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
+                        else if (eTraditionType != TraditionType.MAG)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t')
+                                .Append(await LanguageManager.GetStringAsync("Message_InvalidNoTradition", token: token).ConfigureAwait(false));
+                        }
                     }
 
                     // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
@@ -20200,17 +20224,6 @@ namespace Chummer
                                                                                   token: token).ConfigureAwait(false),
                                                                               decPPUsed - decPPTotal, decPPTotal);
                         }
-                    }
-
-                    // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
-                    if (await CharacterObject.GetTechnomancerEnabledAsync(token).ConfigureAwait(false)
-                        && await (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).GetTypeAsync(token).ConfigureAwait(false)
-                        != TraditionType.RES)
-                    {
-                        blnValid = false;
-                        sbdMessage.AppendLine().Append('\t')
-                                  .Append(await LanguageManager.GetStringAsync("Message_InvalidNoStream", token: token)
-                                                               .ConfigureAwait(false));
                     }
 
                     // Check if the character has more than the permitted amount of native languages.
