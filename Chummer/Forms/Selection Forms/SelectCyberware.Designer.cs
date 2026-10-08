@@ -311,9 +311,9 @@ namespace Chummer
             // 
             // lblEssCapFilterMinimum
             // 
-            this.lblEssCapFilterMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEssCapFilterMinimum.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssCapFilterMinimum.AutoSize = true;
-            this.lblEssCapFilterMinimum.Location = new System.Drawing.Point(3, 6);
+            this.lblEssCapFilterMinimum.Location = new System.Drawing.Point(6, 6);
             this.lblEssCapFilterMinimum.Name = "lblEssCapFilterMinimum";
             this.lblEssCapFilterMinimum.Size = new System.Drawing.Size(51, 13);
             this.lblEssCapFilterMinimum.TabIndex = 0;
@@ -322,7 +322,7 @@ namespace Chummer
             // 
             // lblEssCapFilterMaximum
             // 
-            this.lblEssCapFilterMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEssCapFilterMaximum.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssCapFilterMaximum.AutoSize = true;
             this.lblEssCapFilterMaximum.Location = new System.Drawing.Point(3, 32);
             this.lblEssCapFilterMaximum.Name = "lblEssCapFilterMaximum";
@@ -333,9 +333,9 @@ namespace Chummer
             // 
             // lblEssCapFilterExact
             // 
-            this.lblEssCapFilterExact.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEssCapFilterExact.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssCapFilterExact.AutoSize = true;
-            this.lblEssCapFilterExact.Location = new System.Drawing.Point(3, 58);
+            this.lblEssCapFilterExact.Location = new System.Drawing.Point(20, 58);
             this.lblEssCapFilterExact.Name = "lblEssCapFilterExact";
             this.lblEssCapFilterExact.Size = new System.Drawing.Size(37, 13);
             this.lblEssCapFilterExact.TabIndex = 2;
@@ -572,9 +572,9 @@ namespace Chummer
             // 
             // lblMinimumCost
             // 
-            this.lblMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMinimumCost.AutoSize = true;
-            this.lblMinimumCost.Location = new System.Drawing.Point(3, 6);
+            this.lblMinimumCost.Location = new System.Drawing.Point(6, 6);
             this.lblMinimumCost.Name = "lblMinimumCost";
             this.lblMinimumCost.Size = new System.Drawing.Size(51, 13);
             this.lblMinimumCost.TabIndex = 0;
@@ -583,7 +583,7 @@ namespace Chummer
             // 
             // lblMaximumCost
             // 
-            this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaximumCost.AutoSize = true;
             this.lblMaximumCost.Location = new System.Drawing.Point(3, 32);
             this.lblMaximumCost.Name = "lblMaximumCost";
@@ -594,9 +594,9 @@ namespace Chummer
             // 
             // lblExactCost
             // 
-            this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblExactCost.AutoSize = true;
-            this.lblExactCost.Location = new System.Drawing.Point(3, 58);
+            this.lblExactCost.Location = new System.Drawing.Point(20, 58);
             this.lblExactCost.Name = "lblExactCost";
             this.lblExactCost.Size = new System.Drawing.Size(37, 13);
             this.lblExactCost.TabIndex = 2;
