@@ -84,6 +84,8 @@ Skills:
 - Fixed a karma calculation bug if the character takes a skill that is not enabled by default for a skill group (ie Flight), adds ranks to the skill group, removes the improvement that grants the skill, then removes ranks from the skill group.
 - Added code to prevent improvements for skills that have 0 value from displaying in tooltips.
 - Fixed a bug that prevented dice pools for language skills from getting properly updated in some cases.
+- Fixed the program being unable to read if a knowledge or language skill has been marked as defaultable.
+- Language skills are now properly defaultable, as stipulated in the core rulebook. This will only affect new characters and new skills added to existing characters, existing skills remain unaffected.
 
 Magic:
 - Fixed `not(...)` improvement conditions always evaluating as false, which prevented Spellcasting Foci from adding their Force to spell tests. Alchemical preparations remain excluded as intended.
