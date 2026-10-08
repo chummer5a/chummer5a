@@ -7513,7 +7513,7 @@ namespace Chummer
             this.tlpDrainAttributesValue.Controls.Add(this.dpcDrainAttributes, 2, 0);
             this.tlpDrainAttributesValue.Controls.Add(this.lblDrainAttributes, 1, 0);
             this.tlpDrainAttributesValue.Controls.Add(this.cboDrain, 0, 0);
-            this.tlpDrainAttributesValue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpDrainAttributesValue.Dock = System.Windows.Forms.DockStyle.Left;
             this.tlpDrainAttributesValue.Location = new System.Drawing.Point(95, 53);
             this.tlpDrainAttributesValue.Margin = new System.Windows.Forms.Padding(0);
             this.tlpDrainAttributesValue.Name = "tlpDrainAttributesValue";
