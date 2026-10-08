@@ -2453,7 +2453,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return !await GetIsLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiersAsync(token).ConfigureAwait(false) > 0;
+                return !await GetIsNativeLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiersAsync(token).ConfigureAwait(false) > 0;
             }
             finally
             {
