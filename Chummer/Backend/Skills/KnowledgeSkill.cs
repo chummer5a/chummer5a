@@ -333,6 +333,9 @@ namespace Chummer.Backend.Skills
                 {
                     DefaultAttribute = CharacterObject.GetAttribute(strAttribute) != null ? strAttribute : "LOG";
                 }
+
+                string strCanDefault = xmlSkillNode.SelectSingleNodeAndCacheExpression("default")?.Value;
+                Default = strCanDefault == bool.TrueString;
             }
         }
 
@@ -374,6 +377,9 @@ namespace Chummer.Backend.Skills
                             ? strAttribute
                             : "LOG", token).ConfigureAwait(false);
                 }
+
+                string strCanDefault = xmlSkillNode.SelectSingleNodeAndCacheExpression("default", token)?.Value;
+                await SetDefaultAsync(strCanDefault == bool.TrueString, token).ConfigureAwait(false);
             }
             finally
             {
@@ -677,6 +683,28 @@ namespace Chummer.Backend.Skills
                         }
                         else
                             OnPropertyChanged();
+
+                        // Language skills are defaultable by RAW, knowledge skills are not
+                        if ((value == "Language") != (strOldType == "Language"))
+                        {
+                            if (SkillId == Guid.Empty)
+                                Default = value == "Language";
+                            else
+                            {
+                                // Don't override data-defined defaultable entry if it exists and would apply
+                                XPathNavigator xmlDataNode = this.GetNodeXPath();
+                                if (xmlDataNode != null)
+                                {
+                                    string strTypeDataNode = xmlDataNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
+                                    if (strTypeDataNode != value)
+                                        Default = value == "Language";
+                                    else
+                                        Default = xmlDataNode.SelectSingleNodeAndCacheExpression("default")?.Value == bool.TrueString;
+                                }
+                                else
+                                    Default = value == "Language";
+                            }
+                        }
                     }
                 }
             }
@@ -759,6 +787,28 @@ namespace Chummer.Backend.Skills
                     }
                     else
                         await OnPropertyChangedAsync(nameof(Type), token).ConfigureAwait(false);
+
+                    // Language skills are defaultable by RAW, knowledge skills are not
+                    if ((value == "Language") != (strOldType == "Language"))
+                    {
+                        if (await GetSkillIdAsync(token).ConfigureAwait(false) == Guid.Empty)
+                            await SetDefaultAsync(value == "Language", token).ConfigureAwait(false);
+                        else
+                        {
+                            // Don't override data-defined defaultable entry if it exists and would apply
+                            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+                            if (xmlDataNode != null)
+                            {
+                                string strTypeDataNode = xmlDataNode.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty;
+                                if (strTypeDataNode != value)
+                                    await SetDefaultAsync(value == "Language", token).ConfigureAwait(false);
+                                else
+                                    await SetDefaultAsync(xmlDataNode.SelectSingleNodeAndCacheExpression("default", token)?.Value == bool.TrueString, token).ConfigureAwait(false);
+                            }
+                            else
+                                await SetDefaultAsync(value == "Language", token).ConfigureAwait(false);
+                        }
+                    }
                 }
                 finally
                 {

@@ -2453,7 +2453,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return !await GetIsLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiersAsync(token).ConfigureAwait(false) > 0;
+                return !await GetIsNativeLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiersAsync(token).ConfigureAwait(false) > 0;
             }
             finally
             {
@@ -4494,6 +4494,45 @@ namespace Chummer.Backend.Skills
                 }
 
                 return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetDefaultAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnDefault == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnDefault == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnDefault = value;
+                    await OnPropertyChangedAsync(nameof(Default), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {

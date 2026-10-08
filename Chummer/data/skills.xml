@@ -1442,7 +1442,7 @@
       <name>Anishinaabe</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1470,7 +1470,7 @@
       <name>Arabic</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1663,7 +1663,7 @@
       <name>Athabaskan</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1727,7 +1727,7 @@
       <name>Bengali</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1831,7 +1831,7 @@
       <name>Bulgarian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1874,7 +1874,7 @@
       <name>Cantonese</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1987,7 +1987,7 @@
       <name>Croatian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2030,7 +2030,7 @@
       <name>Danish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2182,7 +2182,7 @@
       <name>English</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2203,7 +2203,7 @@
       <name>Eskimo-Aleut</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2305,7 +2305,7 @@
       <name>French</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2407,7 +2407,7 @@
       <name>German</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2442,7 +2442,7 @@
       <name>Hebrew</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2461,7 +2461,7 @@
       <name>Hindi-Urdu</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2541,7 +2541,7 @@
       <name>Indonesian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2569,7 +2569,7 @@
       <name>Iroquoian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2588,7 +2588,7 @@
       <name>Italian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2607,7 +2607,7 @@
       <name>Japanese</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2627,7 +2627,7 @@
       <name>Korean</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2646,7 +2646,7 @@
       <name>Latin</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2788,7 +2788,7 @@
       <name>Mandarin</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3094,7 +3094,7 @@
       <name>Or'zet</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3136,7 +3136,7 @@
       <name>Persian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3155,7 +3155,7 @@
       <name>Polish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3229,7 +3229,7 @@
       <name>Portuguese</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3248,7 +3248,7 @@
       <name>Punjabi</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3286,7 +3286,7 @@
       <name>Russian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3356,7 +3356,7 @@
       <name>Sioux</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3392,7 +3392,7 @@
       <name>Spanish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3411,7 +3411,7 @@
       <name>Sperethiel</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3647,7 +3647,7 @@
       <name>Tamazight</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3666,7 +3666,7 @@
       <name>Thai</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3772,7 +3772,7 @@
       <name>Turkish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3859,7 +3859,7 @@
       <name>Wu</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3878,7 +3878,7 @@
       <name>Xiang</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3966,7 +3966,7 @@
       <name>City Speak</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4390,7 +4390,7 @@
       <name>Creole</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4894,7 +4894,7 @@
       <name>Salish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4913,7 +4913,7 @@
       <name>Serbo-Croatian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4951,7 +4951,7 @@
       <name>Aztlaner Spanish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -5017,7 +5017,7 @@
       <name>Tlingit</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -5049,7 +5049,7 @@
       <name>Tsimshianic</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -5068,7 +5068,7 @@
       <name>Uto-Aztecan</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -5106,7 +5106,7 @@
       <name>Yiddish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -5125,7 +5125,7 @@
       <name>Zuni</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>False</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>

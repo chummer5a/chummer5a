@@ -34,6 +34,10 @@ Application:
 - Fixed a bug allowing skills that should not be able to take specializations being allowed to do so when loading in an existing character save before making any changes to it.
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
+- Fixed a rare potential deadlock around calculating adept power points currently being used.
+
+Attributes:
+- For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
 
 Bioware:
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
@@ -74,10 +78,14 @@ Qualities:
 - Fixed the Double-Jointed and Combat Paralysis qualities not fetching their description from the PDF.
 - Dedicated Conjurer now prompts for extra summonable spirit types based on Summoning rating (one type per two full ranks, FA p.36). Raising Summoning later prompts for newly earned picks. Existing characers with this quality will need to use the Reapply Improvements menu to add the new improvement type. Closes #4712.
 - Skill specializations are reverse-translated against their parent skill's specialization list before the generic extras lookup, so cases where one translated word maps to both a skill name and a specialization (e.g. German "Wahrnehmung" for Perception vs Detection) keep the correct English specialization name. This restores Dedicated Spellslinger's free Detection spell when Spellcasting is specialized in Detection under German. Characters that already saved the wrong English name need to re-select the specialization. Closes #4739.
-- Fixed Traditionalist Shaman not being able to be added
+- Fixed Traditionalist Shaman not being able to be added.
+
 Skills:
 - Fixed a karma calculation bug if the character takes a skill that is not enabled by default for a skill group (ie Flight), adds ranks to the skill group, removes the improvement that grants the skill, then removes ranks from the skill group.
 - Added code to prevent improvements for skills that have 0 value from displaying in tooltips.
+- Fixed a bug that prevented dice pools for language skills from getting properly updated in some cases.
+- Fixed the program being unable to read if a knowledge or language skill has been marked as defaultable.
+- Language skills are now properly defaultable, as stipulated in the core rulebook. This will only affect new characters and new skills added to existing characters, existing skills remain unaffected.
 
 Magic:
 - Fixed `not(...)` improvement conditions always evaluating as false, which prevented Spellcasting Foci from adding their Force to spell tests. Alchemical preparations remain excluded as intended.

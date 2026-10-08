@@ -584,6 +584,9 @@ namespace Chummer.Backend.Attributes
             {
                 using (LockObject.EnterReadLock())
                 {
+                    // Depth is the maximum for an AI's Edge, natural and augmented.
+                    if (Abbrev == "EDG" && _objCharacter.IsAI)
+                        return MetatypeMaximum;
                     if (MetatypeCategory == AttributeCategory.Shapeshifter)
                         return RawMetatypeAugmentedMaximum;
                     int intReturn = RawMetatypeAugmentedMaximum;
@@ -609,6 +612,9 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
+                // Depth is the maximum for an AI's Edge, natural and augmented.
+                if (Abbrev == "EDG" && await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false))
+                    return await GetMetatypeMaximumAsync(token).ConfigureAwait(false);
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return await GetRawMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false);
                 int intReturn = await GetRawMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false);
@@ -3535,6 +3541,16 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
+                    if (Abbrev == "DEP" && setNamesOfChangedProperties.Contains(nameof(TotalValue)) && _objCharacter.IsAI)
+                    {
+                        CharacterAttrib objEdge = _objCharacter.AttributeSection.GetAttributeByName("EDG");
+                        if (objEdge != null)
+                        {
+                            objEdge.OnPropertyChanged(nameof(MetatypeMaximum));
+                            objEdge.OnPropertyChanged(nameof(MetatypeAugmentedMaximum));
+                        }
+                    }
+
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
@@ -3663,6 +3679,19 @@ namespace Chummer.Backend.Attributes
                         finally
                         {
                             await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
+                    if (Abbrev == "DEP" && setNamesOfChangedProperties.Contains(nameof(TotalValue))
+                        && await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false))
+                    {
+                        CharacterAttrib objEdge = await _objCharacter.AttributeSection.GetAttributeByNameAsync("EDG", token)
+                            .ConfigureAwait(false);
+                        if (objEdge != null)
+                        {
+                            await objEdge.OnPropertyChangedAsync(nameof(MetatypeMaximum), token).ConfigureAwait(false);
+                            await objEdge.OnPropertyChangedAsync(nameof(MetatypeAugmentedMaximum), token)
+                                .ConfigureAwait(false);
                         }
                     }
 

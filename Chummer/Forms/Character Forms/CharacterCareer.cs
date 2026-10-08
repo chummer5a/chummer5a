@@ -783,6 +783,12 @@ namespace Chummer
 
                                         // Set up databindings toggling between drain and fading labels.
                                         await gpbTradition.RegisterOneWayAsyncDataBindingAsync(
+                                            (x, y) => x.Visible = y,
+                                            CharacterObject,
+                                            nameof(Character.ShouldHaveTradition),
+                                            (x, t) => x.GetShouldHaveTraditionAsync(t),
+                                            GenericToken).ConfigureAwait(false);
+                                        await gpbTradition.RegisterOneWayAsyncDataBindingAsync(
                                             (x, y) => x.Text = y,
                                             CharacterObject,
                                             nameof(Character.RESEnabled),
