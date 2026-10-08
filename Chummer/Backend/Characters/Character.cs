@@ -40189,7 +40189,7 @@ namespace Chummer
                                      Environment.NewLine +
                                      strExtraReturn;
                     }
-                    return strReturn.WordWrap();
+                    return strReturn;
                 }
             }
         }
@@ -40223,7 +40223,7 @@ namespace Chummer
                                  await LanguageManager.GetStringAsync("Label_SelectMentorSpirit_Choices",
                                      token: token).ConfigureAwait(false) + Environment.NewLine + strExtraReturn;
                 }
-                return strReturn.WordWrap();
+                return strReturn;
             }
             finally
             {

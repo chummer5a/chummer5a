@@ -338,7 +338,6 @@ namespace Chummer
             this.tlpCommonRightSide = new System.Windows.Forms.TableLayoutPanel();
             this.gpbMentorSpirit = new System.Windows.Forms.GroupBox();
             this.tlpMentorSpirit = new System.Windows.Forms.TableLayoutPanel();
-            this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
             this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
             this.lblMentorSpiritSourceLabel = new System.Windows.Forms.Label();
@@ -1097,6 +1096,7 @@ namespace Chummer
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsGearAllowRenameReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.txtMentorSpiritInformation = new System.Windows.Forms.TextBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -4834,6 +4834,7 @@ namespace Chummer
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpCommonRightSide.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpCommonRightSide.Size = new System.Drawing.Size(331, 625);
             this.tlpCommonRightSide.TabIndex = 104;
             // 
@@ -4843,11 +4844,11 @@ namespace Chummer
             this.gpbMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCommonRightSide.SetColumnSpan(this.gpbMentorSpirit, 2);
             this.gpbMentorSpirit.Controls.Add(this.tlpMentorSpirit);
-            this.gpbMentorSpirit.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gpbMentorSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbMentorSpirit.Location = new System.Drawing.Point(0, 361);
             this.gpbMentorSpirit.Margin = new System.Windows.Forms.Padding(0);
             this.gpbMentorSpirit.Name = "gpbMentorSpirit";
-            this.gpbMentorSpirit.Size = new System.Drawing.Size(331, 69);
+            this.gpbMentorSpirit.Size = new System.Drawing.Size(331, 264);
             this.gpbMentorSpirit.TabIndex = 93;
             this.gpbMentorSpirit.TabStop = false;
             this.gpbMentorSpirit.Tag = "String_MentorSpirit";
@@ -4859,27 +4860,16 @@ namespace Chummer
             this.tlpMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMentorSpirit.ColumnCount = 1;
             this.tlpMentorSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMentorSpirit.Controls.Add(this.lblMentorSpiritInformation, 0, 1);
             this.tlpMentorSpirit.Controls.Add(this.tlpMagicianMentorSpiritHeader, 0, 0);
+            this.tlpMentorSpirit.Controls.Add(this.txtMentorSpiritInformation, 0, 1);
             this.tlpMentorSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMentorSpirit.Location = new System.Drawing.Point(3, 16);
             this.tlpMentorSpirit.Name = "tlpMentorSpirit";
             this.tlpMentorSpirit.RowCount = 2;
             this.tlpMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMentorSpirit.Size = new System.Drawing.Size(325, 50);
+            this.tlpMentorSpirit.Size = new System.Drawing.Size(325, 245);
             this.tlpMentorSpirit.TabIndex = 0;
-            // 
-            // lblMentorSpiritInformation
-            // 
-            this.lblMentorSpiritInformation.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMentorSpiritInformation.AutoSize = true;
-            this.lblMentorSpiritInformation.Location = new System.Drawing.Point(3, 31);
-            this.lblMentorSpiritInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritInformation.Name = "lblMentorSpiritInformation";
-            this.lblMentorSpiritInformation.Size = new System.Drawing.Size(127, 13);
-            this.lblMentorSpiritInformation.TabIndex = 94;
-            this.lblMentorSpiritInformation.Text = "[Mentor Spirit Information]";
             // 
             // tlpMagicianMentorSpiritHeader
             // 
@@ -15941,6 +15931,17 @@ namespace Chummer
             this.tsGearAllowRenameReapplyImprovements.Text = "Re-Apply Improvements";
             this.tsGearAllowRenameReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
+            // txtMentorSpiritInformation
+            // 
+            this.txtMentorSpiritInformation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtMentorSpiritInformation.Location = new System.Drawing.Point(3, 28);
+            this.txtMentorSpiritInformation.Multiline = true;
+            this.txtMentorSpiritInformation.Name = "txtMentorSpiritInformation";
+            this.txtMentorSpiritInformation.ReadOnly = true;
+            this.txtMentorSpiritInformation.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtMentorSpiritInformation.Size = new System.Drawing.Size(319, 214);
+            this.txtMentorSpiritInformation.TabIndex = 101;
+            // 
             // CharacterCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -17349,11 +17350,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblDrainAttributesLabel;
         private System.Windows.Forms.GroupBox gpbMentorSpirit;
         private System.Windows.Forms.TableLayoutPanel tlpMentorSpirit;
-        private System.Windows.Forms.Label lblMentorSpiritInformation;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpiritHeader;
         private System.Windows.Forms.Label lblMentorSpiritLabel;
         private System.Windows.Forms.Label lblMentorSpiritSourceLabel;
         private System.Windows.Forms.Label lblMentorSpirit;
         private LabelWithToolTip lblMentorSpiritSource;
+        private System.Windows.Forms.TextBox txtMentorSpiritInformation;
     }
 }

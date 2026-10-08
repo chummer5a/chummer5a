@@ -438,7 +438,6 @@ namespace Chummer
             this.tlpCommonRightSide = new System.Windows.Forms.TableLayoutPanel();
             this.gpbMentorSpirit = new System.Windows.Forms.GroupBox();
             this.tlpMentorSpirit = new System.Windows.Forms.TableLayoutPanel();
-            this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
             this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
             this.lblMentorSpiritSource = new Chummer.LabelWithToolTip();
@@ -1406,6 +1405,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsEditWeaponMount = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.txtMentorSpiritInformation = new System.Windows.Forms.TextBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -7239,11 +7239,11 @@ namespace Chummer
             this.gpbMentorSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCommonRightSide.SetColumnSpan(this.gpbMentorSpirit, 2);
             this.gpbMentorSpirit.Controls.Add(this.tlpMentorSpirit);
-            this.gpbMentorSpirit.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gpbMentorSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbMentorSpirit.Location = new System.Drawing.Point(0, 366);
             this.gpbMentorSpirit.Margin = new System.Windows.Forms.Padding(0);
             this.gpbMentorSpirit.Name = "gpbMentorSpirit";
-            this.gpbMentorSpirit.Size = new System.Drawing.Size(331, 69);
+            this.gpbMentorSpirit.Size = new System.Drawing.Size(331, 259);
             this.gpbMentorSpirit.TabIndex = 110;
             this.gpbMentorSpirit.TabStop = false;
             this.gpbMentorSpirit.Tag = "String_MentorSpirit";
@@ -7257,7 +7257,7 @@ namespace Chummer
             this.tlpMentorSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMentorSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMentorSpirit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMentorSpirit.Controls.Add(this.lblMentorSpiritInformation, 0, 1);
+            this.tlpMentorSpirit.Controls.Add(this.txtMentorSpiritInformation, 0, 1);
             this.tlpMentorSpirit.Controls.Add(this.tlpMagicianMentorSpiritHeader, 0, 0);
             this.tlpMentorSpirit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMentorSpirit.Location = new System.Drawing.Point(3, 16);
@@ -7265,19 +7265,8 @@ namespace Chummer
             this.tlpMentorSpirit.RowCount = 2;
             this.tlpMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMentorSpirit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMentorSpirit.Size = new System.Drawing.Size(325, 50);
+            this.tlpMentorSpirit.Size = new System.Drawing.Size(325, 240);
             this.tlpMentorSpirit.TabIndex = 0;
-            // 
-            // lblMentorSpiritInformation
-            // 
-            this.lblMentorSpiritInformation.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMentorSpiritInformation.AutoSize = true;
-            this.lblMentorSpiritInformation.Location = new System.Drawing.Point(3, 31);
-            this.lblMentorSpiritInformation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentorSpiritInformation.Name = "lblMentorSpiritInformation";
-            this.lblMentorSpiritInformation.Size = new System.Drawing.Size(127, 13);
-            this.lblMentorSpiritInformation.TabIndex = 100;
-            this.lblMentorSpiritInformation.Text = "[Mentor Spirit Information]";
             // 
             // tlpMagicianMentorSpiritHeader
             // 
@@ -22726,6 +22715,17 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
+            // txtMentorSpiritInformation
+            // 
+            this.txtMentorSpiritInformation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtMentorSpiritInformation.Location = new System.Drawing.Point(3, 28);
+            this.txtMentorSpiritInformation.Multiline = true;
+            this.txtMentorSpiritInformation.Name = "txtMentorSpiritInformation";
+            this.txtMentorSpiritInformation.ReadOnly = true;
+            this.txtMentorSpiritInformation.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtMentorSpiritInformation.Size = new System.Drawing.Size(319, 209);
+            this.txtMentorSpiritInformation.TabIndex = 106;
+            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -24521,7 +24521,6 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsWeaponAccessoryGearNotes;
         private GroupBox gpbMentorSpirit;
         private TableLayoutPanel tlpMentorSpirit;
-        private Label lblMentorSpiritInformation;
         private TableLayoutPanel tlpMagicianMentorSpiritHeader;
         private Label lblMentorSpiritLabel;
         private LabelWithToolTip lblMentorSpiritSource;
@@ -24550,5 +24549,6 @@ namespace Chummer
         private UI.Shared.Components.DicePoolControl dpcDrainAttributes;
         private Label lblDrainAttributes;
         private ElasticComboBox cboDrain;
+        private TextBox txtMentorSpiritInformation;
     }
 }

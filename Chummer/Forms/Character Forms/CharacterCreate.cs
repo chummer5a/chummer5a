@@ -1317,7 +1317,7 @@ namespace Chummer
                                                 nameof(Character.FirstMentorSpiritDisplayName),
                                                 x => x.GetFirstMentorSpiritDisplayNameAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
-                                        await lblMentorSpiritInformation.RegisterOneWayAsyncDataBindingAsync(
+                                        await txtMentorSpiritInformation.RegisterOneWayAsyncDataBindingAsync(
                                             (x, y) => x.Text = y, CharacterObject,
                                             nameof(Character.FirstMentorSpiritDisplayInformation),
                                             x => x.GetFirstMentorSpiritDisplayInformationAsync(GenericToken),
