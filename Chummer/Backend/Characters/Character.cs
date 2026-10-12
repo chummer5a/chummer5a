@@ -43618,6 +43618,38 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The maximum connection rating this character is allowed for contacts.
+        /// </summary>
+        public int MaxContactConnection
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return Created || FriendsInHighPlaces ? 12 : 6;
+            }
+        }
+
+        /// <summary>
+        /// The maximum connection rating this character is allowed for contacts.
+        /// </summary>
+        public async Task<int> GetMaxContactConnectionAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetCreatedAsync(token).ConfigureAwait(false)
+                       || await GetFriendsInHighPlacesAsync(token).ConfigureAwait(false)
+                    ? 12
+                    : 6;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether user is getting free bioware from Prototype Transhuman.
         /// </summary>
         public decimal PrototypeTranshuman

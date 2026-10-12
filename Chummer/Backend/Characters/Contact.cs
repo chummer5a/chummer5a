@@ -441,8 +441,6 @@ namespace Chummer
                 new DependencyGraphNode<string, Contact>(nameof(ContactPoints),
                     new DependencyGraphNode<string, Contact>(nameof(Free)),
                     new DependencyGraphNode<string, Contact>(nameof(Connection),
-                        new DependencyGraphNode<string, Contact>(nameof(ConnectionMaximum))
-                    ),
                     new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
                     new DependencyGraphNode<string, Contact>(nameof(Family)),
                     new DependencyGraphNode<string, Contact>(nameof(Blackmail))
@@ -497,9 +495,8 @@ namespace Chummer
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
-            return e.PropertyNames.Contains(nameof(Character.Created)) ||
-                   e.PropertyNames.Contains(nameof(Character.FriendsInHighPlaces))
-                ? OnPropertyChangedAsync(nameof(ConnectionMaximum), token)
+            return e.PropertyNames.Contains(nameof(Character.MaxContactConnection))
+                ? OnPropertyChangedAsync(nameof(Connection), token)
                 : Task.CompletedTask;
         }
 
@@ -1182,11 +1179,11 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Math.Min(_intConnection, ConnectionMaximum);
+                    return Math.Min(_intConnection, _objCharacter.MaxContactConnection);
             }
             set
             {
-                value = Math.Max(Math.Min(value, ConnectionMaximum), 1);
+                value = Math.Max(Math.Min(value, _objCharacter.MaxContactConnection), 1);
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intConnection, value) != value)
@@ -1204,7 +1201,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return Math.Min(_intConnection, await GetConnectionMaximumAsync(token).ConfigureAwait(false));
+                return Math.Min(_intConnection, await _objCharacter.GetMaxContactConnectionAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -1218,7 +1215,7 @@ namespace Chummer
         public async Task SetConnectionAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = Math.Max(Math.Min(value, await GetConnectionMaximumAsync(token).ConfigureAwait(false)), 1);
+            value = Math.Max(Math.Min(value, await _objCharacter.GetMaxContactConnectionAsync(token).ConfigureAwait(false)), 1);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -2181,32 +2178,6 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return !await GetReadOnlyAsync(token).ConfigureAwait(false) && !await GetIsGroupAsync(token).ConfigureAwait(false) && await GetForcedLoyaltyAsync(token).ConfigureAwait(false) <= 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        public int ConnectionMaximum
-        {
-            get
-            {
-                using (CharacterObject.LockObject.EnterReadLock())
-                    return CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
-            }
-        }
-
-        public async Task<int> GetConnectionMaximumAsync(CancellationToken token = default)
-        {
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                return await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                       || await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false)
-                    ? 12
-                    : 6;
             }
             finally
             {
