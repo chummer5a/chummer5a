@@ -364,7 +364,6 @@ namespace Chummer
                 strNotes = await _objContact.GetNotesAsync(_objMyToken).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strNotes))
                     strTooltip += Utils.DoubleNewLine + strNotes;
-                strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

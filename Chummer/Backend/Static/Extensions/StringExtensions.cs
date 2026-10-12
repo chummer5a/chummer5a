@@ -7142,10 +7142,16 @@ namespace Chummer
 
                             // Trim whitespace following break
                             intCurrentPosition += intLengthToRead;
-                            while (intCurrentPosition < intEndOfLinePosition
-                                   && char.IsWhiteSpace(strText[intCurrentPosition])
-                                   && !char.IsControl(strText[intCurrentPosition]))
-                                ++intCurrentPosition;
+                            if (intCurrentPosition < intEndOfLinePosition)
+                            {
+                                for (char chrLoop = strText[intCurrentPosition];
+                                    char.IsWhiteSpace(chrLoop) && !char.IsControl(chrLoop);
+                                    chrLoop = strText[intCurrentPosition])
+                                {
+                                    if (++intCurrentPosition >= intEndOfLinePosition)
+                                        break;
+                                }
+                            }
                         } while (intEndOfLinePosition > intCurrentPosition);
                     }
                     else

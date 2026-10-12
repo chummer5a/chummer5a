@@ -380,8 +380,7 @@ namespace Chummer
                     (await LanguageManager
                         .GetStringAsync(
                             "Message_Options_ConfirmTelemetry",
-                            _strSelectedLanguage).ConfigureAwait(false))
-                    .WordWrap(),
+                            _strSelectedLanguage).ConfigureAwait(false)),
                     await LanguageManager
                         .GetStringAsync(
                             "MessageTitle_Options_ConfirmTelemetry",
@@ -426,7 +425,7 @@ namespace Chummer
                     this,
                     (await LanguageManager
                         .GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
-                        .ConfigureAwait(false)).WordWrap(),
+                        .ConfigureAwait(false)),
                     await LanguageManager
                         .GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
                         .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.Yes)
@@ -2472,8 +2471,8 @@ namespace Chummer
                                                                                  .ToString(
                                                                                      "D",
                                                                                      GlobalSettings
-                                                                                         .InvariantCultureInfo))
-                                                                         .WordWrap(), token).ConfigureAwait(false);
+                                                                                         .InvariantCultureInfo)),
+                                                                                         token).ConfigureAwait(false);
         }
 
         private async Task RefreshLanguageDocumentNames(CancellationToken token = default)
