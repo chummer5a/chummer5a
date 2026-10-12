@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -46,6 +47,11 @@ namespace Chummer
 
         private const string StrGitHubUserAgent = "Chummer5a-CustomDataUpdater";
         private const string StrInstalledReleaseVersionsSubKey = "CustomDataInstalledReleaseVersions";
+
+        private static readonly ReadOnlyCollection<string> s_lstAllowedTopLevelDomains = Array.AsReadOnly(new string[]
+        {
+            "github.com"
+        });
 
         private static readonly ConcurrentDictionary<string, ValueVersion> s_dicInstalledReleaseVersions
             = new ConcurrentDictionary<string, ValueVersion>(StringComparer.OrdinalIgnoreCase);
@@ -618,7 +624,7 @@ namespace Chummer
                 return true;
             }
 
-            if (!uriUpdateLocation.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
+            if (!uriUpdateLocation.Host.EndsWith("github.com", StringComparison.OrdinalIgnoreCase))
                 return false;
 
             string[] astrPathParts = uriUpdateLocation.AbsolutePath.TrimNoAlloc('/').SplitFixedSize('/', 2);
@@ -636,6 +642,9 @@ namespace Chummer
         private static async Task<string> DownloadStringAsync(Uri uriAddress, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
+            string strAddressHost = uriAddress.Host;
+            if (s_lstAllowedTopLevelDomains.All(x => !strAddressHost.EndsWith(x)))
+                throw new InvalidOperationException("Attempted to download from untrusted top-level domain.");
             HttpWebRequest objRequest = WebRequest.Create(uriAddress) as HttpWebRequest
                                         ?? throw new InvalidOperationException();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
