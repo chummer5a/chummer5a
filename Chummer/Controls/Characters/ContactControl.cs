@@ -1116,10 +1116,10 @@ namespace Chummer
                                                                          // ReSharper disable once MethodSupportsCancellation
                                                                          (x, t) => x.GetLoyaltyEnabledAsync(t),
                                                                          token: token).ConfigureAwait(false);
-                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
-                                                                            nameof(Contact.ConnectionMaximum),
+                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact.CharacterObject,
+                                                                            nameof(Character.MaxContactConnection),
                                                                             // ReSharper disable once MethodSupportsCancellation
-                                                                            (x, t) => x.GetConnectionMaximumAsync(t),
+                                                                            (x, t) => x.GetMaxContactConnectionAsync(t),
                                                                             token: token).ConfigureAwait(false);
                     string strToolTipText;
                     if (await _objContact.GetIsEnemyAsync(token).ConfigureAwait(false))
