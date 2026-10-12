@@ -4002,6 +4002,7 @@ namespace Chummer
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
+                _objCharacter.MultiplePropertiesChangedAsync -= CharacterObjectOnPropertyChanged;
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -4026,6 +4027,7 @@ namespace Chummer
                     await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstMugshots.DisposeAsync().ConfigureAwait(false);
+                _objCharacter.MultiplePropertiesChangedAsync -= CharacterObjectOnPropertyChanged;
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
