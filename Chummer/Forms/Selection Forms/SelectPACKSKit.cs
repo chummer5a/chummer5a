@@ -126,7 +126,6 @@ namespace Chummer
             {
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
                 {
-                    sbdCategoryFilter.Append(strFilter).Append(" and (");
                     foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                     {
                         if (!string.IsNullOrEmpty(strItem))
@@ -134,8 +133,10 @@ namespace Chummer
                     }
 
                     if (sbdCategoryFilter.Length > 0)
+                    {
                         sbdCategoryFilter.Length -= 4;
-                    strFilter = sbdCategoryFilter.Append(')').ToString();
+                        strFilter = sbdCategoryFilter.Insert(0, strFilter, " and (").Append(')').ToString();
+                    }
                 }
             }
 
