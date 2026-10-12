@@ -440,7 +440,7 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(ContactPoints),
                     new DependencyGraphNode<string, Contact>(nameof(Free)),
-                    new DependencyGraphNode<string, Contact>(nameof(Connection),
+                    new DependencyGraphNode<string, Contact>(nameof(Connection)),
                     new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
                     new DependencyGraphNode<string, Contact>(nameof(Family)),
                     new DependencyGraphNode<string, Contact>(nameof(Blackmail))
