@@ -832,6 +832,17 @@ namespace Chummer.Backend.Attributes
                 _lstNormalAttributes.Dispose();
                 _lstSpecialAttributes.Dispose();
                 _lstAttributes.Dispose();
+                if (_objCharacter?.IsDisposed == false)
+                {
+                    try
+                    {
+                        _objCharacter.MultiplePropertiesChangedAsync -= CharacterOnMultiplePropertiesChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -859,6 +870,17 @@ namespace Chummer.Backend.Attributes
                 await _lstNormalAttributes.DisposeAsync().ConfigureAwait(false);
                 await _lstSpecialAttributes.DisposeAsync().ConfigureAwait(false);
                 await _lstAttributes.DisposeAsync().ConfigureAwait(false);
+                if (_objCharacter?.IsDisposed == false)
+                {
+                    try
+                    {
+                        _objCharacter.MultiplePropertiesChangedAsync -= CharacterOnMultiplePropertiesChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
