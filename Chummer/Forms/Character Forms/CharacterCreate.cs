@@ -11837,220 +11837,280 @@ namespace Chummer
                                             ? "streams.xml"
                                             : "traditions.xml", token: token).ConfigureAwait(false))
                                     .SelectSingleNodeAndCacheExpression("/chummer", token);
-                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
-                           Utils.ListItemListPool, out List<ListItem> lstTraditions))
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
+                           Utils.StringHashSetPool, out HashSet<string> setAlwaysIncludeSpirits))
                 {
-                    if (xmlTraditionsBaseChummerNode != null)
-                    {
-                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                        "traditions/tradition["
-                                        + await CharacterObjectSettings.BookXPathAsync(token: token)
-                                            .ConfigureAwait(false)
-                                        + "]"))
-                        {
-                            string strName
-                                = xmlTradition
-                                    .SelectSingleNodeAndCacheExpression("name", token)
-                                    ?.Value;
-                            if (!string.IsNullOrEmpty(strName))
-                                lstTraditions.Add(new ListItem(
-                                    xmlTradition
-                                        .SelectSingleNodeAndCacheExpression(
-                                            "id", token)
-                                        ?.Value ?? strName,
-                                    xmlTradition
-                                        .SelectSingleNodeAndCacheExpression(
-                                            "translate", token)
-                                        ?.Value ?? strName));
-                        }
-                    }
-
-                    if (lstTraditions.Count > 1)
-                    {
-                        lstTraditions.Sort(CompareListItems.CompareNames);
-                        lstTraditions.Insert(
-                            0,
-                            new ListItem(
-                                "None",
-                                await LanguageManager.GetStringAsync("String_None", token: token)
-                                    .ConfigureAwait(false)));
-                        if (!lstTraditions.SequenceEqual(
-                                await cboTradition.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
-                        {
-                            await cboTradition.PopulateWithListItemsAsync(lstTraditions, token)
-                                .ConfigureAwait(false);
-                            await cboTradition.DoThreadSafeAsync(x =>
-                            {
-                                if (!string.IsNullOrEmpty(strTraditionSourceIdString))
-                                    x.SelectedValue = strTraditionSourceIdString;
-                                if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                    x.SelectedIndex = 0;
-                            }, token).ConfigureAwait(false);
-                        }
-                    }
-                    else
-                    {
-                        await this.DoThreadSafeAsync(() =>
-                        {
-                            cboTradition.Visible = false;
-                            lblTraditionLabel.Visible = false;
-                        }, token).ConfigureAwait(false);
-                    }
-                }
-
-                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
-                            Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
-                {
-                    if (xmlTraditionsBaseChummerNode != null)
-                    {
-                        foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
-                                        .SelectAndCacheExpression(
-                                            "drainattributes/drainattribute", token))
-                        {
-                            string strName
-                                = xmlDrain
-                                    .SelectSingleNodeAndCacheExpression("name", token)
-                                    ?.Value;
-                            if (!string.IsNullOrEmpty(strName)
-                                && (lstDrainAttributes.Count == 0 || lstDrainAttributes.TrueForAll(x =>
-                                                x.Value?.ToString() != strName)))
-                            {
-                                string strTranslatedName = xmlDrain
-                                    .SelectSingleNodeAndCacheExpression(
-                                        "translate",
-                                        token)?.Value ?? strName;
-                                lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
-                            }
-                        }
-                    }
-
-                    lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                    lstDrainAttributes.Insert(0, ListItem.Blank);
-                    if (!lstDrainAttributes.SequenceEqual(
-                                await cboDrain.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
-                    {
-                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, token)
-                            .ConfigureAwait(false);
-                        await cboDrain.DoThreadSafeAsync(x =>
-                        {
-                            if (!string.IsNullOrEmpty(strCurrentDrainExpression))
-                                x.SelectedValue = strCurrentDrainExpression;
-                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                x.SelectedIndex = 0;
-                        }, token).ConfigureAwait(false);
-                    }
-                }
-
-                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                            out HashSet<string> limit))
-                {
-                    foreach (Improvement improvement in await ImprovementManager
-                                    .GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType
-                                            .LimitSpiritCategory, token: token)
-                                    .ConfigureAwait(false))
-                    {
-                        limit.Add(improvement.ImprovedName);
-                    }
-
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
-                                Utils.ListItemListPool, out List<ListItem> lstSpirit))
+                               Utils.ListItemListPool, out List<ListItem> lstTraditions))
                     {
                         if (xmlTraditionsBaseChummerNode != null)
                         {
-                            foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
-                                            .SelectAndCacheExpression("spirits/spirit", token))
+                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                            "traditions/tradition["
+                                            + await CharacterObjectSettings.BookXPathAsync(token: token)
+                                                .ConfigureAwait(false)
+                                            + "]"))
                             {
-                                string strSpiritName
-                                    = xmlSpirit
+                                string strName
+                                    = xmlTradition
                                         .SelectSingleNodeAndCacheExpression("name", token)
                                         ?.Value;
-                                if (!string.IsNullOrEmpty(strSpiritName)
-                                    && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                if (!string.IsNullOrEmpty(strName))
                                 {
-                                    lstSpirit.Add(new ListItem(strSpiritName,
-                                        xmlSpirit
+                                    lstTraditions.Add(new ListItem(
+                                        xmlTradition
                                             .SelectSingleNodeAndCacheExpression(
-                                                "translate", token)?.Value
-                                        ?? strSpiritName));
+                                                "id", token)
+                                            ?.Value ?? strName,
+                                        xmlTradition
+                                            .SelectSingleNodeAndCacheExpression(
+                                                "translate", token)
+                                            ?.Value ?? strName));
+                                    string strTemp = xmlTradition
+                                        .SelectSingleNodeAndCacheExpression("spirits/spiritcombat", token)
+                                        ?.Value;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        setAlwaysIncludeSpirits.Add(strTemp);
+                                    strTemp = xmlTradition
+                                        .SelectSingleNodeAndCacheExpression("spirits/spiritdetection", token)
+                                        ?.Value;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        setAlwaysIncludeSpirits.Add(strTemp);
+                                    strTemp = xmlTradition
+                                        .SelectSingleNodeAndCacheExpression("spirits/spirithealth", token)
+                                        ?.Value;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        setAlwaysIncludeSpirits.Add(strTemp);
+                                    strTemp = xmlTradition
+                                        .SelectSingleNodeAndCacheExpression("spirits/spiritillusion", token)
+                                        ?.Value;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        setAlwaysIncludeSpirits.Add(strTemp);
+                                    strTemp = xmlTradition
+                                        .SelectSingleNodeAndCacheExpression("spirits/spiritmanipulation", token)
+                                        ?.Value;
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                        setAlwaysIncludeSpirits.Add(strTemp);
                                 }
                             }
                         }
 
-                        lstSpirit.Sort(CompareListItems.CompareNames);
-                        lstSpirit.Insert(0, ListItem.Blank);
-                        if (!lstSpirit.SequenceEqual(
-                                await cboSpiritCombat.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+                        if (lstTraditions.Count > 1)
                         {
-                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, token)
-                                .ConfigureAwait(false);
-                            await cboSpiritCombat.DoThreadSafeAsync(x =>
+                            lstTraditions.Sort(CompareListItems.CompareNames);
+                            lstTraditions.Insert(
+                                0,
+                                new ListItem(
+                                    "None",
+                                    await LanguageManager.GetStringAsync("String_None", token: token)
+                                        .ConfigureAwait(false)));
+                            if (!lstTraditions.SequenceEqual(
+                                    await cboTradition.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
                             {
-                                if (!string.IsNullOrEmpty(strCurrentSpiritCombat))
-                                    x.SelectedValue = strCurrentSpiritCombat;
+                                await cboTradition.PopulateWithListItemsAsync(lstTraditions, token)
+                                    .ConfigureAwait(false);
+                                await cboTradition.DoThreadSafeAsync(x =>
+                                {
+                                    if (!string.IsNullOrEmpty(strTraditionSourceIdString))
+                                        x.SelectedValue = strTraditionSourceIdString;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            await this.DoThreadSafeAsync(() =>
+                            {
+                                cboTradition.Visible = false;
+                                lblTraditionLabel.Visible = false;
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
+                                Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
+                    {
+                        if (xmlTraditionsBaseChummerNode != null)
+                        {
+                            foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
+                                            .SelectAndCacheExpression(
+                                                "drainattributes/drainattribute", token))
+                            {
+                                string strName
+                                    = xmlDrain
+                                        .SelectSingleNodeAndCacheExpression("name", token)
+                                        ?.Value;
+                                if (!string.IsNullOrEmpty(strName)
+                                    && (lstDrainAttributes.Count == 0 || lstDrainAttributes.TrueForAll(x =>
+                                                    x.Value?.ToString() != strName)))
+                                {
+                                    string strTranslatedName = xmlDrain
+                                        .SelectSingleNodeAndCacheExpression(
+                                            "translate",
+                                            token)?.Value ?? strName;
+                                    lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
+                                }
+                            }
+                        }
+
+                        lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                        lstDrainAttributes.Insert(0, ListItem.Blank);
+                        if (!lstDrainAttributes.SequenceEqual(
+                                    await cboDrain.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+                        {
+                            await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, token)
+                                .ConfigureAwait(false);
+                            await cboDrain.DoThreadSafeAsync(x =>
+                            {
+                                if (!string.IsNullOrEmpty(strCurrentDrainExpression))
+                                    x.SelectedValue = strCurrentDrainExpression;
                                 if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                     x.SelectedIndex = 0;
                             }, token).ConfigureAwait(false);
                         }
-                        if (!lstSpirit.SequenceEqual(
-                                await cboSpiritDetection.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+                    }
+
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                out HashSet<string> limit))
+                    {
+                        foreach (Improvement improvement in await ImprovementManager
+                                        .GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType
+                                                .LimitSpiritCategory, token: token)
+                                        .ConfigureAwait(false))
                         {
-                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, token)
-                                .ConfigureAwait(false);
-                            await cboSpiritDetection.DoThreadSafeAsync(x =>
-                            {
-                                if (!string.IsNullOrEmpty(strCurrentSpiritDetection))
-                                    x.SelectedValue = strCurrentSpiritDetection;
-                                if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                    x.SelectedIndex = 0;
-                            }, token).ConfigureAwait(false);
+                            limit.Add(improvement.ImprovedName);
                         }
-                        if (!lstSpirit.SequenceEqual(
-                                await cboSpiritHealth.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
+                                    Utils.ListItemListPool, out List<ListItem> lstSpirit))
                         {
-                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, token)
-                                .ConfigureAwait(false);
-                            await cboSpiritHealth.DoThreadSafeAsync(x =>
+                            if (xmlTraditionsBaseChummerNode != null)
                             {
-                                if (!string.IsNullOrEmpty(strCurrentSpiritHealth))
-                                    x.SelectedValue = strCurrentSpiritHealth;
-                                if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                    x.SelectedIndex = 0;
-                            }, token).ConfigureAwait(false);
-                        }
-                        if (!lstSpirit.SequenceEqual(
-                                await cboSpiritIllusion.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
-                        {
-                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, token)
-                                .ConfigureAwait(false);
-                            await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                                string strSpiritsFilter;
+                                // This part is needed because of weird edge cases like someone having FA enabled but not SG, which means traditions will reference spirits that are from a non-enabled book
+                                if (setAlwaysIncludeSpirits.Count > 0)
+                                {
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdSpiritsFilter))
+                                    {
+                                        sbdSpiritsFilter.Append("spirits/spirit[(",
+                                            await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false), ") or (");
+                                        bool blnAddConjunction = false;
+                                        foreach (string strLoopSpirit in setAlwaysIncludeSpirits)
+                                        {
+                                            if (blnAddConjunction)
+                                                sbdSpiritsFilter.Append(" or name = ");
+                                            else
+                                            {
+                                                sbdSpiritsFilter.Append("name = ");
+                                                blnAddConjunction = true;
+                                            }
+                                            sbdSpiritsFilter.Append(strLoopSpirit.CleanXPath());
+                                        }
+                                        sbdSpiritsFilter.Append(")]");
+                                        strSpiritsFilter = sbdSpiritsFilter.ToString();
+                                    }
+                                }
+                                else
+                                    strSpiritsFilter = "spirits/spirit[("
+                                        + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                        + ")]";
+
+                                foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
+                                                .Select(strSpiritsFilter))
+                                {
+                                    string strSpiritName
+                                        = xmlSpirit
+                                            .SelectSingleNodeAndCacheExpression("name", token)
+                                            ?.Value;
+                                    if (!string.IsNullOrEmpty(strSpiritName)
+                                        && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                    {
+                                        lstSpirit.Add(new ListItem(strSpiritName,
+                                            xmlSpirit
+                                                .SelectSingleNodeAndCacheExpression(
+                                                    "translate", token)?.Value
+                                            ?? strSpiritName));
+                                    }
+                                }
+                            }
+
+                            lstSpirit.Sort(CompareListItems.CompareNames);
+                            lstSpirit.Insert(0, ListItem.Blank);
+                            if (!lstSpirit.SequenceEqual(
+                                    await cboSpiritCombat.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
                             {
-                                if (!string.IsNullOrEmpty(strCurrentSpiritIllusion))
-                                    x.SelectedValue = strCurrentSpiritIllusion;
-                                if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                    x.SelectedIndex = 0;
-                            }, token).ConfigureAwait(false);
-                        }
-                        if (!lstSpirit.SequenceEqual(
-                                await cboSpiritManipulation.DoThreadSafeFuncAsync(
-                                    x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
-                        {
-                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, token)
-                                .ConfigureAwait(false);
-                            await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                                await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, token)
+                                    .ConfigureAwait(false);
+                                await cboSpiritCombat.DoThreadSafeAsync(x =>
+                                {
+                                    if (!string.IsNullOrEmpty(strCurrentSpiritCombat))
+                                        x.SelectedValue = strCurrentSpiritCombat;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, token).ConfigureAwait(false);
+                            }
+                            if (!lstSpirit.SequenceEqual(
+                                    await cboSpiritDetection.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
                             {
-                                if (!string.IsNullOrEmpty(strCurrentSpiritManipulation))
-                                    x.SelectedValue = strCurrentSpiritManipulation;
-                                if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                    x.SelectedIndex = 0;
-                            }, token).ConfigureAwait(false);
+                                await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, token)
+                                    .ConfigureAwait(false);
+                                await cboSpiritDetection.DoThreadSafeAsync(x =>
+                                {
+                                    if (!string.IsNullOrEmpty(strCurrentSpiritDetection))
+                                        x.SelectedValue = strCurrentSpiritDetection;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, token).ConfigureAwait(false);
+                            }
+                            if (!lstSpirit.SequenceEqual(
+                                    await cboSpiritHealth.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+                            {
+                                await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, token)
+                                    .ConfigureAwait(false);
+                                await cboSpiritHealth.DoThreadSafeAsync(x =>
+                                {
+                                    if (!string.IsNullOrEmpty(strCurrentSpiritHealth))
+                                        x.SelectedValue = strCurrentSpiritHealth;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, token).ConfigureAwait(false);
+                            }
+                            if (!lstSpirit.SequenceEqual(
+                                    await cboSpiritIllusion.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+                            {
+                                await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, token)
+                                    .ConfigureAwait(false);
+                                await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                                {
+                                    if (!string.IsNullOrEmpty(strCurrentSpiritIllusion))
+                                        x.SelectedValue = strCurrentSpiritIllusion;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, token).ConfigureAwait(false);
+                            }
+                            if (!lstSpirit.SequenceEqual(
+                                    await cboSpiritManipulation.DoThreadSafeFuncAsync(
+                                        x => x.Items.Cast<ListItem>(), token).ConfigureAwait(false)))
+                            {
+                                await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, token)
+                                    .ConfigureAwait(false);
+                                await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                                {
+                                    if (!string.IsNullOrEmpty(strCurrentSpiritManipulation))
+                                        x.SelectedValue = strCurrentSpiritManipulation;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
