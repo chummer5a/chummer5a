@@ -75,8 +75,7 @@
               <tr>
                 <td width="50%">
                   <strong>
-                  <xsl:value-of select="name" />
-                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+                  <xsl:value-of select="fullname" />
                   </strong>
                 </td>
                 <td width="50%" align="right" text-align="right">
@@ -103,8 +102,7 @@
             <strong><xsl:value-of select="$lang.Model" /></strong>
           </td>
           <td width="75%" class="tableborder" colspan="3">
-            <xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>&#160;
+            <xsl:value-of select="fullname" />&#160;
           </td>
         </tr>
         <tr>
@@ -206,16 +204,12 @@
         <tr>
           <td colspan="4" class="tableborder">
             <xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+              <xsl:sort select="fullname_noqty" />
+              <xsl:value-of select="fullname" />
               <xsl:if test="children/gear">
                 [<xsl:for-each select="children/gear">
-                  <xsl:sort select="name" />
-                  <xsl:value-of select="name" />
-                  <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+                  <xsl:sort select="fullname_noqty" />
+                  <xsl:value-of select="fullname" />
                   <xsl:if test="position() != last()">; </xsl:if>
                 </xsl:for-each>]
               </xsl:if>
@@ -223,15 +217,12 @@
             </xsl:for-each>
             <xsl:if test="ispersona = 'True'">
               <xsl:for-each select="../../techprograms/techprogram">
-                <xsl:sort select="name" />
-                <xsl:value-of select="name" />
-                <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                <xsl:sort select="fullname" />
+                <xsl:value-of select="fullname" />
                 <xsl:if test="programoptions/programoption">
                   [<xsl:for-each select="programoptions/programoption">
-                    <xsl:sort select="name" />
-                    <xsl:value-of select="name" />
-                    <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
+                    <xsl:sort select="fullname" />
+                    <xsl:value-of select="fullname" />
                     <xsl:if test="position() != last()">; </xsl:if>
                   </xsl:for-each>]
                 </xsl:if>

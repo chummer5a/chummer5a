@@ -914,14 +914,13 @@
     <ul style="margin-left:0px;">
       <xsl:for-each select="qualities/quality[qualitytype_english=$quality_type]">
         <xsl:sort select="qualitysource='Metatype'" order='descending' />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
        <xsl:if test="(position()*2 &lt; $quality_upper+1)=true() and (position()*2 &lt; $quality_lower+1)=false() and $quality_count != 0">
         <li>
           <xsl:if test="qualitysource='Metatype'">
             <xsl:attribute name="style">color:grey;</xsl:attribute>
           </xsl:if>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra!=''"> (<xsl:value-of select="normalize-space(extra)" />)</xsl:if>
+          <xsl:value-of select="fullname" />
           <xsl:call-template name="print_source_page" />
           <xsl:call-template name="print_notes" />
         </li>
@@ -931,8 +930,7 @@
           <xsl:if test="qualitysource='Metatype'">
             <xsl:attribute name="style">color:grey;</xsl:attribute>
           </xsl:if>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra!=''"> (<xsl:value-of select="normalize-space(extra)" />)</xsl:if>
+          <xsl:value-of select="fullname" />
           <xsl:call-template name="print_source_page" />
           <xsl:call-template name="print_notes" />
         </li>
@@ -1026,7 +1024,7 @@
     <xsl:variable name="sorted_ranged">
       <xsl:for-each select="weapons/weapon[type='Ranged']">
         <xsl:sort select="location" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
 
         <xsl:copy>
           <xsl:if test="../../gears/gear[name=current()/name]">
@@ -1039,7 +1037,7 @@
 
     <xsl:variable name="sorted_ammunition">
       <xsl:for-each select="gears/gear[isammo='True']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:if test="count(../../weapons/weapon[name=current()/name]) = 0">
           <xsl:copy-of select="current()" />
@@ -1080,11 +1078,7 @@
 
             <tr>
               <td>
-                <xsl:value-of select="name" />
-                <xsl:if test="extra!=''"> (<xsl:value-of select="extra" />)</xsl:if>
-                <xsl:if test="qty &gt; 1">
-                  <xsl:text> ×</xsl:text><xsl:value-of select="qty" />
-                </xsl:if>
+                <xsl:value-of select="fullname" />
                 <xsl:call-template name="print_source_page" />
                 <xsl:call-template name="print_notes" />
               </td>
@@ -1122,7 +1116,7 @@
         <ul>
           <xsl:for-each select="accessories/accessory">
             <xsl:sort select="included" order="descending" />
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
 
             <li><xsl:call-template name="print_nested" /></li>
           </xsl:for-each>
@@ -1182,7 +1176,7 @@
             <xsl:value-of select="$lang.Under" />
           </td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Mode" /></td><td><xsl:value-of select="$lang.RC" /></td><td><xsl:value-of select="$lang.Ammo" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
           <xsl:for-each select="underbarrel/weapon[type='Ranged']">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <xsl:call-template name="print_ranged_weapon_stats" />
           </xsl:for-each>
         </table></li>
@@ -1194,7 +1188,7 @@
               <xsl:value-of select="$lang.Under" />
             </td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Mode" /></td><td><xsl:value-of select="$lang.RC" /></td><td><xsl:value-of select="$lang.Ammo" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
           <xsl:for-each select="underbarrel/weapon[type='Melee']">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <xsl:call-template name="print_melee_weapon_stats" />
           </xsl:for-each>
         </table></li>
@@ -1207,7 +1201,7 @@
     <xsl:variable name="sorted_melee">
       <xsl:for-each select="weapons/weapon[type='Melee']">
         <xsl:sort select="location" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
 
         <xsl:copy-of select="current()" />
       </xsl:for-each>
@@ -1243,13 +1237,13 @@
         </td>
       </xsl:if>
       <td>
-        <xsl:value-of select="name" />
+        <xsl:value-of select="fullname" />
         <xsl:call-template name="print_source_page" />
         <xsl:call-template name="print_notes" />
         <ul>
           <xsl:for-each select="accessories/accessory">
             <xsl:sort select="included" order="descending" />
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
 
             <li><xsl:call-template name="print_nested" /></li>
           </xsl:for-each>
@@ -1267,7 +1261,7 @@
     <xsl:variable name="sorted_armor">
       <xsl:for-each select="armors/armor">
         <xsl:sort select="location" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
 
         <xsl:copy-of select="current()" />
       </xsl:for-each>
@@ -1298,13 +1292,19 @@
           </td>
           <td>
 
-            <xsl:value-of select="name" />
+            <xsl:value-of select="fullname" />
             <xsl:call-template name="print_source_page" />
             <xsl:call-template name="print_notes" />
             <ul>
-              <xsl:for-each select="armormods/armormod|gears/gear">
+              <xsl:for-each select="armormods/armormod">
                 <xsl:sort select="included" order="descending" />
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
+
+                <li><xsl:call-template name="print_nested" /></li>
+              </xsl:for-each>
+              <xsl:for-each select="gears/gear">
+                <xsl:sort select="included" order="descending" />
+                <xsl:sort select="fullname_noqty" />
 
                 <li><xsl:call-template name="print_nested" /></li>
               </xsl:for-each>
@@ -1347,13 +1347,19 @@
           </td>
           <td>
 
-            <xsl:value-of select="name" />
+            <xsl:value-of select="fullname" />
             <xsl:call-template name="print_source_page" />
             <xsl:call-template name="print_notes" />
             <ul>
-              <xsl:for-each select="armormods/armormod|gears/gear">
+              <xsl:for-each select="armormods/armormod">
                 <xsl:sort select="included" order="descending" />
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
+
+                <li><xsl:call-template name="print_nested" /></li>
+              </xsl:for-each>
+              <xsl:for-each select="gears/gear">
+                <xsl:sort select="included" order="descending" />
+                <xsl:sort select="fullname_noqty" />
 
                 <li><xsl:call-template name="print_nested" /></li>
               </xsl:for-each>
@@ -1389,13 +1395,19 @@
           </td>
           <td>
 
-            <xsl:value-of select="name" />
+            <xsl:value-of select="fullname" />
             <xsl:call-template name="print_source_page" />
             <xsl:call-template name="print_notes" />
             <ul>
-              <xsl:for-each select="armormods/armormod|gears/gear">
+              <xsl:for-each select="armormods/armormod">
                 <xsl:sort select="included" order="descending" />
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
+
+                <li><xsl:call-template name="print_nested" /></li>
+              </xsl:for-each>
+              <xsl:for-each select="gears/gear">
+                <xsl:sort select="included" order="descending" />
+                <xsl:sort select="fullname_noqty" />
 
                 <li><xsl:call-template name="print_nested" /></li>
               </xsl:for-each>
@@ -1431,13 +1443,19 @@
           </td>
           <td>
 
-            <xsl:value-of select="name" />
+            <xsl:value-of select="fullname" />
             <xsl:call-template name="print_source_page" />
             <xsl:call-template name="print_notes" />
             <ul>
-              <xsl:for-each select="armormods/armormod|gears/gear">
+              <xsl:for-each select="armormods/armormod">
                 <xsl:sort select="included" order="descending" />
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
+
+                <li><xsl:call-template name="print_nested" /></li>
+              </xsl:for-each>
+              <xsl:for-each select="gears/gear">
+                <xsl:sort select="included" order="descending" />
+                <xsl:sort select="fullname_noqty" />
 
                 <li><xsl:call-template name="print_nested" /></li>
               </xsl:for-each>
@@ -1469,10 +1487,10 @@
         <tr><td>
           <ul>
             <xsl:for-each select="martialarts/martialart">
-              <xsl:sort select="name" />
+              <xsl:sort select="fullname" />
 
               <li>
-                <xsl:value-of select="name" />
+                <xsl:value-of select="fullname" />
                 <xsl:call-template name="print_source_page" />
                 <xsl:call-template name="print_notes" />
                 <ul>
@@ -1497,11 +1515,11 @@
     <xsl:if test="count(vehicles/vehicle) = 1">
       <table class="stats machine">
         <xsl:for-each select="vehicles/vehicle">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <tr>
             <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Vehicles" />]</div></td></tr>
             <td>
-              <strong><xsl:value-of select="name" /></strong>
+              <strong><xsl:value-of select="fullname" /></strong>
               <xsl:call-template name="print_source_page" />
               <xsl:call-template name="print_notes" />
               <ul>
@@ -1509,7 +1527,7 @@
                   <li><strong><xsl:value-of select="$lang.Mod" /></strong></li>
                   <xsl:for-each select="mods/mod[not(contains(name, 'Weapon Mount'))]">
                     <xsl:sort select="included" order="descending" />
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <li><xsl:call-template name="print_nested" /></li>
                   </xsl:for-each>
@@ -1517,7 +1535,7 @@
                 <xsl:if test="count(gears/gear) &gt; 0">
                   <li><strong><xsl:value-of select="$lang.Gear" /></strong></li>
                   <xsl:for-each select="gears/gear">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname_noqty" />
 
                     <li><xsl:call-template name="print_nested" /></li>
                   </xsl:for-each>
@@ -1544,7 +1562,7 @@
                 <table>
                   <tr class="smallheader"><td><xsl:value-of select="$lang.Mount" /></td><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Mode" /></td><td><xsl:value-of select="$lang.RC" /></td><td><xsl:value-of select="$lang.Ammo" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
                   <xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Ranged']">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <xsl:call-template name="print_ranged_weapon_stats">
                       <xsl:with-param name="is_mount" select="boolean(true())" />
@@ -1561,7 +1579,7 @@
                 <table>
                   <tr class="smallheader"><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Reach" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
                   <xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Melee']">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <xsl:call-template name="print_melee_weapon_stats">
                       <xsl:with-param name="is_mount" select="boolean(true())" />
@@ -1580,7 +1598,7 @@
 
 	<tr><td><table class="stats machine">
         <xsl:for-each select="vehicles/vehicle">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <xsl:if test="position()=1">
             <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Vehicles" />]</div></td></tr>
           </xsl:if>
@@ -1591,7 +1609,7 @@
 
           <tr>
             <td>
-              <strong><xsl:value-of select="name" /></strong>
+              <strong><xsl:value-of select="fullname" /></strong>
               <xsl:call-template name="print_source_page" />
               <xsl:call-template name="print_notes" />
               <ul>
@@ -1599,7 +1617,7 @@
                   <li><strong><xsl:value-of select="$lang.Mod" /></strong></li>
                   <xsl:for-each select="mods/mod[not(contains(name, 'Weapon Mount'))]">
                     <xsl:sort select="included" order="descending" />
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <li><xsl:call-template name="print_nested" /></li>
                   </xsl:for-each>
@@ -1607,7 +1625,7 @@
                 <xsl:if test="count(gears/gear) &gt; 0">
                   <li><strong><xsl:value-of select="$lang.Gear" /></strong></li>
                   <xsl:for-each select="gears/gear">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname_noqty" />
 
                     <li><xsl:call-template name="print_nested" /></li>
                   </xsl:for-each>
@@ -1635,7 +1653,7 @@
                 <table>
                   <tr class="smallheader"><td><xsl:value-of select="$lang.Mount" /></td><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Mode" /></td><td><xsl:value-of select="$lang.RC" /></td><td><xsl:value-of select="$lang.Ammo" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
                   <xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Ranged']">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <xsl:call-template name="print_ranged_weapon_stats">
                       <xsl:with-param name="is_mount" select="boolean(true())" />
@@ -1652,7 +1670,7 @@
                 <table>
                   <tr class="smallheader"><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Reach" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
                   <xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Melee']">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <xsl:call-template name="print_melee_weapon_stats">
                       <xsl:with-param name="is_mount" select="boolean(true())" />
@@ -1667,7 +1685,7 @@
        </table></td><td>
 <table class="stats machine">
         <xsl:for-each select="vehicles/vehicle">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <xsl:if test="false() = ((2 * position()) &lt; $car_half)">
           <xsl:if test="(2 * (position()-1)) &lt; $car_half">
             <tr><td colspan="2"><div class="bigheader">-</div></td></tr>
@@ -1678,7 +1696,7 @@
 
           <tr>
             <td>
-              <strong><xsl:value-of select="name" /></strong>
+              <strong><xsl:value-of select="fullname" /></strong>
               <xsl:call-template name="print_source_page" />
               <xsl:call-template name="print_notes" />
               <ul>
@@ -1686,7 +1704,7 @@
                   <li><strong><xsl:value-of select="$lang.Mod" /></strong></li>
                   <xsl:for-each select="mods/mod[not(contains(name, 'Weapon Mount'))]">
                     <xsl:sort select="included" order="descending" />
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <li><xsl:call-template name="print_nested" /></li>
                   </xsl:for-each>
@@ -1694,7 +1712,7 @@
                 <xsl:if test="count(gears/gear) &gt; 0">
                   <li><strong><xsl:value-of select="$lang.Gear" /></strong></li>
                   <xsl:for-each select="gears/gear">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname_noqty" />
 
                     <li><xsl:call-template name="print_nested" /></li>
                   </xsl:for-each>
@@ -1722,7 +1740,7 @@
                 <table>
                   <tr class="smallheader"><td><xsl:value-of select="$lang.Mount" /></td><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Mode" /></td><td><xsl:value-of select="$lang.RC" /></td><td><xsl:value-of select="$lang.Ammo" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
                   <xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Ranged']">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <xsl:call-template name="print_ranged_weapon_stats">
                       <xsl:with-param name="is_mount" select="boolean(true())" />
@@ -1739,7 +1757,7 @@
                 <table>
                   <tr class="smallheader"><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.Weapon" /></td><td><xsl:value-of select="$lang.DV" /></td><td><xsl:value-of select="$lang.AP" /></td><td><xsl:value-of select="$lang.Reach" /></td><td><xsl:value-of select="$lang.Accuracy" /></td><td><xsl:value-of select="$lang.Pool" /></td></tr>
                   <xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Melee']">
-                    <xsl:sort select="name" />
+                    <xsl:sort select="fullname" />
 
                     <xsl:call-template name="print_melee_weapon_stats">
                       <xsl:with-param name="is_mount" select="boolean(true())" />
@@ -1773,7 +1791,7 @@
         <tr class="smallheader"><td><xsl:value-of select="$lang.Implant" /></td><td><xsl:value-of select="$lang.Essence" /></td><td><xsl:value-of select="$lang.Grade" /></td></tr>
 
         <xsl:for-each select="cyberwares/cyberware">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
 
           <tr>
             <td>
@@ -1793,7 +1811,7 @@
         <tr class="smallheader"><td><xsl:value-of select="$lang.Implant" /></td><td><xsl:value-of select="$lang.Essence" /></td><td><xsl:value-of select="$lang.Grade" /></td></tr>
 
         <xsl:for-each select="cyberwares/cyberware">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <xsl:if test="((position()*3) &gt; $implant_total) = false()">
           <tr>
             <td>
@@ -1810,7 +1828,7 @@
         <tr class="smallheader"><td><xsl:value-of select="$lang.Implant" /></td><td><xsl:value-of select="$lang.Essence" /></td><td><xsl:value-of select="$lang.Grade" /></td></tr>
 
         <xsl:for-each select="cyberwares/cyberware">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <xsl:if test="((position()*3) &gt; $implant_total) and ((position()*3 div 2) &gt; $implant_total) = false()">
           <tr>
             <td>
@@ -1826,7 +1844,7 @@
         <tr><td colspan="3"><div class="bigheader">-</div></td></tr>
         <tr class="smallheader"><td><xsl:value-of select="$lang.Implant" /></td><td><xsl:value-of select="$lang.Essence" /></td><td><xsl:value-of select="$lang.Grade" /></td></tr>
         <xsl:for-each select="cyberwares/cyberware">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <xsl:if test="(position()*3 div 2) &gt; $implant_total">
           <tr>
             <td>
@@ -1845,18 +1863,15 @@
   <xsl:template name="print_imp_nested">
     <xsl:choose>
       <!-- Cyberlimb name contains its stats in parenthesis, so I split it to two lines -->
-      <xsl:when test="category='Cyberlimb' and contains(name, '(')">
-        <xsl:value-of select="substring-before(name, '(')" />
-        <xsl:if test="rating &gt; 0"> [R<xsl:value-of select="rating" />]</xsl:if>
+      <xsl:when test="category='Cyberlimb' and contains(fullname, '(')">
+        <xsl:value-of select="substring-before(fullname, '(')" />
         <xsl:call-template name="print_source_page" />
         <br />
-        (<xsl:value-of select="substring-after(name, '(')" />
+        (<xsl:value-of select="substring-after(fullname, '(')" />
         <xsl:call-template name="print_notes" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="name" />
-        <xsl:if test="rating &gt; 0"> [R<xsl:value-of select="rating" />]</xsl:if>
-        <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+        <xsl:value-of select="fullname" />
         <xsl:call-template name="print_source_page" />
         <xsl:call-template name="print_notes" />
       </xsl:otherwise>
@@ -1864,11 +1879,11 @@
     <xsl:if test="count(children/cyberware) &gt; 0 or count(gears/gear) &gt; 0">
       <ul>
         <xsl:for-each select="children/cyberware">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <li><xsl:call-template name="print_imp_nested" /></li>
         </xsl:for-each>
         <xsl:for-each select="gears/gear">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname_noqty" />
           <li><xsl:call-template name="print_nested" /></li>
         </xsl:for-each>
       </ul>
@@ -1879,7 +1894,7 @@
     <xsl:variable name="sorted_devices">
       <xsl:for-each select="//gear[category_english='Commlinks' or category_english='Commlink' or category_english='Cyberdecks' or category_english='Rigger Command Consoles']">
         <xsl:sort select="category" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:copy-of select="current()" />
       </xsl:for-each>
@@ -1901,7 +1916,7 @@
   <xsl:template name="print_matrix_device_stats">
     <xsl:variable name="sorted_everything">
       <xsl:for-each select="children/gear[category_english='Specialty Condition']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:copy>
           <xsl:element name="category_tag"><xsl:value-of select="$lang.Special" /></xsl:element>
@@ -1910,7 +1925,7 @@
       </xsl:for-each>
 
       <xsl:for-each select="children/gear[category_english='Cyberdeck Modules' or category_english='Electronic Modification']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:copy>
           <xsl:element name="category_tag"><xsl:value-of select="$lang.Modifications" /></xsl:element>
@@ -1920,7 +1935,7 @@
 
       <xsl:for-each select="children/gear[category_english='Common Programs' or category_english='Hacking Programs' or category_english='Builtin Programs' or category_english='Software']">
         <xsl:sort select="category_english='Builtin Programs'" order="descending" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:copy>
           <xsl:element name="category_tag"><xsl:value-of select="$lang.Programs" /></xsl:element>
@@ -1929,7 +1944,7 @@
       </xsl:for-each>
 
       <xsl:for-each select="children/gear[category_english!='Specialty Condition' and category_english!='Cyberdeck Modules' and category_english!='Electronic Modification' and category_english!='Builtin Programs' and category_english!='Common Programs' and category_english!='Hacking Programs' and category_english!='Software' and name!='Commlink Functionality']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:copy>
           <xsl:element name="category_tag"><xsl:value-of select="$lang.Gear" /></xsl:element>
@@ -1940,8 +1955,7 @@
 
     <tr>
       <td>
-        <strong><xsl:value-of select="name" /></strong>
-        <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+        <strong><xsl:value-of select="fullname" /></strong>
         <xsl:call-template name="print_source_page" />
       </td>
       <td><xsl:value-of select="devicerating" /></td>
@@ -2060,7 +2074,7 @@
                   <ul style="margin-left:5px;">
                     <xsl:for-each select="powers/critterpower">
                       <li>
-                        <xsl:value-of select="name" />
+                        <xsl:value-of select="fullname" />
                         <xsl:call-template name="print_source_page" />
                       </li>
                     </xsl:for-each>
@@ -2081,7 +2095,7 @@
                 <ul style="margin-left:5px;">
                   <xsl:for-each select="optionalpowers/critterpower">
                     <li>
-                      <xsl:value-of select="name" />
+                      <xsl:value-of select="fullname" />
                       <xsl:if test="extra!=''">
                         (<xsl:value-of select="extra" />)
                       </xsl:if>
@@ -2097,7 +2111,7 @@
                 <ul style="margin-left:5px;">
                   <xsl:for-each select="weaknesses/critterpower">
                     <li>
-                      <xsl:value-of select="name" />
+                      <xsl:value-of select="fullname" />
                       <xsl:if test="extra!=''">
                         (<xsl:value-of select="extra" />)
                       </xsl:if>
@@ -2125,12 +2139,11 @@
         <tr class="smallheader"><td><xsl:value-of select="$lang.Name" /></td><td><xsl:value-of select="$lang.Target" /></td><td><xsl:value-of select="$lang.Duration" /></td><td><xsl:value-of select="$lang.FadingValue" /></td></tr>
 
         <xsl:for-each select="complexforms/complexform">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
 
           <tr>
             <td>
-              <xsl:value-of select="name" />
-              <xsl:if test="extra!=''"> (<xsl:value-of select="extra" />)</xsl:if>
+              <xsl:value-of select="fullname" />
             </td>
             <td><xsl:value-of select="target" /></td>
             <td style="text-align: center"><xsl:value-of select="duration" /></td>
@@ -2158,10 +2171,10 @@
             <strong><xsl:value-of select="$lang.Echoes" /></strong>
             <ul>
               <xsl:for-each select="metamagics/metamagic">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
 
                 <li>
-                  <xsl:value-of select="name" />
+                  <xsl:value-of select="fullname" />
                   <xsl:call-template name="print_source_page" />
                   <xsl:call-template name="print_notes" />
                 </li>
@@ -2187,11 +2200,11 @@
         </tr>
 
         <xsl:for-each select="aiprograms/aiprogram">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
 
           <tr>
             <td>
-              <xsl:value-of select="name" />
+              <xsl:value-of select="fullname" />
               <xsl:if test="extra!=''">
                 (<xsl:value-of select="extra" />)
               </xsl:if>
@@ -2261,7 +2274,7 @@
     <xsl:variable name="sorted_spells">
       <xsl:for-each select="spells/spell">
         <xsl:sort select="category" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
 
         <xsl:copy-of select="current()" />
       </xsl:for-each>
@@ -2280,8 +2293,7 @@
 
           <tr>
             <td>
-              <xsl:value-of select="name" />
-              <xsl:if test="extra!=''"> (<xsl:value-of select="extra" />)</xsl:if>
+              <xsl:value-of select="fullname" />
               <xsl:call-template name="print_source_page" />
               <xsl:call-template name="print_notes" />
             </td>
@@ -2351,7 +2363,7 @@
                   <ul style="margin-left:5px;">
                     <xsl:for-each select="powers/critterpower">
                       <li>
-                        <xsl:value-of select="name" />
+                        <xsl:value-of select="fullname" />
                         <xsl:call-template name="print_source_page" />
                       </li>
                     </xsl:for-each>
@@ -2370,7 +2382,7 @@
                 <ul style="margin-left:5px;">
                   <xsl:for-each select="optionalpowers/critterpower">
                     <li>
-                      <xsl:value-of select="name" />
+                      <xsl:value-of select="fullname" />
                       <xsl:if test="extra!=''">
                         (<xsl:value-of select="extra" />)
                       </xsl:if>
@@ -2384,7 +2396,7 @@
                 <ul style="margin-left:5px;">
                   <xsl:for-each select="weaknesses/critterpower">
                     <li>
-                      <xsl:value-of select="name" />
+                      <xsl:value-of select="fullname" />
                       <xsl:if test="extra!=''">
                         (<xsl:value-of select="extra" />)
                       </xsl:if>
@@ -2407,7 +2419,7 @@
     <table class="stats magic">
       <tr><td><div class="bigheader">[<xsl:value-of select="$lang.AdeptPowers" />]</div></td></tr>
       <xsl:for-each select="powers/power">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
 
         <tr><td><xsl:call-template name="print_nested" /></td></tr>
       </xsl:for-each>
@@ -2420,7 +2432,7 @@
       <table class="stats magic">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Foci" />]</div></td></tr>
         <xsl:for-each select="gears/gear[category_english='Foci']">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname_noqty" />
           <tr><td><xsl:call-template name="print_nested" /></td></tr>
         </xsl:for-each>
       </table>
@@ -2438,10 +2450,10 @@
             <strong><xsl:value-of select="$lang.Arts" /></strong>
             <ul>
               <xsl:for-each select="arts/art">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
 
                 <li>
-                  <xsl:value-of select="name" />
+                  <xsl:value-of select="fullname" />
                   <xsl:call-template name="print_source_page" />
                   <xsl:call-template name="print_notes" />
                 </li>
@@ -2453,10 +2465,10 @@
             <strong><xsl:value-of select="$lang.Metamagics" /></strong>
             <ul>
               <xsl:for-each select="metamagics/metamagic">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
 
                 <li>
-                  <xsl:value-of select="name" />
+                  <xsl:value-of select="fullname" />
                   <xsl:call-template name="print_source_page" />
                   <xsl:call-template name="print_notes" />
                 </li>
@@ -2472,7 +2484,7 @@
     <xsl:variable name="other_gears">
       <xsl:for-each select="gears/gear[category_english!='ID/Credsticks' and isammo!='True' and category_english!='Foci' and category_english!='Commlinks' and category_english!='Commlink' and category_english!='Cyberdecks' and category_english!='Rigger Command Consoles']">
         <xsl:sort select="location" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
 
         <xsl:copy-of select="current()" />
       </xsl:for-each>
@@ -2537,7 +2549,7 @@
       <tr><td><div class="bigheader">[<xsl:value-of select="$lang.IDcredsticks" />]</div></td></tr>
       <xsl:for-each select="gears/gear[category_english = 'ID/Credsticks']">
         <xsl:sort select="contains(name_english, 'SIN') or contains(name_english, 'License')" order="descending" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
         <tr><td><xsl:call-template name="print_nested" /></td></tr>
       </xsl:for-each>
     </table>
@@ -2773,21 +2785,25 @@
           <xsl:otherwise>&#x26AA; </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
-      <xsl:value-of select="name" />
-      <xsl:if test="extra!='' and not($is_long_extra)">
-        (<xsl:value-of select="extra" />)
-      </xsl:if>
-      <xsl:if test="rating &gt; 0">
-        <xsl:text> [R</xsl:text><xsl:value-of select="rating" />]
-      </xsl:if>
-      <xsl:if test="qty and qty &gt; 1">
-        <xsl:text> ×</xsl:text><xsl:value-of select="qty" />
-      </xsl:if>
-      <xsl:call-template name="print_source_page" />
-      <xsl:if test="extra!='' and $is_long_extra">
-        <br />
-        (<xsl:value-of select="extra" />)
-      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="extra='' or not($is_long_extra)">
+          <xsl:value-of select="fullname" />
+          <xsl:call-template name="print_source_page" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="name" />
+          <xsl:if test="rating &gt; 0">
+            <xsl:text> [R</xsl:text><xsl:value-of select="rating" />]
+          </xsl:if>
+          <xsl:if test="qty and qty &gt; 1">
+            <xsl:text> ×</xsl:text>
+            <xsl:value-of select="qty" />
+          </xsl:if>
+          <xsl:call-template name="print_source_page" />
+          <br />
+          (<xsl:value-of select="extra" />)
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:call-template name="print_notes" />
     </span>
 
@@ -2795,7 +2811,7 @@
       <xsl:variable name="child_need_equip_mark" select="boolean(count(children/gear[equipped='False']) &gt; 0)" />
       <ul>
         <xsl:for-each select="children/gear">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname_noqty" />
 
           <li>
             <xsl:call-template name="print_nested">

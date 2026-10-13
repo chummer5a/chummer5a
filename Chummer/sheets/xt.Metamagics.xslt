@@ -6,12 +6,12 @@
   <xsl:template name="Metamagics">
 
     <xsl:for-each select="metamagics/metamagic">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <tr style="text-align: left" valign="top">
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
-        <td><xsl:value-of select="name" /></td>
+        <td><xsl:value-of select="fullname" /></td>
         <td />
         <td style="text-align: center">
           <xsl:value-of select="source" />

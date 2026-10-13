@@ -11,8 +11,7 @@
         <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
       </xsl:if>
       <td style="text-align: left">
-        <xsl:value-of select="name" />
-        <xsl:if test="weaponname != ''"> ("<xsl:value-of select="weaponname" />") </xsl:if>
+        <xsl:value-of select="fullname" />
       </td>
       <td style="text-align: center">
         <xsl:value-of select="dicepool" />
@@ -136,19 +135,13 @@
         </xsl:if>
         <td colspan="100%" class="indent">
           <xsl:for-each select="accessories/accessory">
-            <xsl:sort select="name" />
-            <xsl:value-of select="name" />
+            <xsl:sort select="fullname" />
+            <xsl:value-of select="fullname" />
             <xsl:if test="last() &gt; 1"><xsl:text>; </xsl:text></xsl:if>
           </xsl:for-each>
           <xsl:for-each select="mods/weaponmod">
-            <xsl:sort select="name" />
-            <xsl:value-of select="name" />
-            <xsl:if test="rating > 0">
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="$lang.Rating" />
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="rating" />
-            </xsl:if>
+            <xsl:sort select="fullname" />
+            <xsl:value-of select="fullname" />
             <xsl:if test="last() &gt; 1"><xsl:text>; </xsl:text></xsl:if>
           </xsl:for-each>
         </td>
@@ -163,8 +156,7 @@
           </xsl:if>
           <td class="indent">
             <xsl:value-of select="$lang.Under" />:
-            <xsl:value-of select="name" />
-            <xsl:if test="weaponname != ''"> ("<xsl:value-of select="weaponname" />") </xsl:if>
+            <xsl:value-of select="fullname" />
           </td>
           <td style="text-align: center">
             <xsl:value-of select="dicepool" />
@@ -274,14 +266,13 @@
             </xsl:if>
             <td colspan="100%" class="indent">
               <xsl:for-each select="accessories/accessory">
-                <xsl:sort select="name" />
-                <xsl:value-of select="name" />
+                <xsl:sort select="fullname" />
+                <xsl:value-of select="fullname" />
                 <xsl:if test="last() &gt; 1">; </xsl:if>
               </xsl:for-each>
               <xsl:for-each select="mods/weaponmod">
-                <xsl:sort select="name" />
-                <xsl:value-of select="name" />
-                <xsl:if test="rating > 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
+                <xsl:sort select="fullname" />
+                <xsl:value-of select="fullname" />
                 <xsl:if test="last() &gt; 1">; </xsl:if>
               </xsl:for-each>
             </td>

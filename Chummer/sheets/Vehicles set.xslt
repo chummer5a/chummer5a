@@ -129,7 +129,7 @@
       </head>
       <body>
         <xsl:for-each select="vehicles/vehicle">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname" />
           <xsl:call-template name="vehicles">
             <xsl:with-param name="vehicle" />
             <xsl:with-param name="VehicleNumber">VehicleBlock<xsl:value-of select="position()" /></xsl:with-param>
@@ -254,19 +254,19 @@
                 </th>
               </tr>
               <xsl:for-each select="mods/mod/weapons/weapon[type = 'Ranged']">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
                 <xsl:call-template name="RangedWeapons">
                   <xsl:with-param name="weapon" select="weapon" />
                 </xsl:call-template>
               </xsl:for-each>
               <xsl:for-each select="weaponmounts/weaponmount/weapons/weapon[type = 'Ranged']">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
                 <xsl:call-template name="RangedWeapons">
                   <xsl:with-param name="weapon" select="weapon" />
                 </xsl:call-template>
               </xsl:for-each>
               <xsl:for-each select="weapons/weapon[type = 'Ranged']">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
                 <xsl:call-template name="RangedWeapons">
                   <xsl:with-param name="weapon" select="weapon" />
                 </xsl:call-template>
@@ -404,18 +404,12 @@
         <xsl:value-of select="$lang.Modifications" />
       </td></tr>
       <xsl:for-each select="mods/mod">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
         <tr><td>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
-          <xsl:value-of select="name" />
-          <xsl:if test="rating != 0">
-            (<xsl:value-of select="$lang.Rating" />
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="rating" />)
-          </xsl:if>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+          <xsl:value-of select="fullname" />
         </td></tr>
       </xsl:for-each>
     </table>
@@ -427,40 +421,20 @@
         <xsl:value-of select="$lang.Gear" />
       </td></tr>
       <xsl:for-each select="gears/gear">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
         <tr><td>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="rating > 0">
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="$lang.Rating" />
-            <xsl:text> </xsl:text>
-            <xsl:value-of select="rating" />
-          </xsl:if>
-          <xsl:if test="qty > 1"> ×<xsl:value-of select="qty" /></xsl:if>
+          <xsl:value-of select="fullname" />
           <xsl:if test="children/gear">
             (<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="rating > 0">
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="$lang.Rating" />
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="rating" />
-              </xsl:if>
+              <xsl:sort select="fullname_noqty" />
+              <xsl:value-of select="fullname" />
               <xsl:if test="children/gear">
                 [<xsl:for-each select="children/gear">
-                  <xsl:sort select="name" />
-                  <xsl:value-of select="name" />
-                  <xsl:if test="rating != 0">
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="rating" />
-                  </xsl:if>
-                  <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+                  <xsl:sort select="fullname_noqty" />
+                  <xsl:value-of select="fullname" />
                   <xsl:if test="position() != last()">, </xsl:if>
                 </xsl:for-each>]
               </xsl:if>

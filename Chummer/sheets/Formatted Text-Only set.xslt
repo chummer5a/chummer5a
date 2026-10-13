@@ -575,7 +575,7 @@
           <br />
           <br />== <xsl:value-of select="$lang.Gear" />: <xsl:value-of select="$lang.Equipped" /> ==
             <xsl:for-each select="gears/gear[equipped = 'True' and location = '' and iscommlink != 'True']">
-              <xsl:sort select="name" />
+              <xsl:sort select="fullname_noqty" />
               <xsl:call-template name="geardetail" />
             </xsl:for-each>
         </xsl:if>
@@ -584,7 +584,7 @@
           <br />
           <br />== <xsl:value-of select="$lang.Gear" />: <xsl:value-of select="$lang.Available" /> ==
             <xsl:for-each select="gears/gear[equipped != 'True' and location = '']">
-              <xsl:sort select="name" />
+              <xsl:sort select="fullname_noqty" />
               <xsl:call-template name="geardetail" />
             </xsl:for-each>
         </xsl:if>
@@ -593,7 +593,7 @@
           <xsl:variable name="sorted_locn">
             <xsl:for-each select="gears/gear[location != '']">
               <xsl:sort select="location" />
-              <xsl:sort select="name" />
+              <xsl:sort select="fullname_noqty" />
               <xsl:copy-of select="current()" />
             </xsl:for-each>
           </xsl:variable>
@@ -778,20 +778,18 @@
 
     <xsl:template name="qualities">
         <xsl:for-each select="qualities/quality">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
-            <xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="normalize-space(extra)" />)</xsl:if>
+            <xsl:value-of select="fullname" />
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="spells">
         <xsl:for-each select="spells/spell">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
       <xsl:variable name="t.name">
-        <xsl:value-of select="name" />
-        <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+        <xsl:value-of select="fullname" />
       </xsl:variable>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="$t.name" />
@@ -803,22 +801,17 @@
 
     <xsl:template name="powers">
         <xsl:for-each select="powers/power">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
-            <xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-            <xsl:if test="rating &gt; 0">
-        <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-      </xsl:if>
+            <xsl:value-of select="fullname" />
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="critterpowers">
         <xsl:for-each select="critterpowers/critterpower">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
-            <xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+            <xsl:value-of select="fullname" />
             <xsl:if test="rating &gt; 0">
               <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
             </xsl:if>
@@ -827,34 +820,23 @@
 
     <xsl:template name="complexforms">
         <xsl:for-each select="complexforms/complexform">
-            <xsl:sort select="name" />
-            <br /><xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-            <xsl:if test="rating &gt; 0"> <xsl:value-of select="$lang.Rating" />: <xsl:value-of select="rating" /></xsl:if>
-            <xsl:if test="programoptions/programoption">
-        (<xsl:for-each select="programoptions/programoption">
-                    <xsl:sort select="name" />
-                    <xsl:value-of select="name" />
-                    <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-                    <xsl:if test="position() != last()">, </xsl:if>
-                </xsl:for-each>)
-      </xsl:if>
+            <xsl:sort select="fullname" />
+            <br /><xsl:value-of select="fullname" />
     </xsl:for-each>
     </xsl:template>
 
   <xsl:template name="aiprograms">
     <xsl:for-each select="aiprograms/aiprogram">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <br />
-      <xsl:value-of select="name" />
-      <xsl:if test="extra != ''">(<xsl:value-of select="extra" />)</xsl:if>
+      <xsl:value-of select="fullname" />
       <xsl:if test="requiresprogram != ''">
         <xsl:value-of select="$lang.Requires" />: <xsl:value-of select="requiresprogram" />
       </xsl:if>
       <xsl:if test="programoptions/programoption">
         (<xsl:for-each select="programoptions/programoption">
-          <xsl:sort select="name" />
-          <xsl:value-of select="name" />
+          <xsl:sort select="fullname" />
+          <xsl:value-of select="fullname" />
           <xsl:if test="rating &gt; 0">
             <xsl:text> </xsl:text>
             <xsl:value-of select="rating" />
@@ -928,18 +910,12 @@
 
     <xsl:template name="cyberware">
         <xsl:for-each select="cyberwares/cyberware">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
-            <xsl:value-of select="name" />
-            <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-            <xsl:if test="location != ''"> (<xsl:value-of select="location" />)</xsl:if>
+            <xsl:value-of select="fullname" />
             <xsl:if test="children/cyberware">
                 <xsl:for-each select="children/cyberware">
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="rating != 0">
-                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-                    </xsl:if>
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                 </xsl:for-each>
             </xsl:if>
         </xsl:for-each>
@@ -947,18 +923,10 @@
 
   <xsl:template name="geardetail">
             <br />
-            <xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-            <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-            <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-            <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+            <xsl:value-of select="fullname" />
             <xsl:if test="children/gear">
                 <xsl:for-each select="children/gear">
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                    <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-          <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                     <xsl:if test="children/gear"> [<xsl:call-template name="gearplugin">
                             <xsl:with-param name="gear" select="." />
                         </xsl:call-template>] </xsl:if>
@@ -969,14 +937,8 @@
     <xsl:template name="gearplugin">
       <xsl:param name="gear" />
         <xsl:for-each select="children/gear">
-            <xsl:sort select="name" />
-            <xsl:value-of select="name" />
-            <xsl:if test="rating != 0">
-                <xsl:text> </xsl:text><xsl:value-of select="rating" />
-            </xsl:if>
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-            <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-      <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+            <xsl:sort select="fullname_noqty" />
+            <xsl:value-of select="fullname" />
             <xsl:if test="children/gear"> [<xsl:call-template name="gearplugin">
                     <xsl:with-param name="gear" select="." />
                 </xsl:call-template>] </xsl:if>
@@ -986,62 +948,29 @@
 
     <xsl:template name="commlinks">
         <xsl:for-each select="//*[iscommlink = 'True']">
-            <xsl:sort select="name" />
-            <br /><xsl:value-of select="name" />
+            <xsl:sort select="fullname_noqty" />
+            <br /><xsl:value-of select="fullname" />
         (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
         <xsl:value-of select="$lang.SLZ" />: <xsl:value-of select="sleaze" />,
         <xsl:value-of select="$lang.DP" />: <xsl:value-of select="dataprocessing" />,
         <xsl:value-of select="$lang.FWL" />: <xsl:value-of select="firewall" />)
-      <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-            <xsl:if test="rating != 0">
-              <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-            </xsl:if>
-            <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
             <xsl:if test="children/gear">
                 <xsl:for-each select="children/gear">
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                    <xsl:if test="rating != 0">
-                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-                    </xsl:if>
-          <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-          <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                     <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
-                            <xsl:sort select="name" />
-                            <xsl:value-of select="name" />
-                            <xsl:if test="rating != 0">
-                <xsl:text> </xsl:text><xsl:value-of select="rating" />
-              </xsl:if>
-                            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
+                            <xsl:sort select="fullname_noqty" />
+                            <xsl:value-of select="fullname" />
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
             </xsl:if>
             <xsl:for-each select="//*[isprogram = 'True']">
-              <xsl:sort select="name" />
-              <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-              <xsl:if test="rating &gt; 0">
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="rating" />
-              </xsl:if>
-              <xsl:if test="extra != ''">
-                (<xsl:value-of select="extra" />)
-              </xsl:if>
+              <xsl:sort select="fullname_noqty" />
+              <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
               <xsl:if test="*/gear">
                 [<xsl:for-each select="*/gear">
-                  <xsl:sort select="name" />
-                  <xsl:value-of select="name" />
-                  <xsl:if test="rating != 0">
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="rating" />
-                  </xsl:if>
-                  <xsl:if test="extra != ''">
-                    (<xsl:value-of select="extra" />)
-                  </xsl:if>
-                  <xsl:if test="qty &gt; 1">
-                    ×<xsl:value-of select="qty" />
-                  </xsl:if>
+                  <xsl:sort select="fullname_noqty" />
+                  <xsl:value-of select="fullname" />
                   <xsl:if test="position() != last()">, </xsl:if>
                 </xsl:for-each>]
               </xsl:if>
@@ -1051,18 +980,16 @@
 
     <xsl:template name="weapons">
         <xsl:for-each select="weapons/weapon">
-            <xsl:sort select="name" />
-            <br /><xsl:value-of select="name" />
-            <xsl:if test="weaponname != ''"> ("<xsl:value-of select="weaponname" />") </xsl:if>
+            <xsl:sort select="fullname" />
+            <br /><xsl:value-of select="fullname" />
             <xsl:if test="accessories/accessory or mods/weaponmod">
                 <xsl:for-each select="accessories/accessory">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
+                    <xsl:sort select="fullname" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                 </xsl:for-each>
                 <xsl:for-each select="mods/weaponmod">
-                    <xsl:sort select="name" />
-                    <xsl:if test="rating > 0"><xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
+                    <xsl:sort select="fullname" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                 </xsl:for-each>
             </xsl:if>
             <br />
@@ -1088,11 +1015,10 @@
 
     <xsl:template name="armors">
         <xsl:for-each select="armors/armor">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
       <xsl:variable name="t.name">
-        <xsl:value-of select="name" />
-        <xsl:if test="armorname != ''"> (<xsl:value-of select="armorname" />)</xsl:if>
+        <xsl:value-of select="fullname" />
       </xsl:variable>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="$t.name" />
@@ -1104,113 +1030,73 @@
             </xsl:call-template>
             <xsl:if test="armormods/armormod">
                 <xsl:for-each select="armormods/armormod">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="rating != 0">&#160;<xsl:value-of select="rating" /></xsl:if>
+                    <xsl:sort select="fullname" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                 </xsl:for-each>
             </xsl:if>
             <xsl:if test="gears/gear">
                 <xsl:for-each select="gears/gear">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                    <xsl:if test="rating != 0">
-            <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-          </xsl:if>
-          <xsl:if test="gearname != ''">: <xsl:value-of select="  gearname" /></xsl:if>
-                    <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+                    <xsl:sort select="fullname_noqty" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                     <xsl:if test="children/gear">
                         <xsl:for-each select="children/gear">
-                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                            <xsl:if test="rating != 0"><xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
+                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                             <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
-                <xsl:sort select="name" />
-                <xsl:value-of select="name" />
-                <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-                <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-                <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+                <xsl:sort select="fullname_noqty" />
+                <xsl:value-of select="fullname" />
                 <xsl:if test="position() != last()">, </xsl:if>
               </xsl:for-each>] </xsl:if>
                         </xsl:for-each>
                     </xsl:if>
                 </xsl:for-each>
             </xsl:if>
-      <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
         </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="vehicles">
         <xsl:for-each select="vehicles/vehicle">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
-            <xsl:value-of select="name" />
-            <xsl:if test="vehiclename != ''"> ("<xsl:value-of select="vehiclename" />") </xsl:if>
+            <xsl:value-of select="fullname" />
             <xsl:if test="mods/mod">
                 <xsl:for-each select="mods/mod">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="rating != 0">
-                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-                    </xsl:if>
+                    <xsl:sort select="fullname" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                     <xsl:if test="cyberwares/cyberware"> (<xsl:for-each
                             select="cyberwares/cyberware">
-                            <xsl:sort select="name" />
-                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                            <xsl:if test="rating != 0">
-                <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-               </xsl:if>
+                            <xsl:sort select="fullname" />
+                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                         </xsl:for-each>) </xsl:if>
                 </xsl:for-each>
             </xsl:if>
             <xsl:if test="gears/gear">
                 <xsl:for-each select="gears/gear[iscommlink != 'True']">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                    <xsl:if test="rating != 0">
-                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-                    </xsl:if>
-          <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-                    <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+                    <xsl:sort select="fullname_noqty" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                     <xsl:if test="children/gear">
                         <xsl:for-each select="children/gear">
-                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                            <xsl:if test="rating != 0">
-                <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)" />
-              </xsl:if>
-              <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
+                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                             <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
-                                    <xsl:sort select="name" />
-                                    <xsl:value-of select="name" />
-                                    <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-                                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                  <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname" />"</xsl:if>
-                  <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
+                                    <xsl:sort select="fullname_noqty" />
+                                    <xsl:value-of select="fullname" />
                                     <xsl:if test="position() != last()">, </xsl:if>
                                 </xsl:for-each>] </xsl:if>
                         </xsl:for-each>
                     </xsl:if>
-          <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                 </xsl:for-each>
             </xsl:if>
             <xsl:if test="weapons/weapon">
                 <xsl:for-each select="weapons/weapon">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="weaponname != ''"> ("<xsl:value-of select="weaponname" />") </xsl:if>
+                    <xsl:sort select="fullname" />
+                    <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                     <xsl:if test="accessories/accessory or mods/weaponmod">
                         <xsl:for-each select="accessories/accessory">
-                            <xsl:sort select="name" />
-                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name" />
+                            <xsl:sort select="fullname" />
+                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                         </xsl:for-each>
                         <xsl:for-each select="mods/weaponmod">
-                            <xsl:sort select="name" />
-                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                            <xsl:if test="rating > 0"><xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
+                            <xsl:sort select="fullname" />
+                            <br />&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
                         </xsl:for-each>
                     </xsl:if>
                     <br />&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="$lang.DV" />: <xsl:value-of select="damage"
@@ -1223,12 +1109,12 @@
 
     <xsl:template name="martialarts">
         <xsl:for-each select="martialarts/martialart">
-            <xsl:sort select="name" />
+            <xsl:sort select="fullname" />
             <br />
-            <xsl:value-of select="name" />
+            <xsl:value-of select="fullname" />
             <xsl:for-each select="martialarttechniques/martialarttechnique">
-                <xsl:sort select="name" />
-                <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
+                <xsl:sort select="fullname" />
+                <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
             </xsl:for-each>
         </xsl:for-each>
         <xsl:for-each select="martialartmaneuvers/martialartmaneuver">

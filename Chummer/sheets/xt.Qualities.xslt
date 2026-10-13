@@ -6,13 +6,13 @@
   <xsl:template name="Qualities">
 
     <xsl:for-each select="qualities/quality">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <tr style="text-align: left" valign="top">
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td>
-          <xsl:value-of select="name" />
+          <xsl:value-of select="fullname" />
           <xsl:if test="extra != ''">: <xsl:value-of select="extra" /></xsl:if>
         </td>
         <td />
