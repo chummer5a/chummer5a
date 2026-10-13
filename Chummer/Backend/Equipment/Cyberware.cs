@@ -6500,7 +6500,7 @@ namespace Chummer.Backend.Equipment
             using (LockObject.EnterReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                if (GetMaxRating(blnForAttributeEvaluation) > 0)
+                if (GetMaxRating(blnForAttributeEvaluation, token) > 0)
                     intReturn = 1;
                 string strRating = MinRatingString;
                 if (!string.IsNullOrEmpty(strRating))
