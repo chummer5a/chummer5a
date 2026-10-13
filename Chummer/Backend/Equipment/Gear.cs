@@ -2398,6 +2398,14 @@ namespace Chummer.Backend.Equipment
                           .WriteElementStringAsync(
                               "fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                               token).ConfigureAwait(false);
+                await objWriter
+                          .WriteElementStringAsync(
+                              "fullname_noqty", await DisplayNameAsync(objCulture, strLanguageToPrint, blnExcludeQuantity: true, token: token).ConfigureAwait(false),
+                              token).ConfigureAwait(false);
+                await objWriter
+                          .WriteElementStringAsync(
+                              "fullname_noqty_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, blnExcludeQuantity: true, token: token).ConfigureAwait(false),
+                              token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ispersona",
@@ -5342,9 +5350,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
+        public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, bool blnExcludeQuantity = false)
         {
-            string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
+            string strQuantity = !blnExcludeQuantity ? DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse) : string.Empty;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -5380,9 +5388,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, bool blnExcludeQuantity = false, CancellationToken token = default)
         {
-            string strQuantity = await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token).ConfigureAwait(false);
+            string strQuantity = !blnExcludeQuantity ? await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token).ConfigureAwait(false) : string.Empty;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -6534,15 +6542,15 @@ namespace Chummer.Backend.Equipment
                         if (decIllegalQuantity > 0)
                         {
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t", await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token).ConfigureAwait(false));
+                            sbdAvailItems.AppendLine().Append("\t\t", await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token: token).ConfigureAwait(false));
                         }
                         if (intRestrictedGearQuantityUsed > 0)
                         {
                             string strNameToUse = Parent == null
                                 ? await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                                         intRestrictedGearQuantityUsed, token).ConfigureAwait(false)
+                                                         intRestrictedGearQuantityUsed, token: token).ConfigureAwait(false)
                                 : (await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                                                       intRestrictedGearQuantityUsed, token).ConfigureAwait(false)).ConcatFast(
+                                                                       intRestrictedGearQuantityUsed, token: token).ConfigureAwait(false)).ConcatFast(
                                                 await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                                                 "(", await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), ")");
                             sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);

@@ -35,6 +35,7 @@ Application:
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 - Fixed a rare potential deadlock around calculating adept power points currently being used.
+- The full names of gear items excluding their quantity labels are now also exported as "fullname_noqty" and "fullname_noqty_english" for native and English versions, respectively. This can help sheets and other export data processors display full gear names separate from their quantities if/where that is needed.
 
 Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
