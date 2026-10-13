@@ -2313,7 +2313,7 @@
           </xsl:if>
           <xsl:if test="qty and qty &gt; 1">
             <xsl:text> ×</xsl:text>
-            <xsl:value-of select="qty" />
+            <xsl:value-of select="qty_text" />
           </xsl:if>
           <xsl:call-template name="print_source_page" />
           <br />

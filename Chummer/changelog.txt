@@ -113,6 +113,7 @@ Character Sheets and Export:
 - The full names of gear items excluding their quantity labels are now also exported as "fullname_noqty" and "fullname_noqty_english" for native and English versions, respectively. This can help sheets and other export data processors display full gear names separate from their quantities if/where that is needed.
 - Standardized the display of full names for gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and qualities across all sheets. All full names will now be shown in the same format that they would be displayed in the program.
 - Fixed issues where various sheets would be missing parts of full names of certain gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and/or qualities.
+- Quantity fields for gear are now exported with potential non-numerical symbols included, like "×" or "¥", as "qty_text". This is kept separate from the old "qty" field so to allow numerical parsers that read that field to keep working while still allowing the quantity field to be made fancy for sheets and readers that read in that field as text instead of as a number.
 
 Changed/New Strings:
 - String_Improvement_SelectSpiritType

@@ -1922,7 +1922,7 @@
         <xsl:value-of select="category" />
       </td>
       <td style="text-align: center">
-        <xsl:value-of select="qty" />
+        <xsl:value-of select="qty_text" />
       </td>
       <td style="text-align: center">
         <xsl:value-of select="devicerating" />
@@ -2914,7 +2914,7 @@
           </xsl:choose>
         </td>
         <td style="text-align: center">
-          <xsl:value-of select="qty" />
+          <xsl:value-of select="qty_text" />
         </td>
         <td style="text-align: center">
           <xsl:value-of select="source" />

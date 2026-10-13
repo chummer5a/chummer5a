@@ -2420,7 +2420,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("armorcapacity", ArmorCapacity, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxrating", MaxRating, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("qty", await DisplayQuantityAsync(objCulture, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qty", await DisplayQuantityAsync(objCulture, blnIncludeNonNumericChars: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qty_text", await DisplayQuantityAsync(objCulture, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
                                                         await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -5311,18 +5312,22 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
         /// <param name="blnOverrideQuantity">Whether to override the quantity to display.</param>
         /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
+        /// <param name="blnIncludeNonNumericChars">Whether the returned string should include non-numerical characters like "×". Important in cases where this string is exported in a way that the parser would want to treat as a number.</param>
         /// <returns>A formatted string for the quantity of this piece of gear.</returns>
         public string DisplayQuantity(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
-                                      decimal decQuantityToUse = 0.0m)
+                                      decimal decQuantityToUse = 0.0m, bool blnIncludeNonNumericChars = true)
         {
             if (!blnOverrideQuantity)
                 decQuantityToUse = Quantity;
 
             if (Name.StartsWith("Nuyen", StringComparison.Ordinal))
-                return decQuantityToUse.ToString(_objCharacter.Settings.NuyenFormat, objCulture);
+            {
+                string strFormat = _objCharacter.Settings.NuyenFormat;
+                return decQuantityToUse.ToString(blnIncludeNonNumericChars ? strFormat + "¥" : strFormat, objCulture);
+            }
             if (Category == "Currency")
                 return decQuantityToUse.ToString("#,0.00", objCulture);
-            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString("#,0.##×", objCulture) : string.Empty;
+            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString(blnIncludeNonNumericChars ? "#,0.##×" : "#,0.##", objCulture) : string.Empty;
         }
 
         /// <summary>
@@ -5332,19 +5337,23 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
         /// <param name="blnOverrideQuantity">Whether to override the quantity to display.</param>
         /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
+        /// <param name="blnIncludeNonNumericChars">Whether the returned string should include non-numerical characters like "×". Important in cases where this string is exported in a way that the parser would want to treat as a number.</param>
         /// <returns>A formatted string for the quantity of this piece of gear.</returns>
         public async Task<string> DisplayQuantityAsync(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
-                                      decimal decQuantityToUse = 0.0m, CancellationToken token = default)
+                                      decimal decQuantityToUse = 0.0m, bool blnIncludeNonNumericChars = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!blnOverrideQuantity)
                 decQuantityToUse = Quantity;
 
             if (Name.StartsWith("Nuyen", StringComparison.Ordinal))
-                return decQuantityToUse.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture);
+            {
+                string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
+                return decQuantityToUse.ToString(blnIncludeNonNumericChars ? strFormat + "¥" : strFormat, objCulture);
+            }
             if (Category == "Currency")
                 return decQuantityToUse.ToString("#,0.00", objCulture);
-            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString("#,0.##×", objCulture) : string.Empty;
+            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString(blnIncludeNonNumericChars ? "#,0.##×" : "#,0.##", objCulture) : string.Empty;
         }
 
         /// <summary>
