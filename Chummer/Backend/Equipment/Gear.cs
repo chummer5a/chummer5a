@@ -5399,7 +5399,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, bool blnExcludeQuantity = false, CancellationToken token = default)
         {
-            string strQuantity = !blnExcludeQuantity ? await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token).ConfigureAwait(false) : string.Empty;
+            string strQuantity = !blnExcludeQuantity ? await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token: token).ConfigureAwait(false) : string.Empty;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
