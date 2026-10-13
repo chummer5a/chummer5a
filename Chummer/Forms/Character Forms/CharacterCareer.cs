@@ -25264,7 +25264,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = true, token)
                                                    .ConfigureAwait(false);
-                            string strQuantity = objGear.DisplayQuantity(GlobalSettings.CultureInfo);
+                            string strQuantity = await objGear.DisplayQuantityAsync(GlobalSettings.CultureInfo, token: token).ConfigureAwait(false);
                             if (string.IsNullOrEmpty(strQuantity))
                                 strQuantity = 1.ToString(GlobalSettings.CultureInfo);
                             await lblVehicleGearQty.DoThreadSafeAsync(x => x.Text = strQuantity, token)

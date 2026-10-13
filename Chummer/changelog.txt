@@ -65,6 +65,7 @@ Gear:
 - Fixed custom drugs losing their InternalId on character load, which left drug-granted qualities behind after the drugs were deleted. Orphaned improvement qualities can now be removed when their linking SpecificQuality improvement is gone. Closes #4181.
 - Added stub data for BTLs from Chrome Flesh. Pending further implementation.
 - Added missing weight for the Pantheon Industries "Mercury-Alpha" Battlefield Signal Booster. Existing characters with this gear will have to re-add it for its weight to show up.
+- Gear quantities for non-currencies now have an "×" symbol at their end to help with readability for gear whose name starts with a number.
 
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.

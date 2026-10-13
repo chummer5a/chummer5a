@@ -2412,7 +2412,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("armorcapacity", ArmorCapacity, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxrating", MaxRating, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("qty", DisplayQuantity(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qty", await DisplayQuantityAsync(objCulture, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
                                                         await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -5314,7 +5314,29 @@ namespace Chummer.Backend.Equipment
                 return decQuantityToUse.ToString(_objCharacter.Settings.NuyenFormat, objCulture);
             if (Category == "Currency")
                 return decQuantityToUse.ToString("#,0.00", objCulture);
-            return !blnBlankOnOneQuantity || Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
+            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString("#,0.##×", objCulture) : string.Empty;
+        }
+
+        /// <summary>
+        /// Quantity to show, formatted for display purposes.
+        /// </summary>
+        /// <param name="objCulture">CultureInfo in which number formatting should be done.</param>
+        /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
+        /// <param name="blnOverrideQuantity">Whether to override the quantity to display.</param>
+        /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
+        /// <returns>A formatted string for the quantity of this piece of gear.</returns>
+        public async Task<string> DisplayQuantityAsync(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
+                                      decimal decQuantityToUse = 0.0m, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!blnOverrideQuantity)
+                decQuantityToUse = Quantity;
+
+            if (Name.StartsWith("Nuyen", StringComparison.Ordinal))
+                return decQuantityToUse.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture);
+            if (Category == "Currency")
+                return decQuantityToUse.ToString("#,0.00", objCulture);
+            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString("#,0.##×", objCulture) : string.Empty;
         }
 
         /// <summary>
@@ -5360,7 +5382,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
         {
-            string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
+            string strQuantity = await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
