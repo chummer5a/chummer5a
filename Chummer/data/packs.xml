@@ -442,7 +442,7 @@
       <nuyenbp>10</nuyenbp>
       <gears>
         <gear>
-          <name>DocWagon Contract, Basic</name>
+          <name>DocWagon Contract, Basic (1 Year Advance Payment)</name>
           <category>DocWagon Contract</category>
         </gear>
       </gears>
@@ -1512,7 +1512,7 @@
       </armors>
     </pack>
     <pack>
-      <name>Tacticool Helmet Pack</name>
+      <name>Tactical Helmet Pack</name>
       <category>Armor Packs</category>
       <nuyenbp>3</nuyenbp>
       <armors>
@@ -1570,7 +1570,7 @@
       </armors>
     </pack>
     <pack>
-      <name>Sim-Setional Pack</name>
+      <name>Sim-Sational Pack</name>
       <category>Cyber Packs</category>
       <nuyenbp>6</nuyenbp>
       <cyberwares>
@@ -2424,7 +2424,7 @@
           <qty>3</qty>
         </gear>
         <gear>
-          <name>Rapelling Gloves</name>
+          <name>Rappelling Gloves</name>
           <category>Survival Gear</category>
         </gear>
         <gear>

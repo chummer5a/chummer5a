@@ -750,6 +750,16 @@
     <martialart>
       <id>57a1e6dd-a78c-4fb7-94e0-db4a7b8b7f63</id>
       <name>Knight Errant Tactical</name>
+      <bonus>
+        <addskillspecializationoption>
+          <skills>
+            <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
+          <spec>Knight Errant Tactical</spec>
+        </addskillspecializationoption>
+      </bonus>
       <techniques>
         <technique>
           <name>Barbed Hooks</name>
@@ -937,6 +947,16 @@
     <martialart>
       <id>5366bd5d-ff0a-4277-b02d-24e10ac76319</id>
       <name>Lone Star Tactical</name>
+      <bonus>
+        <addskillspecializationoption>
+          <skills>
+            <skill>Pistols</skill>
+            <skill>Longarms</skill>
+            <skill>Automatics</skill>
+          </skills>
+          <spec>Lone Star Tactical</spec>
+        </addskillspecializationoption>
+      </bonus>
       <techniques>
         <technique>
           <name>Called Shot (Break Weapon)</name>
@@ -1041,7 +1061,10 @@
       <name>Okichitaw</name>
       <bonus>
         <addskillspecializationoption>
-          <skill>Clubs</skill>
+          <skills>
+            <skill>Blades</skill>
+            <skill>Clubs</skill>
+          </skills>
           <spec>Okichitaw</spec>
         </addskillspecializationoption>
       </bonus>
@@ -2222,7 +2245,7 @@
     <technique>
       <id>5a29bdb8-5233-44ab-b5e0-5cf892559fc1</id>
       <name>Kick Attack</name>
-      <bonus>
+      <bonus unique="kickattack">
         <unarmedreach>1</unarmedreach>
       </bonus>
       <source>RG</source>
@@ -2329,6 +2352,12 @@
       <name>Riposte</name>
       <source>RG</source>
       <page>125</page>
+    </technique>
+    <technique>
+      <id>ae28cd8e-1c34-40a2-a7ec-da17b0fedfd4</id>
+      <name>Reversal</name>
+      <source>RG</source>
+      <page>124</page>
     </technique>
     <technique>
       <id>456dfdc7-d1e5-4ec2-86bd-85bf82d81e46</id>

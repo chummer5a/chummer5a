@@ -648,7 +648,7 @@
         <spec>Festo Pigeon 2.0</spec>
       </specs>
       <source>SR5</source>
-      <page>131</page>
+      <page>147</page>
     </skill>
     <skill>
       <id>47cb1e8b-c285-4c54-9aaa-75305ad6dd4f</id>
@@ -3303,7 +3303,7 @@
     <skill>
       <id>09ae5c16-0b45-4ab9-9634-cab22ad781c4</id>
       <name>Security Companies</name>
-      <attribute>LOG</attribute>
+      <attribute>INT</attribute>
       <category>Street</category>
       <default>False</default>
       <skillgroup />

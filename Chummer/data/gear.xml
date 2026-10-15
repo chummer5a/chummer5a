@@ -108,7 +108,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>HT</source>
-      <page>183</page>
+      <page>184</page>
       <avail>6F</avail>
       <addweapon>Throwing Syringe</addweapon>
       <cost>40</cost>
@@ -404,7 +404,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
-      <page>22</page>
+      <page>52</page>
       <avail>0</avail>
       <cost>0</cost>
       <ammoforweapontype>energy</ammoforweapontype>
@@ -590,7 +590,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>SL</source>
-      <page>44</page>
+      <page>45</page>
       <avail>15R</avail>
       <cost>500</cost>
       <costfor>6</costfor>
@@ -1039,7 +1039,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
-      <page>27</page>
+      <page>55</page>
       <avail>14R</avail>
       <cost>160</cost>
       <costfor>10</costfor>
@@ -1691,6 +1691,7 @@
       <page>80</page>
       <avail>12R</avail>
       <cost>10</cost>
+      <costfor>10</costfor>
       <ammoforweapontype noextra="True">spinstorm</ammoforweapontype>
     </gear>
     <gear>
@@ -1874,7 +1875,7 @@
       <source>KC</source>
       <page>51</page>
       <avail>5R</avail>
-      <cost>50</cost>
+      <cost>100</cost>
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
@@ -2275,7 +2276,7 @@
       <source>RG</source>
       <page>193</page>
       <avail>10R</avail>
-      <cost>100</cost>
+      <cost>Rating * 100</cost>
       <weight>Rating</weight>
     </gear>
     <gear>
@@ -2287,7 +2288,7 @@
       <source>RG</source>
       <page>193</page>
       <avail>14R</avail>
-      <cost>150</cost>
+      <cost>Rating * 150</cost>
       <weight>Rating</weight>
     </gear>
     <gear>
@@ -2308,7 +2309,7 @@
       <category>Explosives</category>
       <rating>25</rating>
       <source>RG</source>
-      <page>193</page>
+      <page>194</page>
       <avail>16R</avail>
       <cost>Rating * 250</cost>
       <minrating>1</minrating>
@@ -2320,7 +2321,7 @@
       <category>Explosives</category>
       <rating>25</rating>
       <source>RG</source>
-      <page>193</page>
+      <page>194</page>
       <avail>16F</avail>
       <cost>Rating * 150</cost>
       <minrating>1</minrating>
@@ -2454,8 +2455,8 @@
       <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>197</page>
-      <avail>8R</avail>
-      <cost>5</cost>
+      <avail>6R</avail>
+      <cost>Rating * 5</cost>
     </gear>
     <gear>
       <id>620f10c6-c08b-43d6-a072-a734f11b536b</id>
@@ -3542,7 +3543,7 @@
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3583,11 +3584,11 @@
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Armor</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3628,15 +3629,15 @@
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Armor</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Biofeedback Filter</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3661,7 +3662,7 @@
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>62</page>
+      <page>61</page>
       <avail>4R</avail>
       <capacity>0</capacity>
       <cost>68500</cost>
@@ -3675,15 +3676,15 @@
       <gears>
         <usegear>
           <name>Track</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3720,19 +3721,19 @@
       <gears>
         <usegear>
           <name>Track</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Decryption</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3769,23 +3770,23 @@
       <gears>
         <usegear>
           <name>Track</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Decryption</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3822,31 +3823,31 @@
       <gears>
         <usegear>
           <name>Track</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Shell</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Decryption</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Hammer</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Fork</name>
-          <category>Common Programs</category>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
-          <name>Biofeedback Filter</name>
-          <category>Common Programs</category>
+          <name>Mugger</name>
+          <category>Hacking Programs</category>
         </usegear>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -4530,7 +4531,7 @@
       <category>Commlinks</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>68</page>
+      <page>69</page>
       <avail>11</avail>
       <capacity>0</capacity>
       <cost>5000</cost>
@@ -6341,7 +6342,7 @@
       <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>70</page>
+      <page>71</page>
       <avail>12R</avail>
       <cost>200</cost>
     </gear>
@@ -6351,7 +6352,7 @@
       <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>70</page>
+      <page>71</page>
       <avail>12R</avail>
       <cost>200</cost>
     </gear>
@@ -6361,7 +6362,7 @@
       <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>70</page>
+      <page>72</page>
       <avail>12R</avail>
       <cost>300</cost>
     </gear>
@@ -6371,7 +6372,7 @@
       <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>70</page>
+      <page>72</page>
       <avail>12R</avail>
       <cost>200</cost>
     </gear>
@@ -6452,6 +6453,11 @@
       <avail>4</avail>
       <bonus>
         <selecttext />
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>Related Knowledge Skill tests</condition>
+        </limitmodifier>
       </bonus>
       <cost>120</cost>
     </gear>
@@ -6465,6 +6471,11 @@
       <avail>4</avail>
       <bonus>
         <selecttext />
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>LimitCondition_SkillsActiveNavigation</condition>
+        </limitmodifier>
       </bonus>
       <cost>100</cost>
     </gear>
@@ -6478,6 +6489,11 @@
       <avail>4</avail>
       <bonus>
         <selecttext />
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Availability and Negotiation tests to buy or sell the covered product type</condition>
+        </limitmodifier>
       </bonus>
       <cost>150</cost>
     </gear>
@@ -6664,6 +6680,11 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
+      <bonus>
+        <livingpersona>
+          <attack>Rating</attack>
+        </livingpersona>
+      </bonus>
     </gear>
     <gear>
       <id>666dbb45-2898-4262-aab6-94e80954b480</id>
@@ -6674,6 +6695,11 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
+      <bonus>
+        <livingpersona>
+          <sleaze>Rating</sleaze>
+        </livingpersona>
+      </bonus>
     </gear>
     <gear>
       <id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
@@ -6684,6 +6710,11 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
+      <bonus>
+        <livingpersona>
+          <dataprocessing>Rating</dataprocessing>
+        </livingpersona>
+      </bonus>
     </gear>
     <gear>
       <id>c29db797-db4b-4f14-b662-622935c3204e</id>
@@ -6694,6 +6725,11 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
+      <bonus>
+        <livingpersona>
+          <firewall>Rating</firewall>
+        </livingpersona>
+      </bonus>
     </gear>
     <gear>
       <id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
@@ -6702,8 +6738,13 @@
       <rating>4</rating>
       <source>KC</source>
       <page>59</page>
-      <avail>Rating*4R</avail>
+      <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
+      <bonus>
+        <livingpersona>
+          <attack>Rating</attack>
+        </livingpersona>
+      </bonus>
       <minrating>3</minrating>
     </gear>
     <gear>
@@ -6713,8 +6754,13 @@
       <rating>4</rating>
       <source>KC</source>
       <page>59</page>
-      <avail>Rating*4R</avail>
+      <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
+      <bonus>
+        <livingpersona>
+          <sleaze>Rating</sleaze>
+        </livingpersona>
+      </bonus>
       <minrating>3</minrating>
     </gear>
     <gear>
@@ -6724,8 +6770,13 @@
       <rating>4</rating>
       <source>KC</source>
       <page>59</page>
-      <avail>Rating*4R</avail>
+      <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
+      <bonus>
+        <livingpersona>
+          <dataprocessing>Rating</dataprocessing>
+        </livingpersona>
+      </bonus>
       <minrating>3</minrating>
     </gear>
     <gear>
@@ -6735,8 +6786,13 @@
       <rating>4</rating>
       <source>KC</source>
       <page>59</page>
-      <avail>Rating*4R</avail>
+      <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
+      <bonus>
+        <livingpersona>
+          <firewall>Rating</firewall>
+        </livingpersona>
+      </bonus>
       <minrating>3</minrating>
     </gear>
     <!-- End Region -->
@@ -6779,6 +6835,7 @@
       <avail>12R</avail>
       <cost>115000</cost>
       <devicerating>4</devicerating>
+      <programs>3</programs>
     </gear>
     <gear>
       <id>488ad606-137f-430d-b571-7cfdae2b0612</id>
@@ -6790,6 +6847,7 @@
       <avail>18R</avail>
       <cost>325000</cost>
       <devicerating>5</devicerating>
+      <programs>4</programs>
     </gear>
     <gear>
       <id>f08d3d53-220f-4dc1-bb8b-ec36ecffedf3</id>
@@ -6801,6 +6859,7 @@
       <avail>18F</avail>
       <cost>855000</cost>
       <devicerating>6</devicerating>
+      <programs>5</programs>
     </gear>
     <!-- End Region -->
     <!-- Region Electronics Accessories -->
@@ -7018,7 +7077,7 @@
       <rating>0</rating>
       <source>KC</source>
       <page>60</page>
-      <avail>4</avail>
+      <avail>0</avail>
       <cost>250</cost>
       <bonus>
         <selecttext />
@@ -7042,7 +7101,7 @@
       <category>Electronics Accessories</category>
       <rating>100</rating>
       <source>KC</source>
-      <page>70</page>
+      <page>72</page>
       <avail>10R</avail>
       <cost>Rating*200</cost>
     </gear>
@@ -7257,6 +7316,13 @@
       <page>187</page>
       <avail>Rating * 2</avail>
       <armorcapacity>[2]</armorcapacity>
+      <bonus>
+        <specificskill>
+          <name>Sneaking</name>
+          <bonus>Rating</bonus>
+          <condition>To avoid detection via ultrasound</condition>
+        </specificskill>
+      </bonus>
       <cost>Rating * 60</cost>
     </gear>
     <!-- End Region -->
@@ -7832,6 +7898,13 @@
       <capacity>[Rating]</capacity>
       <requireparent />
       <cost>Rating * 500</cost>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+          <condition>Visual</condition>
+        </specificskill>
+      </wirelessbonus>
     </gear>
     <gear>
       <id>adf3533a-461c-46ae-9ee7-77dfd31c5d5a</id>
@@ -7898,7 +7971,7 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>445</page>
-      <avail>4</avail>
+      <avail>6R</avail>
       <armorcapacity>[2]</armorcapacity>
       <capacity>Rating</capacity>
       <cost>Rating * 100</cost>
@@ -7913,7 +7986,7 @@
       <rating>6</rating>
       <source>SR5</source>
       <page>445</page>
-      <avail>4</avail>
+      <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <capacity>Rating</capacity>
       <cost>Rating * 50</cost>
@@ -7927,8 +8000,8 @@
       <category>Audio Devices</category>
       <rating>1</rating>
       <source>SR5</source>
-      <page>443</page>
-      <avail>4</avail>
+      <page>445</page>
+      <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <capacity>1</capacity>
       <cost>50</cost>
@@ -7957,6 +8030,13 @@
       <capacity>[Rating]</capacity>
       <requireparent />
       <cost>Rating * 500</cost>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+          <condition>Hearing</condition>
+        </specificskill>
+      </wirelessbonus>
     </gear>
     <gear>
       <id>e7291814-96a9-4c77-b2bb-7665db7a447b</id>
@@ -7995,6 +8075,13 @@
         </geardetails>
       </forbidden>
       <cost>1000</cost>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
+        </specificskill>
+      </wirelessbonus>
     </gear>
     <gear>
       <id>3ccd4f6c-f3a4-4432-9f5e-c95225dbbb9c</id>
@@ -8827,6 +8914,13 @@
         </limitmodifier>
       </bonus>
       <cost>Rating * 500</cost>
+      <wirelessbonus>
+        <specificskill>
+          <name>Locksmith</name>
+          <bonus>Rating</bonus>
+          <condition>LimitCondition_GearAutopicker</condition>
+        </specificskill>
+      </wirelessbonus>
     </gear>
     <gear>
       <id>d90a58cd-f89c-486d-b785-991d2fecf32f</id>
@@ -8981,10 +9075,15 @@
       <category>Chemicals</category>
       <rating>0</rating>
       <source>CA</source>
-      <page>142</page>
+      <page>143</page>
       <avail>8F</avail>
       <bonus>
         <selecttext />
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>2</bonus>
+          <condition>vs the individual whose genetic sample was used</condition>
+        </skillcategory>
       </bonus>
       <cost>300</cost>
       <allowrename>True</allowrename>
@@ -9562,7 +9661,7 @@
       <category>Grapple Gun</category>
       <rating>0</rating>
       <source>TCT</source>
-      <page>185</page>
+      <page>186</page>
       <avail>8</avail>
       <cost>100</cost>
       <ammoforweapontype noextra="True">grapplegun</ammoforweapontype>
@@ -9573,7 +9672,7 @@
       <category>Grapple Gun</category>
       <rating>0</rating>
       <source>TCT</source>
-      <page>185</page>
+      <page>186</page>
       <avail>2</avail>
       <cost>100</cost>
       <ammoforweapontype noextra="True">grapplegun</ammoforweapontype>
@@ -9584,7 +9683,7 @@
       <category>Grapple Gun</category>
       <rating>0</rating>
       <source>TCT</source>
-      <page>185</page>
+      <page>186</page>
       <avail>12F</avail>
       <cost>170</cost>
       <ammoforweapontype noextra="True">grapplegun</ammoforweapontype>
@@ -9691,6 +9790,18 @@
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
+      <wirelessbonus>
+        <specificskill>
+          <name>First Aid</name>
+          <bonus>Rating</bonus>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
+        </specificskill>
+        <specificskill>
+          <name>Medicine</name>
+          <bonus>Rating</bonus>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
+        </specificskill>
+      </wirelessbonus>
     </gear>
     <gear>
       <id>76aca45d-0d4f-45a3-a532-c47ac0b26b89</id>
@@ -10053,6 +10164,13 @@
       <source>CA</source>
       <page>144</page>
       <avail>12F</avail>
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>2</bonus>
+          <condition>Matrix Search to identify an individual by image</condition>
+        </specificskill>
+      </bonus>
       <cost>250</cost>
     </gear>
     <gear>
@@ -10083,6 +10201,13 @@
       <source>CA</source>
       <page>144</page>
       <avail>5F</avail>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>Regarding tracked targets</condition>
+        </specificskill>
+      </bonus>
       <cost>250</cost>
     </gear>
     <gear>
@@ -10093,6 +10218,13 @@
       <source>CA</source>
       <page>144</page>
       <avail>6F</avail>
+      <bonus>
+        <specificskill>
+          <name>Judge Intentions</name>
+          <bonus>2</bonus>
+          <condition>To determine a target's emotional state</condition>
+        </specificskill>
+      </bonus>
       <cost>250</cost>
     </gear>
     <gear>
@@ -10103,6 +10235,13 @@
       <source>CA</source>
       <page>144</page>
       <avail>6F</avail>
+      <bonus>
+        <specificskill>
+          <name>Judge Intentions</name>
+          <bonus>2</bonus>
+          <condition>To determine if someone is lying</condition>
+        </specificskill>
+      </bonus>
       <cost>250</cost>
     </gear>
     <!-- End Region -->
@@ -14079,7 +14218,7 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>410</page>
-      <avail>6R</avail>
+      <avail>8R</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -15364,7 +15503,7 @@
     <!-- Region Animals -->
     <gear>
       <id>be39c579-deb5-4f7f-b4c3-09cc1c375b0b</id>
-      <name>Mini Mokele-Mbembe, Iyoki</name>
+      <name>Mini Mokele-Mbembe, Ikoyi</name>
       <category>Animals</category>
       <rating>0</rating>
       <source>PZG</source>
@@ -15515,6 +15654,18 @@
           </OR>
         </geardetails>
       </required>
+    </gear>
+    <gear>
+      <id>135af1aa-be3e-4458-8788-5d65204ff66c</id>
+      <name>Quick-Access Medkit Pouch</name>
+      <category>Armor Enhancements</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>73</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+      <notes>Holds a separately purchased medkit up to Rating 4.</notes>
     </gear>
     <gear>
       <id>f77fc093-d5cf-4be6-bfeb-311653ecd64e</id>
@@ -16993,7 +17144,7 @@
       <source>RF</source>
       <page>253</page>
       <avail>0</avail>
-      <cost>5</cost>
+      <cost>20</cost>
     </gear>
     <gear>
       <id>493ac6a4-fa96-4a20-a991-9c51f4e4fd56</id>
@@ -17003,7 +17154,7 @@
       <source>RF</source>
       <page>253</page>
       <avail>0</avail>
-      <cost>5</cost>
+      <cost>20</cost>
     </gear>
     <gear>
       <id>cec4b12b-10b4-4d17-9658-039c7a23e7a0</id>
@@ -17241,7 +17392,7 @@
     </gear>
     <gear>
       <id>e7c0a0d4-5bb6-40e3-bf1a-d8aaf6162b85</id>
-      <name>The Squeeler™</name>
+      <name>The Squealer™</name>
       <category>Food</category>
       <rating>0</rating>
       <source>QSR</source>
@@ -17903,7 +18054,7 @@
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
-      <cost>10</cost>
+      <cost>Rating * 10</cost>
     </gear>
     <gear>
       <id>ee19955d-cf91-44da-ba5b-9b496dbd14cb</id>
@@ -18124,7 +18275,7 @@
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
-      <cost>25</cost>
+      <cost>Rating * 25</cost>
     </gear>
     <gear>
       <id>4280d463-bc30-4add-b410-69b4b1db56e9</id>
@@ -18208,7 +18359,7 @@
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
-      <cost>5</cost>
+      <cost>10</cost>
     </gear>
     <gear>
       <id>7e970083-2acf-4c0b-8bbb-0d314386eed1</id>
@@ -18218,7 +18369,7 @@
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
-      <cost>5</cost>
+      <cost>10</cost>
     </gear>
     <gear>
       <id>d8f6f830-27f9-4dd7-91ff-83036c08c146</id>
@@ -18305,7 +18456,7 @@
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
-      <cost>50</cost>
+      <cost>Rating * 50</cost>
     </gear>
     <gear>
       <id>29e7f292-89da-4d09-a996-882d5c611762</id>
@@ -19050,6 +19201,16 @@
       <cost>1</cost>
       <costfor>10</costfor>
     </gear>
+    <gear>
+      <id>7d064885-8067-4db1-a1b8-3195c55afb0f</id>
+      <name>Betel Nut Gum (Piece)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>255</page>
+      <avail>0</avail>
+      <cost>1</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Nanogear-->
     <gear>
@@ -19200,7 +19361,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>153</page>
       <avail>14R</avail>
       <cost>1000</cost>
     </gear>
@@ -19208,7 +19369,7 @@
       <id>07d7b16b-9ae5-4cb2-b364-9da3f211516b</id>
       <name>Hard Nanohive Supplies</name>
       <category>Nanogear</category>
-      <rating>0</rating>
+      <rating>6</rating>
       <source>CF</source>
       <page>151</page>
       <avail>(Rating*5)R</avail>
@@ -19230,7 +19391,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>153</page>
       <avail>12F</avail>
       <cost>350</cost>
     </gear>
@@ -19240,7 +19401,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>153</page>
       <avail>16F</avail>
       <cost>700</cost>
     </gear>
@@ -19250,7 +19411,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>153</page>
       <avail>14F</avail>
       <cost>10000</cost>
     </gear>
@@ -19262,7 +19423,26 @@
       <source>CF</source>
       <page>154</page>
       <avail>6</avail>
+      <bonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>6</value>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
+        </limitmodifier>
+      </bonus>
       <cost>2000</cost>
+      <wirelessbonus>
+        <specificskill>
+          <name>First Aid</name>
+          <bonus>6</bonus>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
+        </specificskill>
+        <specificskill>
+          <name>Medicine</name>
+          <bonus>6</bonus>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
+        </specificskill>
+      </wirelessbonus>
     </gear>
     <gear>
       <id>4f4f8801-dfe6-4847-add3-4afa66ec547f</id>
@@ -19270,7 +19450,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>154</page>
       <avail>4</avail>
       <cost>300</cost>
     </gear>
@@ -19280,7 +19460,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>154</page>
       <avail>10R</avail>
       <cost>4000</cost>
     </gear>
@@ -19511,6 +19691,13 @@
       <source>CA</source>
       <page>143</page>
       <avail>6</avail>
+      <bonus>
+        <specificskill>
+          <name>Con</name>
+          <bonus>1</bonus>
+          <condition>Seduction tests vs metahumans</condition>
+        </specificskill>
+      </bonus>
       <cost>100</cost>
     </gear>
     <gear>
@@ -19521,6 +19708,13 @@
       <source>CA</source>
       <page>143</page>
       <avail>8R</avail>
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>1</bonus>
+          <condition>Social tests vs metahumans</condition>
+        </skillcategory>
+      </bonus>
       <cost>250</cost>
     </gear>
     <gear>
@@ -19531,16 +19725,29 @@
       <source>CA</source>
       <page>143</page>
       <avail>4</avail>
+      <bonus>
+        <specificskill>
+          <name>Intimidation</name>
+          <bonus>1</bonus>
+          <condition>vs metahumans</condition>
+        </specificskill>
+      </bonus>
       <cost>75</cost>
     </gear>
     <gear>
       <id>623827ad-2707-4522-ae26-615a6fdcd3a9</id>
-      <name>Taranke Tiger</name>
+      <name>Tanake Tiger</name>
       <category>Tailored Perfume/Cologne</category>
       <rating>0</rating>
       <source>CA</source>
       <page>143</page>
       <avail>5</avail>
+      <bonus>
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>-2</bonus>
+        </specificskill>
+      </bonus>
       <cost>100</cost>
     </gear>
     <gear>
@@ -19551,6 +19758,13 @@
       <source>CA</source>
       <page>143</page>
       <avail>3</avail>
+      <bonus>
+        <specificskill>
+          <name>Tracking</name>
+          <bonus>2</bonus>
+          <condition>Using olfactory sensors or the Scent critter power</condition>
+        </specificskill>
+      </bonus>
       <cost>75</cost>
     </gear>
     <gear>
@@ -19561,6 +19775,13 @@
       <source>CA</source>
       <page>143</page>
       <avail>3</avail>
+      <bonus>
+        <specificskill>
+          <name>Intimidation</name>
+          <bonus>2</bonus>
+          <condition>vs animals</condition>
+        </specificskill>
+      </bonus>
       <cost>50</cost>
     </gear>
     <!-- End Region -->
@@ -19767,7 +19988,7 @@
       <category>Paydata</category>
       <rating>0</rating>
       <source>CA</source>
-      <page>148</page>
+      <page>150</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -20166,7 +20387,7 @@
       <page>191</page>
       <avail>4F</avail>
       <addweapon>Grenade: Offensive (2050)</addweapon>
-      <cost>45</cost>
+      <cost>35</cost>
     </gear>
     <gear>
       <id>18286c99-ad70-4e66-a048-3ffa3007eabd</id>
@@ -20177,7 +20398,7 @@
       <page>191</page>
       <avail>4F</avail>
       <addweapon>Grenade: Offensive, Aerodynamic (2050)</addweapon>
-      <cost>45</cost>
+      <cost>35</cost>
     </gear>
     <gear>
       <id>72979698-fda1-4516-a724-045f97fe824b</id>
@@ -20903,7 +21124,7 @@
     </gear>
     <gear>
       <id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
-      <name>MTC Sarari-Man, Terminal (2050)</name>
+      <name>MCT Sarari-Man, Terminal (2050)</name>
       <category>Cyberdecks</category>
       <rating>0</rating>
       <source>2050</source>
@@ -21927,6 +22148,16 @@
       <cost>500</cost>
     </gear>
     <gear>
+      <id>3d7b0d91-4f38-48c7-91cb-b4b1e258245e</id>
+      <name>Atomizer Cartridge</name>
+      <category>Alchemical Tools</category>
+      <rating>0</rating>
+      <source>FA</source>
+      <page>194</page>
+      <avail>2</avail>
+      <cost>5</cost>
+    </gear>
+    <gear>
       <id>f0b6f6db-dcf9-47f4-9108-51ff196184da</id>
       <name>Alembic</name>
       <category>Alchemical Tools</category>
@@ -22000,7 +22231,7 @@
       <category>Survival Gear</category>
       <rating>0</rating>
       <source>SL</source>
-      <page>48</page>
+      <page>47</page>
       <avail>0</avail>
       <cost>750</cost>
     </gear>

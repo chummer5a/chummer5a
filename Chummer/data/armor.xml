@@ -136,6 +136,13 @@
           <condition>LimitCondition_SkillsActiveSneakingVisible</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Sneaking</name>
+          <bonus>2</bonus>
+          <condition>Hiding</condition>
+        </specificskill>
+      </wirelessbonus>
       <source>SR5</source>
       <page>437</page>
     </armor>
@@ -712,7 +719,7 @@
         <name>Custom Fit</name>
       </mods>
       <gears>
-        <usegear>Holster</usegear>
+        <usegear>Concealable Holster</usegear>
       </gears>
       <source>RG</source>
       <page>61</page>
@@ -964,6 +971,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Custom Protection terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -984,6 +992,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Custom Protection terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1007,6 +1016,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Custom Protection terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1033,6 +1043,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Custom Protection terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1087,6 +1098,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Custom Protection terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1139,6 +1151,9 @@
         <name>Gear Access</name>
         <name>Restrictive</name>
       </mods>
+      <gears>
+        <usegear>Holster</usegear>
+      </gears>
       <source>RG</source>
       <page>66</page>
     </armor>
@@ -1162,6 +1177,9 @@
         <name>Gear Access</name>
         <name>Restrictive</name>
       </mods>
+      <gears>
+        <usegear>Holster</usegear>
+      </gears>
       <source>RG</source>
       <page>66</page>
     </armor>
@@ -1185,6 +1203,9 @@
         <name>Gear Access</name>
         <name>Restrictive</name>
       </mods>
+      <gears>
+        <usegear>Holster</usegear>
+      </gears>
       <source>RG</source>
       <page>66</page>
     </armor>
@@ -1331,8 +1352,9 @@
       </mods>
       <wirelessbonus>
         <skillcategory>
-          <name>Social</name>
+          <name>Social Active</name>
           <bonus>1</bonus>
+          <condition>Social Tests to calm or pacify people at an emergency site</condition>
         </skillcategory>
       </wirelessbonus>
       <source>RG</source>
@@ -1529,6 +1551,9 @@
           <condition>LimitCondition_GangVisible</condition>
         </limitmodifier>
       </bonus>
+      <mods>
+        <name>Custom Fit</name>
+      </mods>
       <source>RG</source>
       <page>71</page>
     </armor>
@@ -1676,6 +1701,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Custom Protection terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1699,8 +1725,16 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Hot terrain</condition>
         </specificskill>
       </wirelessbonus>
+      <bonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>2</bonus>
+          <condition>Desert</condition>
+        </specificskill>
+      </bonus>
       <source>RG</source>
       <page>75</page>
     </armor>
@@ -1733,6 +1767,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
+          <condition>Cold terrain</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1760,6 +1795,13 @@
           <condition>LimitCondition_ClimbingTests</condition>
         </limitmodifier>
       </wirelessbonus>
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+      </bonus>
       <source>RG</source>
       <page>76</page>
     </armor>
@@ -1771,23 +1813,23 @@
       <armorcapacity>14</armorcapacity>
       <avail>16R</avail>
       <cost>11000</cost>
-      <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
-        </limitmodifier>
-      </bonus>
       <mods>
         <name>Custom Fit</name>
         <name rating="5">Insulation</name>
-        <name rating="4">Thermal Damping</name>
+        <name rating="3">Thermal Damping</name>
         <name>Gear Access</name>
       </mods>
       <gears>
         <usegear>Gas Mask</usegear>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+      </bonus>
       <wirelessbonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -1806,9 +1848,6 @@
       <armorcapacity>6</armorcapacity>
       <avail>6</avail>
       <cost>1200</cost>
-      <bonus>
-        <fatigueresist>-2</fatigueresist>
-      </bonus>
       <mods>
         <name>Custom Fit</name>
         <name rating="4">Insulation</name>
@@ -1817,6 +1856,12 @@
       <gears>
         <usegear>Flare Compensation</usegear>
       </gears>
+      <bonus>
+        <fatigueresist>-2</fatigueresist>
+      </bonus>
+      <wirelessbonus>
+        <fatigueresist>1</fatigueresist>
+      </wirelessbonus>
       <source>RG</source>
       <page>78</page>
     </armor>
@@ -1892,6 +1937,18 @@
       <mods>
         <name rating="4">Chemical Protection</name>
       </mods>
+      <bonus>
+        <specificskill>
+          <name>Swimming</name>
+          <bonus>-2</bonus>
+        </specificskill>
+      </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Swimming</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </wirelessbonus>
       <source>RG</source>
       <page>80</page>
     </armor>
@@ -2007,6 +2064,25 @@
       <mods>
         <name>Custom Fit</name>
       </mods>
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>3</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-75</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <percent>-75</percent>
+        </runmultiplier>
+        <sprintbonus>
+          <category>Ground</category>
+          <percent>-100</percent>
+        </sprintbonus>
+      </bonus>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2018,6 +2094,9 @@
       <armorcapacity>4</armorcapacity>
       <avail>3</avail>
       <cost>2000</cost>
+      <gears>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2029,6 +2108,9 @@
       <armorcapacity>4</armorcapacity>
       <avail>6</avail>
       <cost>2000</cost>
+      <gears>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2040,6 +2122,9 @@
       <armorcapacity>4</armorcapacity>
       <avail>9</avail>
       <cost>2000</cost>
+      <gears>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2051,6 +2136,9 @@
       <armorcapacity>4</armorcapacity>
       <avail>12</avail>
       <cost>2000</cost>
+      <gears>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2062,6 +2150,9 @@
       <armorcapacity>4</armorcapacity>
       <avail>15</avail>
       <cost>2000</cost>
+      <gears>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2073,6 +2164,9 @@
       <armorcapacity>4</armorcapacity>
       <avail>18</avail>
       <cost>2000</cost>
+      <gears>
+        <usegear rating="4">Medkit</usegear>
+      </gears>
       <source>RG</source>
       <page>83</page>
     </armor>
@@ -2746,7 +2840,7 @@
       <avail>14R</avail>
       <cost>1800</cost>
       <source>CA</source>
-      <page>136</page>
+      <page>137</page>
     </armor>
     <armor>
       <id>c9424dfb-1e01-4073-995a-7935efc1894d</id>
@@ -2757,7 +2851,7 @@
       <avail>6</avail>
       <cost>900</cost>
       <source>CA</source>
-      <page>136</page>
+      <page>137</page>
     </armor>
     <armor>
       <id>f22a86ba-e660-4c32-a998-d04def23d287</id>
@@ -2771,7 +2865,7 @@
         <sociallimit>1</sociallimit>
       </bonus>
       <source>CA</source>
-      <page>136</page>
+      <page>137</page>
     </armor>
     <!-- End Region -->
     <!-- Region 2050 SR5 Clothing and Armor -->
@@ -3191,10 +3285,12 @@
         <specificskill>
           <name>Etiquette</name>
           <bonus>1</bonus>
+          <condition>While the wearer is a troll</condition>
         </specificskill>
         <specificskill>
           <name>Intimidation</name>
           <bonus>1</bonus>
+          <condition>While the wearer is a troll</condition>
         </specificskill>
       </bonus>
       <source>TCT</source>
@@ -3214,7 +3310,7 @@
         <name>Parachute (Urban Explorer Daedalus)</name>
       </mods>
       <source>SL</source>
-      <page>48</page>
+      <page>47</page>
     </armor>
     <armor>
       <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
@@ -3225,7 +3321,7 @@
       <avail>0</avail>
       <cost>100</cost>
       <source>SL</source>
-      <page>48</page>
+      <page>47</page>
     </armor>
     <armor>
       <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
@@ -3238,7 +3334,7 @@
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
-          <value>1</value>
+          <value>2</value>
           <condition>LimitCondition_IntimidationVisible</condition>
         </limitmodifier>
       </bonus>
@@ -3281,11 +3377,8 @@
         <name>Micro-Hardpoint</name>
         <name>Pantheon Quick-Charge Battery Pack</name>
       </mods>
-      <gears>
-        <usegear>Holster</usegear>
-      </gears>
       <source>KC</source>
-      <page>70</page>
+      <page>72</page>
     </armor>
     <armor>
       <id>62ad0f12-c603-4c88-b778-e456ca2355f6</id>
@@ -3301,10 +3394,10 @@
       </mods>
       <gears>
         <usegear>Holster</usegear>
-        <usegear rating="4">Medkit</usegear>
+        <usegear>Quick-Access Medkit Pouch</usegear>
       </gears>
       <source>KC</source>
-      <page>70</page>
+      <page>73</page>
     </armor>
     <!-- End Region -->
     <!-- Region Hamburg -->
@@ -3543,6 +3636,13 @@
           <condition>LimitCondition_TestSneakingThermal</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Sneaking</name>
+          <bonus>Rating</bonus>
+          <condition>Against thermal detection</condition>
+        </specificskill>
+      </wirelessbonus>
       <source>SR5</source>
       <page>438</page>
     </mod>
@@ -3776,6 +3876,9 @@
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
       <cost>0</cost>
+      <bonus unique="fireresistance">
+        <firearmor>3</firearmor>
+      </bonus>
       <source>SR5</source>
       <page>437</page>
     </mod>
@@ -4089,7 +4192,7 @@
       <avail>0</avail>
       <cost>150</cost>
       <source>RG</source>
-      <page>62</page>
+      <page>74</page>
     </mod>
     <mod>
       <id>5a0965bd-759c-4e41-8c47-2b87c9de06d6</id>
@@ -4155,7 +4258,7 @@
       <armor>0</armor>
       <maxrating>6</maxrating>
       <armorcapacity>[3]</armorcapacity>
-      <avail>4</avail>
+      <avail>8F</avail>
       <cost>Rating * 250</cost>
       <source>RG</source>
       <page>84</page>
@@ -4207,6 +4310,13 @@
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>6</avail>
+      <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>-2</value>
+          <condition>When comparing against DV for knockdown</condition>
+        </limitmodifier>
+      </bonus>
       <cost>1500</cost>
       <source>RG</source>
       <page>85</page>
@@ -4362,7 +4472,7 @@
       <avail>8</avail>
       <cost>0</cost>
       <source>SL</source>
-      <page>48</page>
+      <page>47</page>
     </mod>
     <!-- End Region -->
     <!-- Region Kill Code -->
@@ -4434,6 +4544,9 @@
       <maxrating>6</maxrating>
       <armorcapacity>[Rating]</armorcapacity>
       <avail>FixedValues(6F,6F,6F,9F,9F,9F)</avail>
+      <bonus>
+        <spellresistance>Rating</spellresistance>
+      </bonus>
       <cost>FixedValues(Rating*1000,Rating*1000,Rating*1000,Rating*2000,Rating*2000,Rating*2000)</cost>
       <source>BTB</source>
       <page>156</page>

@@ -314,6 +314,13 @@
       <choices>
         <choice>
           <name>Magician: +2 to Alchemy for harvesting, and you may use any reagents</name>
+          <bonus>
+            <specificskill>
+              <name>Alchemy</name>
+              <bonus>2</bonus>
+              <condition>Harvesting reagents</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 2 free levels of Natural Immunity</name>
@@ -947,8 +954,15 @@
     <mentor>
       <id>424398e1-8909-4237-8315-48b6e06d62b5</id>
       <name>Pollution</name>
-      <advantage>All: +2 for Chemistry Tests when dealing with pollutants</advantage>
+      <advantage>All: +2 for Chemistry Tests when dealing with pollutants; may default even without the Chemistry skill.</advantage>
       <disadvantage>If they are in an area cleaner than their normal habitation, followers of Pollution must make a Willpower + Charisma (3) Test every day. If they fail, they must spend at least eight hours that day actively despoiling the land, regardless of any other plans they had for that time.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Chemistry</name>
+          <bonus>2</bonus>
+          <condition>Dealing with pollutants</condition>
+        </specificskill>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice for summoning or binding toxic spirits</name>
@@ -1048,6 +1062,10 @@
               <name>Counterspelling</name>
               <bonus>2</bonus>
             </specificskill>
+            <specificskill>
+              <name>Disenchanting</name>
+              <bonus>2</bonus>
+            </specificskill>
           </bonus>
         </choice>
         <choice>
@@ -1078,21 +1096,21 @@
         <choice>
           <name>Magician: +2 dice for conjuring Spirits of Water.</name>
           <bonus>
-            <specificskill>
+            <skillgroup>
               <name>Conjuring</name>
               <bonus>2</bonus>
               <condition>Spirits of Water</condition>
-            </specificskill>
+            </skillgroup>
           </bonus>
         </choice>
         <choice>
           <name>Magician: +2 dice for conjuring Spirits of Man.</name>
           <bonus>
-            <specificskill>
+            <skillgroup>
               <name>Conjuring</name>
               <bonus>2</bonus>
               <condition>Spirits of Man</condition>
-            </specificskill>
+            </skillgroup>
           </bonus>
         </choice>
         <choice>
@@ -1122,10 +1140,10 @@
         <choice>
           <name>Magician: +1 dice for conjuring spirits.</name>
           <bonus>
-            <specificskill>
+            <skillgroup>
               <name>Conjuring</name>
               <bonus>1</bonus>
-            </specificskill>
+            </skillgroup>
           </bonus>
         </choice>
         <choice>
@@ -1357,6 +1375,11 @@
       <name>Boar</name>
       <advantage>All: Home Ground Quality is gained for free.</advantage>
       <disadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower's friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</disadvantage>
+      <bonus>
+        <addqualities>
+          <addquality>Home Ground</addquality>
+        </addqualities>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +1 to the number of services gained when successfully summoning a spirit</name>
@@ -1364,9 +1387,6 @@
         <choice>
           <name>Adept: Gains Rooting (2) power for free.</name>
           <bonus>
-            <addqualities>
-              <addquality>Home Ground</addquality>
-            </addqualities>
             <specificpower>
               <name>Rooting</name>
               <val>2</val>
@@ -1400,6 +1420,13 @@
         </choice>
         <choice set="2">
           <name>Magician: +2 to Conjuring skill tests of air spirits</name>
+          <bonus>
+            <skillgroup>
+              <name>Conjuring</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Air</condition>
+            </skillgroup>
+          </bonus>
         </choice>
         <choice set="2">
           <name>Adept: 2 free levels of Piercing Senses</name>
@@ -1486,6 +1513,13 @@
         </choice>
         <choice set="2">
           <name>Magician: +2 to Conjuring skill tests for spirits of water</name>
+          <bonus>
+            <skillgroup>
+              <name>Conjuring</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Water</condition>
+            </skillgroup>
+          </bonus>
         </choice>
         <choice set="2">
           <name>Adept: Receive 2 ranks in Iron Lungs or free.</name>
@@ -1754,6 +1788,11 @@
               <name>Health</name>
               <val>1</val>
             </spellcategory>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>1</bonus>
+              <condition>Spirits of Air</condition>
+            </specificskill>
           </bonus>
         </choice>
         <choice>
@@ -1786,6 +1825,11 @@
           </bonus>
         </choice>
       </choices>
+      <required>
+        <allof>
+          <tradition>Planar Magic</tradition>
+        </allof>
+      </required>
       <source>FA</source>
       <page>95</page>
     </mentor>
@@ -1802,6 +1846,10 @@
               <name>Detection</name>
               <val>1</val>
             </spellcategory>
+            <spelldicepool>
+              <name>Clairvoyance</name>
+              <val>2</val>
+            </spelldicepool>
           </bonus>
         </choice>
         <choice>
@@ -2031,6 +2079,13 @@
       <name>Sun</name>
       <advantage>All: +2 dice pool modifier for Perception tests when outside during the day.</advantage>
       <disadvantage>Followers of Sun must pass a Charisma + Willpower (4) Test in order to purposefully deceive others.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>Outside during the day</condition>
+        </specificskill>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
@@ -2249,6 +2304,13 @@
       <name>Great Mother (alt)</name>
       <advantage>All: When not in an urban area, gain +1 to any skill test with skills in the Outdoors skill group.</advantage>
       <disadvantage>Treat any background count due to pollution or twisted element as twice the actual rating.</disadvantage>
+      <bonus>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>1</bonus>
+          <condition>Outside urban areas</condition>
+        </skillgroup>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 for health Spells, Preparations, and Spell Rituals.</name>
@@ -2555,7 +2617,7 @@
           <name>Adept: Gain 2 free levels of Heightened Concentration.</name>
           <bonus>
             <specificpower>
-              <name>Heightened Concentration</name>
+              <name>Heightened Concern</name>
               <val>2</val>
             </specificpower>
           </bonus>

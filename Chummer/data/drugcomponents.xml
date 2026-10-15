@@ -330,7 +330,7 @@
     </drugcomponent>
     <drugcomponent>
       <id>04f24ebd-e1cc-4b57-abe7-c8aa3fa91539</id>
-      <name>Lighting</name>
+      <name>Lightning</name>
       <category>Block</category>
       <effects>
         <effect>

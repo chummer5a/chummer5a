@@ -29,7 +29,7 @@
       <levels>True</levels>
       <limit>1</limit>
       <source>SR5</source>
-      <page>309</page>
+      <page>308</page>
       <action>Free</action>
     </power>
     <power>
@@ -282,6 +282,7 @@
       <adeptwayrequires>
         <required>
           <oneof>
+            <quality>The Artisan's Way</quality>
             <quality>The Athlete's Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -390,11 +391,8 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Artisan's Way</quality>
-            <quality>The Artist's Way</quality>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
-            <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Warrior's Way</quality>
           </oneof>
@@ -717,12 +715,9 @@
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
-            <quality>The Invisible Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
-            <quality>The Warrior's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -767,6 +762,13 @@
       <points>0.5</points>
       <levels>True</levels>
       <limit>1</limit>
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>Rating</bonus>
+          <condition>Opposed Social Skill Tests you initiate</condition>
+        </skillcategory>
+      </bonus>
       <source>SGE</source>
       <page>4</page>
       <adeptway>0.25</adeptway>
@@ -1025,6 +1027,7 @@
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
+      <action>Complex</action>
       <adeptway>0.25</adeptway>
     </power>
     <power>
@@ -1117,14 +1120,6 @@
       <limit>1</limit>
       <source>SG</source>
       <page>173</page>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Artist's Way</quality>
-            <quality>The Spiritual Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
       <bonus>
         <specificskill>
           <name>Palming</name>
@@ -1293,12 +1288,13 @@
       <limit>1</limit>
       <source>SG</source>
       <page>175</page>
+      <action>Complex</action>
       <adeptway>0.25</adeptway>
       <adeptwayrequires>
         <required>
           <oneof>
-            <quality>The Artist's Way</quality>
             <quality>The Artisan's Way</quality>
+            <quality>The Artist's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Speaker's Way</quality>
             <quality>The Spiritual Way</quality>
@@ -1356,6 +1352,11 @@
       <source>BB</source>
       <page>22</page>
       <adeptway>0.5</adeptway>
+      <required>
+        <oneof>
+          <power>Killing Hands</power>
+        </oneof>
+      </required>
     </power>
     <!-- End Region -->
     <!-- Region Stolen Souls -->
@@ -1415,14 +1416,6 @@
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Artist's Way</quality>
-            <quality>The Spiritual Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
       <bonus>
         <specificskill>
           <name>Palming</name>
@@ -1467,12 +1460,13 @@
     </power>
     <power>
       <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
-      <name>Heightened Concentration</name>
+      <name>Heightened Concern</name>
       <points>0.5</points>
       <levels>False</levels>
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
+      <action>Complex</action>
       <adeptway>0.25</adeptway>
       <adeptwayrequires>
         <required>
@@ -1547,7 +1541,7 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-      <action>Free</action>
+      <action>Simple</action>
       <adeptway>0.5</adeptway>
     </power>
     <power>
@@ -1676,7 +1670,7 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
-      <action>Simple</action>
+      <action>Complex</action>
       <adeptway>0.5</adeptway>
       <bonus>
         <selectspell ignorerequirements="True" />
@@ -1691,6 +1685,7 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
+      <action>Simple</action>
       <adeptway>0.25</adeptway>
     </power>
     <power>
@@ -1813,7 +1808,7 @@
       <limit>1</limit>
       <source>BTB</source>
       <page>159</page>
-      <adeptway>0.25</adeptway>
+      <adeptway>0.375</adeptway>
       <action>Simple</action>
       <maxlevels>3</maxlevels>
     </power>

@@ -150,7 +150,7 @@
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
       <lp>4</lp>
-      <multiplier>0</multiplier>
+      <multiplier>20</multiplier>
       <source>RF</source>
       <page>216</page>
     </lifestyle>
@@ -235,7 +235,7 @@
     <comfort>
       <name>Luxury</name>
       <minimum>5</minimum>
-      <limit>8</limit>
+      <limit>7</limit>
     </comfort>
     <comfort>
       <name>Commercial</name>
@@ -360,6 +360,12 @@
       <lp>1</lp>
       <cost>100</cost>
       <allowed>High,Luxury</allowed>
+      <allowmultiple/>
+      <forbidden>
+        <oneof>
+          <lifestylequality>Maid is Out</lifestylequality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>220</page>
     </quality>
@@ -370,6 +376,12 @@
       <lp>1</lp>
       <cost>200</cost>
       <allowed>High,Luxury</allowed>
+      <allowmultiple/>
+      <forbidden>
+        <oneof>
+          <lifestylequality>Maid is Out</lifestylequality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>220</page>
     </quality>
@@ -380,6 +392,12 @@
       <lp>1</lp>
       <cost>400</cost>
       <allowed>High,Luxury</allowed>
+      <allowmultiple/>
+      <forbidden>
+        <oneof>
+          <lifestylequality>Maid is Out</lifestylequality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>220</page>
     </quality>
@@ -581,7 +599,7 @@
     <quality>
       <id>c63bcf5f-fcb7-4193-bdae-2b32cdf50032</id>
       <name>Merchandise: Goods (Specific Item) (Avail 3)</name>
-      <category>Entertainment - Asset</category>
+      <category>Entertainment - Service</category>
       <lp>1</lp>
       <cost>10000</cost>
       <bonus>
@@ -595,7 +613,7 @@
     <quality>
       <id>544760af-1c45-4de7-a198-f9f7f86ec4b2</id>
       <name>Merchandise: Goods (Specific Item) (Avail 5)</name>
-      <category>Entertainment - Asset</category>
+      <category>Entertainment - Service</category>
       <lp>2</lp>
       <cost>10000</cost>
       <bonus>
@@ -609,7 +627,7 @@
     <quality>
       <id>5a7f93eb-7297-49a0-904e-466be3f3f454</id>
       <name>Merchandise: Goods (Specific Item) (Avail 7)</name>
-      <category>Entertainment - Asset</category>
+      <category>Entertainment - Service</category>
       <lp>3</lp>
       <cost>10000</cost>
       <bonus>
@@ -623,7 +641,7 @@
     <quality>
       <id>1ab883f5-3392-41c6-b4e3-b26dfc4b8aba</id>
       <name>Merchandise: Goods (Specific Item) (Avail 9)</name>
-      <category>Entertainment - Asset</category>
+      <category>Entertainment - Service</category>
       <lp>4</lp>
       <cost>10000</cost>
       <bonus>
@@ -760,7 +778,7 @@
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <page>222</page>
+      <page>223</page>
     </quality>
     <quality>
       <id>ee56a5de-dfb0-41c3-8de7-67041a627df9</id>
@@ -894,8 +912,8 @@
       <name>Corporate Owned</name>
       <category>Positive</category>
       <lp>3</lp>
-      <comfortsminimum>1</comfortsminimum>
-      <securityminimum>1</securityminimum>
+      <comfortsmaximum>1</comfortsmaximum>
+      <securitymaximum>1</securitymaximum>
       <comforts>1</comforts>
       <security>1</security>
       <required>
@@ -905,7 +923,7 @@
         </oneof>
       </required>
       <source>RF</source>
-      <page>225</page>
+      <page>224</page>
     </quality>
     <quality>
       <id>ff0cb981-4459-46e7-ab75-d8c5bcb0c486</id>
@@ -947,9 +965,12 @@
       <name>Maid is Out</name>
       <category>Negative</category>
       <lp>-1</lp>
+      <comfortsmaximum>-1</comfortsmaximum>
       <forbidden>
         <oneof>
-          <lifestylequality>Cleaning Service</lifestylequality>
+          <lifestylequality>Cleaning Service (Standard)</lifestylequality>
+          <lifestylequality>Cleaning Service (Mage Sensitive)</lifestylequality>
+          <lifestylequality>Cleaning Service (Pollution Sensitive)</lifestylequality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -988,7 +1009,9 @@
         <selecttext />
       </bonus>
       <required>
-        <lifestyle>Traveler</lifestyle>
+        <allof>
+          <lifestyle>Traveler</lifestyle>
+        </allof>
       </required>
       <source>RF</source>
       <page>226</page>
@@ -1007,6 +1030,7 @@
       <name>Safety Third</name>
       <category>Negative</category>
       <lp>-1</lp>
+      <allowmultiple/>
       <required>
         <oneof>
           <lifestylequality>Garage (Airplane)</lifestylequality>
@@ -1046,7 +1070,9 @@
       <lp>2</lp>
       <cost>-1000</cost>
       <required>
-        <lifestyle>Traveler</lifestyle>
+        <allof>
+          <lifestyle>Traveler</lifestyle>
+        </allof>
       </required>
       <source>RF</source>
       <page>226</page>
@@ -1252,7 +1278,7 @@
     <quality>
       <id>e667f652-c908-4548-adf9-7b969d587e43</id>
       <name>Drone Maids/Manservants</name>
-      <category>Entertainment - Asset</category>
+      <category>Entertainment - Service</category>
       <lp>1</lp>
       <cost>7000</cost>
       <allowed>High,Luxury</allowed>
@@ -1262,8 +1288,8 @@
     <quality>
       <id>1b2218d6-d4a3-4978-b941-8358159e4e3b</id>
       <name>Maids/Manservants</name>
-      <category>Entertainment - Asset</category>
-      <lp>1</lp>
+      <category>Entertainment - Service</category>
+      <lp>2</lp>
       <cost>15000</cost>
       <allowed>Luxury</allowed>
       <source>HT</source>
@@ -1272,7 +1298,7 @@
     <quality>
       <id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
       <name>Zombie Maids/Manservants</name>
-      <category>Entertainment - Asset</category>
+      <category>Entertainment - Service</category>
       <lp>2</lp>
       <cost>20000</cost>
       <allowed>High,Luxury</allowed>
@@ -1304,7 +1330,9 @@
       <lp>0</lp>
       <cost>2000</cost>
       <required>
-        <lifestyle>Bolt Hole</lifestyle>
+        <allof>
+          <lifestyle>Bolt Hole</lifestyle>
+        </allof>
       </required>
       <source>HT</source>
       <page>141</page>
@@ -1316,7 +1344,9 @@
       <lp>0</lp>
       <cost>2000</cost>
       <required>
-        <lifestyle>Bolt Hole</lifestyle>
+        <allof>
+          <lifestyle>Bolt Hole</lifestyle>
+        </allof>
       </required>
       <source>SFB</source>
       <page>20</page>
@@ -1370,7 +1400,7 @@
       <name>Escape Tunnel, 100 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
-      <cost>200</cost>
+      <cost>75</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
       <page>20</page>
@@ -1380,7 +1410,7 @@
       <name>Escape Tunnel, 200 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
-      <cost>200</cost>
+      <cost>150</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
       <page>20</page>
@@ -1390,7 +1420,7 @@
       <name>Escape Tunnel, 300 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
-      <cost>200</cost>
+      <cost>225</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
       <page>20</page>
@@ -1400,7 +1430,7 @@
       <name>Escape Tunnel, 400 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
-      <cost>200</cost>
+      <cost>300</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
       <page>20</page>
@@ -1410,7 +1440,7 @@
       <name>Escape Tunnel, 500 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>5</lp>
-      <cost>200</cost>
+      <cost>375</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
       <page>20</page>

@@ -318,6 +318,13 @@
       <ess>Rating * 1</ess>
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
+      <bonus>
+        <skillcategory>
+          <name>Vehicle Active</name>
+          <bonus>Rating</bonus>
+          <condition>When jumped into a vehicle or drone</condition>
+        </skillcategory>
+      </bonus>
       <cost>FixedValues(43000,97000,208000)</cost>
       <source>SR5</source>
       <page>452</page>
@@ -418,7 +425,7 @@
       <limit>False</limit>
       <category>Headware</category>
       <ess>0.1</ess>
-      <capacity>[1]</capacity>
+      <capacity>0</capacity>
       <avail>Rating * 2</avail>
       <cost>Rating * 1000</cost>
       <source>SR5</source>
@@ -436,6 +443,13 @@
       <cost>Rating * 4000</cost>
       <source>SR5</source>
       <page>452</page>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+          <condition>Scent</condition>
+        </specificskill>
+      </bonus>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -474,6 +488,13 @@
       <cost>Rating * 3000</cost>
       <source>SR5</source>
       <page>452</page>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+          <condition>Taste</condition>
+        </specificskill>
+      </bonus>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -675,6 +696,13 @@
         </limitmodifier>
       </bonus>
       <rating>3</rating>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+          <condition>Visual</condition>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>2c578376-1219-468d-b76b-4c0da44dfca2</id>
@@ -732,6 +760,13 @@
         </limitmodifier>
       </bonus>
       <rating>3</rating>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+          <condition>Hearing</condition>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>31d82330-4650-4550-aa90-c314a189f897</id>
@@ -801,6 +836,13 @@
           <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>76523da7-271d-459a-9502-3f7c8d54be6a</id>
@@ -893,6 +935,8 @@
       <forbidden>
         <oneof>
           <bioware>Orthoskin</bioware>
+          <cyberware>Smartskin</cyberware>
+          <bioware>Chloroplast Skin</bioware>
         </oneof>
       </forbidden>
       <rating>6</rating>
@@ -960,6 +1004,12 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
+      <forbidden>
+        <oneof>
+          <bioware>Muscle Augmentation</bioware>
+          <bioware>Muscle Toner</bioware>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -1021,6 +1071,11 @@
           <condition>LimitCondition_Skillwires</condition>
         </limitmodifier>
       </wirelessbonus>
+      <forbidden>
+        <oneof>
+          <bioware>Reflex Recorder</bioware>
+        </oneof>
+      </forbidden>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -2191,6 +2246,12 @@
       <cost>Rating * 1000</cost>
       <source>CF</source>
       <page>79</page>
+      <forbidden>
+        <oneof>
+          <cyberware>Active Hardwires</cyberware>
+          <cyberware>Knowledge Hardwires</cyberware>
+        </oneof>
+      </forbidden>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -2312,6 +2373,13 @@
           <condition>LimitCondition_SkillsActivePerformanceSynthtrument</condition>
         </limitmodifier>
       </bonus>
+      <wirelessbonus>
+        <specificskill>
+          <name>Performance</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_SkillsActivePerformanceSynthtrument</condition>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>967133e4-76bf-468a-a4b8-c8be1e667186</id>
@@ -2431,6 +2499,13 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>76</page>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>4</bonus>
+          <condition>Examining material within 30 cm with active microscopic lenses</condition>
+        </specificskill>
+      </bonus>
     </cyberware>
     <cyberware>
       <id>10c1db9e-ce52-4b3c-877d-f0fb4c8442a8</id>
@@ -2476,7 +2551,7 @@
       <ess>0.2</ess>
       <capacity>[4]</capacity>
       <avail>6</avail>
-      <cost>1000</cost>
+      <cost>1250</cost>
       <source>CF</source>
       <page>77</page>
     </cyberware>
@@ -2515,6 +2590,13 @@
       <cost>500</cost>
       <source>CF</source>
       <page>75</page>
+      <wirelessbonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>Identifying a sound</condition>
+        </specificskill>
+      </wirelessbonus>
     </cyberware>
     <cyberware>
       <id>cf0adced-d9e8-49bb-952f-3b7b339761fa</id>
@@ -2666,6 +2748,11 @@
           <value>-1</value>
           <condition>LimitCondition_CyberwareCyberfins</condition>
         </limitmodifier>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>LimitCondition_SkillsActiveSwimming</condition>
+        </limitmodifier>
       </bonus>
       <pairbonus>
         <specificskill>
@@ -2710,6 +2797,11 @@
           <limit>Physical</limit>
           <value>-1</value>
           <condition>LimitCondition_CyberwareCyberfins</condition>
+        </limitmodifier>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>LimitCondition_SkillsActiveSwimming</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -2759,8 +2851,8 @@
       <category>Bodyware</category>
       <ess>0.15</ess>
       <capacity>0</capacity>
-      <avail>4</avail>
-      <cost>2000</cost>
+      <avail>8</avail>
+      <cost>1500</cost>
       <selectside />
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <forbidden>
@@ -2773,6 +2865,13 @@
       </forbidden>
       <source>CF</source>
       <page>83</page>
+      <bonus>
+        <specificskill>
+          <name>Escape Artist</name>
+          <bonus>3</bonus>
+          <condition>Hand restraints and small openings</condition>
+        </specificskill>
+      </bonus>
     </cyberware>
     <cyberware>
       <id>7cc7acff-1418-47a7-95b7-5b18a52d0c36</id>
@@ -2885,6 +2984,13 @@
           </OR>
         </parentdetails>
       </required>
+      <pairbonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+      </pairbonus>
     </cyberware>
     <cyberware>
       <id>83d207e5-ec4e-4f73-9fd2-c172f7196fb4</id>
@@ -2919,6 +3025,13 @@
           </OR>
         </parentdetails>
       </required>
+      <pairbonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+      </pairbonus>
     </cyberware>
     <cyberware>
       <id>a35e5b3f-c6a9-4c2e-a8e6-b7ed58d656c9</id>
@@ -3036,7 +3149,7 @@
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>Rating</avail>
-      <cost>Variable(0-10000)</cost>
+      <cost>Variable(50-10000)</cost>
       <source>CF</source>
       <page>72</page>
       <rating>4</rating>
@@ -3143,6 +3256,11 @@
           <addquality>Human-Looking</addquality>
         </addqualities>
       </bonus>
+      <forbidden>
+        <oneof>
+          <bioware>Metaposeur</bioware>
+        </oneof>
+      </forbidden>
       <required>
         <oneof>
           <metatype>Ork</metatype>
@@ -3165,6 +3283,11 @@
           <max>1</max>
         </specificattribute>
       </bonus>
+      <forbidden>
+        <oneof>
+          <bioware>Metaposeur</bioware>
+        </oneof>
+      </forbidden>
       <required>
         <oneof>
           <metatype>Troll</metatype>
@@ -3179,6 +3302,11 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
+      <forbidden>
+        <oneof>
+          <bioware>Chloroplast Skin</bioware>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>74</page>
     </cyberware>
@@ -3548,6 +3676,7 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>86</page>
+      <addweapon>Finger Pistol</addweapon>
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <selectside />
       <required>
@@ -3577,7 +3706,7 @@
       <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
-          <value>1</value>
+          <value>2</value>
           <condition>LimitCondition_SkillGroupStealth</condition>
         </limitmodifier>
         <runmultiplier>
@@ -5381,6 +5510,12 @@
       <cost>19000 * Rating</cost>
       <source>CF</source>
       <page>151</page>
+      <forbidden>
+        <oneof>
+          <cyberwarecontains>Cybereyes</cyberwarecontains>
+          <cyberwarecontains>Retinal Duplication</cyberwarecontains>
+        </oneof>
+      </forbidden>
       <rating>6</rating>
       <bannedgrades>
         <grade>Greyware</grade>
@@ -5400,6 +5535,13 @@
       <bonus>
         <armor group="0">Rating</armor>
       </bonus>
+      <forbidden>
+        <oneof>
+          <bioware>Orthoskin</bioware>
+          <cyberware>Dermal Plating</cyberware>
+          <bioware>Chloroplast Skin</bioware>
+        </oneof>
+      </forbidden>
       <rating>6</rating>
       <bannedgrades>
         <grade>Greyware</grade>
@@ -5430,6 +5572,13 @@
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>12F</avail>
+      <bonus>
+        <skillcategory>
+          <name>Vehicle Active</name>
+          <bonus>Rating</bonus>
+          <condition>When jumped into a vehicle or drone</condition>
+        </skillcategory>
+      </bonus>
       <cost>Rating * 6000</cost>
       <source>CF</source>
       <page>147</page>
@@ -7392,6 +7541,9 @@
       <ess>0.7</ess>
       <capacity>0</capacity>
       <avail>25F</avail>
+      <bonus>
+        <surprise>2</surprise>
+      </bonus>
       <cost>20000</cost>
       <source>HS</source>
       <page>182</page>
@@ -7407,6 +7559,13 @@
       <ess>0.7</ess>
       <capacity>0</capacity>
       <avail>25F</avail>
+      <bonus>
+        <skillgroup>
+          <name>Close Combat</name>
+          <bonus>2</bonus>
+          <condition>Melee Combat tests</condition>
+        </skillgroup>
+      </bonus>
       <cost>25000</cost>
       <source>HS</source>
       <page>182</page>
@@ -7933,6 +8092,7 @@
       <forbidden>
         <oneof>
           <bioware>Orthoskin</bioware>
+          <bioware>Chloroplast Skin</bioware>
         </oneof>
       </forbidden>
       <rating>3</rating>
@@ -8112,6 +8272,13 @@
       <ess>FixedValues(2,3,5)</ess>
       <capacity>0</capacity>
       <avail>FixedValues(6,8,8)</avail>
+      <bonus>
+        <skillcategory>
+          <name>Vehicle Active</name>
+          <bonus>2</bonus>
+          <condition>When jumped into a vehicle or drone</condition>
+        </skillcategory>
+      </bonus>
       <cost>FixedValues(12000,60000,300000)</cost>
       <source>2050</source>
       <page>203</page>
