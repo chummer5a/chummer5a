@@ -140,7 +140,7 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>2</bonus>
-          <condition>Hiding</condition>
+          <condition>LimitCondition_Hiding</condition>
         </specificskill>
       </wirelessbonus>
       <source>SR5</source>
@@ -971,7 +971,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Custom Protection terrain</condition>
+          <condition>LimitCondition_TerrainChosen</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -992,7 +992,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Custom Protection terrain</condition>
+          <condition>LimitCondition_TerrainChosen</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1016,7 +1016,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Custom Protection terrain</condition>
+          <condition>LimitCondition_TerrainChosen</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1043,7 +1043,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Custom Protection terrain</condition>
+          <condition>LimitCondition_TerrainChosen</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1098,7 +1098,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Custom Protection terrain</condition>
+          <condition>LimitCondition_TerrainChosen</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1354,7 +1354,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>1</bonus>
-          <condition>Social Tests to calm or pacify people at an emergency site</condition>
+          <condition>LimitCondition_CalmAtEmergency</condition>
         </skillcategory>
       </wirelessbonus>
       <source>RG</source>
@@ -1701,7 +1701,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Custom Protection terrain</condition>
+          <condition>LimitCondition_TerrainChosen</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1725,14 +1725,14 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Hot terrain</condition>
+          <condition>LimitCondition_TerrainHot</condition>
         </specificskill>
       </wirelessbonus>
       <bonus>
         <specificskill>
           <name>Survival</name>
           <bonus>2</bonus>
-          <condition>Desert</condition>
+          <condition>LimitCondition_TerrainDesert</condition>
         </specificskill>
       </bonus>
       <source>RG</source>
@@ -1767,7 +1767,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>Cold terrain</condition>
+          <condition>LimitCondition_TerrainCold</condition>
         </specificskill>
       </wirelessbonus>
       <source>RG</source>
@@ -1799,7 +1799,7 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>1</bonus>
-          <condition>Climbing</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </specificskill>
       </bonus>
       <source>RG</source>
@@ -1827,7 +1827,7 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>1</bonus>
-          <condition>Climbing</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </specificskill>
       </bonus>
       <wirelessbonus>
@@ -2068,7 +2068,7 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>3</bonus>
-          <condition>Climbing</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </specificskill>
         <walkmultiplier>
           <category>Ground</category>
@@ -3285,12 +3285,12 @@
         <specificskill>
           <name>Etiquette</name>
           <bonus>1</bonus>
-          <condition>While the wearer is a troll</condition>
+          <condition>LimitCondition_WearerTroll</condition>
         </specificskill>
         <specificskill>
           <name>Intimidation</name>
           <bonus>1</bonus>
-          <condition>While the wearer is a troll</condition>
+          <condition>LimitCondition_WearerTroll</condition>
         </specificskill>
       </bonus>
       <source>TCT</source>
@@ -3640,7 +3640,7 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>Rating</bonus>
-          <condition>Against thermal detection</condition>
+          <condition>LimitCondition_TestSneakingThermal</condition>
         </specificskill>
       </wirelessbonus>
       <source>SR5</source>
@@ -4314,7 +4314,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-2</value>
-          <condition>When comparing against DV for knockdown</condition>
+          <condition>LimitCondition_Knockdown</condition>
         </limitmodifier>
       </bonus>
       <cost>1500</cost>

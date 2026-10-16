@@ -6456,7 +6456,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Related Knowledge Skill tests</condition>
+          <condition>LimitCondition_SkillsKnowledgeRelated</condition>
         </limitmodifier>
       </bonus>
       <cost>120</cost>
@@ -6492,7 +6492,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Availability and Negotiation tests to buy or sell the covered product type</condition>
+          <condition>LimitCondition_TestBuySellProduct</condition>
         </limitmodifier>
       </bonus>
       <cost>150</cost>
@@ -7320,7 +7320,7 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>Rating</bonus>
-          <condition>To avoid detection via ultrasound</condition>
+          <condition>LimitCondition_AvoidUltrasound</condition>
         </specificskill>
       </bonus>
       <cost>Rating * 60</cost>
@@ -7902,7 +7902,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>Rating</bonus>
-          <condition>Visual</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </specificskill>
       </wirelessbonus>
     </gear>
@@ -8034,7 +8034,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>Rating</bonus>
-          <condition>Hearing</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </specificskill>
       </wirelessbonus>
     </gear>
@@ -9082,7 +9082,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>2</bonus>
-          <condition>vs the individual whose genetic sample was used</condition>
+          <condition>LimitCondition_VsGeneticSampleSource</condition>
         </skillcategory>
       </bonus>
       <cost>300</cost>
@@ -10168,7 +10168,7 @@
         <specificskill>
           <name>Computer</name>
           <bonus>2</bonus>
-          <condition>Matrix Search to identify an individual by image</condition>
+          <condition>LimitCondition_IdentifyByImage</condition>
         </specificskill>
       </bonus>
       <cost>250</cost>
@@ -10205,7 +10205,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Regarding tracked targets</condition>
+          <condition>LimitCondition_TrackedTargets</condition>
         </specificskill>
       </bonus>
       <cost>250</cost>
@@ -10222,7 +10222,7 @@
         <specificskill>
           <name>Judge Intentions</name>
           <bonus>2</bonus>
-          <condition>To determine a target's emotional state</condition>
+          <condition>LimitCondition_ReadEmotions</condition>
         </specificskill>
       </bonus>
       <cost>250</cost>
@@ -10239,7 +10239,7 @@
         <specificskill>
           <name>Judge Intentions</name>
           <bonus>2</bonus>
-          <condition>To determine if someone is lying</condition>
+          <condition>LimitCondition_DetectLies</condition>
         </specificskill>
       </bonus>
       <cost>250</cost>
@@ -19695,7 +19695,7 @@
         <specificskill>
           <name>Con</name>
           <bonus>1</bonus>
-          <condition>Seduction tests vs metahumans</condition>
+          <condition>LimitCondition_SeductionVsMetahumans</condition>
         </specificskill>
       </bonus>
       <cost>100</cost>
@@ -19712,7 +19712,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>1</bonus>
-          <condition>Social tests vs metahumans</condition>
+          <condition>LimitCondition_VsMetahumans</condition>
         </skillcategory>
       </bonus>
       <cost>250</cost>
@@ -19729,7 +19729,7 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>1</bonus>
-          <condition>vs metahumans</condition>
+          <condition>LimitCondition_VsMetahumans</condition>
         </specificskill>
       </bonus>
       <cost>75</cost>
@@ -19762,7 +19762,7 @@
         <specificskill>
           <name>Tracking</name>
           <bonus>2</bonus>
-          <condition>Using olfactory sensors or the Scent critter power</condition>
+          <condition>LimitCondition_UsingScent</condition>
         </specificskill>
       </bonus>
       <cost>75</cost>
@@ -19779,7 +19779,7 @@
         <specificskill>
           <name>Intimidation</name>
           <bonus>2</bonus>
-          <condition>vs animals</condition>
+          <condition>LimitCondition_VsAnimals</condition>
         </specificskill>
       </bonus>
       <cost>50</cost>

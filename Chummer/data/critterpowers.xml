@@ -296,12 +296,12 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Tests using the enhanced sense (if it has no specific effect)</condition>
+          <condition>LimitCondition_TestEnhancedSense</condition>
         </specificskill>
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Tests using the enhanced sense (if it has no specific effect)</condition>
+          <condition>LimitCondition_TestEnhancedSense</condition>
         </limitmodifier>
       </bonus>
       <source>SR5</source>
@@ -3872,7 +3872,7 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>1</bonus>
-          <condition>In decreased light and environments matching the pattern</condition>
+          <condition>LimitCondition_DimLightMatchingPattern</condition>
         </specificskill>
       </bonus>
       <source>HS</source>
@@ -3915,12 +3915,12 @@
         <specificskill>
           <name>Survival</name>
           <bonus>2</bonus>
-          <condition>In the chosen climate</condition>
+          <condition>LimitCondition_ClimateChosen</condition>
         </specificskill>
         <specificskill>
           <name>Survival</name>
           <bonus>-2</bonus>
-          <condition>In the opposite climate</condition>
+          <condition>LimitCondition_ClimateOpposite</condition>
         </specificskill>
       </bonus>
       <source>HS</source>
@@ -4016,17 +4016,17 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Scent-based</condition>
+          <condition>LimitCondition_TestScent</condition>
         </specificskill>
         <specificskill>
           <name>Tracking</name>
           <bonus>2</bonus>
-          <condition>Scent-based</condition>
+          <condition>LimitCondition_TestScent</condition>
         </specificskill>
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Scent-based Perception and Tracking</condition>
+          <condition>LimitCondition_TestScent</condition>
         </limitmodifier>
       </bonus>
       <source>HS</source>
@@ -4044,7 +4044,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Perception tests involving sound</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
       <source>HS</source>

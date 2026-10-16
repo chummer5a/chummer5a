@@ -359,7 +359,7 @@
         <skillcategory>
           <name>Technical Active</name>
           <bonus>2</bonus>
-          <condition>When juryrigging gear</condition>
+          <condition>LimitCondition_Juryrigging</condition>
         </skillcategory>
       </bonus>
       <source>SR5</source>
@@ -628,7 +628,7 @@
         <specificskill>
           <name>Binding</name>
           <bonus>1</bonus>
-          <condition>For the chosen spirit type</condition>
+          <condition>LimitCondition_SpiritChosen</condition>
         </specificskill>
       </bonus>
       <required>
@@ -830,12 +830,12 @@
         <skillcategory>
           <name>Physical Active</name>
           <bonus>1</bonus>
-          <condition>Physical actions in non-Earth-normal gravity</condition>
+          <condition>LimitCondition_GravityNonEarth</condition>
         </skillcategory>
         <skillcategory>
           <name>Combat Active</name>
           <bonus>1</bonus>
-          <condition>Physical actions in non-Earth-normal gravity</condition>
+          <condition>LimitCondition_GravityNonEarth</condition>
         </skillcategory>
       </bonus>
       <source>RG</source>
@@ -1779,12 +1779,12 @@
         <skillcategory>
           <name>Physical Active</name>
           <bonus>-2</bonus>
-          <condition>Physical actions in non-Earth-normal gravity</condition>
+          <condition>LimitCondition_GravityNonEarth</condition>
         </skillcategory>
         <skillcategory>
           <name>Combat Active</name>
           <bonus>-2</bonus>
-          <condition>Physical actions in non-Earth-normal gravity</condition>
+          <condition>LimitCondition_GravityNonEarth</condition>
         </skillcategory>
       </bonus>
       <source>RG</source>
@@ -3299,7 +3299,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>With those within your organization</condition>
+          <condition>LimitCondition_OrganizationMembers</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -3315,7 +3315,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>With those within your organization</condition>
+          <condition>LimitCondition_OrganizationMembers</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -3331,7 +3331,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>3</value>
-          <condition>With those within your organization</condition>
+          <condition>LimitCondition_OrganizationMembers</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -3347,7 +3347,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>With members of the public under your authority</condition>
+          <condition>LimitCondition_PublicUnderAuthority</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -3363,7 +3363,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>With members of the public under your authority</condition>
+          <condition>LimitCondition_PublicUnderAuthority</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -3379,7 +3379,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>3</value>
-          <condition>With members of the public under your authority</condition>
+          <condition>LimitCondition_PublicUnderAuthority</condition>
         </limitmodifier>
       </bonus>
       <source>RF</source>
@@ -5289,12 +5289,12 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>In arctic/cold climates</condition>
+          <condition>LimitCondition_ClimateArctic</condition>
         </specificskill>
         <specificskill>
           <name>Survival</name>
           <bonus>-1</bonus>
-          <condition>In desert/hot climates</condition>
+          <condition>LimitCondition_ClimateDesert</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -5322,12 +5322,12 @@
         <specificskill>
           <name>Survival</name>
           <bonus>1</bonus>
-          <condition>In desert/hot climates</condition>
+          <condition>LimitCondition_ClimateDesert</condition>
         </specificskill>
         <specificskill>
           <name>Survival</name>
           <bonus>-1</bonus>
-          <condition>In arctic/cold climates</condition>
+          <condition>LimitCondition_ClimateArctic</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -9974,7 +9974,7 @@
         <specificskill>
           <name>Swimming</name>
           <bonus>-4</bonus>
-          <condition>Tests in water without a flotation device</condition>
+          <condition>LimitCondition_NoFlotation</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -10129,7 +10129,7 @@
         <specificskill>
           <name>Swimming</name>
           <bonus>-4</bonus>
-          <condition>Tests in water without a flotation device</condition>
+          <condition>LimitCondition_NoFlotation</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -10284,7 +10284,7 @@
         <specificskill>
           <name>Swimming</name>
           <bonus>-4</bonus>
-          <condition>Tests in water without a flotation device</condition>
+          <condition>LimitCondition_NoFlotation</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -11313,7 +11313,7 @@
         <specificskill>
           <name>Computer</name>
           <bonus>2</bonus>
-          <condition>Matrix Perception to spot silent-running icons you have visual sight on</condition>
+          <condition>LimitCondition_SpotSilentIconsInSight</condition>
         </specificskill>
       </bonus>
       <source>DT</source>
@@ -11337,12 +11337,12 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>2</bonus>
-          <condition>Via the Matrix with someone who knows you</condition>
+          <condition>LimitCondition_MatrixAcquaintances</condition>
         </skillcategory>
         <limitmodifier>
           <limit>Social</limit>
           <value>2</value>
-          <condition>Via the Matrix with someone who knows you</condition>
+          <condition>LimitCondition_MatrixAcquaintances</condition>
         </limitmodifier>
       </bonus>
       <source>DT</source>
@@ -12421,7 +12421,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-2</bonus>
-          <condition>Opposed Social Tests</condition>
+          <condition>LimitCondition_TestSocialOpposed</condition>
         </skillcategory>
       </bonus>
       <source>CF</source>
@@ -12806,7 +12806,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-2</bonus>
-          <condition>Unless your face is disguised or concealed</condition>
+          <condition>LimitCondition_FaceNotDisguised</condition>
         </skillcategory>
       </bonus>
       <source>HT</source>
@@ -12825,7 +12825,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>2</bonus>
-          <condition>Chase Actions</condition>
+          <condition>LimitCondition_TestChase</condition>
         </skillcategory>
       </bonus>
       <source>R5</source>
@@ -12872,7 +12872,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>1</bonus>
-          <condition>Pilot tests while moving at Speed 3+ (4+ for aircraft)</condition>
+          <condition>LimitCondition_HighSpeed</condition>
         </skillcategory>
       </bonus>
       <source>R5</source>
@@ -12887,7 +12887,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>2</bonus>
-          <condition>Vehicle Stunt tests</condition>
+          <condition>LimitCondition_TestVehicleStunt</condition>
         </skillcategory>
       </bonus>
       <source>R5</source>
@@ -12916,7 +12916,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>-2</bonus>
-          <condition>Tests directing a vehicle</condition>
+          <condition>LimitCondition_DirectingVehicle</condition>
         </skillcategory>
       </bonus>
       <source>R5</source>
@@ -12940,7 +12940,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>-2</bonus>
-          <condition>Pilot tests while directing four or more moving vehicles/drones</condition>
+          <condition>LimitCondition_DirectingFourVehicles</condition>
         </skillcategory>
       </bonus>
       <source>R5</source>
@@ -13462,7 +13462,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-2</bonus>
-          <condition>When dealing with the target of your favor</condition>
+          <condition>LimitCondition_FavorTarget</condition>
         </skillcategory>
       </bonus>
       <source>CA</source>
@@ -13479,7 +13479,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-4</bonus>
-          <condition>When dealing with the target of your favor</condition>
+          <condition>LimitCondition_FavorTarget</condition>
         </skillcategory>
       </bonus>
       <source>CA</source>
@@ -13496,7 +13496,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-6</bonus>
-          <condition>When dealing with the target of your favor</condition>
+          <condition>LimitCondition_FavorTarget</condition>
         </skillcategory>
       </bonus>
       <source>CA</source>
@@ -13513,7 +13513,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-2</bonus>
-          <condition>When dealing with the target of your favor</condition>
+          <condition>LimitCondition_FavorTarget</condition>
         </skillcategory>
       </bonus>
       <source>CA</source>
@@ -13530,7 +13530,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-4</bonus>
-          <condition>When dealing with the target of your favor</condition>
+          <condition>LimitCondition_FavorTarget</condition>
         </skillcategory>
       </bonus>
       <source>CA</source>
@@ -13547,7 +13547,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>-6</bonus>
-          <condition>When dealing with the target of your favor</condition>
+          <condition>LimitCondition_FavorTarget</condition>
         </skillcategory>
       </bonus>
       <source>CA</source>
@@ -18183,7 +18183,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>1</bonus>
-          <condition>When dealing with anyone from your corporation</condition>
+          <condition>LimitCondition_CorporationMembers</condition>
         </skillcategory>
       </bonus>
       <source>SL</source>
@@ -18200,7 +18200,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Tests related to the attuned location</condition>
+          <condition>LimitCondition_AttunedLocation</condition>
         </specificskill>
       </bonus>
       <source>SL</source>
@@ -18217,7 +18217,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Tests related to the attuned location</condition>
+          <condition>LimitCondition_AttunedLocation</condition>
         </specificskill>
       </bonus>
       <source>SL</source>
@@ -18234,7 +18234,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Tests related to the attuned location</condition>
+          <condition>LimitCondition_AttunedLocation</condition>
         </specificskill>
       </bonus>
       <source>SL</source>
@@ -18795,7 +18795,7 @@
         <specificskill>
           <name>Compiling</name>
           <bonus>1</bonus>
-          <condition>For the chosen sprite type</condition>
+          <condition>LimitCondition_SpriteChosen</condition>
         </specificskill>
       </bonus>
       <required>
@@ -19321,22 +19321,22 @@
         <specificskill>
           <name>Compiling</name>
           <bonus>2</bonus>
-          <condition>Data Sprite</condition>
+          <condition>LimitCondition_SpriteData</condition>
         </specificskill>
         <specificskill>
           <name>Compiling</name>
           <bonus>2</bonus>
-          <condition>Generalist Sprite</condition>
+          <condition>LimitCondition_SpriteGeneralist</condition>
         </specificskill>
         <specificskill>
           <name>Decompiling</name>
           <bonus>2</bonus>
-          <condition>Data Sprite</condition>
+          <condition>LimitCondition_SpriteData</condition>
         </specificskill>
         <specificskill>
           <name>Decompiling</name>
           <bonus>2</bonus>
-          <condition>Generalist Sprite</condition>
+          <condition>LimitCondition_SpriteGeneralist</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -19375,22 +19375,22 @@
         <specificskill>
           <name>Compiling</name>
           <bonus>2</bonus>
-          <condition>Crack Sprite</condition>
+          <condition>LimitCondition_SpriteCrack</condition>
         </specificskill>
         <specificskill>
           <name>Compiling</name>
           <bonus>2</bonus>
-          <condition>Generalist Sprite</condition>
+          <condition>LimitCondition_SpriteGeneralist</condition>
         </specificskill>
         <specificskill>
           <name>Decompiling</name>
           <bonus>2</bonus>
-          <condition>Crack Sprite</condition>
+          <condition>LimitCondition_SpriteCrack</condition>
         </specificskill>
         <specificskill>
           <name>Decompiling</name>
           <bonus>2</bonus>
-          <condition>Generalist Sprite</condition>
+          <condition>LimitCondition_SpriteGeneralist</condition>
         </specificskill>
       </bonus>
       <forbidden>
@@ -19425,22 +19425,22 @@
         <specificskill>
           <name>Compiling</name>
           <bonus>2</bonus>
-          <condition>Fault Sprite</condition>
+          <condition>LimitCondition_SpriteFault</condition>
         </specificskill>
         <specificskill>
           <name>Compiling</name>
           <bonus>2</bonus>
-          <condition>Generalist Sprite</condition>
+          <condition>LimitCondition_SpriteGeneralist</condition>
         </specificskill>
         <specificskill>
           <name>Decompiling</name>
           <bonus>2</bonus>
-          <condition>Fault Sprite</condition>
+          <condition>LimitCondition_SpriteFault</condition>
         </specificskill>
         <specificskill>
           <name>Decompiling</name>
           <bonus>2</bonus>
-          <condition>Generalist Sprite</condition>
+          <condition>LimitCondition_SpriteGeneralist</condition>
         </specificskill>
       </bonus>
       <forbidden>

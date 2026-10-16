@@ -668,7 +668,7 @@
         <specificskill>
           <name>Summoning</name>
           <bonus>2</bonus>
-          <condition>Plant Spirits</condition>
+          <condition>LimitCondition_SpiritsPlant</condition>
         </specificskill>
       </bonus>
       <source>FA</source>
@@ -917,7 +917,7 @@
         <specificskill>
           <name>Summoning</name>
           <bonus>2</bonus>
-          <condition>Spirits of Beasts</condition>
+          <condition>LimitCondition_SpiritsOfBeasts</condition>
         </specificskill>
       </bonus>
       <source>FA</source>
@@ -979,12 +979,12 @@
         <specificskill>
           <name>Summoning</name>
           <bonus>2</bonus>
-          <condition>Spirits of Man</condition>
+          <condition>LimitCondition_SpiritsOfMan</condition>
         </specificskill>
         <specificskill>
           <name>Summoning</name>
           <bonus>-2</bonus>
-          <condition>Spirits other than Spirits of Man</condition>
+          <condition>LimitCondition_SpiritsNotMan</condition>
         </specificskill>
       </bonus>
       <source>FA</source>

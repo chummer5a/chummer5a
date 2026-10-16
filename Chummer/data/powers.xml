@@ -766,7 +766,7 @@
         <skillcategory>
           <name>Social Active</name>
           <bonus>Rating</bonus>
-          <condition>Opposed Social Skill Tests you initiate</condition>
+          <condition>LimitCondition_TestSocialOpposedInitiated</condition>
         </skillcategory>
       </bonus>
       <source>SGE</source>

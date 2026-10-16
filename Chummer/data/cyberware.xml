@@ -322,7 +322,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>Rating</bonus>
-          <condition>When jumped into a vehicle or drone</condition>
+          <condition>LimitCondition_JumpedIn</condition>
         </skillcategory>
       </bonus>
       <cost>FixedValues(43000,97000,208000)</cost>
@@ -447,7 +447,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>Rating</bonus>
-          <condition>Scent</condition>
+          <condition>LimitCondition_SkillsActivePerceptionScent</condition>
         </specificskill>
       </bonus>
       <rating>6</rating>
@@ -492,7 +492,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>Rating</bonus>
-          <condition>Taste</condition>
+          <condition>LimitCondition_SkillsActivePerceptionTaste</condition>
         </specificskill>
       </bonus>
       <rating>6</rating>
@@ -700,7 +700,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>Rating</bonus>
-          <condition>Visual</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </specificskill>
       </wirelessbonus>
     </cyberware>
@@ -764,7 +764,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>Rating</bonus>
-          <condition>Hearing</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </specificskill>
       </wirelessbonus>
     </cyberware>
@@ -2503,7 +2503,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>4</bonus>
-          <condition>Examining material within 30 cm with active microscopic lenses</condition>
+          <condition>LimitCondition_ExamineCloseActive</condition>
         </specificskill>
       </bonus>
     </cyberware>
@@ -2594,7 +2594,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Identifying a sound</condition>
+          <condition>LimitCondition_IdentifySound</condition>
         </specificskill>
       </wirelessbonus>
     </cyberware>
@@ -2869,7 +2869,7 @@
         <specificskill>
           <name>Escape Artist</name>
           <bonus>3</bonus>
-          <condition>Hand restraints and small openings</condition>
+          <condition>LimitCondition_EscapeRestraints</condition>
         </specificskill>
       </bonus>
     </cyberware>
@@ -2988,7 +2988,7 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>1</bonus>
-          <condition>Climbing</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </specificskill>
       </pairbonus>
     </cyberware>
@@ -3029,7 +3029,7 @@
         <specificskill>
           <name>Gymnastics</name>
           <bonus>1</bonus>
-          <condition>Climbing</condition>
+          <condition>LimitCondition_SkillsActiveGymnasticsClimbing</condition>
         </specificskill>
       </pairbonus>
     </cyberware>
@@ -5576,7 +5576,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>Rating</bonus>
-          <condition>When jumped into a vehicle or drone</condition>
+          <condition>LimitCondition_JumpedIn</condition>
         </skillcategory>
       </bonus>
       <cost>Rating * 6000</cost>
@@ -7563,7 +7563,7 @@
         <skillgroup>
           <name>Close Combat</name>
           <bonus>2</bonus>
-          <condition>Melee Combat tests</condition>
+          <condition>LimitCondition_TestMeleeCombat</condition>
         </skillgroup>
       </bonus>
       <cost>25000</cost>
@@ -8276,7 +8276,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>2</bonus>
-          <condition>When jumped into a vehicle or drone</condition>
+          <condition>LimitCondition_JumpedIn</condition>
         </skillcategory>
       </bonus>
       <cost>FixedValues(12000,60000,300000)</cost>

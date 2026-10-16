@@ -954,7 +954,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
-          <condition>Fine manipulation with active hand webbing</condition>
+          <condition>LimitCondition_FineManipulationActive</condition>
         </limitmodifier>
       </bonus>
       <pairbonus>
@@ -1004,7 +1004,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>1</bonus>
-          <condition>Hearing</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </specificskill>
       </bonus>
       <source>CF</source>
@@ -1046,7 +1046,7 @@
         <specificskill>
           <name>Free-Fall</name>
           <bonus>3</bonus>
-          <condition>Rappelling</condition>
+          <condition>LimitCondition_Rappelling</condition>
         </specificskill>
       </bonus>
       <source>CF</source>
@@ -1078,7 +1078,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Touch</condition>
+          <condition>LimitCondition_SkillsActivePerceptionTouch</condition>
         </specificskill>
       </bonus>
     </bioware>
@@ -1213,7 +1213,7 @@
         <specificskill>
           <name>Animal Handling</name>
           <bonus>Rating * 2</bonus>
-          <condition>Selected species</condition>
+          <condition>LimitCondition_SpeciesChosen</condition>
         </specificskill>
       </bonus>
       <rating>3</rating>
@@ -1821,7 +1821,7 @@
         <specificskill>
           <name>Sneaking</name>
           <bonus>-1</bonus>
-          <condition>For each exposed bio-tattoo</condition>
+          <condition>LimitCondition_PerExposedBioTattoo</condition>
         </specificskill>
       </bonus>
       <rating>3</rating>
@@ -1845,7 +1845,7 @@
         <skillgroup>
           <name>Stealth</name>
           <bonus>1</bonus>
-          <condition>Naked and stationary</condition>
+          <condition>LimitCondition_NakedStationary</condition>
         </skillgroup>
       </bonus>
       <forbidden>
@@ -1873,7 +1873,7 @@
         <skillgroup>
           <name>Stealth</name>
           <bonus>2</bonus>
-          <condition>Naked and stationary</condition>
+          <condition>LimitCondition_NakedStationary</condition>
         </skillgroup>
       </bonus>
       <forbidden>
@@ -1923,7 +1923,7 @@
         <specificskill>
           <name>Survival</name>
           <bonus>2</bonus>
-          <condition>Food supplies</condition>
+          <condition>LimitCondition_FindFood</condition>
         </specificskill>
       </bonus>
       <source>CF</source>

@@ -131,7 +131,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Math-intensive actions</condition>
+          <condition>LimitCondition_TestMath</condition>
         </limitmodifier>
       </bonus>
       <limit>1</limit>
@@ -143,7 +143,7 @@
         <skillcategory>
           <name>Vehicle Active</name>
           <bonus>1</bonus>
-          <condition>When jumped into a vehicle or drone (control rig equivalent, per level)</condition>
+          <condition>LimitCondition_JumpedInPerLevel</condition>
         </skillcategory>
       </bonus>
       <source>DT</source>

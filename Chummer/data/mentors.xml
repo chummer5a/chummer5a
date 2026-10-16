@@ -318,7 +318,7 @@
             <specificskill>
               <name>Alchemy</name>
               <bonus>2</bonus>
-              <condition>Harvesting reagents</condition>
+              <condition>LimitCondition_HarvestReagents</condition>
             </specificskill>
           </bonus>
         </choice>
@@ -960,7 +960,7 @@
         <specificskill>
           <name>Chemistry</name>
           <bonus>2</bonus>
-          <condition>Dealing with pollutants</condition>
+          <condition>LimitCondition_Pollutants</condition>
         </specificskill>
       </bonus>
       <choices>
@@ -1424,7 +1424,7 @@
             <skillgroup>
               <name>Conjuring</name>
               <bonus>2</bonus>
-              <condition>Spirits of Air</condition>
+              <condition>LimitCondition_SpiritsOfAir</condition>
             </skillgroup>
           </bonus>
         </choice>
@@ -1517,7 +1517,7 @@
             <skillgroup>
               <name>Conjuring</name>
               <bonus>2</bonus>
-              <condition>Spirits of Water</condition>
+              <condition>LimitCondition_SpiritsOfWater</condition>
             </skillgroup>
           </bonus>
         </choice>
@@ -1791,7 +1791,7 @@
             <specificskill>
               <name>Summoning</name>
               <bonus>1</bonus>
-              <condition>Spirits of Air</condition>
+              <condition>LimitCondition_SpiritsOfAir</condition>
             </specificskill>
           </bonus>
         </choice>
@@ -2083,7 +2083,7 @@
         <specificskill>
           <name>Perception</name>
           <bonus>2</bonus>
-          <condition>Outside during the day</condition>
+          <condition>LimitCondition_OutdoorsDaytime</condition>
         </specificskill>
       </bonus>
       <choices>
@@ -2308,7 +2308,7 @@
         <skillgroup>
           <name>Outdoors</name>
           <bonus>1</bonus>
-          <condition>Outside urban areas</condition>
+          <condition>LimitCondition_OutsideUrban</condition>
         </skillgroup>
       </bonus>
       <choices>
