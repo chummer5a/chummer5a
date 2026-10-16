@@ -232,6 +232,11 @@
       <action>Complex</action>
       <range>Special</range>
       <duration>Instant</duration>
+      <bonus>
+        <addweapon>
+          <name>Corrosive Spit (Critter)</name>
+        </addweapon>
+      </bonus>
       <source>SR5</source>
       <page>395</page>
     </power>
@@ -2007,6 +2012,11 @@
       <range>Special</range>
       <duration>Instant</duration>
       <karma>9</karma>
+      <bonus>
+        <addweapon>
+          <name>Corrosive Spit (Critter)</name>
+        </addweapon>
+      </bonus>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2903,6 +2913,11 @@
         </oneof>
       </required>
       <karma>9</karma>
+      <bonus>
+        <addweapon>
+          <name>Corrosive Spit (Critter)</name>
+        </addweapon>
+      </bonus>
       <source>DTR</source>
       <page>159</page>
     </power>
