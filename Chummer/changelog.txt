@@ -57,6 +57,7 @@ Cyberware:
 - Added rating, minrating, and maxrating attribute support to cyberware, bioware, cyberwarecontains, biowarecontains, cyberwarecategory, and biowarecategory nodes when checking installed ware on a character (for example, forbidding an option unless Hydraulic Jacks rating 3+ is already on the same parent limb).
 - Fixed Spider Eyes not being permitted to add children due to lack of defined subsystems and allowgear entries.
 - Fixed an issue allowing cyberware and bioware of rating 0 to be added to characters.
+- Fixed a crash when attempting to add a cyberware suite.
 
 Gear:
 - Combat Individualized Spellcasting Foci (Partial and Complete) now exclude alchemical preparations, matching other Spellcasting Foci. Existing characters with these foci need to Reapply Improvements.
