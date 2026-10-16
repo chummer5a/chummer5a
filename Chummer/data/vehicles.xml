@@ -4754,7 +4754,7 @@
       <category>Drones: Large</category>
       <cost>18000</cost>
       <handling>1</handling>
-      <pilot>3</pilot>
+      <pilot>2</pilot>
       <sensor>1</sensor>
       <speed>2</speed>
       <gears>
