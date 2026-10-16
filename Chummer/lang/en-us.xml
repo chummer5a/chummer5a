@@ -11005,6 +11005,106 @@
       <text>Only for Performance (Singing)</text>
     </string>
     <string>
+      <key>LimitCondition_AttunedLocation</key>
+      <text>Only for tests related to the attuned location</text>
+    </string>
+    <string>
+      <key>LimitCondition_ClimateArctic</key>
+      <text>Only in arctic or cold climates</text>
+    </string>
+    <string>
+      <key>LimitCondition_ClimateDesert</key>
+      <text>Only in desert or hot climates</text>
+    </string>
+    <string>
+      <key>LimitCondition_CorporationMembers</key>
+      <text>Only when dealing with anyone from your corporation</text>
+    </string>
+    <string>
+      <key>LimitCondition_DirectingFourVehicles</key>
+      <text>Only while directing four or more moving vehicles or drones</text>
+    </string>
+    <string>
+      <key>LimitCondition_DirectingVehicle</key>
+      <text>Only when directing a vehicle</text>
+    </string>
+    <string>
+      <key>LimitCondition_FaceNotDisguised</key>
+      <text>Only when your face is not disguised or concealed</text>
+    </string>
+    <string>
+      <key>LimitCondition_FavorTarget</key>
+      <text>Only when dealing with the target of your favor</text>
+    </string>
+    <string>
+      <key>LimitCondition_GravityNonEarth</key>
+      <text>Only for physical actions in non-Earth-normal gravity</text>
+    </string>
+    <string>
+      <key>LimitCondition_HighSpeed</key>
+      <text>Only while moving at Speed 3+ (4+ for aircraft)</text>
+    </string>
+    <string>
+      <key>LimitCondition_Juryrigging</key>
+      <text>Only when juryrigging gear</text>
+    </string>
+    <string>
+      <key>LimitCondition_MatrixAcquaintances</key>
+      <text>Only via the Matrix with someone who knows you</text>
+    </string>
+    <string>
+      <key>LimitCondition_NoFlotation</key>
+      <text>Only in water without a flotation device</text>
+    </string>
+    <string>
+      <key>LimitCondition_OrganizationMembers</key>
+      <text>Only with those within your organization</text>
+    </string>
+    <string>
+      <key>LimitCondition_PublicUnderAuthority</key>
+      <text>Only with members of the public under your authority</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritChosen</key>
+      <text>Only with the chosen spirit type</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpotSilentIconsInSight</key>
+      <text>Only for Matrix Perception to spot silent-running icons you have visual sight on</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpriteChosen</key>
+      <text>Only with the chosen sprite type</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpriteCrack</key>
+      <text>Only with Crack Sprites</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpriteData</key>
+      <text>Only with Data Sprites</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpriteFault</key>
+      <text>Only with Fault Sprites</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpriteGeneralist</key>
+      <text>Only with Generalist Sprites</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestChase</key>
+      <text>Only for Chase Actions</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestSocialOpposed</key>
+      <text>Only for Opposed Social Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestVehicleStunt</key>
+      <text>Only for Vehicle Stunt Tests</text>
+    </string>
+    <string>
       <key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
       <text>Only for Performance, Must use linked synthtrument</text>
     </string>

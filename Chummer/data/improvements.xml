@@ -109,7 +109,7 @@
     </improvement>
     <improvement>
       <name>Cyber-Singularity Seeker/Redliner (Condition Monitor)</name>
-      <id>cyberseeker</id>
+      <id>cyberseekerconditionmonitor</id>
       <internal>cyberseeker</internal>
       <xml><![CDATA[BOX]]></xml>
       <page>Grants bonuses to the character's physical Condition Monitor based on the number of cyberlimbs a character has. See Redliner in Chrome Flesh for more details.</page>
@@ -161,7 +161,7 @@
       <fields>
         <field>SelectSkillGroup</field>
       </fields>
-      <xml><![CDATA[]]></xml>
+      <xml><![CDATA[{select}]]></xml>
       <page>Prevents the character from seeing dicepool values for skills in the selected skillgroup.</page>
     </improvement>
     <improvement>
@@ -189,7 +189,7 @@
     <improvement>
       <name>KnowSoft</name>
       <id>knowsoft</id>
-      <internal>knowsoft</internal>
+      <internal>skillsoft</internal>
       <fields>
         <field>SelectKnowSkill</field>
         <field>val</field>

@@ -212,6 +212,14 @@
       <extreme>{STR}*2.5</extreme>
     </range>
     <range>
+      <name>Corrosive Spit</name>
+      <min>0</min>
+      <short>{BOD}</short>
+      <medium>-1</medium>
+      <long>-1</long>
+      <extreme>-1</extreme>
+    </range>
+    <range>
       <name>Shuriken</name>
       <min>0</min>
       <short>{STR}</short>

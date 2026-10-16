@@ -582,7 +582,7 @@
             <knowledgeskilllevel>
               <name>English</name>
               <group>Language</group>
-              <val>0</val>
+              <val>1</val>
             </knowledgeskilllevel>
             <!--TODO: Exotic melee weapon (harpoon) 2-->
             <skilllevel>
@@ -881,6 +881,7 @@
         </skilllevel>
         <knowledgeskilllevel>
           <name>[city]</name>
+          <group>Street</group>
           <val>2</val>
         </knowledgeskilllevel>
         <freenegativequalities>-24</freenegativequalities>
@@ -909,6 +910,9 @@
         </attributelevel>
         <skilllevel>
           <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
         </skilllevel>
         <skillgrouplevel>
           <name>Outdoors</name>
@@ -1163,11 +1167,11 @@
           <name>Gymnastics</name>
         </skilllevel>
         <knowledgeskilllevel>
-          <group>Professional</group>
+          <group>Academic</group>
           <name>[Any]</name>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
-          <group>Professional</group>
+          <group>Academic</group>
           <name>[Any]</name>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
@@ -1254,6 +1258,9 @@
           <val>1</val>
         </skillgrouplevel>
         <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
           <name>Leadership</name>
         </skilllevel>
         <skilllevel>
@@ -1267,6 +1274,9 @@
         </skilllevel>
         <skilllevel>
           <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
         </skilllevel>
         <knowledgeskilllevel>
           <name>[City]</name>
@@ -1311,7 +1321,7 @@
         </skilllevel>
         <skilllevel>
           <name>Chemistry</name>
-          <val>2</val>
+          <val>1</val>
         </skilllevel>
         <skilllevel>
           <name>Software</name>
@@ -1371,12 +1381,12 @@
         <knowledgeskilllevel>
           <name>[Any]</name>
           <group>Academic</group>
-          <val>2</val>
+          <val>3</val>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>[Any]</name>
           <group>Academic</group>
-          <val>2</val>
+          <val>3</val>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>[Language]</name>
@@ -1688,16 +1698,17 @@
         <skilllevel>
           <name>Blades</name>
         </skilllevel>
-        <freenegativequalities>-15</freenegativequalities>
-
-        <skillgrouplevel>
-          <name>Firearms</name>
-          <val>1</val>
-        </skillgrouplevel>
         <skillgrouplevel>
           <name>Electronics</name>
           <val>1</val>
         </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
         <skilllevel>
           <name>Leadership</name>
         </skilllevel>
@@ -1730,6 +1741,7 @@
           <group>Professional</group>
           <val>1</val>
         </knowledgeskilllevel>
+        <freenegativequalities>-15</freenegativequalities>
         <freepositivequalities>5</freepositivequalities>
         <addqualities>
           <addquality>Rank (Neither Military nor Law Enforcement) I</addquality>
@@ -1880,6 +1892,7 @@
             </attributelevel>
             <skilllevel>
               <name>Artisan</name>
+              <val>0</val>
               <spec>Drawing</spec>
             </skilllevel>
             <skilllevel>
@@ -2166,10 +2179,12 @@
             </attributelevel>
             <knowledgeskilllevel>
               <name>[Any]</name>
+              <group>Language</group>
               <val>6</val>
             </knowledgeskilllevel>
             <knowledgeskilllevel>
               <name>[Any]</name>
+              <group>Language</group>
               <val>5</val>
             </knowledgeskilllevel>
             <skilllevel>
@@ -2192,6 +2207,7 @@
             </attributelevel>
             <skilllevel>
               <name>Artisan</name>
+              <val>0</val>
               <spec>Writing</spec>
             </skilllevel>
             <skilllevel>
@@ -2269,16 +2285,17 @@
             </knowledgeskilllevel>
             <knowledgeskilllevel>
               <name>[Industrial Manufacturers]</name>
-              <group>Academic</group>
+              <group>Professional</group>
               <val>2</val>
             </knowledgeskilllevel>
             <knowledgeskilllevel>
               <name>[Machine Parts]</name>
-              <group>Academic</group>
+              <group>Professional</group>
               <val>2</val>
             </knowledgeskilllevel>
           </bonus>
           <source>R5</source>
+          <page>35</page>
         </version>
       </versions>
       <story>$real wanted to get something that resembled higher education, but couldn't afford to go to a real college. The solution: community college.</story>
@@ -2629,6 +2646,7 @@
           <bonus>
             <skilllevel>
               <name>Artisan</name>
+              <val>0</val>
               <spec>Drawing</spec>
             </skilllevel>
             <skilllevel>
@@ -2955,7 +2973,7 @@
           <bonus>
             <skilllevel>
               <name>Artisan</name>
-              <spec>Writing</spec>
+              <spec>Drawing</spec>
             </skilllevel>
             <skilllevel>
               <name>First Aid</name>
@@ -3256,19 +3274,6 @@
       <name>Trade/Technical School</name>
       <karma>40</karma>
       <bonus>
-        <attributelevel>
-          <name>LOG</name>
-        </attributelevel>
-        <skilllevel>
-          <name>Computer</name>
-        </skilllevel>
-        <skilllevel>
-          <name>Gymnastics</name>
-          <val>2</val>
-        </skilllevel>
-        <skilllevel>
-          <name>Perception</name>
-        </skilllevel>
         <attributelevel>
           <name>LOG</name>
         </attributelevel>
@@ -4969,6 +4974,11 @@
               <val>3</val>
             </knowledgeskilllevel>
             <knowledgeskilllevel>
+              <name>Small Group Tactics</name>
+              <group>Professional</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
               <name>Magical Theory (Street)</name>
               <group>Street</group>
               <val>1</val>
@@ -5102,7 +5112,7 @@
             </skilllevel>
             <skillgrouplevel>
               <name>Sorcery</name>
-              <val>3</val>
+              <val>2</val>
             </skillgrouplevel>
             <skilllevel>
               <name>Survival</name>
@@ -5354,6 +5364,9 @@
               <name>Blades</name>
             </skilllevel>
             <skilllevel>
+              <name>Free-Fall</name>
+            </skilllevel>
+            <skilllevel>
               <name>Gunnery</name>
             </skilllevel>
             <skilllevel>
@@ -5374,6 +5387,9 @@
             </skilllevel>
             <skilllevel>
               <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Free-Fall</name>
             </skilllevel>
             <skilllevel>
               <name>Heavy Weapons</name>
@@ -5516,6 +5532,9 @@
               <name>Demolitions</name>
             </skilllevel>
             <skilllevel>
+              <name>Free-Fall</name>
+            </skilllevel>
+            <skilllevel>
               <name>Perception</name>
             </skilllevel>
             <skilllevel>
@@ -5580,6 +5599,9 @@
           <bonus>
             <skilllevel>
               <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Free-Fall</name>
             </skilllevel>
             <skilllevel>
               <name>Gunnery</name>
@@ -5743,6 +5765,9 @@
               <name>Demolitions</name>
             </skilllevel>
             <skilllevel>
+              <name>Free-Fall</name>
+            </skilllevel>
+            <skilllevel>
               <name>Pilot Ground Craft</name>
             </skilllevel>
             <skilllevel>
@@ -5804,6 +5829,9 @@
             </skilllevel>
             <skilllevel>
               <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Free-Fall</name>
             </skilllevel>
             <skilllevel>
               <name>Gunnery</name>
@@ -5899,6 +5927,9 @@
             </skilllevel>
             <skilllevel>
               <name>Demolitions</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Free-Fall</name>
             </skilllevel>
             <skilllevel>
               <name>Perception</name>
@@ -6027,6 +6058,9 @@
               <name>Clubs</name>
             </skilllevel>
             <skilllevel>
+              <name>Free-Fall</name>
+            </skilllevel>
+            <skilllevel>
               <name>Heavy Weapons</name>
             </skilllevel>
             <skilllevel>
@@ -6094,6 +6128,9 @@
           <name>Firearms</name>
           <val>1</val>
         </skillgrouplevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
         <skilllevel>
           <name>Navigation</name>
         </skilllevel>
@@ -6312,7 +6349,7 @@
       </versions>
       <story>$real was a soldier in service of the UCAS, CAS or CFS, training and drilling for the day the Azzies push north through the NANs so that they might be ready to… liberate them.</story>
       <source>RF</source>
-      <page>82</page>
+      <page>83</page>
     </module>
     <!-- End Region -->
     <!-- End Region -->
@@ -6328,11 +6365,19 @@
           <name>INT</name>
         </attributelevel>
         <skilllevel>
+          <name>Compiling</name>
+        </skilllevel>
+        <skilllevel>
           <name>Decompiling</name>
         </skilllevel>
         <skilllevel>
           <name>Software</name>
         </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>4</val>
+        </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>[Technical]</name>
           <group>Interest</group>
@@ -6404,6 +6449,11 @@
           <name>Electronic Warfare</name>
         </skilllevel>
         <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
           <name>[Technical]</name>
           <group>Interest</group>
           <val>1</val>
@@ -6439,11 +6489,19 @@
           <name>Electronic Warfare</name>
         </skilllevel>
         <skilllevel>
+          <name>Hacking</name>
+        </skilllevel>
+        <skilllevel>
           <name>Registering</name>
         </skilllevel>
         <skilllevel>
           <name>Software</name>
         </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>1</val>
+        </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>[Technical]</name>
           <group>Interest</group>
@@ -6497,6 +6555,11 @@
           <name>Survival</name>
         </skilllevel>
         <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
           <name>[Tech corporations]</name>
           <group>Professional</group>
           <val>3</val>
@@ -6538,6 +6601,11 @@
         <skilllevel>
           <name>Hacking</name>
         </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>[Tech corporations]</name>
           <group>Street</group>
@@ -6600,6 +6668,11 @@
           <val>2</val>
         </skilllevel>
         <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
           <name>[Tech corporations]</name>
           <group>Street</group>
           <val>3</val>
@@ -6645,6 +6718,11 @@
           <name>Leadership</name>
           <val>2</val>
         </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>Secure Matrix Locations</name>
           <group>Interest</group>
@@ -6700,6 +6778,11 @@
           <name>Software</name>
           <val>2</val>
         </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
         <knowledgeskilllevel>
           <name>[Tech corporations]</name>
           <group>Professional</group>
@@ -6810,6 +6893,11 @@
           <val>2</val>
         </skillgrouplevel>
         <knowledgeskilllevel>
+          <name>[Matrix-related]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
           <name>[Tech corporations]</name>
           <group>Street</group>
           <val>3</val>
@@ -6839,6 +6927,7 @@
         </attributelevel>
         <skilllevel>
           <name>Con</name>
+          <val>0</val>
           <spec>Fast Talking</spec>
         </skilllevel>
         <skilllevel>
@@ -7103,6 +7192,9 @@
           <name>Close Combat</name>
           <val>2</val>
         </skillgrouplevel>
+        <skilllevel>
+          <name>Free-Fall</name>
+        </skilllevel>
         <skilllevel>
           <name>Intimidation</name>
         </skilllevel>
@@ -7394,6 +7486,7 @@
         </skilllevel>
         <skilllevel>
           <name>Nautical Mechanic</name>
+          <val>2</val>
         </skilllevel>
         <skilllevel>
           <name>Pilot Watercraft</name>
@@ -7463,6 +7556,11 @@
           <name>Pilot Watercraft</name>
           <val>2</val>
         </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Secondary Language]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
         <knowledgeskilllevel>
           <group>Professional</group>
           <name>Knots</name>
@@ -7965,7 +8063,7 @@
         </skilllevel>
         <knowledgeskilllevel>
           <name>[City] Streets</name>
-          <group>Professional</group>
+          <group>Street</group>
           <val>2</val>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
@@ -8003,12 +8101,16 @@
         </skilllevel>
         <skilllevel>
           <name>Etiquette</name>
+          <spec>Corporate</spec>
         </skilllevel>
         <skilllevel>
           <name>Gunnery</name>
         </skilllevel>
         <skilllevel>
           <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
         </skilllevel>
         <skilllevel>
           <name>Pilot Aircraft</name>
@@ -8036,7 +8138,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Steely Eyed Wheelman</addquality>
-          <addquality>Speed Demon</addquality>
+          <addquality>Stunt Driver</addquality>
         </addqualities>
       </bonus>
       <story>Need a driver for that TRI-D you're financing? Contact $real at actor-driver.me for all your driving needs.</story>
@@ -8390,7 +8492,7 @@
           <val>3</val>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
-          <name>Sprawl Life</name>
+          <name>Street Life</name>
           <group>Street</group>
           <val>3</val>
         </knowledgeskilllevel>
@@ -8536,7 +8638,7 @@
           <group>Academic</group>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
-          <name>Amazonian Portugese</name>
+          <name>Amazonian Portuguese</name>
           <group>Language</group>
           <val>0</val>
         </knowledgeskilllevel>
@@ -8766,7 +8868,7 @@
       </bonus>
       <story>$real was brought up in a strictly religious family.</story>
       <source>SAG</source>
-      <page>148</page>
+      <page>149</page>
     </module>
     <!-- End Region -->
     <!--Region Teen Years-->
@@ -8994,6 +9096,7 @@
         <knowledgeskilllevel>
           <name>[Religious]</name>
           <group>Language</group>
+          <val>2</val>
         </knowledgeskilllevel>
       </bonus>
       <story>$real spent his teen years in a private, religious school.</story>
@@ -9197,8 +9300,8 @@
         </version>
       </versions>
       <story>$real achieved their higher education via their religious community.</story>
-      <source>RF</source>
-      <page>72</page>
+      <source>SAG</source>
+      <page>152</page>
     </module>
     <module>
       <id>7eef2cb1-e0f7-4e99-8fdb-92bd453f1a7c</id>
@@ -9289,8 +9392,8 @@
         </version>
       </versions>
       <story>$real achieved their higher education via their religious community.</story>
-      <source>RF</source>
-      <page>72</page>
+      <source>SAG</source>
+      <page>152</page>
     </module>
     <!-- End Region -->
     <!--Region Real Life-->
@@ -9332,6 +9435,7 @@
         </skilllevel>
         <skilllevel>
           <name>Survival</name>
+          <val>0</val>
           <spec>Urban</spec>
         </skilllevel>
         <skilllevel>
@@ -9383,6 +9487,7 @@
         </skilllevel>
         <skilllevel>
           <name>Survival</name>
+          <val>0</val>
           <spec>Forests</spec>
         </skilllevel>
         <knowledgeskilllevel>
@@ -9434,7 +9539,13 @@
           <val>2</val>
         </skillgrouplevel>
         <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
           <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
         </skilllevel>
         <skilllevel>
           <name>Gymnastics</name>
@@ -10266,7 +10377,7 @@
               <val>2</val>
             </knowledgeskilllevel>
             <addqualities>
-              <addquality>SINner: National</addquality>
+              <addquality>SINner (National)</addquality>
             </addqualities>
           </bonus>
         </version>
@@ -10289,7 +10400,7 @@
               <val>2</val>
             </knowledgeskilllevel>
             <addqualities>
-              <addquality>SINner: National</addquality>
+              <addquality>SINner (National)</addquality>
             </addqualities>
           </bonus>
         </version>
@@ -10326,7 +10437,7 @@
               <val>2</val>
             </knowledgeskilllevel>
             <addqualities>
-              <addquality>SINner: National</addquality>
+              <addquality>SINner (National)</addquality>
             </addqualities>
           </bonus>
         </version>
@@ -10371,7 +10482,7 @@
       </bonus>
       <story />
       <source>BTB</source>
-      <page></page>
+      <page>162</page>
     </module>
     <module>
       <id>4c51d90e-7bcd-486f-b119-3adcc4cfd050</id>
@@ -10499,7 +10610,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>Home Ground (You Know A Guy)</addquality>
+          <addquality select="You Know a Guy">Home Ground</addquality>
         </addqualities>
         <skilllevel>
           <name>Survival</name>
@@ -10674,7 +10785,7 @@
           <name>WIL</name>
         </attributelevel>
         <addqualities>
-          <addquality>Phobia (Mild, Common)</addquality>
+          <addquality>Phobia (Common, Mild)</addquality>
           <addquality>Barrens Rat</addquality>
         </addqualities>
         <skilllevel>
@@ -10972,7 +11083,7 @@
             </options>
           </addquality>
           <addquality>Common Sense</addquality>
-          <addquality>Day Job</addquality>
+          <addquality>Day Job (10 hrs)</addquality>
           <addquality>Perceptive</addquality>
         </addqualities>
         <skilllevel>
@@ -11245,6 +11356,9 @@
         <attributelevel>
           <name>WIL</name>
         </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
         <addqualities>
           <addquality>Daredevil</addquality>
           <addquality>Perceptive</addquality>
@@ -11282,7 +11396,7 @@
         </skilllevel>
         <skilllevel>
           <name>Nautical Mechanic</name>
-          <val>2</val>
+          <val>1</val>
         </skilllevel>
         <knowledgeskilllevel>
           <name>[Local] Nature</name>
@@ -11592,7 +11706,7 @@
       </bonus>
       <story />
       <source>SL</source>
-      <page>180</page>
+      <page>181</page>
     </module>
     <module>
       <id>3e6efacd-4503-45f7-a5a8-4fbed9c2f5bc</id>
@@ -11622,7 +11736,7 @@
         </skilllevel>
         <skilllevel>
           <name>Sneaking</name>
-          <val>4</val>
+          <val>2</val>
         </skilllevel>
         <skilllevel>
           <name>Throwing Weapons</name>
@@ -11637,7 +11751,7 @@
       </bonus>
       <story />
       <source>SL</source>
-      <page>180</page>
+      <page>181</page>
     </module>
     <!-- End Region -->
     <!-- End Region -->
@@ -11741,7 +11855,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>Silence Is Golden</addquality>
+          <addquality>Silence is Golden</addquality>
         </addqualities>
         <skilllevel>
           <name>Computer</name>
@@ -12018,7 +12132,7 @@
       </bonus>
       <story />
       <source>KC</source>
-      <page>79</page>
+      <page>81</page>
     </module>
     <module>
       <id>c1133c0e-1c5a-4ba0-a207-0274cd90b25c</id>
@@ -12034,7 +12148,7 @@
           <name>CHA</name>
         </attributelevel>
         <addqualities>
-          <addquality>Too Pretty to Hit</addquality>
+          <addquality>Too Pretty To Hit</addquality>
         </addqualities>
         <skilllevel>
           <name>Computer</name>
