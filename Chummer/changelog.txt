@@ -73,6 +73,7 @@ PACKs:
 - Fixed PACKs that add Gear objects not correctly adding items when the name is referred to by name, due to incorrectly cleaning the name of the gear object when checking for it in the data files. Closes #5266.
 
 Powers:
+- Corrected multiple adept powers, including Adrenaline Boost, Killing Hands, Cool Resolve, Authoritative Tone, Nimble Fingers, Three-Dimensional Memory, and Mystic Aptitude. Living Focus no longer lists an action, since its Simple Action is taken by the magician, not the adept.
 - Fixed incorrect format for improvement on Master Archer. Characters with this improvement will need to remove and re-add it to properly have it show the dicepool bonus for Bows.
 
 Qualities:
@@ -90,6 +91,9 @@ Skills:
 - Language skills are now properly defaultable, as stipulated in the core rulebook. This will only affect new characters and new skills added to existing characters, existing skills remain unaffected.
 
 Magic:
+- Corrected multiple spells, including Stunball, Awaken, Mob Control, Mob Mind, Petrify, Radiation Shield, Vines, and Blood Blade.
+- Corrected multiple mentor spirits, including Rat, Pollution, The Adversary, Alligator, Bat, Boar, Whale, and Sun. Existing characters with these mentor spirits will need to reapply improvements to see any changes.
+- Added the Paradigm Shift metamagic (FA p. 43). Harmonious Defense and Harmonious Reflection are now adept-only, and Psychometry can now also be learned with The Spiritual Way.
 - Fixed `not(...)` improvement conditions always evaluating as false, which prevented Spellcasting Foci from adding their Force to spell tests. Alchemical preparations remain excluded as intended.
 - Watchers and Homunculi no longer count toward the bound spirit (Charisma) limit shared with tradition spirits. Bound spirit dropdowns refresh when AddSpirit improvements change. Closes #4476.
 - Extended the `addspirit` improvement with optional `skill` and `ratingdivisor` attributes for skill-linked spirit type picks (used by Dedicated Conjurer) and clearer selection prompts that indicate why the user is being prompted to select a spirit type.
@@ -104,7 +108,15 @@ Weapons:
 - Corrected typos for some entries from Shadowrun 2050 where German terms were used for English names.
 - Added missing weights for Battering Ram, Fluid-Motion Battering Ram, and the HK 82A1. Existing characters with any of these weapons will have to re-add them for their weights to show up.
 
+Resonance:
+- Corrected multiple echoes, including Overclocking, Resonance Link, Mathemagics, Resonance Riding, and Skinlink.
+- The Generalist Sprite stream now offers the Active Analytics, Borrowed IP, Decompiling Resistance, Enhance, Navi, Resilient Code, and Resonance Spooling optional powers.
+- Sprite Pet now targets a sprite and has a fading value of L.
+- Renamed the Architect and Archivist (The Record Keeper) paragons to Architect (The Builder) and Archivist (The Secret Keeper), and corrected the Black Hat paragon.
+- Skill Autosoft and Skill Autosoft (Restricted) now only offer the skills allowed by Rigger 5.0.
+
 Traditions:
+- Corrected multiple traditions and spirits, including Green Magic, Norse, Red Magic, Ancestor Shaman, the Homunculus spirits, Watcher, and several toxic spirits and shedim. Svetoid has been renamed to Svetovid.
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
 
 Life Modules:
@@ -141,6 +153,19 @@ Changed/New Strings:
 - Checkbox_Options_GroupVehicleModsByCategory
 - Checkbox_Options_AlphabetizeTreeNodesOnInsert
 - Checkbox_Options_NestWeaponMountsUnderWeaponsCategory
+- LimitCondition_HarvestReagents
+- LimitCondition_JumpedInPerLevel
+- LimitCondition_OutdoorsDaytime
+- LimitCondition_OutsideUrban
+- LimitCondition_Pollutants
+- LimitCondition_SpiritsNotMan
+- LimitCondition_SpiritsOfAir
+- LimitCondition_SpiritsOfBeasts
+- LimitCondition_SpiritsOfMan
+- LimitCondition_SpiritsOfWater
+- LimitCondition_SpiritsPlant
+- LimitCondition_TestMath
+- LimitCondition_TestSocialOpposedInitiated
 - String_VehicleModCategory_General
 - Menu_AddDrug
 - Message_CyberwareDrug
