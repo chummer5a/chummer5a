@@ -3245,7 +3245,7 @@
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Electronic Warfare} v. {Target: Pilot} + {Target: {Icon: Firewall}}</dice>
-        <limit>{Icon: Data Processing}</limit>
+        <limit>{Icon: Attack}</limit>
         <bonusstring>On success, target makes an immediate Simple Pilot * 2 test to figure out what it's going to do next with a threshold equal to half of the net hits. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
       </test>
       <source>R5</source>
