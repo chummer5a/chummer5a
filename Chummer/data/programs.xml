@@ -548,7 +548,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill[name = 'First Aid' or name = 'Hardware' or name = 'Instruction' or name = 'Aeronautics Mechanic' or name = 'Automotive Mechanic' or name = 'Industrial Mechanic' or name = 'Nautical Mechanic' or name = 'Navigation' or name = 'Performance']/name | /chummer/knowledgeskills/skill[category = 'Academic' or category = 'Professional' or category = 'Language']/name" allowedit="True" />
       </bonus>
       <source>R5</source>
       <page>127</page>
@@ -561,7 +561,7 @@
       <avail>(Rating * 2)R</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selectskill />
+        <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Locksmith,Medicine" />
       </bonus>
       <source>R5</source>
       <page>127</page>

@@ -207,6 +207,13 @@
         <power>Stability</power>
         <power>Bodyguard</power>
         <power>Shield</power>
+        <power>Active Analytics</power>
+        <power>Borrowed IP</power>
+        <power>Decompiling Resistance</power>
+        <power>Enhance</power>
+        <power>Navi</power>
+        <power>Resilient Code</power>
+        <power>Resonance Spooling</power>
       </optionalpowers>
       <skills>
         <skill>Computer</skill>

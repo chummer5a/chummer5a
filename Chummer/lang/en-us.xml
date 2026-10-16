@@ -11065,6 +11065,58 @@
       <text>Only for situations involving trust.</text>
     </string>
     <string>
+      <key>LimitCondition_HarvestReagents</key>
+      <text>Only when harvesting reagents</text>
+    </string>
+    <string>
+      <key>LimitCondition_JumpedInPerLevel</key>
+      <text>Only when jumped into a vehicle or drone (control rig equivalent, per level)</text>
+    </string>
+    <string>
+      <key>LimitCondition_OutdoorsDaytime</key>
+      <text>Only when outside during the day</text>
+    </string>
+    <string>
+      <key>LimitCondition_OutsideUrban</key>
+      <text>Only outside urban areas</text>
+    </string>
+    <string>
+      <key>LimitCondition_Pollutants</key>
+      <text>Only when dealing with pollutants</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritsNotMan</key>
+      <text>Only with spirits other than Spirits of Man</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritsOfAir</key>
+      <text>Only with Spirits of Air</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritsOfBeasts</key>
+      <text>Only with Spirits of Beasts</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritsOfMan</key>
+      <text>Only with Spirits of Man</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritsOfWater</key>
+      <text>Only with Spirits of Water</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpiritsPlant</key>
+      <text>Only with Plant Spirits</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestMath</key>
+      <text>Only for math-intensive actions</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestSocialOpposedInitiated</key>
+      <text>Only for Opposed Social Skill Tests you initiate</text>
+    </string>
+    <string>
       <key>LimitCondition_TestSpeech</key>
       <text>Only for test involving speaking</text>
     </string>
