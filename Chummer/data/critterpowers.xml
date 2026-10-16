@@ -22,13 +22,14 @@
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
 
   <categories>
-    <category whitelist="true">Drake</category>
-    <category whitelist="true">Emergent</category>
-    <category whitelist="true">Free Spirit</category>
-    <category whitelist="true">Infected</category>
+    <category whitelist="True">Drake</category>
+    <category whitelist="True">Emergent</category>
+    <category whitelist="True">Free Spirit</category>
+    <category whitelist="True">Infected</category>
     <category>Mundane</category>
     <category>Paranormal</category>
-    <category whitelist="true">Toxic Critter Powers</category>
+    <category>Shapeshifter</category>
+    <category whitelist="True">Toxic Critter Powers</category>
     <category>Weakness</category>
     <category>Chimeric Modification</category>
   </categories>
@@ -135,8 +136,8 @@
       <category>Mundane</category>
       <type>M</type>
       <action>Simple</action>
-      <range>MAG x 50</range>
-      <duration>Always</duration>
+      <range>Special</range>
+      <duration>Sustained</duration>
       <source>SG</source>
       <page>198</page>
     </power>
@@ -183,7 +184,7 @@
       <category>Mundane</category>
       <type>P</type>
       <action>Complex</action>
-      <range>LOS</range>
+      <range>Special</range>
       <duration>Instant</duration>
       <source>SR5</source>
       <page>395</page>
@@ -192,7 +193,7 @@
       <id>f6631c45-a705-434c-b4a6-ba2a889d38ff</id>
       <name>Compulsion</name>
       <category>Paranormal</category>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
@@ -215,7 +216,7 @@
       <name>Confusion</name>
       <category>Paranormal</category>
       <toxic>True</toxic>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
@@ -229,8 +230,13 @@
       <toxic>True</toxic>
       <type>P</type>
       <action>Complex</action>
-      <range>LOS</range>
-      <duration>Special</duration>
+      <range>Special</range>
+      <duration>Instant</duration>
+      <bonus>
+        <addweapon>
+          <name>Corrosive Spit (Critter)</name>
+        </addweapon>
+      </bonus>
       <source>SR5</source>
       <page>395</page>
     </power>
@@ -256,7 +262,7 @@
       <toxic>True</toxic>
       <type>P</type>
       <action>Complex</action>
-      <range>LOS</range>
+      <range>Special</range>
       <duration>Instant</duration>
       <bonus>
         <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True" />
@@ -287,6 +293,16 @@
       <duration>Always</duration>
       <bonus>
         <selecttext />
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_TestEnhancedSense</condition>
+        </specificskill>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>LimitCondition_TestEnhancedSense</condition>
+        </limitmodifier>
       </bonus>
       <source>SR5</source>
       <page>396</page>
@@ -413,7 +429,7 @@
       <id>bf6c7543-0fa6-4297-8690-8230db5e46a8</id>
       <name>Materialization</name>
       <category>Paranormal</category>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>Self</range>
       <duration>Sustained</duration>
@@ -437,7 +453,7 @@
       <category>Paranormal</category>
       <type>P</type>
       <action>Simple</action>
-      <range>LOS</range>
+      <range>Self</range>
       <duration>Sustained</duration>
       <source>SR5</source>
       <page>398</page>
@@ -481,7 +497,7 @@
       <name>Natural Weapon</name>
       <category>Mundane</category>
       <type>P</type>
-      <action>Complex</action>
+      <action>Auto</action>
       <range>Touch</range>
       <duration>Instant</duration>
       <bonus>
@@ -759,8 +775,8 @@
       <category>Paranormal</category>
       <type>P</type>
       <action>Complex</action>
-      <range>Self</range>
-      <duration>Sustained</duration>
+      <range>Touch</range>
+      <duration>Special</duration>
       <source>SG</source>
       <page>197</page>
     </power>
@@ -981,9 +997,9 @@
       <id>94e58008-2ab1-41ed-886c-74773ec60067</id>
       <name>Gestalt Consciousness</name>
       <category>Mundane</category>
-      <type>P</type>
+      <type>M</type>
       <action>Auto</action>
-      <range>Self</range>
+      <range>Varies</range>
       <duration>Always</duration>
       <source>HS</source>
       <page>192</page>
@@ -1014,6 +1030,17 @@
       <page>193</page>
     </power>
     <power>
+      <id>f8ecc700-8059-420c-a68d-cb79a3f256d2</id>
+      <name>Secretion/Substance Extrusion (Silk/Webbing)</name>
+      <category>Mundane</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Self</range>
+      <duration>Permanent</duration>
+      <source>HS</source>
+      <page>194</page>
+    </power>
+    <power>
       <id>7cdbe90b-b16a-43c0-a20e-b4a54b83c6ed</id>
       <name>Wall Walking</name>
       <category>Mundane</category>
@@ -1036,13 +1063,24 @@
       <page>188</page>
     </power>
     <power>
+      <id>00f22c51-72d2-44e6-8a91-1e1a6f26744a</id>
+      <name>Agony</name>
+      <category>Paranormal</category>
+      <type>P or M</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>HS</source>
+      <page>188</page>
+    </power>
+    <power>
       <id>71a78fd2-c75a-46a8-a0f3-320e268a9b4d</id>
       <name>Binding</name>
       <category>Paranormal</category>
       <toxic>True</toxic>
       <type>P</type>
       <action>Complex</action>
-      <range>LOS</range>
+      <range>Special</range>
       <duration>Instant</duration>
       <source>SR5</source>
       <page>395</page>
@@ -1051,12 +1089,23 @@
       <id>73b0e681-fa65-4253-9010-4bac1f7c3179</id>
       <name>Control Focus</name>
       <category>Paranormal</category>
-      <type>M</type>
+      <type>P</type>
       <action>Auto</action>
       <range>Special</range>
       <duration>Special</duration>
       <source>HS</source>
       <page>188</page>
+    </power>
+    <power>
+      <id>f0f46a40-45eb-40ad-8d30-68b33628ff59</id>
+      <name>Corrosive Secretions</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <source>RF</source>
+      <page>143</page>
     </power>
     <power>
       <id>f654869b-d381-4f90-82d6-835f5a4aa0ab</id>
@@ -1085,9 +1134,19 @@
       <name>Empathy</name>
       <category>Paranormal</category>
       <type>M</type>
-      <action>Complex</action>
+      <action>Auto</action>
       <range>LOS</range>
-      <duration>Sustained</duration>
+      <duration>Always</duration>
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>{MAG}</bonus>
+        </skillcategory>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>{MAG}</value>
+        </limitmodifier>
+      </bonus>
       <source>HS</source>
       <page>190</page>
     </power>
@@ -1109,8 +1168,8 @@
       <toxic>True</toxic>
       <type>M</type>
       <action>Auto</action>
-      <range>LOS</range>
-      <duration>Sustained</duration>
+      <range>Self</range>
+      <duration>Always</duration>
       <source>HS</source>
       <page>193</page>
     </power>
@@ -1521,7 +1580,7 @@
       <type>M</type>
       <action>Complex</action>
       <range>Self</range>
-      <duration>Special</duration>
+      <duration>Sustained</duration>
       <source>HS</source>
       <page>194</page>
     </power>
@@ -1569,7 +1628,7 @@
       <name>Hardened Mystic Armor</name>
       <category>Paranormal</category>
       <rating>True</rating>
-      <type>P</type>
+      <type>M</type>
       <action>Auto</action>
       <range>Self</range>
       <duration>Always</duration>
@@ -1585,7 +1644,7 @@
       <range>Self</range>
       <duration>Always</duration>
       <source>HS</source>
-      <page>173</page>
+      <page>194</page>
     </power>
     <power>
       <id>98928dbd-5b79-4dde-bc92-56dc317e293b</id>
@@ -1641,7 +1700,7 @@
       <id>6bd03b55-d6fb-4ecb-a098-1c01017bc81c</id>
       <name>Create Alchera</name>
       <category>Paranormal</category>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
@@ -1697,10 +1756,10 @@
       <id>9c80e4ad-5999-4795-a890-0d6a1e5b542e</id>
       <name>Extra Fragile</name>
       <category>Weakness</category>
-      <type />
-      <action />
-      <range />
-      <duration />
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
       <bonus>
         <conditionmonitor>
           <physical>-20</physical>
@@ -1752,7 +1811,7 @@
       <range>As ritual</range>
       <duration>As ritual</duration>
       <bonus>
-        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = Rituals]" />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Rituals']" />
       </bonus>
       <source>HS</source>
       <page>193</page>
@@ -1762,7 +1821,7 @@
       <name>Manipulate Magic</name>
       <category>Paranormal</category>
       <type>M</type>
-      <action>Auto</action>
+      <action>Complex</action>
       <range>Touch</range>
       <duration>Permanent</duration>
       <source>HS</source>
@@ -1884,22 +1943,22 @@
       <duration>Instant</duration>
       <karma>50</karma>
       <source>HS</source>
-      <page>190</page>
+      <page>164</page>
     </power>
     <power>
       <id>dafb81bd-7b92-487a-a739-465c69bcefcd</id>
       <name>Adaptive Coloration</name>
       <category>Drake</category>
       <type>P</type>
-      <action>Auto</action>
+      <action>Simple</action>
       <range>Self</range>
-      <duration>Always</duration>
+      <duration>Sustained</duration>
       <required>
         <oneof>
           <quality>Dracoform (Sea Drake)</quality>
         </oneof>
       </required>
-      <karma>6</karma>
+      <karma>9</karma>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -1908,7 +1967,7 @@
       <name>Natural Weapon</name>
       <category>Drake</category>
       <type>P</type>
-      <action>Complex</action>
+      <action>Auto</action>
       <range>Touch</range>
       <duration>Instant</duration>
       <bonus>
@@ -1936,7 +1995,7 @@
       <id>79bb0c32-985c-47c8-a6ba-a9666884599f</id>
       <name>Compulsion</name>
       <category>Drake</category>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
@@ -1950,9 +2009,14 @@
       <category>Drake</category>
       <type>P</type>
       <action>Complex</action>
-      <range>LOS</range>
-      <duration>Special</duration>
+      <range>Special</range>
+      <duration>Instant</duration>
       <karma>9</karma>
+      <bonus>
+        <addweapon>
+          <name>Corrosive Spit (Critter)</name>
+        </addweapon>
+      </bonus>
       <source>HS</source>
       <page>164</page>
     </power>
@@ -2062,6 +2126,7 @@
         <oneof>
           <quality>Dracoform (Feathered Drake)</quality>
           <quality>Dracoform (Western Drake)</quality>
+          <quality>Dracoform (Eastern Drake)</quality>
         </oneof>
       </required>
       <karma>14</karma>
@@ -2283,8 +2348,8 @@
       <name>Venom</name>
       <category>Drake</category>
       <type>P</type>
-      <action>Complex</action>
-      <range>Special</range>
+      <action>Auto</action>
+      <range>Touch</range>
       <duration>Instant</duration>
       <karma>9</karma>
       <source>HS</source>
@@ -2439,7 +2504,7 @@
       <id>4d923896-aabb-45fe-9708-85438a75c4a3</id>
       <name>Compulsion</name>
       <category>Paranormal</category>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
@@ -2487,7 +2552,7 @@
       <name>Confusion</name>
       <category>Paranormal</category>
       <toxic>True</toxic>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
       <duration>Sustained</duration>
@@ -2718,7 +2783,7 @@
       <range>Self</range>
       <duration>Permanent</duration>
       <source>DTR</source>
-      <page>49</page>
+      <page>50</page>
     </power>
     <power>
       <id>d0615070-d0c7-4c8b-ae02-442cadd1f38d</id>
@@ -2729,7 +2794,7 @@
       <range>Self</range>
       <duration>Always</duration>
       <source>DTR</source>
-      <page>49</page>
+      <page>50</page>
     </power>
     <!-- End Region -->
     <!-- Region Infected Powers -->
@@ -2737,7 +2802,7 @@
       <id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
       <name>Amphibious</name>
       <category>Infected</category>
-      <type>M</type>
+      <type>P</type>
       <action>Auto</action>
       <range>Self</range>
       <duration>Always</duration>
@@ -2765,13 +2830,13 @@
       </required>
       <karma>9</karma>
       <source>DTR</source>
-      <page>157</page>
+      <page>156</page>
     </power>
     <power>
       <id>c788063f-8daa-4e32-8017-9562513541a0</id>
       <name>Bacchanal</name>
       <category>Infected</category>
-      <type>P</type>
+      <type>M</type>
       <action>Complex</action>
       <range>Self</range>
       <duration>Sustained</duration>
@@ -2825,7 +2890,7 @@
           </group>
         </allof>
       </required>
-      <karma>5</karma>
+      <karma>12</karma>
       <source>DTR</source>
       <page>157</page>
     </power>
@@ -2848,6 +2913,11 @@
         </oneof>
       </required>
       <karma>9</karma>
+      <bonus>
+        <addweapon>
+          <name>Corrosive Spit (Critter)</name>
+        </addweapon>
+      </bonus>
       <source>DTR</source>
       <page>159</page>
     </power>
@@ -2981,7 +3051,7 @@
           <quality>Infected: Grendel</quality>
         </oneof>
       </required>
-      <karma>5</karma>
+      <karma>6</karma>
       <source>DTR</source>
       <page>160</page>
     </power>
@@ -3043,7 +3113,7 @@
       <category>Infected</category>
       <type>P</type>
       <action>Simple</action>
-      <range>LOS</range>
+      <range>Self</range>
       <duration>Sustained</duration>
       <karma>9</karma>
       <source>SR5</source>
@@ -3221,10 +3291,10 @@
       <id>F713F6DD-C932-405A-9EA3-A410A1516A92</id>
       <name>Tunneling Claws</name>
       <category>Infected</category>
-      <type />
-      <action />
-      <range />
-      <duration />
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
       <bonus>
         <naturalweapon>
           <name>Tunneling Claws</name>
@@ -3248,8 +3318,8 @@
           <quality>Infected: Ghoul (Troll)</quality>
         </oneof>
       </required>
-      <source>HS</source>
-      <page>172</page>
+      <source>DTR</source>
+      <page>163</page>
     </power>
     <power>
       <id>96ce4db8-74c5-47ea-8305-1096858ba8ee</id>
@@ -3282,6 +3352,19 @@
         </oneof>
       </required>
       <karma>6</karma>
+      <bonus>
+        <naturalweapon>
+          <name>Spines</name>
+          <reach>0</reach>
+          <damage>({STR}+1)P</damage>
+          <ap>+1</ap>
+          <useskill>Exotic Melee Weapon</useskill>
+          <useskillspec>Spines</useskillspec>
+          <accuracy>Physical</accuracy>
+          <source>DTR</source>
+          <page>162</page>
+        </naturalweapon>
+      </bonus>
       <source>DTR</source>
       <page>162</page>
     </power>
@@ -3449,6 +3532,83 @@
       <duration />
       <source>KC</source>
       <page>168</page>
+    </power>
+    <power>
+      <id>56042aae-d4e6-4437-9c9c-a3530e85f634</id>
+      <name>Sacrifice</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>93</page>
+    </power>
+    <power>
+      <id>00576bc0-eaae-4b13-bf54-848dc5f95fac</id>
+      <name>Overdrive</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>93</page>
+    </power>
+    <power>
+      <id>537fcb77-e30f-4cb8-bf5c-3a2be8edd5d1</id>
+      <name>Mangler</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <id>1d292cfd-db47-4695-ab67-eb4ef3c4c867</id>
+      <name>Grep</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <id>1cd78801-6121-4e03-8057-4d825dd96286</id>
+      <name>Gatekeeper</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <id>b7f44039-32a6-45bc-91ee-b0297861a4a2</id>
+      <name>Freenet</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <id>4b7dd692-8ce7-47e4-8997-dc31512eb9b9</id>
+      <name>Coroutine</name>
+      <category>Emergent</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>KC</source>
+      <page>92</page>
     </power>
     <!-- End Region -->
     <!-- Region Chimeric Modifications -->
@@ -3708,6 +3868,13 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <specificskill>
+          <name>Sneaking</name>
+          <bonus>1</bonus>
+          <condition>LimitCondition_DimLightMatchingPattern</condition>
+        </specificskill>
+      </bonus>
       <source>HS</source>
       <page>171</page>
     </power>
@@ -3722,11 +3889,11 @@
       <bonus>
         <walkmultiplier>
           <category>Ground</category>
-          <percent>100</percent>
+          <val>1</val>
         </walkmultiplier>
         <runmultiplier>
           <category>Ground</category>
-          <percent>100</percent>
+          <val>1</val>
         </runmultiplier>
         <sprintbonus>
           <category>Ground</category>
@@ -3744,6 +3911,18 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_ClimateChosen</condition>
+        </specificskill>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>-2</bonus>
+          <condition>LimitCondition_ClimateOpposite</condition>
+        </specificskill>
+      </bonus>
       <source>HS</source>
       <page>171</page>
     </power>
@@ -3833,6 +4012,23 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_TestScent</condition>
+        </specificskill>
+        <specificskill>
+          <name>Tracking</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_TestScent</condition>
+        </specificskill>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>LimitCondition_TestScent</condition>
+        </limitmodifier>
+      </bonus>
       <source>HS</source>
       <page>171</page>
     </power>
@@ -3844,6 +4040,13 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>1</value>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
+        </limitmodifier>
+      </bonus>
       <source>HS</source>
       <page>171</page>
     </power>
@@ -3927,6 +4130,12 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
       <source>HS</source>
       <page>172</page>
     </power>

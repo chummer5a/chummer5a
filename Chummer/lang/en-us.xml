@@ -10945,6 +10945,26 @@
       <text>Only for Contortion</text>
     </string>
     <string>
+      <key>LimitCondition_ClimateChosen</key>
+      <text>Only in the chosen climate</text>
+    </string>
+    <string>
+      <key>LimitCondition_ClimateOpposite</key>
+      <text>Only in the opposite climate</text>
+    </string>
+    <string>
+      <key>LimitCondition_DimLightMatchingPattern</key>
+      <text>Only in decreased light and environments matching the pattern</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestEnhancedSense</key>
+      <text>Only for tests using the enhanced sense (if it has no specific effect)</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestScent</key>
+      <text>Only for scent-based Perception and Tracking Tests</text>
+    </string>
+    <string>
       <key>LimitCondition_SkillsActiveDisguiseImpersonation</key>
       <text>Only for Disguise and Impersonation</text>
     </string>
