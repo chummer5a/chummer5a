@@ -2617,7 +2617,7 @@
           <name>Adept: Gain 2 free levels of Heightened Concentration.</name>
           <bonus>
             <specificpower>
-              <name>Heightened Concern</name>
+              <name>Heightened Concentration</name>
               <val>2</val>
             </specificpower>
           </bonus>
