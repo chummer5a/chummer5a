@@ -36,7 +36,7 @@
     </mentor>
     <mentor>
       <id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
-      <name>Architect</name>
+      <name>Architect (The Builder)</name>
       <category>Resonance</category>
       <advantage>+1 limit and +1 dice pool bonus for Edit actions.</advantage>
       <disadvantage>–1 limit and –1 dice for Snoop actions.</disadvantage>
@@ -46,13 +46,17 @@
           <bonus>1</bonus>
           <condition>Edit File</condition>
         </specificskill>
+        <actiondicepool>
+          <name>Snoop</name>
+          <val>-1</val>
+        </actiondicepool>
       </bonus>
       <source>KC</source>
       <page>103</page>
     </mentor>
     <mentor>
       <id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
-      <name>Archivist (The Record Keeper)</name>
+      <name>Archivist (The Secret Keeper)</name>
       <category>Resonance</category>
       <advantage>+1 limit and +1 dice pool bonus for Browse actions and digital legwork.</advantage>
       <disadvantage>–1 limit for Edit actions designed to destroy data.</disadvantage>
@@ -64,7 +68,7 @@
         </specificskill>
       </bonus>
       <source>KC</source>
-      <page>177</page>
+      <page>103</page>
     </mentor>
     <mentor>
       <id>117e7c69-abea-4637-b5e7-3a927ae0ad60</id>
@@ -72,6 +76,12 @@
       <category>Resonance</category>
       <advantage>+2 limit for gaining marks on a target.</advantage>
       <disadvantage>-1 limit and –1 die when setting a Data Bomb.</disadvantage>
+      <bonus>
+        <actiondicepool>
+          <name>Set Data Bomb</name>
+          <val>-1</val>
+        </actiondicepool>
+      </bonus>
       <source>KC</source>
       <page>103</page>
     </mentor>

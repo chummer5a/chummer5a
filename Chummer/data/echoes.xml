@@ -82,12 +82,14 @@
       <bonus>
         <matrixinitiativediceadd>1</matrixinitiativediceadd>
       </bonus>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>dbd2fbba-8487-45cc-a92a-33813c3643b6</id>
       <name>Resonance Link</name>
       <source>SR5</source>
       <page>258</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>d5dbe3f7-8a44-466b-8d5d-db9f0c68ee6b</id>
@@ -95,7 +97,7 @@
       <source>SR5</source>
       <page>258</page>
       <bonus>
-        <selecttext xml="programs.xml" xpath="/chummer/programs/program" />
+        <selecttext xml="programs.xml" xpath="/chummer/programs/program[category = 'Common Programs' or category = 'Hacking Programs']" />
       </bonus>
       <limit>False</limit>
     </echo>
@@ -118,6 +120,7 @@
       <name>Fight or Flight Filter</name>
       <source>DT</source>
       <page>58</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>e7dc7a5a-89dc-42e4-8332-8225bbff3c45</id>
@@ -128,13 +131,21 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>LimitCondition_SkillsKnowledgeScientificTechnical</condition>
+          <condition>LimitCondition_TestMath</condition>
         </limitmodifier>
       </bonus>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>262dd3e2-5433-4b9a-b637-c5f5a3af5510</id>
       <name>MMRI</name>
+      <bonus>
+        <skillcategory>
+          <name>Vehicle Active</name>
+          <bonus>1</bonus>
+          <condition>LimitCondition_JumpedInPerLevel</condition>
+        </skillcategory>
+      </bonus>
       <source>DT</source>
       <page>59</page>
       <limit>3</limit>
@@ -144,48 +155,56 @@
       <name>Quiet</name>
       <source>DT</source>
       <page>59</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>0408da17-8327-4e8c-a64f-48431bba8e58</id>
       <name>Resonance Riding</name>
       <source>DT</source>
       <page>59</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>e6f66ec1-af07-4008-abbe-e4d31cc82358</id>
       <name>Resonance Scream</name>
       <source>DT</source>
       <page>59</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>45ed755c-cf0e-4f57-95d2-2c01b4eda760</id>
       <name>Skinlink</name>
       <source>DT</source>
       <page>59</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>228b8261-deca-4723-b072-0a5135ddef3f</id>
       <name>Sleepwalker</name>
       <source>DT</source>
       <page>59</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>cee8e3bc-447b-4a67-9752-15e3e104e57d</id>
       <name>Contaminate</name>
       <source>DTD</source>
       <page>165</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>a0966081-2534-4fc4-a2e6-504b4ecf9756</id>
       <name>Siphon</name>
       <source>DTD</source>
       <page>165</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>2fe27536-4de7-49c1-a933-8d9a65604533</id>
       <name>Pryon</name>
       <source>DTD</source>
       <page>165</page>
+      <limit>1</limit>
     </echo>
     <!-- End Region -->
     <!-- Region Dark Terrors -->
@@ -194,6 +213,7 @@
       <name>Defrag</name>
       <source>DTR</source>
       <page>85</page>
+      <limit>1</limit>
     </echo>
     <!-- End Region -->
     <!-- Region Kill Code-->
@@ -202,12 +222,14 @@
       <name>Aegis</name>
       <source>KC</source>
       <page>101</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>8aa97815-eacb-412d-99ac-1acda562fb52</id>
       <name>Draining Spike</name>
       <source>KC</source>
       <page>101</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>a6f9a6cd-4727-4de6-a774-bb93ab67940a</id>
@@ -237,12 +259,14 @@
       <name>Resonance Resistance</name>
       <source>KC</source>
       <page>102</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>1e0405f3-3872-4a53-afd7-bd643899e7d9</id>
       <name>The Van der Waals Effect</name>
       <source>KC</source>
       <page>102</page>
+      <limit>1</limit>
     </echo>
     <echo>
       <id>6cb9bc65-7b64-44dd-ba9a-f96f3c09c741</id>

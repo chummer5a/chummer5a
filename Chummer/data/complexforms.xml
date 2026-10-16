@@ -254,9 +254,9 @@
     <complexform>
       <id>c9eb7fba-b5dd-40b1-907a-a6683dc9977d</id>
       <name>Sprite Pet</name>
-      <target>Persona</target>
+      <target>Sprite</target>
       <duration>P</duration>
-      <fv>L-2</fv>
+      <fv>L</fv>
       <source>KC</source>
       <page>91</page>
       <required>
