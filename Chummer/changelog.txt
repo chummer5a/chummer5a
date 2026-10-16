@@ -1,5 +1,9 @@
 Future Build 227
 Application:
+- Fixed the text-match page numbers for Lockdown, Forbidden Arcana, The Complete Trog, Dark Terrors, Street Lethal, Kill Code, and Better Than Bad, which could stop these books from being detected.
+- Corrected the SR5 page references for "Another Night, Another Run" and "Introduction".
+- The Boosted Reflexes tip now shows up, since Boosted Reflexes is bioware, not cyberware.
+- The HK-227 tip no longer shows up for characters who already own an HK 227.
 - Broad refactor of some form logic for adding equipment to characters, intended to reduce configuration drift and improve maintainability of the codebase. Nightly builds may have some issues related to this change, so please report any bugs you find.
 - Hardwires bonuses now honor a `select` attribute to pre-select the affected skill (same ForcedValue path used when Extra is already set), and treat `knowledgeskill` as an alias of `knowledgeskills` so Knowledge Hardwires open the knowledge-skill picker.
 - Moved weapon-mount and custom cyber implant base-weapon attachment logic into CharacterShared to reduce duplication between Create and Career modes.
@@ -111,6 +115,7 @@ Life Modules:
 - Updated source for lifemodules from The Complete Trog to correct shortcode (TCT instead of TCG).
 
 Character Sheets and Export:
+- Added the missing German, French, Japanese, Portuguese, and Chinese Fancy Fours sheets. Selecting Fancy Fours in those languages caused a "File not found" error. The Fancy Fours sheet files are now also included in the build output.
 - The full names of gear items excluding their quantity labels are now also exported as "fullname_noqty" and "fullname_noqty_english" for native and English versions, respectively. This can help sheets and other export data processors display full gear names separate from their quantities if/where that is needed.
 - Standardized the display of full names for gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and qualities across all sheets. All full names will now be shown in the same format that they would be displayed in the program.
 - Fixed issues where various sheets would be missing parts of full names of certain gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and/or qualities.
