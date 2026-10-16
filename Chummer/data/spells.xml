@@ -1335,7 +1335,7 @@
       <damage>P</damage>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
-      <dv>F-3</dv>
+      <dv>F-5</dv>
       <range>T</range>
       <type>P</type>
       <bonus>
@@ -1351,7 +1351,7 @@
       <damage>P</damage>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
-      <dv>F-2</dv>
+      <dv>F-3</dv>
       <range>LOS</range>
       <type>P</type>
       <bonus>
@@ -1531,7 +1531,7 @@
       <damage>P</damage>
       <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
-      <dv>F-1</dv>
+      <dv>F-2</dv>
       <range>LOS (A)</range>
       <type>M</type>
       <bonus>
@@ -1671,7 +1671,7 @@
       <category>Detection</category>
       <damage>0</damage>
       <descriptor>Passive, Directional</descriptor>
-      <duration>I</duration>
+      <duration>S</duration>
       <dv>F-3</dv>
       <range>T</range>
       <type>M</type>
@@ -1976,7 +1976,7 @@
       <duration>S</duration>
       <dv>F-6</dv>
       <range>T</range>
-      <type>M</type>
+      <type>P</type>
       <bonus>
         <selecttext />
       </bonus>
@@ -2001,8 +2001,8 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
-      <duration>S</duration>
+      <descriptor>Essence</descriptor>
+      <duration>P</duration>
       <dv>F-2</dv>
       <range>T</range>
       <type>P</type>
@@ -2014,7 +2014,7 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
+      <descriptor>Essence</descriptor>
       <duration>S</duration>
       <dv>F-3</dv>
       <range>T</range>
@@ -2066,7 +2066,7 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
+      <descriptor>Essence</descriptor>
       <duration>S</duration>
       <dv>F-1</dv>
       <range>T</range>
@@ -2196,7 +2196,7 @@
       <source>SG</source>
       <category>Illusion</category>
       <damage>0</damage>
-      <descriptor>Realistic, Single-Sense, Area</descriptor>
+      <descriptor>Realistic, Multi-Sense, Area</descriptor>
       <duration>S</duration>
       <dv>F-3</dv>
       <range>LOS (A)</range>
@@ -2314,7 +2314,7 @@
     </spell>
     <spell>
       <id>e59a2be4-41b5-4b3e-aa5b-c4881a021cae</id>
-      <name>Net</name>
+      <name>Net Bind</name>
       <page>113</page>
       <source>SG</source>
       <category>Manipulation</category>
@@ -2362,7 +2362,7 @@
       <duration>S</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>
-      <type>M</type>
+      <type>P</type>
     </spell>
     <spell>
       <id>f075819d-4924-4140-a5b4-fe8fdc069485</id>
@@ -2705,7 +2705,7 @@
       <source>SG</source>
       <category>Manipulation</category>
       <damage>0</damage>
-      <descriptor>Physical</descriptor>
+      <descriptor>Physical, Area</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>T</range>
@@ -2733,7 +2733,7 @@
       <damage>0</damage>
       <descriptor>Environmental, Area</descriptor>
       <duration>I</duration>
-      <dv>F+1</dv>
+      <dv>F+3</dv>
       <range>LOS (A)</range>
       <type>P</type>
     </spell>
@@ -2759,7 +2759,7 @@
       <damage>0</damage>
       <descriptor>Physical</descriptor>
       <duration>S</duration>
-      <dv>F+4</dv>
+      <dv>F+1</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>
@@ -2801,7 +2801,7 @@
       <damage>0</damage>
       <descriptor>Physical</descriptor>
       <duration>S</duration>
-      <dv>F-2</dv>
+      <dv>F-4</dv>
       <range>LOS</range>
       <type>P</type>
       <bonus>
@@ -2819,7 +2819,7 @@
       <duration>S</duration>
       <dv>F-1</dv>
       <range>LOS (A)</range>
-      <type>M</type>
+      <type>P</type>
     </spell>
     <spell>
       <id>5b3c8f11-37a8-4090-a332-969d6ea1adb6</id>
@@ -2832,7 +2832,7 @@
       <duration>S</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>
-      <type>M</type>
+      <type>P</type>
     </spell>
     <spell>
       <id>f1ed2b18-e50c-4c00-8fb5-ebf9bff9828a</id>
@@ -2856,7 +2856,7 @@
       <damage>0</damage>
       <descriptor>Physical</descriptor>
       <duration>S</duration>
-      <dv>F+1</dv>
+      <dv>F+3</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>
@@ -4028,7 +4028,7 @@
       <source>SSP</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
+      <descriptor>Essence</descriptor>
       <duration>S</duration>
       <dv>F-4</dv>
       <range>T</range>

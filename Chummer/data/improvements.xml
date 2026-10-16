@@ -161,7 +161,7 @@
       <fields>
         <field>SelectSkillGroup</field>
       </fields>
-      <xml>{select}</xml>
+      <xml><![CDATA[{select}]]></xml>
       <page>Prevents the character from seeing dicepool values for skills in the selected skillgroup.</page>
     </improvement>
     <improvement>

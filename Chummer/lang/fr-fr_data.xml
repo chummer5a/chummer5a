@@ -17580,7 +17580,7 @@
       <gear translated="True">
         <id>623827ad-2707-4522-ae26-615a6fdcd3a9</id>
         <name>Tanake Tiger</name>
-        <translate>Taranke Tiger</translate>
+        <translate>Tanake Tiger</translate>
         <altpage>143</altpage>
       </gear>
       <gear translated="True">
@@ -18126,7 +18126,7 @@
       <gear>
         <id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
         <name>MCT Sarari-Man, Terminal (2050)</name>
-        <translate>MTC Sarari-Man, Terminal (2050)</translate>
+        <translate>MCT Sarari-Man, Terminal (2050)</translate>
         <altpage>170</altpage>
       </gear>
       <gear>
@@ -28552,7 +28552,7 @@
       <mentor translated="True">
         <id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
         <name>Architect (The Builder)</name>
-        <translate>Architect</translate>
+        <translate>Architect (The Builder)</translate>
         <altadvantage>+1 limit and +1 dice pool bonus for Edit actions.</altadvantage>
         <altdisadvantage>–1 limit and –1 dice for Snoop actions.</altdisadvantage>
         <altpage>103</altpage>
@@ -40812,7 +40812,7 @@
       </spell>
       <spell>
         <id>e59a2be4-41b5-4b3e-aa5b-c4881a021cae</id>
-        <name>Net</name>
+        <name>Net Bind</name>
         <translate>Filet</translate>
         <altpage>116</altpage>
       </spell>
@@ -43562,7 +43562,7 @@
       <vehicle>
         <id>90234226-413e-4fac-89ce-ffce9db69b12</id>
         <name>Ruhrmetall Wolf II</name>
-        <translate>Ruhrmetal Wolf II</translate>
+        <translate>Ruhrmetall Wolf II</translate>
         <altpage>77</altpage>
       </vehicle>
       <vehicle>
@@ -44054,7 +44054,7 @@
       <vehicle>
         <id>e0343c07-3a15-4596-bcc0-5a2d6d160a6b</id>
         <name>Saeder-Krupp MK-17D Neptune (Large)</name>
-        <translate>Saeder-Krupp MK-170 Neptune (grand)</translate>
+        <translate>Saeder-Krupp MK-17D Neptune (grand)</translate>
         <altpage>143</altpage>
       </vehicle>
       <vehicle>
@@ -44114,7 +44114,7 @@
       <vehicle>
         <id>b448855b-57e7-435a-b523-174adb276674</id>
         <name>NeoNET Juggernaught</name>
-        <translate>NeoNET Juggernaut</translate>
+        <translate>NeoNET Juggernaught</translate>
         <altpage>147</altpage>
       </vehicle>
       <vehicle>
@@ -44318,7 +44318,7 @@
       <vehicle>
         <id>bc26a329-cf64-4a2d-841a-599f480762ff</id>
         <name>Hughes WK-2 Stallion (2050)</name>
-        <translate>Hughes Stallion WK-4 (2050)</translate>
+        <translate>Hughes WK-2 Stallion (2050)</translate>
         <altpage>210</altpage>
       </vehicle>
       <vehicle>

@@ -15615,7 +15615,7 @@
       <gear>
         <id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
         <name>MCT Sarari-Man, Terminal (2050)</name>
-        <translate>MTC Sarari-Man, Terminal</translate>
+        <translate>MCT Sarari-Man, Terminal</translate>
         <altpage>170</altpage>
       </gear>
       <gear>
@@ -18901,7 +18901,7 @@
       <gear translated="True">
         <id>623827ad-2707-4522-ae26-615a6fdcd3a9</id>
         <name>Tanake Tiger</name>
-        <translate>Taranke Tiger</translate>
+        <translate>Tanake Tiger</translate>
         <altpage>144</altpage>
       </gear>
       <gear translated="True">
@@ -38258,7 +38258,7 @@
       </spell>
       <spell>
         <id>e59a2be4-41b5-4b3e-aa5b-c4881a021cae</id>
-        <name>Net</name>
+        <name>Net Bind</name>
         <translate>Netz</translate>
         <altpage>127</altpage>
       </spell>
@@ -39566,7 +39566,7 @@
       <tradition translated="True">
         <id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
         <name>Svetovid</name>
-        <translate>Svetoid</translate>
+        <translate>Svetovid</translate>
         <altpage>115</altpage>
       </tradition>
       <tradition>
@@ -40608,7 +40608,7 @@
       <vehicle>
         <id>bc26a329-cf64-4a2d-841a-599f480762ff</id>
         <name>Hughes WK-2 Stallion (2050)</name>
-        <translate>Hughes Stallion WK-4 (2050)</translate>
+        <translate>Hughes WK-2 Stallion (2050)</translate>
         <altpage>210</altpage>
       </vehicle>
       <vehicle>
@@ -41159,7 +41159,7 @@
       <vehicle translated="True">
         <id>90234226-413e-4fac-89ce-ffce9db69b12</id>
         <name>Ruhrmetall Wolf II</name>
-        <translate>Ruhrmetal Wolf II</translate>
+        <translate>Ruhrmetall Wolf II</translate>
         <altpage>82</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -41531,7 +41531,7 @@
       <vehicle>
         <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
         <name>NeoNET Prairie Dog (Small)</name>
-        <translate>NeoNET Prarie Dog</translate>
+        <translate>NeoNET Prairie Dog</translate>
         <altpage>141</altpage>
       </vehicle>
       <vehicle>

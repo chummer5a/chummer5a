@@ -6608,7 +6608,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>4</maxrating>
         </gear>
         <gear rating="3" select="Sword">[Weapon] Targeting Autosoft</gear>
       </gears>
@@ -7039,7 +7039,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>7</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <seats>3</seats>
@@ -7218,7 +7218,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>4</maxrating>
+          <maxrating>5</maxrating>
         </gear>
         <gear rating="1" select="Blades">Tutorsoft</gear>
         <gear rating="1" select="Clubs">Tutorsoft</gear>
@@ -7277,7 +7277,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -7303,7 +7303,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>2</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -7329,7 +7329,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>4</maxrating>
+          <maxrating>3</maxrating>
         </gear>
         <gear rating="4" select="Armorer">Skill Autosoft</gear>
         <gear select="Armorer">Tool Kit</gear>
@@ -8044,7 +8044,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <modslots>4</modslots>
@@ -8071,7 +8071,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <modslots>4</modslots>
@@ -8098,7 +8098,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8138,7 +8138,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>5</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8181,7 +8181,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8210,7 +8210,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8239,7 +8239,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8270,7 +8270,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8305,7 +8305,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8339,7 +8339,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8368,7 +8368,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8396,7 +8396,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8429,7 +8429,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8459,7 +8459,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8489,7 +8489,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8531,7 +8531,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8559,7 +8559,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>1</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8587,7 +8587,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8614,7 +8614,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>1</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8642,7 +8642,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8669,7 +8669,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>1</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8698,7 +8698,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8726,7 +8726,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8757,7 +8757,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8787,7 +8787,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8817,7 +8817,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8847,7 +8847,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8878,7 +8878,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8906,7 +8906,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -8964,7 +8964,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>3</maxrating>
         </gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
         <gear>Smartsoft</gear>
@@ -9053,7 +9053,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9082,7 +9082,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>4</maxrating>
         </gear>
         <gear>Smartsoft</gear>
         <gear rating="5">[Weapon] Targeting Autosoft</gear>
@@ -9124,7 +9124,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>1</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9255,7 +9255,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>5</maxrating>
         </gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
         <gear rating="3">[Weapon] Targeting Autosoft</gear>
@@ -9300,7 +9300,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>5</maxrating>
         </gear>
         <gear rating="4">[Weapon] Targeting Autosoft</gear>
         <gear rating="4">Clearsight Autosoft</gear>
@@ -9342,7 +9342,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>5</maxrating>
         </gear>
         <gear rating="5">Clearsight Autosoft</gear>
       </gears>
@@ -9374,7 +9374,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>5</maxrating>
         </gear>
         <gear rating="5" select="GE Vindicator Mini-Gun">[Weapon] Targeting Autosoft</gear>
         <gear>Smartsoft</gear>
@@ -9483,7 +9483,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>3</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9510,7 +9510,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9539,7 +9539,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
         <gear rating="2" select="Avibras-Nissan AN 822">[Model] Evasion Autosoft</gear>
         <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
@@ -9574,7 +9574,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>3</maxrating>
         </gear>
         <gear rating="2">Clearsight Autosoft</gear>
       </gears>
@@ -9604,7 +9604,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9634,7 +9634,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9665,7 +9665,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9693,7 +9693,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9723,7 +9723,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9753,7 +9753,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <seats>2</seats>
@@ -9806,7 +9806,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>3</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9832,7 +9832,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>6</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
@@ -9858,7 +9858,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>6</maxrating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10353,7 +10353,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>2</maxrating>
+          <maxrating>6</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10438,8 +10438,8 @@
       <gears>
         <gear>
           <name>Sensor Array</name>
-          <rating>2</rating>
-          <maxrating>3</maxrating>
+          <rating>4</rating>
+          <maxrating>4</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10593,7 +10593,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10631,7 +10631,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10686,7 +10686,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10741,7 +10741,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>5</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -10784,7 +10784,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>6</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11061,7 +11061,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11090,7 +11090,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11118,7 +11118,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11146,7 +11146,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11175,7 +11175,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11204,7 +11204,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11233,7 +11233,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11262,7 +11262,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11294,7 +11294,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>3</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11334,7 +11334,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>2</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11364,7 +11364,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11393,7 +11393,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>1</rating>
-          <maxrating>3</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>
@@ -11431,7 +11431,7 @@
         <gear>
           <name>Sensor Array</name>
           <rating>4</rating>
-          <maxrating>4</maxrating>
+          <maxrating>7</maxrating>
         </gear>
       </gears>
       <mods>

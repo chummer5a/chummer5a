@@ -359,6 +359,9 @@
       <category>Entertainment - Service</category>
       <lp>1</lp>
       <cost>100</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
       <allowed>High,Luxury</allowed>
       <allowmultiple/>
       <forbidden>
@@ -375,6 +378,9 @@
       <category>Entertainment - Service</category>
       <lp>1</lp>
       <cost>200</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
       <allowed>High,Luxury</allowed>
       <allowmultiple/>
       <forbidden>
@@ -391,6 +397,9 @@
       <category>Entertainment - Service</category>
       <lp>1</lp>
       <cost>400</cost>
+      <bonus>
+        <selecttext />
+      </bonus>
       <allowed>High,Luxury</allowed>
       <allowmultiple/>
       <forbidden>
@@ -1030,6 +1039,9 @@
       <name>Safety Third</name>
       <category>Negative</category>
       <lp>-1</lp>
+      <bonus>
+        <selecttext />
+      </bonus>
       <allowmultiple/>
       <required>
         <oneof>

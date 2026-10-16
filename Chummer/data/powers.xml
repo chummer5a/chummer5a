@@ -1541,7 +1541,6 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-      <action>Simple</action>
       <adeptway>0.5</adeptway>
     </power>
     <power>
@@ -1670,7 +1669,7 @@
       <limit>1</limit>
       <source>HT</source>
       <page>190</page>
-      <action>Complex</action>
+      <action>Simple</action>
       <adeptway>0.5</adeptway>
       <bonus>
         <selectspell ignorerequirements="True" />
