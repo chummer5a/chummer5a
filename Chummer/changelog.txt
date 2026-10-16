@@ -115,7 +115,7 @@ Life Modules:
 - Updated source for lifemodules from The Complete Trog to correct shortcode (TCT instead of TCG).
 
 Character Sheets and Export:
-- The German, French, Japanese, Portuguese, and Chinese Fancy Fours sheets are hidden for now, since only the English template exists. Selecting them caused a "File not found" error.
+- Added the missing German, French, Japanese, Portuguese, and Chinese Fancy Fours sheets. Selecting Fancy Fours in those languages caused a "File not found" error. The Fancy Fours sheet files are now also included in the build output.
 - The full names of gear items excluding their quantity labels are now also exported as "fullname_noqty" and "fullname_noqty_english" for native and English versions, respectively. This can help sheets and other export data processors display full gear names separate from their quantities if/where that is needed.
 - Standardized the display of full names for gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and qualities across all sheets. All full names will now be shown in the same format that they would be displayed in the program.
 - Fixed issues where various sheets would be missing parts of full names of certain gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and/or qualities.
