@@ -44,6 +44,8 @@ namespace Chummer
                 int intBufferSize = Utils.MaxParallelBatchSize;
                 if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
                     intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                    intBufferSize = Math.Min(intBufferSize, lstItemsCollection2.Count);
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
@@ -91,6 +93,8 @@ namespace Chummer
                 int intBufferSize = Utils.MaxParallelBatchSize;
                 if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
                     intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                    intBufferSize = Math.Min(intBufferSize, lstItemsCollection2.Count);
                 using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                 {
                     token.ThrowIfCancellationRequested();
@@ -442,6 +446,11 @@ namespace Chummer
                     lstReturn = new List<TResult>(lstItemsCollection.Count);
                     intBufferSize = Math.Min(lstItemsCollection.Count, intBufferSize);
                 }
+                else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                {
+                    lstReturn = new List<TResult>(lstItemsCollection2.Count);
+                    intBufferSize = Math.Min(lstItemsCollection2.Count, intBufferSize);
+                }
                 else
                 {
                     lstReturn = new List<TResult>(intBufferSize);
@@ -500,6 +509,11 @@ namespace Chummer
                 {
                     lstReturn = new List<TResult>(lstItemsCollection.Count);
                     intBufferSize = Math.Min(lstItemsCollection.Count, intBufferSize);
+                }
+                else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                {
+                    lstReturn = new List<TResult>(lstItemsCollection2.Count);
+                    intBufferSize = Math.Min(lstItemsCollection2.Count, intBufferSize);
                 }
                 else
                 {
@@ -926,6 +940,8 @@ namespace Chummer
                         int intBufferSize = Utils.MaxParallelBatchSize;
                         if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
                             intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                            intBufferSize = Math.Min(intBufferSize, lstItemsCollection2.Count);
                         using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
@@ -1168,6 +1184,11 @@ namespace Chummer
                         {
                             lstReturn = new List<TResult>(lstItemsCollection.Count);
                             intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        }
+                        else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                        {
+                            lstReturn = new List<TResult>(lstItemsCollection2.Count);
+                            intBufferSize = Math.Min(lstItemsCollection2.Count, intBufferSize);
                         }
                         else
                             lstReturn = new List<TResult>(intBufferSize);
@@ -1535,6 +1556,8 @@ namespace Chummer
                         int intBufferSize = Utils.MaxParallelBatchSize;
                         if (lstItems is IReadOnlyCollection<TSource> lstItemsCollection)
                             intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                            intBufferSize = Math.Min(intBufferSize, lstItemsCollection2.Count);
                         using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstBuffer))
                         {
                             token.ThrowIfCancellationRequested();
@@ -1777,6 +1800,11 @@ namespace Chummer
                         {
                             lstReturn = new List<TResult>(lstItemsCollection.Count);
                             intBufferSize = Math.Min(intBufferSize, lstItemsCollection.Count);
+                        }
+                        else if (lstItems is ICollection<TSource> lstItemsCollection2)
+                        {
+                            lstReturn = new List<TResult>(lstItemsCollection2.Count);
+                            intBufferSize = Math.Min(lstItemsCollection2.Count, intBufferSize);
                         }
                         else
                             lstReturn = new List<TResult>(intBufferSize);
