@@ -1117,12 +1117,12 @@
             <metavariant>
               <name>Satyr</name>
               <value>6</value>
-              <karma>60</karma>
+              <karma>40</karma>
             </metavariant>
             <metavariant>
               <name>Troll</name>
               <value>6</value>
-              <karma>60</karma>
+              <karma>40</karma>
             </metavariant>
             <metavariant>
               <name>Cyclops</name>
@@ -1137,12 +1137,12 @@
             <metavariant>
               <name>Giant</name>
               <value>6</value>
-              <karma>60</karma>
+              <karma>40</karma>
             </metavariant>
             <metavariant>
               <name>Minotaur</name>
               <value>6</value>
-              <karma>60</karma>
+              <karma>40</karma>
             </metavariant>
           </metavariants>
         </metatype>
@@ -1695,7 +1695,7 @@
             <metavariant>
               <name>Nocturna</name>
               <value>6</value>
-              <karma>5</karma>
+              <karma>10</karma>
             </metavariant>
             <metavariant>
               <name>Wakyambi</name>
@@ -1705,7 +1705,7 @@
             <metavariant>
               <name>Xapiri Thëpë</name>
               <value>6</value>
-              <karma>3</karma>
+              <karma>8</karma>
             </metavariant>
             <metavariant>
               <name>Dwarf</name>
@@ -1812,7 +1812,7 @@
             <metavariant>
               <name>Nocturna</name>
               <value>6</value>
-              <karma>5</karma>
+              <karma>10</karma>
             </metavariant>
             <metavariant>
               <name>Wakyambi</name>
@@ -1822,7 +1822,7 @@
             <metavariant>
               <name>Xapiri Thëpë</name>
               <value>6</value>
-              <karma>3</karma>
+              <karma>8</karma>
             </metavariant>
             <metavariant>
               <name>Dwarf</name>
@@ -4004,12 +4004,12 @@
             <metavariant>
               <name>Satyr</name>
               <value>2</value>
-              <karma>20</karma>
+              <karma>40</karma>
             </metavariant>
             <metavariant>
               <name>Troll</name>
               <value>2</value>
-              <karma>20</karma>
+              <karma>40</karma>
             </metavariant>
             <metavariant>
               <name>Cyclops</name>
@@ -4024,12 +4024,12 @@
             <metavariant>
               <name>Giant</name>
               <value>2</value>
-              <karma>20</karma>
+              <karma>40</karma>
             </metavariant>
             <metavariant>
               <name>Minotaur</name>
               <value>2</value>
-              <karma>20</karma>
+              <karma>40</karma>
             </metavariant>
           </metavariants>
         </metatype>

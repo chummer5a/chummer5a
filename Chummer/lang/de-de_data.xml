@@ -26171,7 +26171,7 @@
       </mentor>
       <mentor translated="True">
         <id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
-        <name>Architect</name>
+        <name>Architect (The Builder)</name>
         <translate>Architekt (Der Baumeister)</translate>
         <altadvantage>+1 auf Limit und Würfel bei der Handlung Datei Editieren und der Komplexen Form Editor</altadvantage>
         <altdisadvantage>-1 auf Limit und Würfel bei der Handlung Übertragung Abfangen</altdisadvantage>
@@ -26179,7 +26179,7 @@
       </mentor>
       <mentor translated="True">
         <id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
-        <name>Archivist (The Record Keeper)</name>
+        <name>Archivist (The Secret Keeper)</name>
         <translate>Archivar (Der Geheimniswahrer)</translate>
         <altadvantage>+1 auf Limit und Würfel bei der Handlung Matrixsuche und sonstiger digitaler Beinarbeit</altadvantage>
         <altdisadvantage>-1 auf Limit bei der Handlung Datei Editieren und der Komplexen Form Editor, wenn dadurch Daten vernichtet werden</altdisadvantage>
@@ -39565,8 +39565,8 @@
       </tradition>
       <tradition translated="True">
         <id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
-        <name>Svetoid</name>
-        <translate>Svetoid</translate>
+        <name>Svetovid</name>
+        <translate>Svetovid</translate>
         <altpage>115</altpage>
       </tradition>
       <tradition>

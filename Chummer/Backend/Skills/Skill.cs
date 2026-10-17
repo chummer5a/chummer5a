@@ -2963,6 +2963,16 @@ namespace Chummer.Backend.Skills
                                 SkillSpecialization objLoopSpec = GetSpecialization(objImprovement.Condition, token);
                                 if (objLoopSpec != null)
                                     decLoop += objLoopSpec.SpecializationBonus;
+                                else
+                                {
+                                    string strConditionAsString = LanguageManager.GetString(objImprovement.Condition, GlobalSettings.DefaultLanguage, false, token);
+                                    if (!string.IsNullOrEmpty(strConditionAsString))
+                                    {
+                                        objLoopSpec = GetSpecialization(strConditionAsString, token);
+                                        if (objLoopSpec != null)
+                                            decLoop += objLoopSpec.SpecializationBonus;
+                                    }
+                                }
                                 
                                 if (decLoop > decLoopMaxValue)
                                 {
@@ -3015,7 +3025,17 @@ namespace Chummer.Backend.Skills
                                 SkillSpecialization objLoopSpec = await GetSpecializationAsync(objImprovement.Condition, token).ConfigureAwait(false);
                                 if (objLoopSpec != null)
                                     decLoop += await objLoopSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
-                                
+                                else
+                                {
+                                    string strConditionAsString = await LanguageManager.GetStringAsync(objImprovement.Condition, GlobalSettings.DefaultLanguage, false, token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strConditionAsString))
+                                    {
+                                        objLoopSpec = await GetSpecializationAsync(strConditionAsString, token).ConfigureAwait(false);
+                                        if (objLoopSpec != null)
+                                            decLoop += await objLoopSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                    }
+                                }
+
                                 if (decLoop > decLoopMaxValue)
                                 {
                                     decMaxConditionalValue = objImprovement.Value;
@@ -3035,7 +3055,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        public IEnumerable<Improvement> RelevantImprovements(string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
         {
             using (LockObject.EnterReadLock(token))
             {
@@ -3046,8 +3066,10 @@ namespace Chummer.Backend.Skills
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
-                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
+                    if (!objImprovement.Enabled)
+                        continue;
+                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
+                        continue;
                     switch (objImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.SwapSkillAttribute:
@@ -3166,7 +3188,284 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        public IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        {
+            using (LockObject.EnterReadLock(token))
+            {
+                token.ThrowIfCancellationRequested();
+                string strNameToUse = DictionaryKey;
+                if (string.IsNullOrEmpty(strUseAttribute))
+                    strUseAttribute = Attribute;
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
+                        continue;
+                    if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
+                        continue;
+                    switch (objImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.SwapSkillAttribute:
+                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                            if (objImprovement.Target == strNameToUse)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SkillDisable:
+                        case Improvement.ImprovementType.SkillEnableMovement:
+                            if (objImprovement.ImprovedName == strNameToUse)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.BlockSkillDefault:
+                        case Improvement.ImprovementType.AllowSkillDefault:
+                            if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                objImprovement.ImprovedName == strNameToUse)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupDisable:
+                            if (objImprovement.ImprovedName == SkillGroup &&
+                                !objImprovement.Exclude.Contains(strNameToUse) &&
+                                !objImprovement.Exclude.Contains(SkillCategory))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SkillCategory:
+                            if (objImprovement.ImprovedName == SkillCategory &&
+                                !objImprovement.Exclude.Contains(strNameToUse))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SkillAttribute:
+                            if (objImprovement.ImprovedName == strUseAttribute &&
+                                !objImprovement.Exclude.Contains(strNameToUse))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SkillLinkedAttribute:
+                            if (objImprovement.ImprovedName == Attribute &&
+                                !objImprovement.Exclude.Contains(strNameToUse))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                            if (objImprovement.ImprovedName == SkillCategory)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.BlockSkillGroupDefault:
+                            if (objImprovement.ImprovedName == SkillGroup)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.EnhancedArticulation:
+                            if (SkillCategory == "Physical Active" &&
+                                AttributeSection.PhysicalAttributes.Contains(Attribute))
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+                    }
+                }
+            }
+        }
+
+        public async Task<List<Improvement>> RelevantImprovementsAsync(string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strUseAttribute))
+                    strUseAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
+                List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
+                await lstImprovements.ForEachWithBreakAsync(
+                    async (objImprovement, t) =>
+                    {
+                        if (!objImprovement.Enabled)
+                            return true;
+                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
+                            return true;
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.Skill:
+                            case Improvement.ImprovementType.SkillDisable:
+                            case Improvement.ImprovementType.SkillEnableMovement:
+                                if (objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                            case Improvement.ImprovementType.AllowSkillDefault:
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                    objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
+                                if (objImprovement.ImprovedName == SkillGroup &&
+                                    !objImprovement.Exclude.Contains(strNameToUse) &&
+                                    !objImprovement.Exclude.Contains(SkillCategory))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == strUseAttribute &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillLinkedAttribute:
+                                if (objImprovement.ImprovedName == await GetAttributeAsync(t).ConfigureAwait(false) &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                                if (objImprovement.ImprovedName == SkillCategory)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillGroupDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (SkillCategory == "Physical Active" &&
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(t).ConfigureAwait(false)))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+                        }
+
+                        return true;
+                    }, token).ConfigureAwait(false);
+
+                return lstReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3181,6 +3480,442 @@ namespace Chummer.Backend.Skills
                     async (objImprovement, t) =>
                     {
                         if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
+                            return true;
+                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
+                            return true;
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.Skill:
+                            case Improvement.ImprovementType.SkillDisable:
+                            case Improvement.ImprovementType.SkillEnableMovement:
+                                if (objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                            case Improvement.ImprovementType.AllowSkillDefault:
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                    objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
+                                if (objImprovement.ImprovedName == SkillGroup &&
+                                    !objImprovement.Exclude.Contains(strNameToUse) &&
+                                    !objImprovement.Exclude.Contains(SkillCategory))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == strUseAttribute &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillLinkedAttribute:
+                                if (objImprovement.ImprovedName == await GetAttributeAsync(t).ConfigureAwait(false) &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                                if (objImprovement.ImprovedName == SkillCategory)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillGroupDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (SkillCategory == "Physical Active" &&
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(t).ConfigureAwait(false)))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+                        }
+
+                        return true;
+                    }, token).ConfigureAwait(false);
+
+                return lstReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, Task<bool>> funcWherePredicate, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strUseAttribute))
+                    strUseAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
+                List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
+                await lstImprovements.ForEachWithBreakAsync(
+                    async (objImprovement, t) =>
+                    {
+                        if (!objImprovement.Enabled)
+                            return true;
+                        if (funcWherePredicate != null && !await funcWherePredicate.Invoke(objImprovement).ConfigureAwait(false))
+                            return true;
+                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
+                            return true;
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.Skill:
+                            case Improvement.ImprovementType.SkillDisable:
+                            case Improvement.ImprovementType.SkillEnableMovement:
+                                if (objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                            case Improvement.ImprovementType.AllowSkillDefault:
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                    objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
+                                if (objImprovement.ImprovedName == SkillGroup &&
+                                    !objImprovement.Exclude.Contains(strNameToUse) &&
+                                    !objImprovement.Exclude.Contains(SkillCategory))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == strUseAttribute &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillLinkedAttribute:
+                                if (objImprovement.ImprovedName == await GetAttributeAsync(t).ConfigureAwait(false) &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                                if (objImprovement.ImprovedName == SkillCategory)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillGroupDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (SkillCategory == "Physical Active" &&
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(t).ConfigureAwait(false)))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+                        }
+
+                        return true;
+                    }, token).ConfigureAwait(false);
+
+                return lstReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, CancellationToken, bool> funcWherePredicate, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strUseAttribute))
+                    strUseAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
+                List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
+                await lstImprovements.ForEachWithBreakAsync(
+                    async (objImprovement, t) =>
+                    {
+                        if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement, t) == false)
+                            return true;
+                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
+                            return true;
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.Skill:
+                            case Improvement.ImprovementType.SkillDisable:
+                            case Improvement.ImprovementType.SkillEnableMovement:
+                                if (objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                            case Improvement.ImprovementType.AllowSkillDefault:
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
+                                    objImprovement.ImprovedName == strNameToUse)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillGroup:
+                            case Improvement.ImprovementType.SkillGroupDisable:
+                                if (objImprovement.ImprovedName == SkillGroup &&
+                                    !objImprovement.Exclude.Contains(strNameToUse) &&
+                                    !objImprovement.Exclude.Contains(SkillCategory))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == strUseAttribute &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.SkillLinkedAttribute:
+                                if (objImprovement.ImprovedName == await GetAttributeAsync(t).ConfigureAwait(false) &&
+                                    !objImprovement.Exclude.Contains(strNameToUse))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                                if (objImprovement.ImprovedName == SkillCategory)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillGroupDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (SkillCategory == "Physical Active" &&
+                                    AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(t).ConfigureAwait(false)))
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+                        }
+
+                        return true;
+                    }, token).ConfigureAwait(false);
+
+                return lstReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, CancellationToken, Task<bool>> funcWherePredicate, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strUseAttribute))
+                    strUseAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
+                List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
+                await lstImprovements.ForEachWithBreakAsync(
+                    async (objImprovement, t) =>
+                    {
+                        if (!objImprovement.Enabled)
+                            return true;
+                        if (funcWherePredicate != null && !await funcWherePredicate.Invoke(objImprovement, t).ConfigureAwait(false))
                             return true;
                         if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
                             return true;
@@ -5811,7 +6546,7 @@ namespace Chummer.Backend.Skills
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
                 List<Improvement> lstRelevantImprovements =
-                    await RelevantImprovementsAsync(null, abbrev, true, token: token).ConfigureAwait(false);
+                    await RelevantImprovementsAsync(abbrev, true, token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {

@@ -195,6 +195,7 @@
       <required>
         <oneof>
           <art>Psychometry</art>
+          <quality>The Spiritual Way</quality>
         </oneof>
       </required>
       <source>SG</source>
@@ -211,7 +212,7 @@
         </allof>
       </required>
       <source>SG</source>
-      <page>145</page>
+      <page>147</page>
     </metamagic>
     <metamagic>
       <id>fdea34cc-5ffd-4f93-a80a-f1973c08a2c3</id>
@@ -598,8 +599,8 @@
           <quality extra="Horse">Mentor Spirit</quality>
         </allof>
       </required>
-      <source>SR5</source>
-      <page>399</page>
+      <source>HS</source>
+      <page>46</page>
     </metamagic>
     <!-- End Region -->
     <!-- Region Forbidden Arcana -->
@@ -618,6 +619,14 @@
       <magician>True</magician>
       <source>FA</source>
       <page>44</page>
+    </metamagic>
+    <metamagic>
+      <id>a67865b9-054c-4111-a9b5-8e0d5fff943e</id>
+      <name>Paradigm Shift</name>
+      <adept>False</adept>
+      <magician>True</magician>
+      <source>FA</source>
+      <page>43</page>
     </metamagic>
     <metamagic>
       <id>0b136740-8728-4c05-86f1-ddaf9368c0a8</id>
@@ -719,7 +728,7 @@
       <id>4eab0dc3-a040-42b1-a21e-552047ed27af</id>
       <name>Harmonious Defense</name>
       <adept>True</adept>
-      <magician>True</magician>
+      <magician>False</magician>
       <required>
         <allof>
           <martialart>Way of Unified Mana (Hapsum-Do)</martialart>
@@ -732,7 +741,7 @@
       <id>680743d7-d474-4042-abbf-ea905eedc0de</id>
       <name>Harmonious Reflection</name>
       <adept>True</adept>
-      <magician>True</magician>
+      <magician>False</magician>
       <required>
         <allof>
           <martialart>Way of Unified Mana (Hapsum-Do)</martialart>

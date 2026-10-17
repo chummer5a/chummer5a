@@ -640,7 +640,7 @@ namespace Chummer.Backend.Skills
                     decimal decBonus = 0;
                     string strName = Name;
                     foreach (Improvement objImprovement in Parent.RelevantImprovements(
-                                 x => x.Condition == strName && !x.AddToRating, blnIncludeConditionals: true))
+                                 x => !x.AddToRating && (x.Condition == strName || x.DisplayCondition(GlobalSettings.DefaultLanguage) == strName), blnIncludeConditionals: true))
                     {
                         switch (objImprovement.ImproveType)
                         {
@@ -686,7 +686,8 @@ namespace Chummer.Backend.Skills
                 decimal decBonus = 0;
                 string strName = await GetNameAsync(token).ConfigureAwait(false);
                 foreach (Improvement objImprovement in await Parent.RelevantImprovementsAsync(
-                                                                       x => x.Condition == strName && !x.AddToRating,
+                                                                       async (x, t) => !x.AddToRating && (x.Condition == strName
+                                                                        || await x.DisplayConditionAsync(GlobalSettings.DefaultLanguage, t).ConfigureAwait(false) == strName),
                                                                        blnIncludeConditionals: true, token: token)
                                                                    .ConfigureAwait(false))
                 {

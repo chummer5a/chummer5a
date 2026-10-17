@@ -742,6 +742,9 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <bonus>
+            <lifestylecost>20</lifestylecost>
+          </bonus>
           <qualities>
             <positive>
               <quality>Resistance to Pathogens</quality>
@@ -2199,11 +2202,11 @@
               <quality>Multiprocessing</quality>
               <quality>Photographic Memory</quality>
               <quality>Speed Reading</quality>
-              <quality>Real World Naiveté</quality>
             </positive>
             <negative>
               <quality>Uncouth</quality>
               <quality select="Original Programming">Driven</quality>
+              <quality>Real World Naiveté</quality>
             </negative>
           </qualities>
           <bonus>
@@ -2238,9 +2241,9 @@
           <chamin>1</chamin>
           <chamax>4</chamax>
           <chaaug>8</chaaug>
-          <intmin>2</intmin>
-          <intmax>7</intmax>
-          <intaug>11</intaug>
+          <intmin>3</intmin>
+          <intmax>8</intmax>
+          <intaug>12</intaug>
           <logmin>1</logmin>
           <logmax>4</logmax>
           <logaug>8</logaug>
@@ -2384,12 +2387,12 @@
               <quality>Inherent Program</quality>
               <quality>Munge</quality>
               <quality>Redundancy</quality>
-              <quality>Real World Naiveté</quality>
             </positive>
             <negative>
               <quality>Uncouth</quality>
               <quality>Uneducated</quality>
               <quality select="Original Programming">Driven</quality>
+              <quality>Real World Naiveté</quality>
             </negative>
           </qualities>
           <bonus>
@@ -3256,7 +3259,7 @@
           <initiativedice>1</initiativedice>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
             <enableattribute>
               <name>MAG</name>
@@ -3333,7 +3336,7 @@
           <initiativedice>1</initiativedice>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
-          <sprint alt="1/1/0">4/1/0</sprint>
+          <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
@@ -3416,6 +3419,9 @@
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <enableattribute>
@@ -3488,6 +3494,9 @@
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <enableattribute>
@@ -3558,6 +3567,9 @@
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <enableattribute>
@@ -3630,6 +3642,7 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
@@ -3701,6 +3714,9 @@
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Satyr Legs</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <karma>120</karma>
           <bonus>
@@ -3772,6 +3788,9 @@
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
@@ -3848,6 +3867,7 @@
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
@@ -3921,6 +3941,9 @@
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
@@ -3993,6 +4016,9 @@
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
@@ -4065,6 +4091,9 @@
               <quality>Goring Horns</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <reach>1</reach>
@@ -4206,7 +4235,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4291,7 +4320,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4372,7 +4401,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4456,7 +4485,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4543,7 +4572,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4627,7 +4656,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4685,7 +4714,7 @@
           <depmax>0</depmax>
           <depaug>0</depaug>
           <initiativedice>1</initiativedice>
-          <walk alt="2/1/0">1/1/0</walk>
+          <walk alt="2/1/0">2/1/0</walk>
           <run alt="4/1/0">6/1/0</run>
           <sprint alt="2/1/0">3/1/0</sprint>
           <powers>
@@ -4709,7 +4738,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4793,7 +4822,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4879,7 +4908,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -4967,7 +4996,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5055,7 +5084,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5141,7 +5170,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5223,7 +5252,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5307,7 +5336,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5388,7 +5417,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5472,7 +5501,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5553,7 +5582,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5639,7 +5668,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5727,7 +5756,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5812,7 +5841,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5897,7 +5926,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -5983,7 +6012,7 @@
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
-              <page>104</page>
+              <page>105</page>
             </naturalweapon>
             <enableattribute>
               <name>MAG</name>
@@ -6346,8 +6375,8 @@
         <metavariant>
           <id>98098ae3-d537-48d1-af19-cf97368913cf</id>
           <name>Nocturna</name>
-          <bodmin>121</bodmin>
           <karma>125</karma>
+          <bodmin>1</bodmin>
           <bodmax>5</bodmax>
           <bodaug>9</bodaug>
           <agimin>3</agimin>
@@ -6399,7 +6428,6 @@
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
@@ -7597,6 +7625,9 @@
               <quality>Keen-Eared</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <enableattribute>
@@ -7814,7 +7845,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -7824,9 +7855,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -7908,7 +7939,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -7918,9 +7949,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8001,7 +8032,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8011,9 +8042,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8095,7 +8126,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8105,9 +8136,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8192,7 +8223,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8202,9 +8233,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8286,7 +8317,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8296,9 +8327,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8380,7 +8411,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8390,9 +8421,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8476,7 +8507,7 @@
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8486,9 +8517,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8571,7 +8602,7 @@
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8581,9 +8612,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8668,7 +8699,7 @@
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8678,9 +8709,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8765,7 +8796,7 @@
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8775,9 +8806,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8863,7 +8894,7 @@
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8873,9 +8904,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -8956,7 +8987,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -8966,9 +8997,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9051,7 +9082,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9061,9 +9092,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9144,7 +9175,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9154,9 +9185,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9238,7 +9269,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9248,9 +9279,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9331,7 +9362,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9341,9 +9372,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9428,7 +9459,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9438,9 +9469,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9525,7 +9556,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9535,9 +9566,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9620,7 +9651,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9630,9 +9661,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9715,7 +9746,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9725,9 +9756,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9811,7 +9842,7 @@
             </enabletab>
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
-              <reach>0</reach>
+              <reach>-1</reach>
               <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
@@ -9821,9 +9852,9 @@
             </naturalweapon>
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
-              <reach>-1</reach>
-              <damage>({STR}+1)P</damage>
-              <ap>-1</ap>
+              <reach>0</reach>
+              <damage>({STR})P</damage>
+              <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -9961,7 +9992,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10057,7 +10088,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10151,7 +10182,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10246,7 +10277,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10344,7 +10375,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10439,7 +10470,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10534,7 +10565,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10631,7 +10662,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10728,7 +10759,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10827,7 +10858,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10926,7 +10957,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11024,7 +11055,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11118,7 +11149,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11198,6 +11229,7 @@
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11213,7 +11245,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11307,7 +11339,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11402,7 +11434,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11496,7 +11528,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11595,7 +11627,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11695,7 +11727,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11792,7 +11824,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11889,7 +11921,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11986,7 +12018,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12135,7 +12167,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12221,7 +12253,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12305,7 +12337,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12390,7 +12422,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12478,7 +12510,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12563,7 +12595,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12648,7 +12680,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12735,7 +12767,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12806,7 +12838,6 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12823,7 +12854,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12894,7 +12925,6 @@
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
             </positive>
@@ -12913,7 +12943,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13002,7 +13032,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13091,7 +13121,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13176,7 +13206,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13246,6 +13276,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13261,7 +13292,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13345,7 +13376,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13430,7 +13461,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13514,7 +13545,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13600,7 +13631,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13690,7 +13721,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13778,7 +13809,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13865,7 +13896,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13952,7 +13983,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14103,7 +14134,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14199,7 +14230,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14293,7 +14324,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14388,7 +14419,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14486,7 +14517,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14581,7 +14612,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14676,7 +14707,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14773,7 +14804,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14870,7 +14901,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14969,7 +15000,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15068,7 +15099,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15167,7 +15198,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15262,7 +15293,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15332,6 +15363,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
               <quality>Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -15357,7 +15389,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15451,7 +15483,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15546,7 +15578,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15640,7 +15672,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15736,7 +15768,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15836,7 +15868,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15933,7 +15965,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16030,7 +16062,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16127,7 +16159,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>({STR}+2)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16279,7 +16311,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16375,7 +16407,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16469,7 +16501,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16564,7 +16596,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16662,7 +16694,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16757,7 +16789,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16852,7 +16884,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -16949,7 +16981,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17046,7 +17078,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17145,7 +17177,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17244,7 +17276,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17302,6 +17334,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
+          <initiativedice>2</initiativedice>
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">5/1/0</run>
           <sprint alt="1/1/0">2/1/0</sprint>
@@ -17343,7 +17376,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17437,7 +17470,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17506,6 +17539,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -17532,7 +17566,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17626,7 +17660,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17721,7 +17755,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17815,7 +17849,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -17913,7 +17947,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -18012,7 +18046,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -18109,7 +18143,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -18206,7 +18240,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -18303,7 +18337,7 @@
               <name>Claws</name>
               <reach>1</reach>
               <damage>({STR}+1)P</damage>
-              <ap>0</ap>
+              <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
               <source>RF</source>
@@ -18348,7 +18382,7 @@
       <wilaug>9</wilaug>
       <inimin>2</inimin>
       <inimax>11</inimax>
-      <iniaug>29</iniaug>
+      <iniaug>19</iniaug>
       <edgmin>1</edgmin>
       <edgmax>5</edgmax>
       <edgaug>5</edgaug>
@@ -18816,7 +18850,7 @@
             <negative>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Shapeshifter Form Only">Nocturnal</quality>
-              <quality select="Shapeshifter Form Only">Uneducated</quality>
+              <quality removable="True" select="Shapeshifter Form Only">Uneducated</quality>
               <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
@@ -19200,7 +19234,6 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
@@ -19299,7 +19332,6 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
@@ -21142,10 +21174,10 @@
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality>Vomeronasal Organ</quality>
-            </positive>
-            <negative>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Elongated Limbs</quality>
+            </positive>
+            <negative>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -21317,7 +21349,6 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
@@ -21408,7 +21439,6 @@
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
@@ -24030,6 +24060,9 @@
               <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
               <quality select="Shapeshifter Form Only">Underwater Vision</quality>
             </positive>
+            <negative>
+              <quality removable="True">Uneducated</quality>
+            </negative>
           </qualities>
           <bonus>
             <enableattribute>
