@@ -1664,12 +1664,6 @@
       <cost>0</cost>
       <speed>0</speed>
       <vectors>Contact</vectors>
-      <bonus>
-        <attribute>
-          <name>WIL</name>
-          <value>-3</value>
-        </attribute>
-      </bonus>
     </drug>
     <!-- End Region -->
   </drugs>
