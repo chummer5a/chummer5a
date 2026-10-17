@@ -90,6 +90,8 @@ Powers:
 - Fixed incorrect format for improvement on Master Archer. Characters with this improvement will need to remove and re-add it to properly have it show the dicepool bonus for Bows.
 
 Qualities:
+- Corrected multiple qualities, including Juryrigger, Spirit Affinity, Fame, Rank, Day Job, the Infected qualities, Faceless, Chaser, Speed Demon, and Stunt Driver. Conditional bonuses from these qualities now show their condition in tooltips. Existing characters with these qualities will need to reapply improvements to see any changes.
+- Corrosive Spit now adds a Corrosive Spit weapon with its own range.
 - Fixed College Education, Linguist, School of Hard Knocks, Technical School Education, Jack of All Trades, and the War mentor not applying their skill karma discounts after improvement conditions were converted to `/character/created` XPath form.
 - Fixed the Double-Jointed and Combat Paralysis qualities not fetching their description from the PDF.
 - Dedicated Conjurer now prompts for extra summonable spirit types based on Summoning rating (one type per two full ranks, FA p.36). Raising Summoning later prompts for newly earned picks. Existing characers with this quality will need to use the Reapply Improvements menu to add the new improvement type. Closes #4712.
@@ -97,6 +99,7 @@ Qualities:
 - Fixed Traditionalist Shaman not being able to be added.
 
 Skills:
+- Security Companies is now linked to Intuition instead of Logic, and Pilot Exotic Vehicle now references SR5 p. 147.
 - Fixed a karma calculation bug if the character takes a skill that is not enabled by default for a skill group (ie Flight), adds ranks to the skill group, removes the improvement that grants the skill, then removes ranks from the skill group.
 - Added code to prevent improvements for skills that have 0 value from displaying in tooltips.
 - Fixed a bug that prevented dice pools for language skills from getting properly updated in some cases.
@@ -133,7 +136,28 @@ Traditions:
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
 
 Life Modules:
+- Corrected the skills, knowledge skills, qualities, and page references of multiple life modules, including Trans-Polar Aleut Nation, the military service modules, and the Azania modules.
 - Updated source for lifemodules from The Complete Trog to correct shortcode (TCT instead of TCG).
+
+Actions:
+- Added the Call a Shot, Dead Man's Trigger, Load Program, Unload Program, Swap Two Programs, Switch Two Matrix Attributes, Transfer Data, Terminate Data Transfer, Binding, Stunt, Cut-Off, and Catch-Up/Break Away actions.
+- Corrected multiple actions, including Reckless Spellcasting, Cast Spell, Suppressive Fire, Ramming, Data Spike, Jam Signals, Confuse Pilot, and several martial arts technique actions.
+
+Lifestyles:
+- Cleaning Service (Standard, Mage Sensitive, and Pollution Sensitive) and Safety Third now ask for a description, so multiple copies on the same lifestyle can be told apart.
+- Corrected multiple lifestyle qualities, including Bolt Hole, Traveler, Merchandise: Goods, Railway Pass, Maids/Manservants, and Escape Tunnel.
+
+Licenses:
+- Added the Combat Spell License and Technomancer License (SR5 p. 367).
+
+Martial Arts:
+- Knight Errant Tactical and Lone Star Tactical now add their specialization option to Pistols, Longarms, and Automatics, and Okichitaw now also adds it to Blades. Kick Attack's reach bonus no longer stacks with itself.
+
+Priorities:
+- Corrected the karma costs of several metavariants in the priority tables, including Satyr, Giant, Minotaur, Nocturna, and Xapiri Thëpë.
+
+Improvements:
+- The Block Skillgroup Defaulting custom improvement now uses the skill group picked in Create Improvement instead of asking a second time.
 
 Character Sheets and Export:
 - Added the missing German, French, Japanese, Portuguese, and Chinese Fancy Fours sheets. Selecting Fancy Fours in those languages caused a "File not found" error. The Fancy Fours sheet files are now also included in the build output.
@@ -166,6 +190,31 @@ Changed/New Strings:
 - MessageTitle_CustomDataDirectory_InvalidUpdateLocation
 - Message_CustomDataDirectory_InvalidUpdateLocation
 - String_CustomData_UpdateAvailableInList
+- LimitCondition_AttunedLocation
+- LimitCondition_ClimateArctic
+- LimitCondition_ClimateDesert
+- LimitCondition_CorporationMembers
+- LimitCondition_DirectingFourVehicles
+- LimitCondition_DirectingVehicle
+- LimitCondition_FaceNotDisguised
+- LimitCondition_FavorTarget
+- LimitCondition_GravityNonEarth
+- LimitCondition_HighSpeed
+- LimitCondition_Juryrigging
+- LimitCondition_MatrixAcquaintances
+- LimitCondition_NoFlotation
+- LimitCondition_OrganizationMembers
+- LimitCondition_PublicUnderAuthority
+- LimitCondition_SpiritChosen
+- LimitCondition_SpotSilentIconsInSight
+- LimitCondition_SpriteChosen
+- LimitCondition_SpriteCrack
+- LimitCondition_SpriteData
+- LimitCondition_SpriteFault
+- LimitCondition_SpriteGeneralist
+- LimitCondition_TestChase
+- LimitCondition_TestSocialOpposed
+- LimitCondition_TestVehicleStunt
 - String_CustomData_RemoteVersionAvailable
 - String_CustomData_UpdatesAvailableTitleSuffix
 - String_CustomData_UpdatesAvailableMenuSuffix

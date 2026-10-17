@@ -107,7 +107,7 @@
       <name>Mana Illusion Spell Defense</name>
       <type>No</type>
       <test>
-        <dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: MentalManipulationResist}</dice>
+        <dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: ManaIllusionResist}</dice>
       </test>
       <source>SR5</source>
       <page>290</page>
@@ -127,7 +127,7 @@
       <name>Mental Manipulation Spell Defense</name>
       <type>No</type>
       <test>
-        <dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: ManaIllusionResist}</dice>
+        <dice>{LOG} + {WIL} + {Improvement Value: SpellResistance} + {Improvement Value: MentalManipulationResist}</dice>
       </test>
       <source>SR5</source>
       <page>292</page>
@@ -226,7 +226,7 @@
     <action>
       <id>cf22cdfd-05d7-44b8-8b50-3b7d951dddfd</id>
       <name>Change Gun Mode (Linked Smartgun)</name>
-      <type>Simple</type>
+      <type>Free</type>
       <test>
         <dice>None</dice>
         <bonusstring>Change the firing mode of a readied firearm with a linked smartgun system.</bonusstring>
@@ -244,6 +244,76 @@
       </test>
       <source>SR5</source>
       <page>163</page>
+    </action>
+    <action>
+      <id>a632cacd-fb06-465d-b239-ed34bce7327c</id>
+      <name>Dead Man's Trigger</name>
+      <type>No</type>
+      <test>
+        <dice>{BOD} + {WIL} v. {Threshold: 3}</dice>
+        <bonusstring>Requires an Initiative Score of at least 1 and spending 1 Edge. On success, perform one final action of any kind (no movement) before dying or falling unconscious.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>197</page>
+    </action>
+    <action>
+      <id>b405b283-2ad7-44e3-be82-e7234eb3a558</id>
+      <name>Call a Shot</name>
+      <type>Free</type>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Combine with a Fire Weapon, Throw Weapon, or Melee Attack action. Called shots take a -4 dice pool modifier; see Called Shots (p. 178).</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>163</page>
+    </action>
+    <action>
+      <id>13979eec-c1a9-4606-811a-a80ac778eece</id>
+      <name>Switch Two Matrix Attributes</name>
+      <category>Matrix</category>
+      <type>Free</type>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Switch two of your deck's Matrix attributes. Only on your own Action Phase.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>228</page>
+    </action>
+    <action>
+      <id>895b8795-963b-4886-aba1-579801c61d53</id>
+      <name>Swap Two Programs</name>
+      <category>Matrix</category>
+      <type>Free</type>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Swap a running program with a stored program that is not running. Only on your own Action Phase.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>228</page>
+    </action>
+    <action>
+      <id>fe17c044-1a9e-4d18-b417-827458c0e8d0</id>
+      <name>Unload Program</name>
+      <category>Matrix</category>
+      <type>Free</type>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Unload a running program, leaving an open slot. Only on your own Action Phase.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>228</page>
+    </action>
+    <action>
+      <id>21ff587a-f4e7-4720-b402-02f8e36cc722</id>
+      <name>Load Program</name>
+      <category>Matrix</category>
+      <type>Free</type>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Load a program you own into an unused slot on your deck. Only on your own Action Phase.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>228</page>
     </action>
     <action>
       <id>69029e9c-c146-4a48-b8fe-d3991645c832</id>
@@ -617,7 +687,7 @@
       <name>Reckless Spellcasting (Decrease {BOD})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {BOD} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {BOD} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -629,7 +699,7 @@
       <name>Reckless Spellcasting (Decrease {AGI})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {AGI} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {AGI} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -641,7 +711,7 @@
       <name>Reckless Spellcasting (Decrease {REA})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {REA} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {REA} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -653,7 +723,7 @@
       <name>Reckless Spellcasting (Decrease {STR})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {STR} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {STR} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -665,7 +735,7 @@
       <name>Reckless Spellcasting (Decrease {CHA})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {CHA} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {CHA} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -677,7 +747,7 @@
       <name>Reckless Spellcasting (Decrease {INT})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {INT} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {INT} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -689,7 +759,7 @@
       <name>Reckless Spellcasting (Decrease {LOG})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {LOG} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {LOG} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -701,7 +771,7 @@
       <name>Reckless Spellcasting (Decrease {WIL})</name>
       <type>Simple</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {WIL} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {WIL} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {{Spell: Drain} + 3} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -747,7 +817,7 @@
       <type>Simple</type>
       <test>
         <dice>None</dice>
-        <bonusstring>Add +1 dice or +1 Accuracy to the character's next attack test. If using a smartgun, apply both bonuses. If using Vision Magnification, apply its effects instead. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
+        <bonusstring>Add +1 die or +1 Accuracy to the character's next attack test. If using a wireless smartgun, apply both bonuses. If using Vision Magnification, the first Take Aim action enables its effects instead of granting an aiming bonus. Bonuses are cumulative for up to {{{WIL} / 2} + {Improvement Value: TakeAimCount}} times. All bonuses are lost if any other action is taken, including a Free action.</bonusstring>
       </test>
       <source>SR5</source>
       <page>166</page>
@@ -816,7 +886,7 @@
       <test>
         <dice>{MAG} + {Banishing} v. {Spirit: Force}</dice>
         <limit>{Astral}</limit>
-        <bonusstring>On success, reduce target spirit's services by net hits. After action, take drain equal to twice the spirit's total hits with a minimum of 2 DV.</bonusstring>
+        <bonusstring>If the spirit is bound, its summoner's Magic is added to its dice pool. On success, reduce target spirit's services by net hits. After action, take drain equal to twice the spirit's total hits with a minimum of 2 DV.</bonusstring>
       </test>
       <source>SR5</source>
       <page>167</page>
@@ -852,7 +922,7 @@
       <test>
         <dice>{MAG} + {Spell: Spellcasting} v. {Action: Ranged Defense}</dice>
         <limit>{Spell: Force}</limit>
-        <bonusstring>Cast a spell. After action, resist {{Spell: Drain} with a minimum of 2 DV.</bonusstring>
+        <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
       <source>SR5</source>
       <page>167</page>
@@ -934,7 +1004,7 @@
       <name>Cast Spell (Decrease {BOD})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {BOD} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {BOD} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -946,7 +1016,7 @@
       <name>Cast Spell (Decrease {AGI})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {AGI} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {AGI} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -958,7 +1028,7 @@
       <name>Cast Spell (Decrease {REA})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {REA} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {REA} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -970,7 +1040,7 @@
       <name>Cast Spell (Decrease {STR})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {STR} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {STR} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -982,7 +1052,7 @@
       <name>Cast Spell (Decrease {CHA})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {CHA} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {CHA} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -994,7 +1064,7 @@
       <name>Cast Spell (Decrease {INT})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {INT} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {INT} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -1006,7 +1076,7 @@
       <name>Cast Spell (Decrease {LOG})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {LOG} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {LOG} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -1018,7 +1088,7 @@
       <name>Cast Spell (Decrease {WIL})</name>
       <type>Complex</type>
       <test>
-        <dice>{MAG} + {Spell: Spellcasting} v. {Decrease {WIL} Spell Defense}</dice>
+        <dice>{MAG} + {Spell: Spellcasting} v. {Action: Decrease {WIL} Spell Defense}</dice>
         <limit>{Spell: Force}</limit>
         <bonusstring>Cast a spell. After action, resist {Spell: Drain} with a minimum of 2 DV.</bonusstring>
       </test>
@@ -1066,9 +1136,9 @@
       <name>Suppressive Fire</name>
       <type>Complex</type>
       <test>
-        <dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
+        <dice>{AGI} + {Weapon: Skill}</dice>
         <limit>{Weapon: Accuracy}</limit>
-        <bonusstring>Fires 20 shots without recoil penalties. Select a 10m x 2m cross-section within weapon range to suppress. Suppression zone remains until the end of the combat turn unless the shooter moves or takes another action. On success, everyone in the zone must always resist {Weapon: DV} damage with an armor modifier of {Weapon: AP}, and they get a penalty to all actions equal to net hits.</bonusstring>
+        <bonusstring>Fires 20 shots without recoil penalties. Suppress a triangular zone within weapon range, 10m wide at its far end and 2m high. The zone remains until the end of the Combat Turn unless the shooter moves or takes another action. Anyone in or immediately adjacent to the zone takes a penalty to all actions equal to the shooter's hits unless unaware of the suppression. Exposed targets in the zone, or moving into or out of it, test {Action: Suppressive Fire Defense} against the shooter's hits. On failure, resist {Weapon: DV} damage with an armor modifier of {Weapon: AP}, without added net-hit damage. Cover or being prone avoids exposure.</bonusstring>
       </test>
       <source>SR5</source>
       <page>179</page>
@@ -1078,9 +1148,9 @@
       <name>Fire Mounted or Vehicle Weapon</name>
       <type>Complex</type>
       <test>
-        <dice>{AGI} + {Weapon: Skill}</dice>
-        <limit>{Max: {Weapon: Accuracy} or {Vehicle: Sensor}}</limit>
-        <bonusstring>Fires a vehicle-mounted weapon.</bonusstring>
+        <dice>{AGI} + {Gunnery}</dice>
+        <limit>{Weapon: Accuracy}</limit>
+        <bonusstring>Manual: {AGI} + {Gunnery} [{Weapon: Accuracy}]. Remote: {LOG} + {Gunnery} [{Weapon: Accuracy}]. Sensor targeting: {LOG} + {Gunnery} [{Vehicle: Sensor}], with signature modifiers. Autonomous drones use Pilot + Targeting [Accuracy].</bonusstring>
       </test>
       <source>SR5</source>
       <page>167</page>
@@ -1154,6 +1224,18 @@
       </test>
       <source>SR5</source>
       <page>167</page>
+    </action>
+    <action>
+      <id>ae2f9fd8-4375-48b1-aadb-1d187f13ed0d</id>
+      <name>Binding</name>
+      <type>Complex</type>
+      <test>
+        <dice>{MAG} + {Binding} v. 2 * {Spirit: Force}</dice>
+        <limit>{Spirit: Force}</limit>
+        <bonusstring>On success, the spirit is bound; net hits beyond the first add to its services. After action, take drain equal to twice the spirit's total hits with a minimum of 2 DV.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>300</page>
     </action>
     <action>
       <id>c6f2f038-8cca-4437-835a-7e24fe83cf77</id>
@@ -1312,6 +1394,7 @@
       <test>
         <dice>{INT} + {Perception} + {Target: {Improvement Value: DetectionModifier}} - 3 v. {AGI} + {Sneaking}</dice>
         <limit>{Vehicle: Sensor}</limit>
+        <defenselimit>{Physical}</defenselimit>
         <bonusstring>On success, if this is an active targeting, apply net hits as negative dicepool modifier to target's {Action: Ranged Defense} and {Action: Melee Defense}.</bonusstring>
       </test>
       <source>SR5</source>
@@ -1363,6 +1446,42 @@
       </test>
       <source>SR5</source>
       <page>203</page>
+    </action>
+    <action>
+      <id>2c0d5390-266f-4032-a315-7a5fa159f470</id>
+      <name>Stunt</name>
+      <type>Complex</type>
+      <test>
+        <dice>{REA} + {Vehicle: Skill}</dice>
+        <limit>{Max: {Vehicle: Speed} or {Vehicle: Handling}}</limit>
+        <bonusstring>Threshold set by the gamemaster from the environment and terrain. Limit is Speed in a Speed environment, Handling in a Handling environment. On failure, the vehicle goes out of control.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>204</page>
+    </action>
+    <action>
+      <id>e2f852f8-19eb-40c0-a375-aef5417cd7f6</id>
+      <name>Cut-Off</name>
+      <type>Complex</type>
+      <test>
+        <dice>{REA} + {Vehicle: Skill} v. {REA} + {Vehicle: Skill}</dice>
+        <limit>{Vehicle: Handling}</limit>
+        <bonusstring>Short range only. If the acting vehicle gets more hits, the target must make a Vehicle Test with a threshold equal to the net hits to avoid crashing.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>204</page>
+    </action>
+    <action>
+      <id>84db5f44-0599-40f0-9193-f9aca777e374</id>
+      <name>Catch-Up/Break Away</name>
+      <type>Complex</type>
+      <test>
+        <dice>{REA} + {Vehicle: Skill}</dice>
+        <limit>{Max: {Vehicle: Speed} or {Vehicle: Handling}}</limit>
+        <bonusstring>Maneuver threshold applies. Limit is Speed or Handling by environment. Shift one Range Category toward or away from the opponent per hit over the threshold, up to Acceleration.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>204</page>
     </action>
     <!-- End Region -->
     <!-- Region Matrix Actions -->
@@ -1471,7 +1590,7 @@
       <category>Matrix</category>
       <type>No</type>
       <test>
-        <dice>{LOG} + {Icon: Sleaze}</dice>
+        <dice>{LOG} + {Icon: Data Processing}</dice>
       </test>
       <source>SR5</source>
       <page>238</page>
@@ -1614,7 +1733,7 @@
       <test>
         <dice>{LOG} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
         <limit>{Icon: Attack}</limit>
-        <bonusstring>On success, target icon must resist {Icon: Attack} + net hits Matrix damage.</bonusstring>
+        <bonusstring>On success, target icon must resist {Icon: Attack} + net hits + 2 per mark on the target as Matrix damage.</bonusstring>
       </test>
       <source>SR5</source>
       <page>239</page>
@@ -1645,6 +1764,32 @@
       </test>
       <source>SR5</source>
       <page>239</page>
+    </action>
+    <action>
+      <id>ebba45ed-9b15-4462-8fd9-3f98b50bd211</id>
+      <name>Terminate Data Transfer</name>
+      <category>Matrix</category>
+      <type>Free</type>
+      <test>
+        <dice>{LOG} + {Computer} v. {Threshold: 1}</dice>
+        <limit>{Icon: Data Processing}</limit>
+        <bonusstring>Terminates a data transfer you initiated, or one by others if you have access on a node involved.</bonusstring>
+      </test>
+      <source>HKS</source>
+      <page>78</page>
+    </action>
+    <action>
+      <id>44c20912-59ec-42f5-9a8f-2cdca6a9aef1</id>
+      <name>Transfer Data</name>
+      <category>Matrix</category>
+      <type>Simple</type>
+      <test>
+        <dice>{LOG} + {Computer} v. {Action: INT Firewall Defense}</dice>
+        <limit>{Icon: Data Processing}</limit>
+        <bonusstring>Requires 1 mark. Transfers a file or set of files from one node or device to another with enough free storage.</bonusstring>
+      </test>
+      <source>HKS</source>
+      <page>78</page>
     </action>
     <action>
       <id>ed359afd-db47-47d1-9e4b-8d13e0396005</id>
@@ -1793,7 +1938,7 @@
       <test>
         <dice>None</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>The character hops to the target grid. If the character does not have access to the target grid through their lifestyle, they must gain 1 mark on it to perform this action.</bonusstring>
+        <bonusstring>The character hops to the target grid. Requires legitimate access to the target grid and leaving any current host first. Without legitimate access, use Brute Force or Hack on the Fly instead; no mark on the grid is required.</bonusstring>
       </test>
       <source>SR5</source>
       <page>240</page>
@@ -1884,7 +2029,7 @@
       <test>
         <dice>{LOG} + {Electronic Warfare}</dice>
         <limit>{Icon: Attack}</limit>
-        <bonusstring>Requires Owner marks on the target device. On success, the device increases the ambient noise penalty of all devices within a 100m radius by net hits.</bonusstring>
+        <bonusstring>Requires Owner marks on the device being used. On success, its hits increase noise for Matrix actions performed by or targeting devices within 100m. The effect lasts until that device is used for another Matrix action.</bonusstring>
       </test>
       <source>SR5</source>
       <page>240</page>
@@ -2076,7 +2221,7 @@
       <test>
         <dice>2 * {Icon: Rating} v. {Action: INT Firewall Defense}</dice>
         <limit>{Icon: Attack}</limit>
-        <bonusstring>On success, a running cyberprogram on the target persona crashes and cannot be run again until the target persona reboots.</bonusstring>
+        <bonusstring>Requires a mark on the target persona through the host. On success, a randomly selected running cyberprogram on the target persona crashes and cannot be run again until the target persona reboots.</bonusstring>
       </test>
       <source>SR5</source>
       <page>248</page>
@@ -2231,8 +2376,8 @@
       <type>Complex</type>
       <test>
         <dice>{RES} + {Decompiling} v. {Icon: Rating}</dice>
-        <limit>{Target: {Icon: Rating}}</limit>
-        <bonusstring>On success, reduce the target sprite's tasks by 1 for each net hit. After action, resist fading equal to twice the sprite's total hits with a minimum of 2 DV.</bonusstring>
+        <limit>{Social}</limit>
+        <bonusstring>If the sprite is registered, its compiler's Resonance is added to its dice pool. On success, reduce the target sprite's tasks by 1 for each net hit. After action, resist fading equal to twice the sprite's total hits with a minimum of 2 DV.</bonusstring>
       </test>
       <source>SR5</source>
       <page>250</page>
@@ -2330,7 +2475,7 @@
       <test>
         <dice>{RES} + {Hardware}</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>On success, sprite power succeeds against target device. The power consumes the sprite's complete attention while active.</bonusstring>
+        <bonusstring>On success, a character using or repairing the target device gets +1 limit and +1 die per hit as a Teamwork bonus. The power consumes the sprite's complete attention; the bonus ends when it drops the power or does something else.</bonusstring>
       </test>
       <source>SR5</source>
       <page>257</page>
@@ -2342,7 +2487,7 @@
       <test>
         <dice>{RES} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
         <limit>{Icon: Attack}</limit>
-        <bonusstring>On success, sprite power succeeds against target persona. The power remains until the sprite takes any Matrix damage.</bonusstring>
+        <bonusstring>On success, the target persona takes {RES} DV Matrix damage, resisted normally, immediately and on each subsequent action the sprite takes while sustaining the power. The target also suffers 2 noise. All of the sprite's electron storms end if it takes any Matrix damage.</bonusstring>
       </test>
       <source>SR5</source>
       <page>257</page>
@@ -2352,7 +2497,7 @@
       <name>Sprite Power: Gremlins</name>
       <type>Complex</type>
       <test>
-        <dice>{RES} + {Hardware} v. {Icon}</dice>
+        <dice>{RES} + {Hardware} v. {Target: {Icon: Rating}} + {Target: {Icon: Firewall}}</dice>
         <limit>{Icon: Attack}</limit>
         <bonusstring>On success, sprite power succeeds against target device and immediately causes it to suffer a glitch; if 4 or more net hits were obtained, this is upgraded to a critical glitch.</bonusstring>
       </test>
@@ -2368,10 +2513,10 @@
       <test>
         <dice>{LOG} + {Electronic Warfare}</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>On success, add 1 noise reduction per net hit until the end of the combat turn.</bonusstring>
+        <bonusstring>Requires an RCC. On success, add 1 noise reduction per hit until the end of the Combat Turn, cumulative with other noise reduction.</bonusstring>
       </test>
       <source>SR5</source>
-      <page>257</page>
+      <page>268</page>
     </action>
     <!-- End Region -->
     <!-- Region Magic-Specific Actions -->
@@ -2390,7 +2535,7 @@
     <action>
       <id>40d06d20-e124-4a80-aee3-16352d02d3ba</id>
       <name>Assense</name>
-      <type>Complex</type>
+      <type>Simple</type>
       <test>
         <dice>{INT} + {Assensing}</dice>
         <limit>{Astral}</limit>
@@ -2409,7 +2554,7 @@
         <bonusstring>On success, pass through the barrier, and the character may bring one magically-active entity with them per net hit.</bonusstring>
       </test>
       <source>SR5</source>
-      <page>312</page>
+      <page>316</page>
     </action>
     <!-- End Region -->
     <!-- Region Misc. Actions -->
@@ -2445,9 +2590,9 @@
       <name>Aimed Burst</name>
       <type>Complex</type>
       <test>
-        <dice>{Action: Fire Long Burst} v. {Ranged Defense}</dice>
+        <dice>{Action: Fire Long Burst} v. {Action: Ranged Defense}</dice>
         <limit>{Weapon: Accuracy}</limit>
-        <bonusstring>+1 DV. Fires 3 shots instead of 6.</bonusstring>
+        <bonusstring>Requires a Burst Fire-capable weapon. +1 DV. Fires 3 shots instead of 6; the target takes no burst-fire Defense penalty.</bonusstring>
       </test>
       <source>RG</source>
       <page>119</page>
@@ -2460,7 +2605,7 @@
       <test>
         <dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
         <limit>{Weapon: Limit}</limit>
-        <bonusstring>+1 Reach. After action, -1 to all Defense tests until next action phase and cannot use Active Defense techniques until next action phase.</bonusstring>
+        <bonusstring>Requires a club or blade and Martial Art training. +1 Reach. After action, -1 to all Defense tests and cannot use Active Defense techniques until after the next Action Phase.</bonusstring>
       </test>
       <source>RG</source>
       <page>119</page>
@@ -2485,7 +2630,7 @@
       <test>
         <dice>{AGI} + {Gymnastics} v. {REA} + {INT}</dice>
         <limit>{Physical}</limit>
-        <bonusstring>On success, gain Superior Position and cannot move far away from target.</bonusstring>
+        <bonusstring>Requires Martial Art training. On success, gain Superior Position and neither participant can move away from the other; they may move together up to 2m on each action. Ignore both participants' Reach bonuses. Melee weapon attacks take a penalty equal to the weapon's Reach, and firearm attacks take a penalty equal to the Clinch net hits. Escape, release and retention use RG 119-120.</bonusstring>
       </test>
       <source>RG</source>
       <page>119</page>
@@ -2495,9 +2640,9 @@
       <name>Double Tap</name>
       <type>Complex</type>
       <test>
-        <dice>{Action: Fire Semi-Auto Burst} v. {Ranged Defense}</dice>
+        <dice>{Action: Fire Semi-Auto Burst} v. {Action: Ranged Defense}</dice>
         <limit>{Weapon: Accuracy}</limit>
-        <bonusstring>+1 DV. Fires 2 shots instead of 3.</bonusstring>
+        <bonusstring>Requires a Semi-Automatic-capable weapon. +1 DV. Fires 2 shots instead of 3; the target takes no semi-auto burst Defense penalty.</bonusstring>
       </test>
       <source>RG</source>
       <page>120</page>
@@ -2519,9 +2664,9 @@
       <name>Enhanced Suppression</name>
       <type>Complex</type>
       <test>
-        <dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
+        <dice>{AGI} + {Weapon: Skill}</dice>
         <limit>{Weapon: Limit}</limit>
-        <bonusstring>Identical to {Action: Suppressive Fire} with a narrower AoE, but targets cannot use {Action: Drop Prone} or {Action: Hit the Dirt}.</bonusstring>
+        <bonusstring>Identical to {Action: Suppressive Fire}, but the zone is 5m wide at its end with increased vertical coverage. Targets cannot use {Action: Drop Prone} or {Action: Hit the Dirt} to avoid the exposure test. Lucky Cover avoids the roll, but the normal suppression penalty still applies.</bonusstring>
       </test>
       <source>RG</source>
       <page>120</page>
@@ -2536,7 +2681,7 @@
       <test>
         <dice>{Action: Melee Attack} + 2 v. {Action: Melee Defense}</dice>
         <limit>{Weapon: Limit}</limit>
-        <bonusstring>Can only be performed once per Combat Turn.</bonusstring>
+        <bonusstring>Requires Martial Art training. Declare the combination before the initiating melee attack. If that attack damages the opponent, immediately make one extra strike against the same opponent with +2 dice. Can only be performed once per Combat Turn.</bonusstring>
       </test>
       <source>RG</source>
       <page>120</page>
@@ -2546,9 +2691,9 @@
       <name>Flechette Suppressive Fire</name>
       <type>Complex</type>
       <test>
-        <dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
+        <dice>{AGI} + {Weapon: Skill}</dice>
         <limit>{Weapon: Limit}</limit>
-        <bonusstring>Requires flechette ammo type. Identical to {Action: Enhanced Suppression}, but also get modifiers per tables on RG 121.</bonusstring>
+        <bonusstring>Requires flechette ammo type. Identical to {Action: Enhanced Suppression}, but without narrowing the zone; apply the choke-dependent modifiers in the RG 121 tables. Narrow choke uses the normal narrow effects plus Enhanced Suppression.</bonusstring>
       </test>
       <source>RG</source>
       <page>120</page>
@@ -2561,7 +2706,7 @@
       <test>
         <dice>{Action: Melee Attack} + 1 v. {Action: Melee Defense}</dice>
         <limit>{Weapon: Limit}</limit>
-        <bonusstring>+1 Reach. On fail, -1 to all Defense tests until next action phase.</bonusstring>
+        <bonusstring>Requires Martial Art training, starting at least 1m from the opponent, and being able to move toward them. +1 Reach and +1 attack die. On fail, -1 to all Defense tests until the next Action Phase.</bonusstring>
       </test>
       <source>RG</source>
       <page>121</page>
@@ -2588,7 +2733,7 @@
       <test>
         <dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
         <limit>{Weapon: Limit}</limit>
-        <bonusstring>Extra AP -2. On fail, -2 to next action (not Defense tests) and cannot use {Action: Parry} or {Action: Block} until next action phase. Requires Ready Weapon before next attack. Requires both hands.</bonusstring>
+        <bonusstring>Extra AP -2. On fail, -2 to next action (not Defense tests) and cannot use {Action: Parry} or {Action: Block} until the next Action Phase. Requires {Action: Ready Weapon} before the next attack regardless of success. Requires Martial Art training, both hands and a blade with at least Reach 1. Cannot combine with Two Weapon fighting.</bonusstring>
       </test>
       <source>RG</source>
       <page>121</page>
@@ -2612,9 +2757,9 @@
       <type>Complex</type>
       <requireunlock />
       <test>
-        <dice>{Action: Melee Attack} v. {Action: Melee Defense} + 2</dice>
+        <dice>{Action: Melee Attack} v. {Action: Melee Defense}</dice>
         <limit>{Weapon: Accuracy}</limit>
-        <bonusstring>Moves opponent 1m/hit instead of dealing damage, up to maximum walking rate.</bonusstring>
+        <bonusstring>Requires Martial Art training. Moves opponent 1m/net hit instead of dealing damage, up to the lower Walking rate of attacker and opponent. Multiple opponents require splitting the attack dice pool.</bonusstring>
       </test>
       <source>RG</source>
       <page>121</page>
@@ -2829,7 +2974,7 @@
       <initiativecost>7</initiativecost>
       <test>
         <dice>{REA} + {Unarmed Combat} v. {Action: Melee Attack}</dice>
-        <limit>{Weapon: Accuracy}</limit>
+        <limit>{Physical}</limit>
         <bonusstring>On success, avoid attack and target takes damage. On fail, take damage as normal.</bonusstring>
       </test>
       <source>RG</source>
@@ -2842,7 +2987,7 @@
       <initiativecost>5</initiativecost>
       <test>
         <dice>None</dice>
-        <bonusstring>Go prone behind any nearby cover within 4m.</bonusstring>
+        <bonusstring>Go prone behind any nearby cover within 4m while in a suppressive fire zone.</bonusstring>
       </test>
       <source>RG</source>
       <page>124</page>
@@ -2894,7 +3039,7 @@
       <initiativecost>5</initiativecost>
       <test>
         <dice>None</dice>
-        <bonusstring>Can immediately move away from grenade or indirect, combat, AoE spell.</bonusstring>
+        <bonusstring>Can immediately use remaining Movement to move away from an incoming grenade or indirect combat AoE spell after the attack test. Alternatively, move onto the grenade and take all its damage to prevent the blast; for gas grenades, halve the radius instead.</bonusstring>
       </test>
       <source>RG</source>
       <page>125</page>
@@ -2947,7 +3092,7 @@
       <requireunlock />
       <initiativecost>5</initiativecost>
       <test>
-        <dice>{AGI} + {Gymnastics} v. {Action: Dodge}</dice>
+        <dice>{AGI} + {Gymnastics} v. {Threshold: {Action: Dodge}}</dice>
         <limit>{Physical}</limit>
         <bonusstring>On success, negate hits on target's {Action: Dodge} by net hits.</bonusstring>
       </test>
@@ -2961,7 +3106,7 @@
       <requireunlock />
       <initiativecost>5</initiativecost>
       <test>
-        <dice>{AGI} + {Gymnastics} v. {Action: Evade}</dice>
+        <dice>{AGI} + {Gymnastics} v. {Threshold: {Action: Evade}}</dice>
         <limit>{Physical}</limit>
         <bonusstring>On success, negate hits on target's {Action: Evade} by net hits.</bonusstring>
       </test>
@@ -2979,16 +3124,19 @@
           <name>Melee Defense</name>
           <duration>Rest of Turn</duration>
           <dicebonus>{Gymnastics}</dicebonus>
+          <addlimit>{Physical}</addlimit>
         </boost>
         <boost>
           <name>Ranged Defense</name>
           <duration>Rest of Turn</duration>
           <dicebonus>{Gymnastics}</dicebonus>
+          <addlimit>{Physical}</addlimit>
         </boost>
         <boost>
           <name>Suppressive Fire Defense</name>
           <duration>Rest of Turn</duration>
           <dicebonus>{Gymnastics}</dicebonus>
+          <addlimit>{Physical}</addlimit>
         </boost>
       </boosts>
       <source>RG</source>
@@ -3031,16 +3179,19 @@
           <name>Melee Defense</name>
           <duration>Rest of Turn</duration>
           <dicebonus>{Perception}</dicebonus>
+          <addlimit>{Mental}</addlimit>
         </boost>
         <boost>
           <name>Ranged Defense</name>
           <duration>Rest of Turn</duration>
           <dicebonus>{Perception}</dicebonus>
+          <addlimit>{Mental}</addlimit>
         </boost>
         <boost>
           <name>Suppressive Fire Defense</name>
           <duration>Rest of Turn</duration>
           <dicebonus>{Perception}</dicebonus>
+          <addlimit>{Mental}</addlimit>
         </boost>
       </boosts>
       <source>RG</source>
@@ -3077,6 +3228,7 @@
     <action>
       <id>820c536b-8461-44e2-9a12-c267d88b2b76</id>
       <name>Break Target Lock</name>
+      <category>Matrix</category>
       <type>Simple</type>
       <test>
         <dice>{INT} + {Electronic Warfare} v. {LOG} + {Target: Sensors}</dice>
@@ -3089,10 +3241,11 @@
     <action>
       <id>ecb1d3eb-4a3d-412f-b374-3bb7eb9c59df</id>
       <name>Confuse Pilot</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Electronic Warfare} v. {Target: Pilot} + {Target: {Icon: Firewall}}</dice>
-        <limit>{Icon: Data Processing}</limit>
+        <limit>{Icon: Attack}</limit>
         <bonusstring>On success, target makes an immediate Simple Pilot * 2 test to figure out what it's going to do next with a threshold equal to half of the net hits. The character's RCC's Noise Reduction rating is added as a dice pool bonus for this action.</bonusstring>
       </test>
       <source>R5</source>
@@ -3101,6 +3254,7 @@
     <action>
       <id>8949e342-56af-49d6-a659-9e0fb39d43bd</id>
       <name>Detect Target Lock</name>
+      <category>Matrix</category>
       <type>Free</type>
       <test>
         <dice>{LOG} + {Computer} v. {Threshold: 2}</dice>
@@ -3113,6 +3267,7 @@
     <action>
       <id>0d5318e9-ed3d-4f11-99ba-6ff9c35bd79e</id>
       <name>Suppress Noise</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Electronic Warfare}</dice>
@@ -3125,6 +3280,7 @@
     <action>
       <id>f8d43ba8-e5ca-4a13-97cd-68c1980cd7bf</id>
       <name>Target Device</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
@@ -3139,11 +3295,12 @@
     <action>
       <id>2cc49ba8-e586-49f3-937d-b1359c623dd0</id>
       <name>Garbage In/Garbage Out</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Software} v. {Action: LOG Firewall Defense}</dice>
         <limit>{Icon: Sleaze}</limit>
-        <bonusstring>Requires 3 marks on target icon. On success, reprogram a single input action to a single output action.</bonusstring>
+        <bonusstring>Requires 3 marks on the target device. On success, reprogram a single input action to a single output action within the device's normal capabilities. Rebooting the device removes the change.</bonusstring>
       </test>
       <source>DT</source>
       <page>178</page>
@@ -3151,11 +3308,12 @@
     <action>
       <id>802381dd-7a15-49eb-bfbe-18fb20c26b64</id>
       <name>Trackback</name>
+      <category>Matrix</category>
       <type>Extended</type>
       <test>
         <dice>{INT} + {Computer} v. 10 + {Target: {Icon: Sleaze}}</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>Requires Owner marks on target icon. 30 minute interval. On success if the target persona is running silent, the trail ends in the vicinity of the icon, letting the character know that there are silent icons nearby.</bonusstring>
+        <bonusstring>Requires ownership of the marked device and detection of the mark. Only possible on grids, not inside a host. Extended test against 10 + {Target: {Icon: Sleaze}}, with a 30 minute interval; the threshold changes if the target's Sleaze changes. If the target persona is running silent, the trail ends nearby, revealing that a silent icon is present.</bonusstring>
       </test>
       <source>DT</source>
       <page>179</page>
@@ -3165,6 +3323,7 @@
     <action>
       <id>0e1c5d65-051a-4b35-a077-11c6f9679829</id>
       <name>Calibration</name>
+      <category>Matrix</category>
       <type>Simple</type>
       <test>
         <dice>{LOG} + {Electronic Warfare}</dice>
@@ -3177,6 +3336,7 @@
     <action>
       <id>e699453d-441f-4c3b-b05e-bb209fe4241c</id>
       <name>Denial of Service</name>
+      <category>Matrix</category>
       <type>Simple</type>
       <test>
         <dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
@@ -3189,11 +3349,12 @@
     <action>
       <id>9dcccbd6-c4fe-4d81-b2b7-591f39247949</id>
       <name>I Am the Firewall (Complex)</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{INT} + {Computer}</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>On success, give a defense test bonus equal to hits to all characters with an AR feed from the user until the user's next initiative pass.</bonusstring>
+        <bonusstring>On success, give a Defense test bonus equal to hits to allies with an AR feed from the user until the beginning of the user's next Initiative Pass. The number of recipients cannot exceed {Icon: Data Processing}.</bonusstring>
       </test>
       <source>KC</source>
       <page>38</page>
@@ -3201,12 +3362,13 @@
     <action>
       <id>0c3a992f-98bd-4f3f-bd14-1898225cfd4e</id>
       <name>I Am the Firewall (Interrupt)</name>
+      <category>Matrix</category>
       <type>Interrupt</type>
       <initiativecost>5</initiativecost>
       <test>
         <dice>{INT} + {Computer}</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>On success, give a defense test bonus equal to hits to all characters with an AR feed from the user until the user's next initiative pass.</bonusstring>
+        <bonusstring>On success, give a Defense test bonus equal to hits to allies with an AR feed from the user until the beginning of the user's next Initiative Pass. The number of recipients cannot exceed {Icon: Data Processing}.</bonusstring>
       </test>
       <source>KC</source>
       <page>38</page>
@@ -3214,11 +3376,12 @@
     <action>
       <id>a56dd463-6f2c-485c-97c0-cefb3b65e073</id>
       <name>Haywire</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
         <limit>{Icon: Attack}</limit>
-        <bonusstring>Target must be a persona not running in VR. On success, all PAN and wireless functionality on the target is disabled until the target passes a {LOG} + {Computer} [Data Processing] v. {Threshold: Net Hits} Simple action.</bonusstring>
+        <bonusstring>Target must be a persona not running in VR. On success, all PAN and wireless functionality on the target is disabled until the target passes an Extended {LOG} + {Computer} [{Icon: Data Processing}] v. {Threshold: Net Hits} test, with one Simple Action per interval, or reboots.</bonusstring>
       </test>
       <source>KC</source>
       <page>38</page>
@@ -3226,12 +3389,13 @@
     <action>
       <id>95e8fe05-c341-4985-9f42-0ff02a8c3b20</id>
       <name>Intervene</name>
+      <category>Matrix</category>
       <type>Interrupt</type>
       <initiativecost>5</initiativecost>
       <test>
         <dice>{INT} + {Computer}</dice>
         <limit>{Icon: Data Processing}</limit>
-        <bonusstring>On success, increase the number of hits on the target icon's Matrix defense test by net hits from this action.</bonusstring>
+        <bonusstring>Requires the ally to own a device slaved to the hacker's PAN; the attacking device must be wireless-enabled and the hacker must be aware of it. On success, add this test's hits to the ally's current Defense test only.</bonusstring>
       </test>
       <source>KC</source>
       <page>39</page>
@@ -3239,6 +3403,7 @@
     <action>
       <id>7822f0d5-8634-4536-a1a2-98ff2cb5aaa2</id>
       <name>Masquerade</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
@@ -3251,6 +3416,7 @@
     <action>
       <id>643e1151-cb58-49f4-97cc-61919038f733</id>
       <name>Popup</name>
+      <category>Matrix</category>
       <type>Simple</type>
       <test>
         <dice>{LOG} + {Max: {Hacking} or {Cybercombat}} v. {Action: WIL Firewall Defense}</dice>
@@ -3263,6 +3429,7 @@
     <action>
       <id>21aa0a33-9fd6-47fe-a5df-3e51427eef6d</id>
       <name>Squelch</name>
+      <category>Matrix</category>
       <type>Simple</type>
       <test>
         <dice>{LOG} + {Electronic Warfare} v. {Action: INT Sleaze Defense}</dice>
@@ -3275,6 +3442,7 @@
     <action>
       <id>6b337872-6789-4e13-ad5c-1779d14adcf4</id>
       <name>Subvert Infrastructure</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{INT} + {Electronic Warfare} v. {Action: INT Firewall Defense}</dice>
@@ -3287,6 +3455,7 @@
     <action>
       <id>7ab03865-944f-45a9-adee-6e7aa8381f5e</id>
       <name>Tag</name>
+      <category>Matrix</category>
       <type>Simple</type>
       <test>
         <dice>{LOG} + {Computer} v. {Action: INT Sleaze Defense}</dice>
@@ -3299,6 +3468,7 @@
     <action>
       <id>f73c5747-0494-497b-9109-8bca6217b2b1</id>
       <name>Watchdog</name>
+      <category>Matrix</category>
       <type>Complex</type>
       <test>
         <dice>{LOG} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>

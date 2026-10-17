@@ -26,6 +26,7 @@
     <license>Blunt Weapons License</license>
     <license>Bodyguard License</license>
     <license>Bounty Hunter's License</license>
+    <license>Combat Spell License</license>
     <license>Concealed Carry Permit</license>
     <license>Cyberdeck License</license>
     <license>Driver's License</license>
@@ -56,6 +57,7 @@
     <license>Small Blades License</license>
     <license>Summoner License</license>
     <license>Talismonger License</license>
+    <license>Technomancer License</license>
     <license>Weapon License</license>
   </licenses>
 </chummer>
