@@ -11125,6 +11125,10 @@
       <text>Only for Vehicle Stunt Tests</text>
     </string>
     <string>
+      <key>LimitCondition_TestDiagnosis</key>
+      <text>Only for Diagnosis Tests</text>
+    </string>
+    <string>
       <key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
       <text>Only for Performance, Must use linked synthtrument</text>
     </string>

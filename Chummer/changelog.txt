@@ -60,6 +60,7 @@ Bioware:
 - Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
 
 Vehicles:
+- Touch Sensors now give their +1 Handling bonus.
 - Corrected the stats, mods, and page references of multiple vehicles and drones, including the Dodge Rhino, Evo Aquavida 2, GMC Riverine Military, Transys Steed, NeoNET Avenging Angel, and several Shadowrun 2050 vehicles. Existing characters with these vehicles will need to remove and re-add them to see any changes.
 - Fixed the names of the Ruhrmetall Wolf II, NeoNET Prairie Dog, Saeder-Krupp MK-17D Neptune, NeoNET Juggernaught, and Hughes WK-2 Stallion (2050).
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.
@@ -79,6 +80,7 @@ Cyberware:
 - Fixed a crash when attempting to add a cyberware suite.
 
 Gear:
+- The STATscan now gives its +2 dice for Diagnosis Tests as a conditional First Aid and Medicine bonus.
 - Corrected the availability, cost, ratings, and bonuses of multiple gear and armor entries, including ammunition, explosives, Security and Hunter decks, autosofts, sensors, survival gear, and environmental armor. Existing characters with these items will need to remove and re-add them to see any changes.
 - Added the Quick-Access Medkit Pouch (used by the Generic CCOB armor), Betel Nut Gum (Piece), and the Atomizer Cartridge.
 - Corrected multiple drugs and added the Renfield and Amrita drugs. The Lighting drug component has been renamed to Lightning.
@@ -148,6 +150,7 @@ Resonance:
 - Skill Autosoft and Skill Autosoft (Restricted) now only offer the skills allowed by Rigger 5.0.
 
 Traditions:
+- The Draconic tradition now lists its requirement of a Dracoform (Drake) quality.
 - Corrected multiple traditions and spirits, including Green Magic, Norse, Red Magic, Ancestor Shaman, the Homunculus spirits, Watcher, and several toxic spirits and shedim. Svetoid has been renamed to Svetovid.
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
 
@@ -184,6 +187,7 @@ Character Sheets and Export:
 - Quantity fields for gear are now exported with potential non-numerical symbols included, like "×" or "¥", as "qty_text". This is kept separate from the old "qty" field so to allow numerical parsers that read that field to keep working while still allowing the quantity field to be made fancy for sheets and readers that read in that field as text instead of as a number.
 
 Changed/New Strings:
+- LimitCondition_TestDiagnosis
 - String_Improvement_SelectSpiritType
 - String_Improvement_SelectSpiritTypeGeneric
 - String_GroupContactAbbrev

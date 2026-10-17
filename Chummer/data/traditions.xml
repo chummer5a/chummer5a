@@ -596,6 +596,14 @@
       <drain>{WIL} + {MAG}</drain>
       <source>FA</source>
       <page>76</page>
+      <required>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+          <quality>Dracoform (Feathered Drake)</quality>
+          <quality>Dracoform (Sea Drake)</quality>
+          <quality>Dracoform (Western Drake)</quality>
+        </oneof>
+      </required>
       <spirits>
         <spiritcombat>All</spiritcombat>
         <spiritdetection>All</spiritdetection>
