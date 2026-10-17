@@ -836,6 +836,28 @@
       <page>199</page>
     </power>
     <power>
+      <id>8ac4754c-2b70-4c8a-a538-c9388986666a</id>
+      <name>Servile</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <power>
+      <id>83f82049-6f11-4cb4-bf6f-6f99bf78cf26</id>
+      <name>Restless</name>
+      <category>Paranormal</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <power>
       <id>f1750d16-5dc2-4c4e-afae-1ad86c520fc6</id>
       <name>Astral Projection</name>
       <category>Free Spirit</category>
