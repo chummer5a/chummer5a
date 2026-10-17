@@ -40,7 +40,7 @@ Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
 
 Bioware:
-- Corrected multiple bioware entries, including Muscle Augmentation, Muscle Toner, Orthoskin, Reflex Recorder, Tailored Critter Pheromones, Bio-Tattoos, Chameleon Skin, and Tusk(s). Revitilization has been renamed to Revitalization. Existing characters with these items will need to remove and re-add them to see any changes.
+- Corrected multiple bioware entries, including Orthoskin, Reflex Recorder, Tailored Critter Pheromones, Bio-Tattoos, Chameleon Skin, and Tusk(s). Revitilization has been renamed to Revitalization. Existing characters with these items will need to remove and re-add them to see any changes.
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
 - Chemical Glands and Expanded Reservoir accept Drugs, Custom Drugs, Toxins, and BTLs through Add Drug; Chemicals/Custom gear still use Add Gear.
 - Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
@@ -53,7 +53,7 @@ Vehicles:
 - Fixed vehicle mod category display names looking up the wrong vehicles.xml path (`categories` instead of `modcategories`).
 
 Cyberware:
-- Corrected multiple cyberware entries, including Control Rig, Data Lock, Skillwires, Chipjack, Dermal Plating, Muscle Replacement, Smartskin, and Retinal Adjusters. Existing characters with these items will need to remove and re-add them to see any changes.
+- Corrected multiple cyberware entries, including Control Rig, Data Lock, Skillwires, Chipjack, Dermal Plating, and Smartskin. Existing characters with these items will need to remove and re-add them to see any changes.
 - Cyberfinger (Pistol) now adds a Finger Pistol weapon.
 - Custom cyber implant weapons (Custom Heavy Pistol, Custom Grenade Launcher, etc.) now prompt the user to select a base weapon from the weapons catalog instead of failing when attempting to add gear. Conversion cost and base weapon cost are charged separately in Career mode; both count toward create-mode nuyen. Closes #727.
 - Added `weaponcategories` and `weaponfilter` XML support to cyberware entries for custom implant weapons.

@@ -307,11 +307,6 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Muscle Replacement</cyberware>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -334,11 +329,6 @@
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
-      <forbidden>
-        <oneof>
-          <cyberware>Muscle Replacement</cyberware>
-        </oneof>
-      </forbidden>
     </bioware>
     <bioware>
       <id>96e4809a-71e6-4b98-9740-c6c44bc33aa9</id>
@@ -641,7 +631,7 @@
     <bioware>
       <id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
       <name>Chemical Gland (Exhalation Sprayer)</name>
-      <limit>False</limit>
+      <limit>1</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -660,11 +650,6 @@
       <allowsubsystems>
         <category>Chemical Gland Modifications</category>
       </allowsubsystems>
-      <forbidden>
-        <oneof>
-          <bioware>Chemical Gland (Exhalation Sprayer)</bioware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>

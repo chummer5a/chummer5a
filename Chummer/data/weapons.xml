@@ -3247,7 +3247,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>16300</cost>
       <source>SR5</source>
@@ -3279,7 +3279,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>18F</avail>
       <cost>19600</cost>
       <source>RG</source>
@@ -3317,7 +3317,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -4079,7 +4079,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>2</rc>
-      <ammo>100(belt) or 200(belt)</ammo>
+      <ammo>100(belt)</ammo>
       <avail>24F</avail>
       <cost>6000</cost>
       <source>RG</source>
@@ -4153,7 +4153,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>11F</avail>
       <cost>2000</cost>
       <source>GH3</source>
@@ -4184,7 +4184,7 @@
       <ap>-2</ap>
       <mode>BF/FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>6500</cost>
       <source>RG</source>
@@ -4853,7 +4853,7 @@
       <ap>-3</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>18F</avail>
       <cost>8500</cost>
       <source>RG</source>
@@ -4891,7 +4891,7 @@
       <ap>-3</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>12F</avail>
       <cost>7000</cost>
       <source>SR5</source>
@@ -4918,7 +4918,7 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>50(c) or 100(belt)</ammo>
+      <ammo>50(c)</ammo>
       <avail>16F</avail>
       <cost>7600</cost>
       <source>RG</source>
@@ -5057,7 +5057,7 @@
       <ap>-1</ap>
       <mode>SA/BF/FA</mode>
       <rc>2</rc>
-      <ammo>10(c) or 32(d)</ammo>
+      <ammo>10(c)</ammo>
       <avail>18F</avail>
       <cost>1800</cost>
       <source>RG</source>
@@ -9411,7 +9411,7 @@
       <name>Ares Briefcase Shield</name>
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
-      <conceal>-4</conceal>
+      <conceal>8</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>({STR}+2)P</damage>
@@ -14118,7 +14118,6 @@
       <accessories>
         <accessory>
           <name>Folding Stock</name>
-          <mount>Stock</mount>
         </accessory>
       </accessories>
       <accessorymounts>
@@ -14388,7 +14387,7 @@
       <damage>18P</damage>
       <ap>-6</ap>
       <mode>FA</mode>
-      <rc>6</rc>
+      <rc>-6</rc>
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>29000</cost>
@@ -17106,6 +17105,7 @@
       <cost>100</cost>
       <source>RG</source>
       <page>42</page>
+      <ammoreplace>200(belt)</ammoreplace>
       <ammoslots>1</ammoslots>
       <rating>0</rating>
       <required>

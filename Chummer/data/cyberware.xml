@@ -1004,12 +1004,6 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <bioware>Muscle Augmentation</bioware>
-          <bioware>Muscle Toner</bioware>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -5510,12 +5504,6 @@
       <cost>19000 * Rating</cost>
       <source>CF</source>
       <page>151</page>
-      <forbidden>
-        <oneof>
-          <cyberwarecontains>Cybereyes</cyberwarecontains>
-          <cyberwarecontains>Retinal Duplication</cyberwarecontains>
-        </oneof>
-      </forbidden>
       <rating>6</rating>
       <bannedgrades>
         <grade>Greyware</grade>

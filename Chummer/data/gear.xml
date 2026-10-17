@@ -6680,11 +6680,6 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
-      <bonus>
-        <livingpersona>
-          <attack>Rating</attack>
-        </livingpersona>
-      </bonus>
     </gear>
     <gear>
       <id>666dbb45-2898-4262-aab6-94e80954b480</id>
@@ -6695,11 +6690,6 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
-      <bonus>
-        <livingpersona>
-          <sleaze>Rating</sleaze>
-        </livingpersona>
-      </bonus>
     </gear>
     <gear>
       <id>f5b287cc-98c1-479e-8e54-e5155fa6917a</id>
@@ -6710,11 +6700,6 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
-      <bonus>
-        <livingpersona>
-          <dataprocessing>Rating</dataprocessing>
-        </livingpersona>
-      </bonus>
     </gear>
     <gear>
       <id>c29db797-db4b-4f14-b662-622935c3204e</id>
@@ -6725,11 +6710,6 @@
       <page>59</page>
       <avail>0</avail>
       <cost>Rating*50</cost>
-      <bonus>
-        <livingpersona>
-          <firewall>Rating</firewall>
-        </livingpersona>
-      </bonus>
     </gear>
     <gear>
       <id>3d107000-9bfc-46f6-9a1e-99e6cecc3897</id>
@@ -6740,11 +6720,6 @@
       <page>59</page>
       <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
-      <bonus>
-        <livingpersona>
-          <attack>Rating</attack>
-        </livingpersona>
-      </bonus>
       <minrating>3</minrating>
     </gear>
     <gear>
@@ -6756,11 +6731,6 @@
       <page>59</page>
       <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
-      <bonus>
-        <livingpersona>
-          <sleaze>Rating</sleaze>
-        </livingpersona>
-      </bonus>
       <minrating>3</minrating>
     </gear>
     <gear>
@@ -6772,11 +6742,6 @@
       <page>59</page>
       <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
-      <bonus>
-        <livingpersona>
-          <dataprocessing>Rating</dataprocessing>
-        </livingpersona>
-      </bonus>
       <minrating>3</minrating>
     </gear>
     <gear>
@@ -6788,11 +6753,6 @@
       <page>59</page>
       <avail>(Rating * 4)R</avail>
       <cost>Rating*250</cost>
-      <bonus>
-        <livingpersona>
-          <firewall>Rating</firewall>
-        </livingpersona>
-      </bonus>
       <minrating>3</minrating>
     </gear>
     <!-- End Region -->
@@ -6835,7 +6795,6 @@
       <avail>12R</avail>
       <cost>115000</cost>
       <devicerating>4</devicerating>
-      <programs>3</programs>
     </gear>
     <gear>
       <id>488ad606-137f-430d-b571-7cfdae2b0612</id>
@@ -6847,7 +6806,6 @@
       <avail>18R</avail>
       <cost>325000</cost>
       <devicerating>5</devicerating>
-      <programs>4</programs>
     </gear>
     <gear>
       <id>f08d3d53-220f-4dc1-bb8b-ec36ecffedf3</id>
@@ -6859,7 +6817,6 @@
       <avail>18F</avail>
       <cost>855000</cost>
       <devicerating>6</devicerating>
-      <programs>5</programs>
     </gear>
     <!-- End Region -->
     <!-- Region Electronics Accessories -->
@@ -9794,12 +9751,10 @@
         <specificskill>
           <name>First Aid</name>
           <bonus>Rating</bonus>
-          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </specificskill>
         <specificskill>
           <name>Medicine</name>
           <bonus>Rating</bonus>
-          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </specificskill>
       </wirelessbonus>
     </gear>
@@ -19435,12 +19390,10 @@
         <specificskill>
           <name>First Aid</name>
           <bonus>6</bonus>
-          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </specificskill>
         <specificskill>
           <name>Medicine</name>
           <bonus>6</bonus>
-          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </specificskill>
       </wirelessbonus>
     </gear>
