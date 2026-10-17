@@ -43,18 +43,19 @@
       <id>62bffcd7-4a43-45cd-9cf7-3067ba9688f6</id>
       <name>Bliss</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>3</threshold>
       <source>SR5</source>
       <page>411</page>
       <avail>3F</avail>
       <cost>15</cost>
-      <speed>1</speed>
+      <speed>3</speed>
       <vectors>Inhalation,Injection</vectors>
-      <duration>(6-{BOD})*3600</duration>
+      <duration>(((6-{BOD}) &gt;= 1)*(6-{BOD}) + ((6-{BOD}) &lt; 1)*1)*3600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
-          <value>1</value>
+          <value>-1</value>
         </attribute>
         <limit>
           <name>Mental</name>
@@ -75,14 +76,15 @@
       <id>8dc829b9-8b94-4510-ab1a-2305cbad69c9</id>
       <name>Cram</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>4</rating>
+      <threshold>3</threshold>
       <source>SR5</source>
       <page>411</page>
       <avail>2R</avail>
       <cost>10</cost>
       <speed>600</speed>
-      <vectors>Inhalation,Injection</vectors>
-      <duration>(12-{BOD})*3600</duration>
+      <vectors>Ingestion,Inhalation</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
       <bonus>
         <attribute>
           <name>REA</name>
@@ -100,14 +102,10 @@
       <page>411</page>
       <avail>8F</avail>
       <cost>400</cost>
-      <speed>1</speed>
-      <vectors>Inhalation,Injection</vectors>
-      <duration>(6-{BOD})*3600</duration>
+      <speed>0</speed>
+      <vectors>Ingestion,Inhalation</vectors>
+      <duration>(((6-{BOD}) &gt;= 1)*(6-{BOD}) + ((6-{BOD}) &lt; 1)*1)*3600</duration>
       <bonus>
-        <attribute>
-          <name>REA</name>
-          <value>1</value>
-        </attribute>
         <attribute>
           <name>WIL</name>
           <value>1</value>
@@ -120,19 +118,19 @@
           <name>Mental</name>
           <value>1</value>
         </limit>
-        <initiativedice>1</initiativedice>
       </bonus>
     </drug>
     <drug>
       <id>929c4835-1754-4999-9215-9859e8ec5384</id>
       <name>Jazz</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>8</rating>
+      <threshold>3</threshold>
       <source>SR5</source>
       <page>411</page>
       <avail>2R</avail>
       <cost>75</cost>
-      <speed>1</speed>
+      <speed>0</speed>
       <vectors>Inhalation</vectors>
       <duration>{D6}*600</duration>
       <bonus>
@@ -151,12 +149,13 @@
       <id>098bf489-bea9-4f17-b3d9-aead979fdc32</id>
       <name>Kamikaze</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>9</rating>
+      <threshold>3</threshold>
       <source>SR5</source>
       <page>412</page>
       <avail>4R</avail>
       <cost>100</cost>
-      <speed>1</speed>
+      <speed>0</speed>
       <vectors>Inhalation</vectors>
       <duration>{D6}*600</duration>
       <bonus>
@@ -166,10 +165,6 @@
         </attribute>
         <attribute>
           <name>BOD</name>
-          <value>1</value>
-        </attribute>
-        <attribute>
-          <name>REA</name>
           <value>1</value>
         </attribute>
         <attribute>
@@ -192,7 +187,8 @@
       <id>d4cf626d-0af1-41f7-bec0-e53b4dba2eb1</id>
       <name>Long Haul</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>2</rating>
+      <threshold>1</threshold>
       <source>SR5</source>
       <page>412</page>
       <avail>0</avail>
@@ -205,12 +201,13 @@
       <id>d7ec13fa-8601-4f9c-a59c-6a86573b40ee</id>
       <name>Nitro</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>9</rating>
+      <threshold>3</threshold>
       <source>SR5</source>
       <page>412</page>
       <avail>2R</avail>
       <cost>50</cost>
-      <speed>6</speed>
+      <speed>3</speed>
       <vectors>Inhalation</vectors>
       <duration>{D6}*600</duration>
       <bonus>
@@ -237,14 +234,15 @@
       <id>836f54d5-1e11-49ea-b115-34c14ed843c9</id>
       <name>Novacoke</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>7</rating>
+      <threshold>2</threshold>
       <source>SR5</source>
       <page>412</page>
       <avail>2R</avail>
       <cost>10</cost>
-      <speed>6</speed>
+      <speed>3</speed>
       <vectors>Inhalation,Injection</vectors>
-      <duration>(10-{BOD})*3600</duration>
+      <duration>(((10-{BOD}) &gt;= 1)*(10-{BOD}) + ((10-{BOD}) &lt; 1)*1)*3600</duration>
       <bonus>
         <attribute>
           <name>CHA</name>
@@ -256,7 +254,7 @@
         </attribute>
         <limit>
           <name>Social</name>
-          <value>2</value>
+          <value>1</value>
         </limit>
         <quality rating="1">High Pain Tolerance</quality>
         <specificskill>
@@ -269,14 +267,15 @@
       <id>778eefae-94ad-4f8c-ad03-8b9039b5c48e</id>
       <name>Psyche</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>SR5</source>
       <page>412</page>
       <avail>0</avail>
       <cost>200</cost>
       <speed>600</speed>
-      <vectors>Inhalation,Injection</vectors>
-      <duration>(12-{BOD})*3600</duration>
+      <vectors>Ingestion</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
       <bonus>
         <attribute>
           <name>INT</name>
@@ -296,7 +295,8 @@
       <id>3a946800-be1e-4bbb-899a-c3d1c48a3a31</id>
       <name>Zen</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>3</rating>
+      <threshold>1</threshold>
       <source>SR5</source>
       <page>412</page>
       <avail>4R</avail>
@@ -326,6 +326,7 @@
       <page>19</page>
       <avail>3</avail>
       <cost>800</cost>
+      <vectors>Injection</vectors>
     </drug>
     <drug>
       <id>c4ae816f-f683-469d-a7cd-ec1931740e1e</id>
@@ -336,6 +337,9 @@
       <page>19</page>
       <avail>8R</avail>
       <cost>1000</cost>
+      <speed>0</speed>
+      <duration>(30-{BOD})*60</duration>
+      <vectors>Injection</vectors>
     </drug>
     <drug>
       <id>5929d3b9-451b-4be8-a292-8b6509d0aeb9</id>
@@ -347,6 +351,9 @@
       <page>19</page>
       <avail>4</avail>
       <cost>2000</cost>
+      <speed>0</speed>
+      <vectors>Injection</vectors>
+      <duration>{BOD}*3</duration>
     </drug>
     <drug>
       <id>076825cd-dc6f-4e48-8c73-e958b21c1766</id>
@@ -357,6 +364,8 @@
       <page>19</page>
       <avail>5</avail>
       <cost>500</cost>
+      <duration>86400</duration>
+      <vectors>Injection</vectors>
     </drug>
     <drug>
       <id>cf2dd622-8312-4807-97f0-c5d30f9f67b4</id>
@@ -387,6 +396,7 @@
       <page>19</page>
       <avail>6</avail>
       <cost>100</cost>
+      <vectors>Injection</vectors>
     </drug>
     <!-- End Region -->
     <drug>
@@ -404,41 +414,75 @@
       <id>c113d0e8-8720-47fb-9ac6-fdc9e262c94b</id>
       <name>Accelerator</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>1</threshold>
       <source>LCD</source>
       <page>205</page>
       <avail>6R</avail>
       <cost>200</cost>
+      <speed>0</speed>
+      <vectors>Injection,Inhalation</vectors>
+      <bonus>
+        <initiativedice>3</initiativedice>
+      </bonus>
     </drug>
     <drug>
       <id>ee783a4e-331f-4e03-bf47-7ecb93341919</id>
       <name>Buffout</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>1</threshold>
       <source>LCD</source>
       <page>204</page>
       <avail>6R</avail>
       <cost>100</cost>
+      <vectors>Injection,Inhalation,Ingestion</vectors>
+      <bonus>
+        <judgeintentions>-2</judgeintentions>
+      </bonus>
     </drug>
     <drug>
       <id>31f51b7e-d2eb-4274-aead-72710b198c13</id>
       <name>Numb</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>1</threshold>
       <source>LCD</source>
       <page>204</page>
       <avail>6R</avail>
       <cost>150</cost>
+      <speed>0</speed>
+      <vectors>Injection</vectors>
+      <bonus>
+        <attribute>
+          <name>AGI</name>
+          <value>-1</value>
+        </attribute>
+        <quality rating="14">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>87186987-c004-439a-8958-d7b82198fb69</id>
       <name>Pinpoint</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>1</threshold>
       <source>LCD</source>
       <page>204</page>
       <avail>6R</avail>
       <cost>75</cost>
+      <vectors>Injection,Inhalation,Ingestion</vectors>
+      <duration>(((12-{BOD}) &gt;= 2)*(12-{BOD}) + ((12-{BOD}) &lt; 2)*2)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>INT</name>
+          <value>2</value>
+        </attribute>
+        <limit>
+          <name>Mental</name>
+          <value>1</value>
+        </limit>
+      </bonus>
     </drug>
     <!-- End Region -->
     <!-- Region Stolen Souls -->
@@ -451,6 +495,7 @@
       <page>189</page>
       <avail>4R</avail>
       <cost>75</cost>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>8461fd87-ea93-4edb-92a1-4a20ad444471</id>
@@ -461,6 +506,7 @@
       <page>189</page>
       <avail>0</avail>
       <cost>30</cost>
+      <vectors>Injection</vectors>
     </drug>
     <drug>
       <id>93245f7f-2391-440c-b9ae-d0a5c8549fb2</id>
@@ -471,6 +517,9 @@
       <page>189</page>
       <avail>8R</avail>
       <cost>250</cost>
+      <speed>6</speed>
+      <vectors>Injection</vectors>
+      <duration>(((10-{BOD}) &gt;= 1)*(10-{BOD}) + ((10-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <!-- End Region -->
     <!-- Region Chrome Flesh -->
@@ -478,101 +527,204 @@
       <id>cf54b977-b2d9-4572-8e92-c3cc949f2c42</id>
       <name>AEXD</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>1</rating>
+      <threshold>1</threshold>
       <source>CF</source>
       <page>179</page>
       <avail>4</avail>
       <cost>80</cost>
+      <speed>0</speed>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>53f656f4-bfa9-469e-a08d-ddf4fc71f824</id>
       <name>Aisa</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>179</page>
       <avail>4</avail>
       <cost>25</cost>
+      <speed>0</speed>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>d32f1811-5ffb-4cd4-9873-ddcf207e95cb</id>
       <name>Animal Tongue</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>3</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>186</page>
       <avail>6R</avail>
+      <bonus>
+        <critterpowers>
+          <power>Animal Control</power>
+        </critterpowers>
+      </bonus>
       <cost>1500</cost>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>009bd079-f7ee-4055-a86f-af03d6837cc8</id>
       <name>Ayao's Will</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>184</page>
       <avail>14F</avail>
       <cost>750</cost>
+      <speed>6</speed>
+      <bonus>
+        <mentalmanipulationresist>2</mentalmanipulationresist>
+        <physicalmanipulationresist>2</physicalmanipulationresist>
+      </bonus>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>f4eb63ce-c182-406c-b625-5699047e33a9</id>
       <name>Betameth</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>9</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>180</page>
       <avail>5F</avail>
       <cost>30</cost>
+      <speed>60</speed>
+      <vectors>Inhalation</vectors>
+      <duration>(((9-{BOD}) &gt;= 1)*(9-{BOD}) + ((9-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>2</value>
+        </attribute>
+        <attribute>
+          <name>INT</name>
+          <value>1</value>
+        </attribute>
+      </bonus>
     </drug>
     <drug>
       <id>67436993-439d-4e6b-b64a-3f506f44721a</id>
       <name>Betel</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>180</page>
       <avail>4</avail>
       <cost>5</cost>
+      <speed>0</speed>
+      <vectors>Ingestion</vectors>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
     </drug>
     <drug>
       <id>440ae069-da45-4721-b45f-6441c931180f</id>
       <name>Cereprax</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>9</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>180</page>
       <avail>14F</avail>
       <cost>800</cost>
+      <vectors>Ingestion</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>INT</name>
+          <value>2</value>
+        </attribute>
+        <attribute>
+          <name>LOG</name>
+          <value>3</value>
+        </attribute>
+        <limit>
+          <name>Mental</name>
+          <value>2</value>
+        </limit>
+        <quality rating="1">Analytical Mind</quality>
+      </bonus>
     </drug>
     <drug>
       <id>68c65dca-e0e1-4291-8d1b-b23649027271</id>
       <name>Crimson Orchid</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>9</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>184</page>
       <avail>6F</avail>
       <cost>300</cost>
+      <speed>3</speed>
+      <vectors>Injection</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>-3</value>
+        </attribute>
+        <quality rating="6">High Pain Tolerance</quality>
+        <quality rating="1">Astral Beacon</quality>
+      </bonus>
     </drug>
     <drug>
       <id>c4f2a23f-8806-4333-92b3-81d6d09ff8b5</id>
       <name>Dopadrine</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>3</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>180</page>
       <avail>8</avail>
       <cost>45</cost>
+      <speed>0</speed>
+      <vectors>Contact</vectors>
+      <bonus>
+        <limit>
+          <name>Social</name>
+          <value>-2</value>
+        </limit>
+      </bonus>
     </drug>
     <drug>
       <id>27b4ed38-dc23-4225-ad8d-146bdfe2e598</id>
       <name>eX</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>180</page>
       <avail>3R</avail>
       <cost>20</cost>
+      <vectors>Ingestion</vectors>
+      <duration>(((8-{BOD}) &gt;= 1)*(8-{BOD}) + ((8-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>CHA</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>LOG</name>
+          <value>-1</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>-1</value>
+        </attribute>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
     </drug>
     <drug>
       <id>f7ed8b97-e26a-4296-b59d-e7c893696011</id>
@@ -583,76 +735,158 @@
       <page>180</page>
       <avail>10F</avail>
       <cost>400</cost>
+      <speed>3</speed>
+      <vectors>Ingestion</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <drug>
       <id>75e9b82f-eb1a-4db1-8cde-29d2cf0eaba6</id>
       <name>Galak</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>180</page>
       <avail>4R</avail>
       <cost>45</cost>
+      <vectors>Ingestion</vectors>
+      <duration>(((9-{BOD}) &gt;= 3)*(9-{BOD}) + ((9-{BOD}) &lt; 3)*3)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>CHA</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>LOG</name>
+          <value>-1</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>-1</value>
+        </attribute>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
     </drug>
     <drug>
       <id>9195ee9e-c5b1-4e8f-9b1a-786393a302dc</id>
       <name>G3</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>2</rating>
+      <threshold>1</threshold>
       <source>CF</source>
       <page>181</page>
       <avail>2</avail>
       <cost>15</cost>
+      <speed>3600</speed>
+      <vectors>Ingestion</vectors>
+      <duration>(((15-{BOD}) &gt;= 1)*(15-{BOD}) + ((15-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <drug>
       <id>0ed6e114-6a9f-4bd6-ba27-2b4f28b10305</id>
       <name>Guts</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>181</page>
       <avail>8R</avail>
       <cost>60</cost>
+      <speed>0</speed>
+      <vectors>Inhalation</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <drug>
       <id>df660e33-ce77-46e4-8c13-a92e3b5f37e8</id>
       <name>Hecate's Blessing</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>4</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>185</page>
       <avail>12F</avail>
       <cost>500</cost>
+      <speed>0</speed>
+      <vectors>Ingestion</vectors>
+      <bonus>
+        <drainresist>1</drainresist>
+      </bonus>
     </drug>
     <drug>
       <id>a713f573-128b-4143-adc0-32f52e698587</id>
       <name>Hurlg</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>4</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>181</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <vectors>Ingestion</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>LOG</name>
+          <value>-1</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>1</value>
+        </attribute>
+      </bonus>
     </drug>
     <drug>
       <id>d70434e3-183c-4243-8213-b9f9166387ea</id>
       <name>Immortal Flower</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>8</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>186</page>
       <avail>14R</avail>
+      <bonus>
+        <critterpowers>
+          <power>Regeneration</power>
+        </critterpowers>
+      </bonus>
       <cost>2500</cost>
+      <speed>48</speed>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>3659055c-db84-4f75-bfa9-afe5d0f39803</id>
       <name>K-10</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>11</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>181</page>
       <avail>16F</avail>
       <cost>900</cost>
+      <speed>0</speed>
+      <vectors>Injection</vectors>
+      <bonus>
+        <attribute>
+          <name>BOD</name>
+          <value>3</value>
+        </attribute>
+        <attribute>
+          <name>AGI</name>
+          <value>3</value>
+        </attribute>
+        <attribute>
+          <name>STR</name>
+          <value>4</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>1</value>
+        </attribute>
+        <quality rating="3">High Pain Tolerance</quality>
+        <initiative>5</initiative>
+      </bonus>
     </drug>
     <drug>
       <id>f818d571-c817-49b2-86b6-ad9fb94ead54</id>
@@ -663,6 +897,8 @@
       <page>185</page>
       <avail>12F</avail>
       <cost>750</cost>
+      <speed>3</speed>
+      <vectors>Ingestion,Inhalation,Injection</vectors>
     </drug>
     <drug>
       <id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
@@ -673,16 +909,26 @@
       <page>185</page>
       <avail>10F</avail>
       <cost>400</cost>
+      <speed>3</speed>
+      <vectors>Ingestion,Inhalation,Injection</vectors>
     </drug>
     <drug>
       <id>58319c25-b724-4db4-b492-1068ca44cb73</id>
       <name>Little Smoke</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>12F</avail>
+      <bonus>
+        <critterpowers>
+          <power>Concealment</power>
+          <power>Confusion</power>
+        </critterpowers>
+      </bonus>
       <cost>1800</cost>
+      <vectors>Inhalation</vectors>
     </drug>
     <drug>
       <id>65122a92-ae48-4e94-8c68-69c1bdc7d46a</id>
@@ -693,136 +939,257 @@
       <page>181</page>
       <avail>6R</avail>
       <cost>100</cost>
+      <speed>60</speed>
+      <vectors>Ingestion</vectors>
+      <duration>(((14-{BOD}) &gt;= 2)*(14-{BOD}) + ((14-{BOD}) &lt; 2)*2)*3600</duration>
     </drug>
     <drug>
       <id>a2b0310b-5a8f-4b01-b478-967d345ce22c</id>
       <name>Nightwatch</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>1</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>182</page>
       <avail>3R</avail>
       <cost>25</cost>
+      <speed>0</speed>
+      <vectors>Contact</vectors>
     </drug>
     <drug>
       <id>6e219091-8e3c-4a65-bb1d-78a351d8bf54</id>
       <name>NoPaint</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>3</rating>
+      <threshold>1</threshold>
       <source>CF</source>
       <page>182</page>
       <avail>3</avail>
       <cost>15</cost>
+      <speed>0</speed>
+      <vectors>Contact</vectors>
+      <bonus>
+        <quality rating="3">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>11c547f4-37d1-4d6a-8760-1d11ef48c7f7</id>
       <name>Oneiro</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>186</page>
       <avail>6F</avail>
       <cost>1250</cost>
+      <speed>0</speed>
+      <vectors>Inhalation</vectors>
     </drug>
     <drug>
       <id>aa22ff52-1615-48cb-9e55-e63539ede39a</id>
       <name>Overdrive</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>186</page>
       <avail>10F</avail>
       <cost>800</cost>
+      <speed>3</speed>
+      <vectors>Inhalation</vectors>
+      <duration>(((10-{BOD}) &gt;= 1)*(10-{BOD}) + ((10-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <skillattribute>
+          <name>LOG</name>
+          <bonus>1</bonus>
+        </skillattribute>
+      </bonus>
     </drug>
     <drug>
       <id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
       <name>Oxygenated Fluorocarbons</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>2</rating>
+      <threshold>1</threshold>
       <source>CF</source>
       <page>182</page>
       <avail>12R</avail>
       <cost>2000</cost>
+      <duration>604800</duration>
+      <vectors>Injection</vectors>
+      <bonus>
+        <attribute>
+          <name>AGI</name>
+          <value>1</value>
+        </attribute>
+      </bonus>
     </drug>
     <drug>
       <id>c3965bac-b2b0-47b1-96d8-0a1a7cb4e1b6</id>
       <name>Pixie Dust</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>10</rating>
+      <threshold>4</threshold>
       <source>CF</source>
       <page>186</page>
       <avail>8F</avail>
       <cost>800</cost>
+      <speed>0</speed>
+      <vectors>Inhalation</vectors>
+      <bonus>
+        <attribute>
+          <name>CHA</name>
+          <value>1</value>
+        </attribute>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <quality rating="1">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>9c3ae30d-dd3e-49da-a30b-acbe06b444ac</id>
       <name>Push</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>4</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>182</page>
       <avail>4F</avail>
       <cost>25</cost>
+      <speed>60</speed>
+      <vectors>Ingestion</vectors>
+      <duration>(((15-{BOD}) &gt;= 1)*(15-{BOD}) + ((15-{BOD}) &lt; 1)*1)*60</duration>
     </drug>
     <drug>
       <id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
       <name>PsychChips (Illegal)</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>6F</avail>
       <cost>500</cost>
+      <speed>0</speed>
+      <duration>172800</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>-1</value>
+        </attribute>
+      </bonus>
     </drug>
     <drug>
       <id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
       <name>PsychChips (Legal)</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>3</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>4R</avail>
       <cost>350</cost>
+      <speed>0</speed>
+      <duration>172800</duration>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>-1</value>
+        </attribute>
+      </bonus>
     </drug>
     <drug>
       <id>5fe2bf62-471e-4000-8ab8-641623983302</id>
       <name>Red Mescaline</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>182</page>
       <avail>4R</avail>
       <cost>50</cost>
+      <speed>3600</speed>
+      <vectors>Ingestion</vectors>
+      <duration>(((18-{BOD}) &gt;= 1)*(18-{BOD}) + ((18-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>CHA</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>REA</name>
+          <value>-2</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>1</value>
+        </attribute>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
     </drug>
     <drug>
       <id>60cfe7ff-c634-405f-9894-7baee61e4445</id>
       <name>Ripper</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>182</page>
       <avail>6F</avail>
       <cost>60</cost>
+      <speed>0</speed>
+      <vectors>Injection,Contact</vectors>
+      <bonus>
+        <attribute>
+          <name>STR</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>WIL</name>
+          <value>-1</value>
+        </attribute>
+      </bonus>
     </drug>
     <drug>
       <id>68ac6703-8540-4efe-b9d9-51f9db14d6b7</id>
       <name>Rock Lizard Blood</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>10R</avail>
+      <bonus>
+        <critterpowers>
+          <power select="Pathogens">Immunity</power>
+          <power select="Toxins">Immunity</power>
+        </critterpowers>
+      </bonus>
       <cost>1700</cost>
+      <speed>1800</speed>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>127e4e88-6966-44ad-a95b-eeaaa9a7472e</id>
       <name>Shade</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>7</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>6R</avail>
       <cost>1000</cost>
+      <speed>0</speed>
+      <vectors>Inhalation</vectors>
     </drug>
     <drug>
       <id>62d633d1-0e3a-4ea6-a4ba-f88ccdf72cf9</id>
@@ -833,16 +1200,29 @@
       <page>183</page>
       <avail>8R</avail>
       <cost>250</cost>
+      <speed>6</speed>
+      <vectors>Injection</vectors>
+      <duration>(((10-{BOD}) &gt;= 1)*(10-{BOD}) + ((10-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <drug>
       <id>cd2dd310-464f-4f12-ae42-cdc293e3a2df</id>
       <name>Snuff</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>2</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>183</page>
       <avail>1R</avail>
       <cost>10</cost>
+      <speed>60</speed>
+      <vectors>Ingestion,Inhalation</vectors>
+      <bonus>
+        <attribute>
+          <name>REA</name>
+          <value>1</value>
+        </attribute>
+        <quality rating="1">High Pain Tolerance</quality>
+      </bonus>
     </drug>
     <drug>
       <id>6c030daa-7dc0-4d7e-86a8-d36f4b15e13f</id>
@@ -853,6 +1233,8 @@
       <page>183</page>
       <avail>6F</avail>
       <cost>125</cost>
+      <speed>3</speed>
+      <vectors>Contact</vectors>
     </drug>
     <drug>
       <id>8a40ed45-a19c-47a6-8449-f3235492e809</id>
@@ -863,56 +1245,101 @@
       <page>184</page>
       <avail>12F</avail>
       <cost>150</cost>
+      <speed>60</speed>
+      <vectors>Contact</vectors>
+      <duration>(((12-{BOD}) &gt;= 1)*(12-{BOD}) + ((12-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <drug>
       <id>7e8a18bd-f80f-432e-b985-823fc6be0d5a</id>
       <name>Trance</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>6</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>186</page>
       <avail>10F</avail>
       <cost>1100</cost>
+      <speed>3</speed>
+      <vectors>Inhalation</vectors>
+      <duration>(((6-{BOD}) &gt;= 1)*(6-{BOD}) + ((6-{BOD}) &lt; 1)*1)*3600</duration>
+      <bonus>
+        <attribute>
+          <name>INT</name>
+          <value>1</value>
+        </attribute>
+        <skillattribute>
+          <name>LOG</name>
+          <bonus>2</bonus>
+        </skillattribute>
+      </bonus>
     </drug>
     <drug>
       <id>8a01190e-f484-4fc6-981e-3e954ce17107</id>
       <name>Woad</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>5</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>184</page>
       <avail>3R</avail>
       <cost>15</cost>
+      <speed>3</speed>
+      <vectors>Ingestion</vectors>
     </drug>
     <drug>
       <id>ca121b86-d4d1-411d-a524-389e6bd2091b</id>
       <name>Wudu'aku</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>4</rating>
+      <threshold>1</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>12F</avail>
+      <bonus>
+        <skillgroup>
+          <name>Conjuring</name>
+          <bonus>2</bonus>
+        </skillgroup>
+      </bonus>
       <cost>2350</cost>
+      <vectors>Ingestion,Inhalation</vectors>
     </drug>
     <drug>
       <id>2d35de28-3b3d-4009-8ced-de5fd3869069</id>
       <name>Zero</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>1</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>184</page>
       <avail>8R</avail>
+      <bonus>
+        <pathogencontactresist>-2</pathogencontactresist>
+        <toxincontactresist>-2</toxincontactresist>
+        <pathogeningestionresist>-2</pathogeningestionresist>
+        <toxiningestionresist>-2</toxiningestionresist>
+        <pathogeninhalationresist>-2</pathogeninhalationresist>
+        <toxininhalationresist>-2</toxininhalationresist>
+        <pathogeninjectionresist>-2</pathogeninjectionresist>
+        <toxininjectionresist>-2</toxininjectionresist>
+      </bonus>
       <cost>150</cost>
+      <speed>3600</speed>
+      <vectors>Ingestion,Injection</vectors>
+      <duration>(((20-{BOD}) &gt;= 1)*(20-{BOD}) + ((20-{BOD}) &lt; 1)*1)*3600</duration>
     </drug>
     <drug>
       <id>dace6412-6d90-4b98-b00c-86483b278e01</id>
       <name>Zombie Dust</name>
       <category>Drugs</category>
-      <rating>0</rating>
+      <rating>2</rating>
+      <threshold>3</threshold>
       <source>CF</source>
       <page>187</page>
       <avail>12F</avail>
       <cost>1500</cost>
+      <speed>6</speed>
+      <vectors>Contact,Injection</vectors>
     </drug>
     <!-- End Region -->
     <!-- Region State of the Art ADL -->
@@ -942,8 +1369,8 @@
       <id>08712808-0ef9-405f-a515-a84c27b7c4d4</id>
       <name>Downer BTL</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>192</page>
       <avail>4F</avail>
@@ -963,8 +1390,8 @@
       <id>1db59c8c-5939-4782-982e-26602e3cd749</id>
       <name>Upper BTL</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>192</page>
       <avail>4F</avail>
@@ -984,8 +1411,8 @@
       <id>27681339-dc48-4d84-9341-80d962996214</id>
       <name>Hyper BTL</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>192</page>
       <avail>4F</avail>
@@ -1013,8 +1440,8 @@
       <id>2e55385c-c30b-4d0a-87de-cdd73f0fe9a6</id>
       <name>Chill BTL</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>193</page>
       <avail>4F</avail>
@@ -1042,8 +1469,8 @@
       <id>6f0212e2-e656-4e97-ab10-f2521c38189c</id>
       <name>Berserker BTL</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1071,8 +1498,8 @@
       <id>7cb80189-5893-4852-9d33-dbeea004b0a7</id>
       <name>Bodyguard BTL</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1092,8 +1519,8 @@
       <id>c153d7ec-af89-4c6f-a31d-fc3a6a490de4</id>
       <name>Infiltrator</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1129,8 +1556,8 @@
       <id>e24e181a-e43c-4e01-a1df-f907dc532db0</id>
       <name>Pacifier</name>
       <category>BTLs</category>
-      <rating>9</rating>
-      <threshold>3</threshold>
+      <rating>6</rating>
+      <threshold>2</threshold>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1152,6 +1579,76 @@
           <name>CHA</name>
           <value>-1</value>
         </attribute>
+      </bonus>
+    </drug>
+    <!-- End Region -->
+    <!-- Region Sail Away, Sweet Sister -->
+    <drug>
+      <id>c4a777d8-ed86-4f91-9055-4b5a1e54918c</id>
+      <name>Renfield</name>
+      <category>Drugs</category>
+      <rating>8</rating>
+      <threshold>3</threshold>
+      <source>SASS</source>
+      <page>32</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <speed>3</speed>
+      <vectors>Ingestion,Injection</vectors>
+      <duration>604800</duration>
+      <bonus>
+        <attribute>
+          <name>AGI</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>INT</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>STR</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Physical</name>
+          <value>1</value>
+        </limit>
+        <initiativedice>1</initiativedice>
+      </bonus>
+    </drug>
+    <!-- End Region -->
+    <!-- Region Dark Terrors -->
+    <drug>
+      <id>a62a4d28-29ef-4d1c-9d98-5913d59dc527</id>
+      <name>Amrita</name>
+      <category>Drugs</category>
+      <rating>8</rating>
+      <threshold>3</threshold>
+      <source>DTR</source>
+      <page>160</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <speed>3</speed>
+      <vectors>Ingestion</vectors>
+      <duration>604800</duration>
+      <bonus>
+        <attribute>
+          <name>BOD</name>
+          <value>1</value>
+        </attribute>
+        <attribute>
+          <name>CHA</name>
+          <value>1</value>
+        </attribute>
+        <limit>
+          <name>Physical</name>
+          <value>1</value>
+        </limit>
+        <limit>
+          <name>Social</name>
+          <value>1</value>
+        </limit>
+        <quality rating="3">High Pain Tolerance</quality>
       </bonus>
     </drug>
     <!-- End Region -->
