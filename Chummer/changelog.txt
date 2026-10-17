@@ -39,6 +39,7 @@ Application:
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 - Fixed a rare potential deadlock around calculating adept power points currently being used.
+- The default file name offered when creating a critter file for a spirit no longer contains a colon and now closes its parenthesis (e.g. "Watcher (Force 6)"), so it can be saved as is.
 
 Critters:
 - Added the Ghost Hound (and its Astral Perception variant), Kokopelli, Chalcis (Great Hunter), Wild Hunt Hunter, Wild Hunt Hound, Woog, Engkanto, Chiron, Jabberwock, Lamia, Nibiinaabe, Manananggal (Whole, Torso, and Legs), Bunyip, and Sabgarifya (Farasi Bahari) critters.
@@ -150,6 +151,7 @@ Resonance:
 Traditions:
 - Corrected multiple traditions and spirits, including Green Magic, Norse, Red Magic, Ancestor Shaman, the Homunculus spirits, Watcher, and several toxic spirits and shedim. Svetoid has been renamed to Svetovid.
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
+- Watcher and Master Shedim skill dice pools on printed sheets now use the linked attribute instead of Force. Shedim and Ally Spirit skills now also list their attribute.
 
 Life Modules:
 - Corrected the skills, knowledge skills, qualities, and page references of multiple life modules, including Trans-Polar Aleut Nation, the military service modules, and the Azania modules.

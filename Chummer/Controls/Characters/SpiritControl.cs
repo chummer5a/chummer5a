@@ -751,18 +751,15 @@ namespace Chummer
                                                .ConfigureAwait(false) + "|" +
                                            await LanguageManager.GetStringAsync("DialogFilter_All", token: token)
                                                .ConfigureAwait(false);
-                        string strInputFileName = strCritterName + strSpace + "("
-                                                  + StringExtensions.FastFormat(
-                                                      await LanguageManager
-                                                          .GetStringAsync("Label_RatingFormat", token: token)
-                                                          .ConfigureAwait(false), await LanguageManager
-                                                          .GetStringAsync(
-                                                              await _objSpirit.GetRatingLabelAsync(token)
-                                                                  .ConfigureAwait(false), token: token)
-                                                          .ConfigureAwait(false)) + strSpace
-                                                  + (await _objSpirit.GetForceAsync(token).ConfigureAwait(false))
-                                                  .ToString(
-                                                      GlobalSettings.InvariantCultureInfo);
+                        string strInputFileName = (strCritterName + strSpace + "("
+                                                   + await LanguageManager
+                                                       .GetStringAsync(
+                                                           await _objSpirit.GetRatingLabelAsync(token)
+                                                               .ConfigureAwait(false), token: token)
+                                                       .ConfigureAwait(false) + strSpace
+                                                   + (await _objSpirit.GetForceAsync(token).ConfigureAwait(false))
+                                                   .ToString(
+                                                       GlobalSettings.InvariantCultureInfo) + ")").CleanForFileName();
                         DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                         {
                             using (SaveFileDialog dlgSaveFile = new SaveFileDialog())
