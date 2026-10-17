@@ -596,13 +596,17 @@ namespace Chummer
                         if (xmlRatingNode != null)
                         {
                             string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating", token)?.Value ?? string.Empty;
-                            string strMaxRating = xmlRatingNode.Value;
-                            // Not a simple integer, so we need to start mucking around with strings
-                            (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMinRating, 1, 0, token).ConfigureAwait(false);
-                            int intMinRating = blnIsSuccess ? decValue.StandardRound() : 1;
+                            int intMinRating = 1;
+                            if (!string.IsNullOrEmpty(strMinRating))
+                            {
+                                // Not a simple integer, so we need to start mucking around with strings
+                                (decimal decValueInner, bool blnIsSuccessInner) = await ProcessInvariantXPathExpression(xmlCyberware, strMinRating, 1, 1, token).ConfigureAwait(false);
+                                intMinRating = blnIsSuccessInner ? decValueInner.StandardRound() : 1;
+                            }
                             await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating, token: token).ConfigureAwait(false);
-                            (decValue, blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMaxRating, intMinRating, intMinRating, token).ConfigureAwait(false);
-                            int intMaxRating = blnIsSuccess ? decValue.StandardRound() : 1;
+                            string strMaxRating = xmlRatingNode.Value;
+                            (decimal decValue, bool blnIsSuccess) = await ProcessInvariantXPathExpression(xmlCyberware, strMaxRating, intMinRating, intMinRating, token).ConfigureAwait(false);
+                            int intMaxRating = Math.Max(intMinRating, blnIsSuccess ? decValue.StandardRound() : 1);
                             if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                             {
                                 while (intMaxRating > intMinRating

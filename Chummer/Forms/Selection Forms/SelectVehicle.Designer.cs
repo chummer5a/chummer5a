@@ -191,6 +191,7 @@ namespace Chummer
             // 
             // tlpMain
             // 
+            this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
@@ -283,9 +284,9 @@ namespace Chummer
             // 
             // lblMinimumCost
             // 
-            this.lblMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMinimumCost.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMinimumCost.AutoSize = true;
-            this.lblMinimumCost.Location = new System.Drawing.Point(3, 6);
+            this.lblMinimumCost.Location = new System.Drawing.Point(6, 6);
             this.lblMinimumCost.Name = "lblMinimumCost";
             this.lblMinimumCost.Size = new System.Drawing.Size(51, 13);
             this.lblMinimumCost.TabIndex = 0;
@@ -294,7 +295,7 @@ namespace Chummer
             // 
             // lblMaximumCost
             // 
-            this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaximumCost.AutoSize = true;
             this.lblMaximumCost.Location = new System.Drawing.Point(3, 32);
             this.lblMaximumCost.Name = "lblMaximumCost";
@@ -305,9 +306,9 @@ namespace Chummer
             // 
             // lblExactCost
             // 
-            this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblExactCost.AutoSize = true;
-            this.lblExactCost.Location = new System.Drawing.Point(3, 58);
+            this.lblExactCost.Location = new System.Drawing.Point(20, 58);
             this.lblExactCost.Name = "lblExactCost";
             this.lblExactCost.Size = new System.Drawing.Size(37, 13);
             this.lblExactCost.TabIndex = 2;
@@ -1385,6 +1386,7 @@ namespace Chummer
             this.Load += new System.EventHandler(this.SelectVehicle_Load);
             this.tabViews.ResumeLayout(false);
             this.tabListView.ResumeLayout(false);
+            this.tabListView.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.gpbCostFilter.ResumeLayout(false);

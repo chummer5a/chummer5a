@@ -30,6 +30,7 @@
     <InformationalVersion>5.225.0.0</InformationalVersion>
     <ApplicationVersion>5.225.0.0</ApplicationVersion>
     <VersionPrefix>5.225.0.0</VersionPrefix>
+    <MSTestParallelizeScope>None</MSTestParallelizeScope>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="WindowsBase" />

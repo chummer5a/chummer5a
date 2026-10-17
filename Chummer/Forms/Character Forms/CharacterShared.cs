@@ -1910,10 +1910,10 @@ namespace Chummer
                 await SetDirty(true, token).ConfigureAwait(false);
                 strNotes = (await objNotes.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
                 objColor = await objNotes.GetPreferredColorAsync(token).ConfigureAwait(false);
-                TreeView objTreeView = treNode.TreeView;
-                if (objTreeView != null)
+                TreeView treView = treNode.TreeView;
+                if (treView != null)
                 {
-                    await objTreeView.DoThreadSafeAsync(() =>
+                    await treView.DoThreadSafeAsync(() =>
                     {
                         treNode.ForeColor = objColor;
                         treNode.ToolTipText = strNotes;

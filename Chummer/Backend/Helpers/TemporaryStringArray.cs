@@ -28,7 +28,7 @@ namespace Chummer
 {
     /// <summary>
     /// Helping wrapper around an objArray taken from the shared objArray pool that will also respect the desired input size of the objArray when being read or enumerated.
-    /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times (but cannot be stackalloc'ed because they are for reference types).
+    /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times, but cannot be stackalloc'ed because they cannot accept pointers or cannot be used in an unsafe context, e.g., inside async.
     /// </summary>
     public readonly struct TemporaryStringArray : IList<string>, IReadOnlyList<string>, IDisposable, IEquatable<TemporaryStringArray>
     {
@@ -39,7 +39,7 @@ namespace Chummer
 
         public TemporaryStringArray(string[] items)
         {
-            _intSize = items.Length;
+            _intSize = items?.Length ?? 0;
             if (_intSize == 0)
                 _aobjInternal = Array.Empty<string>();
             else
@@ -51,7 +51,7 @@ namespace Chummer
 
         public TemporaryStringArray(IReadOnlyCollection<string> items)
         {
-            _intSize = items.Count;
+            _intSize = items?.Count ?? 0;
             if (_intSize == 0)
                 _aobjInternal = Array.Empty<string>();
             else
@@ -65,7 +65,7 @@ namespace Chummer
 
         public TemporaryStringArray(IReadOnlyList<string> items)
         {
-            _intSize = items.Count;
+            _intSize = items?.Count ?? 0;
             if (_intSize == 0)
                 _aobjInternal = Array.Empty<string>();
             else
@@ -78,6 +78,12 @@ namespace Chummer
 
         public TemporaryStringArray(IEnumerable<string> items)
         {
+            if (items == null)
+            {
+                _intSize = 0;
+                _aobjInternal = Array.Empty<string>();
+                return;
+            }
             using (IEnumerator<string> enumerator = items.GetEnumerator())
             {
                 if (enumerator.MoveNext())
@@ -331,7 +337,7 @@ namespace Chummer
                 }
                 else
                 {
-                    return new TemporaryStringArray(Array.Empty<string>());
+                    return new TemporaryStringArray((string[])null);
                 }
             }
         }

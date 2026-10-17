@@ -28551,16 +28551,16 @@
       </mentor>
       <mentor translated="True">
         <id>46f88748-8c6c-4230-ad59-2eccb463cc35</id>
-        <name>Architect</name>
-        <translate>Architect</translate>
+        <name>Architect (The Builder)</name>
+        <translate>Architect (The Builder)</translate>
         <altadvantage>+1 limit and +1 dice pool bonus for Edit actions.</altadvantage>
         <altdisadvantage>–1 limit and –1 dice for Snoop actions.</altdisadvantage>
         <altpage>103</altpage>
       </mentor>
       <mentor>
         <id>690ccad8-3f42-4d62-a358-e099747fc4e4</id>
-        <name>Archivist (The Record Keeper)</name>
-        <translate>Archivist (The Record Keeper)</translate>
+        <name>Archivist (The Secret Keeper)</name>
+        <translate>Archivist (The Secret Keeper)</translate>
         <altadvantage>+1 limit and +1 dice pool bonus for Browse actions and digital legwork.</altadvantage>
         <altdisadvantage>–1 limit for Edit actions designed to destroy data.</altdisadvantage>
         <altpage>177</altpage>
@@ -42177,7 +42177,7 @@
       </tradition>
       <tradition>
         <id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
-        <name>Svetoid</name>
+        <name>Svetovid</name>
         <translate>Svetovid</translate>
         <altpage>115</altpage>
       </tradition>

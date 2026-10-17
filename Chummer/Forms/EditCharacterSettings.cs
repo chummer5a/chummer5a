@@ -2042,43 +2042,43 @@ namespace Chummer
             await lblGameplayOptionName
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_GameplayOptionName", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkUnarmedSkillImprovements
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkIgnoreArt
                   .SetToolTipTextAsync(
-                      (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt", token: token).ConfigureAwait(false))
-                      .WordWrap(), token).ConfigureAwait(false);
+                      (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt", token: token)
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkIgnoreComplexFormLimit
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreComplexFormLimit", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkCyberlegMovement
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsCyberlegMovement", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkDontDoubleQualityPurchases
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityPurchases", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkDontDoubleQualityRefunds
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityRefunds", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkStrictSkillGroups
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionStrictSkillGroups", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkAllowInitiation
                   .SetToolTipTextAsync(
                       (await LanguageManager.GetStringAsync("Tip_OptionsAllowInitiation", token: token)
-                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+                                            .ConfigureAwait(false)), token).ConfigureAwait(false);
             await chkUseCalculatedPublicAwareness
                   .SetToolTipTextAsync(
-                      (await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token).ConfigureAwait(false))
-                      .WordWrap(), token).ConfigureAwait(false);
+                      (await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token).ConfigureAwait(false)), token)
+                  .ConfigureAwait(false);
         }
 
         private async Task SetupDataBindings(CancellationToken token = default)

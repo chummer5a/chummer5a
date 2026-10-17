@@ -2398,6 +2398,14 @@ namespace Chummer.Backend.Equipment
                           .WriteElementStringAsync(
                               "fullname_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                               token).ConfigureAwait(false);
+                await objWriter
+                          .WriteElementStringAsync(
+                              "fullname_noqty", await DisplayNameAsync(objCulture, strLanguageToPrint, blnExcludeQuantity: true, token: token).ConfigureAwait(false),
+                              token).ConfigureAwait(false);
+                await objWriter
+                          .WriteElementStringAsync(
+                              "fullname_noqty_english", await DisplayNameAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, blnExcludeQuantity: true, token: token).ConfigureAwait(false),
+                              token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ispersona",
@@ -2412,7 +2420,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("armorcapacity", ArmorCapacity, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxrating", MaxRating, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("qty", DisplayQuantity(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qty", await DisplayQuantityAsync(objCulture, blnIncludeNonNumericChars: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qty_text", await DisplayQuantityAsync(objCulture, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
                                                         await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -5303,26 +5312,56 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
         /// <param name="blnOverrideQuantity">Whether to override the quantity to display.</param>
         /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
+        /// <param name="blnIncludeNonNumericChars">Whether the returned string should include non-numerical characters like "×". Important in cases where this string is exported in a way that the parser would want to treat as a number.</param>
         /// <returns>A formatted string for the quantity of this piece of gear.</returns>
         public string DisplayQuantity(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
-                                      decimal decQuantityToUse = 0.0m)
+                                      decimal decQuantityToUse = 0.0m, bool blnIncludeNonNumericChars = true)
         {
             if (!blnOverrideQuantity)
                 decQuantityToUse = Quantity;
 
             if (Name.StartsWith("Nuyen", StringComparison.Ordinal))
-                return decQuantityToUse.ToString(_objCharacter.Settings.NuyenFormat, objCulture);
+            {
+                string strFormat = _objCharacter.Settings.NuyenFormat;
+                return decQuantityToUse.ToString(blnIncludeNonNumericChars ? strFormat + "¥" : strFormat, objCulture);
+            }
             if (Category == "Currency")
                 return decQuantityToUse.ToString("#,0.00", objCulture);
-            return !blnBlankOnOneQuantity || Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
+            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString(blnIncludeNonNumericChars ? "#,0.##×" : "#,0.##", objCulture) : string.Empty;
+        }
+
+        /// <summary>
+        /// Quantity to show, formatted for display purposes.
+        /// </summary>
+        /// <param name="objCulture">CultureInfo in which number formatting should be done.</param>
+        /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
+        /// <param name="blnOverrideQuantity">Whether to override the quantity to display.</param>
+        /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
+        /// <param name="blnIncludeNonNumericChars">Whether the returned string should include non-numerical characters like "×". Important in cases where this string is exported in a way that the parser would want to treat as a number.</param>
+        /// <returns>A formatted string for the quantity of this piece of gear.</returns>
+        public async Task<string> DisplayQuantityAsync(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
+                                      decimal decQuantityToUse = 0.0m, bool blnIncludeNonNumericChars = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!blnOverrideQuantity)
+                decQuantityToUse = Quantity;
+
+            if (Name.StartsWith("Nuyen", StringComparison.Ordinal))
+            {
+                string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
+                return decQuantityToUse.ToString(blnIncludeNonNumericChars ? strFormat + "¥" : strFormat, objCulture);
+            }
+            if (Category == "Currency")
+                return decQuantityToUse.ToString("#,0.00", objCulture);
+            return !blnBlankOnOneQuantity || decQuantityToUse != 1.0m ? decQuantityToUse.ToString(blnIncludeNonNumericChars ? "#,0.##×" : "#,0.##", objCulture) : string.Empty;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
+        public string DisplayName(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, bool blnExcludeQuantity = false)
         {
-            string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
+            string strQuantity = !blnExcludeQuantity ? DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse) : string.Empty;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -5358,9 +5397,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, bool blnExcludeQuantity = false, CancellationToken token = default)
         {
-            string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
+            string strQuantity = !blnExcludeQuantity ? await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token: token).ConfigureAwait(false) : string.Empty;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -6512,15 +6551,15 @@ namespace Chummer.Backend.Equipment
                         if (decIllegalQuantity > 0)
                         {
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t", await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token).ConfigureAwait(false));
+                            sbdAvailItems.AppendLine().Append("\t\t", await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token: token).ConfigureAwait(false));
                         }
                         if (intRestrictedGearQuantityUsed > 0)
                         {
                             string strNameToUse = Parent == null
                                 ? await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                                         intRestrictedGearQuantityUsed, token).ConfigureAwait(false)
+                                                         intRestrictedGearQuantityUsed, token: token).ConfigureAwait(false)
                                 : (await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                                                       intRestrictedGearQuantityUsed, token).ConfigureAwait(false)).ConcatFast(
+                                                                       intRestrictedGearQuantityUsed, token: token).ConfigureAwait(false)).ConcatFast(
                                                 await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                                                 "(", await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), ")");
                             sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);

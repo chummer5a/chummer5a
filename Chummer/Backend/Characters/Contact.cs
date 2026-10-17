@@ -484,7 +484,7 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(ContactPoints),
                     new DependencyGraphNode<string, Contact>(nameof(Free)),
-                    new DependencyGraphNode<string, Contact>(nameof(Connection),
+                    new DependencyGraphNode<string, Contact>(nameof(Connection)),
                     new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
                     new DependencyGraphNode<string, Contact>(nameof(Family)),
                     new DependencyGraphNode<string, Contact>(nameof(Blackmail))
@@ -4036,16 +4036,41 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
             {
-                if (_objLinkedCharacter != null && !Utils.IsUnitTest
-                                                && Program.OpenCharacters.All(
-                                                    x => x == _objLinkedCharacter
-                                                         || !x.LinkedCharacters.Contains(_objLinkedCharacter))
-                                                && Program.MainForm.OpenFormsWithCharacters.All(
-                                                    x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
-                    Program.OpenCharacters.Remove(_objLinkedCharacter);
+                if (_objLinkedCharacter != null)
+                {
+                    if (_objLinkedCharacter?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            _objLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                    if (!Utils.IsUnitTest && Program.OpenCharacters.All(x => x == _objLinkedCharacter
+                            || !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                        && Program.MainForm.OpenFormsWithCharacters.All(x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
+                    {
+                        Program.OpenCharacters.Remove(_objLinkedCharacter);
+                    }
+                }
+
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
+                if (_objCharacter?.IsDisposed == false)
+                {
+                    try
+                    {
+                        _objCharacter.MultiplePropertiesChangedAsync -= CharacterObjectOnPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -4060,16 +4085,40 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (_objLinkedCharacter != null && !Utils.IsUnitTest
-                                                && await Program.OpenCharacters.AllAsync(
-                                                                    async x => x == _objLinkedCharacter
-                                                                         || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(
-                                                                             _objLinkedCharacter))
-                                                                .ConfigureAwait(false)
-                                                && !await Program.MainForm.AnyOpenFormContainsCharacter(_objLinkedCharacter).ConfigureAwait(false))
-                    await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
+                if (_objLinkedCharacter != null)
+                {
+                    if (_objLinkedCharacter?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            _objLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                    if (!Utils.IsUnitTest && await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
+                            || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(_objLinkedCharacter)).ConfigureAwait(false)
+                        && !await Program.MainForm.AnyOpenFormContainsCharacter(_objLinkedCharacter).ConfigureAwait(false))
+                    {
+                        await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
+                    }
+                }
+
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstMugshots.DisposeAsync().ConfigureAwait(false);
+                if (_objCharacter?.IsDisposed == false)
+                {
+                    try
+                    {
+                        _objCharacter.MultiplePropertiesChangedAsync -= CharacterObjectOnPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;

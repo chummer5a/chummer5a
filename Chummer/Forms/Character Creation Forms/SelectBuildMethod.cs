@@ -78,7 +78,7 @@ namespace Chummer
                                     .ConfigureAwait(false),
                                 await LanguageManager
                                     .GetStringAsync("String_" + _eStartingBuildMethod, token: _objGenericToken)
-                                    .ConfigureAwait(false)).WordWrap(),
+                                    .ConfigureAwait(false)),
                             await LanguageManager
                                 .GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods", token: _objGenericToken)
                                 .ConfigureAwait(false), MessageBoxButtons.YesNo,

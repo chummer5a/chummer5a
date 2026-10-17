@@ -296,7 +296,7 @@ namespace Chummer
                             // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
                             XmlNode objXmlCyberware =
                                 _objXmlDocument.TryGetNodeByNameOrId("/chummer/" + _strType + "s/" + _strType,
-                                    strName.CleanXPath());
+                                    strName);
 
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             List<Vehicle> lstVehicles = new List<Vehicle>(1);

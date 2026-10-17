@@ -23,24 +23,13 @@
     </tr>
 
     <xsl:for-each select="complexforms/complexform">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <tr>
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td>
-          <xsl:value-of select="name" />
-          <xsl:if test="extra != ''">: <xsl:value-of select="extra" /></xsl:if>
-          <xsl:if test="programoptions/programoption"> (<xsl:for-each select="programoptions/programoption">
-            <xsl:sort select="name" />
-            <xsl:value-of select="name" />
-            <xsl:if test="rating &gt; 0">
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="rating" />
-            </xsl:if>
-            <xsl:if test="last() &gt; 1">; </xsl:if>
-          </xsl:for-each>)
-          </xsl:if>
+          <xsl:value-of select="fullname" />
         </td>
         <td style="text-align: center">
           <xsl:value-of select="target" />

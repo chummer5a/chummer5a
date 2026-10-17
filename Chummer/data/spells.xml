@@ -256,7 +256,7 @@
     <spell>
       <id>e9f1e14b-1f59-46d6-9e9f-e808d7316d76</id>
       <name>Stunball</name>
-      <page>284</page>
+      <page>285</page>
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
@@ -529,7 +529,7 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor />
+      <descriptor>Essence</descriptor>
       <duration>S</duration>
       <dv>F-3</dv>
       <range>T</range>
@@ -950,7 +950,7 @@
       <source>SR5</source>
       <category>Manipulation</category>
       <damage>0</damage>
-      <descriptor>Physical</descriptor>
+      <descriptor>Physical, Area</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>
@@ -989,7 +989,7 @@
       <source>SR5</source>
       <category>Manipulation</category>
       <damage>0</damage>
-      <descriptor>Mental</descriptor>
+      <descriptor>Mental, Area</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>
@@ -1015,7 +1015,7 @@
       <source>SR5</source>
       <category>Manipulation</category>
       <damage>0</damage>
-      <descriptor>Mental</descriptor>
+      <descriptor>Mental, Area</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>
@@ -3743,14 +3743,14 @@
     <spell>
       <id>547c0959-7a9b-487c-adec-54f639585695</id>
       <name>Fashion</name>
-      <page>190</page>
+      <page>189</page>
       <source>SS</source>
       <category>Manipulation</category>
       <damage>0</damage>
       <descriptor />
       <duration>P</duration>
       <dv>F-1</dv>
-      <range>T (A)</range>
+      <range>T</range>
       <type>P</type>
     </spell>
     <spell>
@@ -3923,7 +3923,7 @@
       <damage>0</damage>
       <descriptor>Passive, Psychic</descriptor>
       <duration>S</duration>
-      <dv>F</dv>
+      <dv>F-1</dv>
       <range>LOS</range>
       <type>M</type>
     </spell>
@@ -3951,7 +3951,7 @@
       <duration>S</duration>
       <dv>F-4</dv>
       <range>T</range>
-      <type>P</type>
+      <type>M</type>
     </spell>
     <spell>
       <id>40f96beb-53d7-43cb-b345-b4f4ffb1151c</id>
@@ -4323,7 +4323,7 @@
     <spell>
       <id>c6995b10-5fff-44c2-8182-0a0a1b30cc6b</id>
       <name>Petrify</name>
-      <page>21</page>
+      <page>22</page>
       <source>SSP</source>
       <category>Manipulation</category>
       <damage>0</damage>
@@ -4336,7 +4336,7 @@
     <spell>
       <id>65a02e9c-6472-406e-b5d1-17ec184c8ed2</id>
       <name>Pulse</name>
-      <page>21</page>
+      <page>22</page>
       <source>SSP</source>
       <category>Manipulation</category>
       <damage>0</damage>
@@ -4349,7 +4349,7 @@
     <spell>
       <id>48f38481-6ece-4157-8594-d49a86eeb91a</id>
       <name>Radiation Shield</name>
-      <page>21</page>
+      <page>22</page>
       <source>SSP</source>
       <category>Manipulation</category>
       <damage>0</damage>
@@ -4362,7 +4362,7 @@
     <spell>
       <id>8689fa5c-5965-4230-9706-245be36b242c</id>
       <name>Radiation Barrier</name>
-      <page>21</page>
+      <page>22</page>
       <source>SSP</source>
       <category>Manipulation</category>
       <damage>0</damage>
@@ -4460,7 +4460,7 @@
       <category>Manipulation</category>
       <damage>0</damage>
       <descriptor />
-      <duration>S</duration>
+      <duration>P</duration>
       <dv>F+1</dv>
       <range>T</range>
       <type>M</type>
@@ -4505,7 +4505,7 @@
       <type>M</type>
       <bonus>
         <addspirit>
-          <spirit>Corpse Cadavre</spirit>
+          <spirit>Corps Cadavre</spirit>
         </addspirit>
       </bonus>
     </spell>
@@ -4601,7 +4601,7 @@
       <descriptor>Physical, Area</descriptor>
       <duration>S</duration>
       <dv>F-1</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>P</type>
     </spell>
     <spell>
@@ -4649,7 +4649,7 @@
       <page>49</page>
       <source>FA</source>
       <category>Combat</category>
-      <damage>0</damage>
+      <damage>P</damage>
       <descriptor>Indirect</descriptor>
       <duration>I</duration>
       <dv>F</dv>
@@ -4662,7 +4662,7 @@
       <page>49</page>
       <source>FA</source>
       <category>Combat</category>
-      <damage>0</damage>
+      <damage>P</damage>
       <descriptor>Indirect, Area</descriptor>
       <duration>I</duration>
       <dv>F+3</dv>
@@ -4675,7 +4675,7 @@
       <page>50</page>
       <source>FA</source>
       <category>Combat</category>
-      <damage>0</damage>
+      <damage>P</damage>
       <descriptor>Indirect</descriptor>
       <duration>I</duration>
       <dv>F</dv>
@@ -4688,7 +4688,7 @@
       <page>50</page>
       <source>FA</source>
       <category>Combat</category>
-      <damage>0</damage>
+      <damage>P</damage>
       <descriptor>Indirect, Area</descriptor>
       <duration>I</duration>
       <dv>F+3</dv>
@@ -4714,11 +4714,11 @@
       <page>50</page>
       <source>FA</source>
       <category>Combat</category>
-      <damage>0</damage>
+      <damage>P</damage>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>P</type>
     </spell>
     <spell>
@@ -4916,7 +4916,7 @@
       <source>FA</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Blood, Direct, Elemental</descriptor>
+      <descriptor>Blood, Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-4</dv>
       <range>LOS</range>
@@ -5106,7 +5106,7 @@
       <category>Manipulation</category>
       <damage>0</damage>
       <descriptor>Blood, Physical</descriptor>
-      <duration>I</duration>
+      <duration>S</duration>
       <dv>F-1</dv>
       <range>T</range>
       <type>P</type>
@@ -5242,7 +5242,7 @@
       <descriptor>Mana, Area</descriptor>
       <duration>S</duration>
       <dv>F</dv>
-      <range>LOS</range>
+      <range>LOS (A)</range>
       <type>M</type>
     </spell>
     <!-- End Region -->

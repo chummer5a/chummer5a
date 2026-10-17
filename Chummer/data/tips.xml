@@ -290,7 +290,7 @@
       <text>You appear to have bought Boosted Reflexes. Are you sure you want to do that?</text>
       <required>
         <allof>
-          <cyberware>Boosted Reflexes</cyberware>
+          <bioware>Boosted Reflexes</bioware>
         </allof>
       </required>
     </tip>
@@ -377,7 +377,7 @@
       </required>
       <forbidden>
         <oneof>
-          <weapon>HK-227</weapon>
+          <weapon>HK 227</weapon>
           <weapon>Ingram Smartgun X</weapon>
         </oneof>
       </forbidden>

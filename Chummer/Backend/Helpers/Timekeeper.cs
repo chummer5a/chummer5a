@@ -17,12 +17,18 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+// Uncomment this define to control whether timer data is collected into a dictionary that can be printed into a log later on
+//#define COLLECTTIMERDATA
+
 using System;
+#if COLLECTTIMERDATA || DEBUG
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
+#if COLLECTTIMERDATA
+using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.Primitives;
+#endif
+#endif
 using NLog;
 
 namespace Chummer
@@ -31,20 +37,28 @@ namespace Chummer
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
+#if COLLECTTIMERDATA || DEBUG
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
+#if COLLECTTIMERDATA
         private static readonly ConcurrentDictionary<string, ValueTuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, ValueTuple<TimeSpan, int>>();
+#endif
+#endif
 
         static Timekeeper()
         {
+#if COLLECTTIMERDATA|| DEBUG
             s_Time.Start();
+#endif
         }
 
         [CLSCompliant(false)]
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
         {
             CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+#if COLLECTTIMERDATA|| DEBUG
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+#endif
             return dependencyActivity;
         }
 
@@ -52,20 +66,27 @@ namespace Chummer
         public static CustomActivity StartSyncron(string taskname, CustomActivity parentActivity)
         {
             CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity);
+#if COLLECTTIMERDATA || DEBUG
             s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
+#endif
             return dependencyActivity;
         }
 
         public static TimeSpan Elapsed(string taskname)
         {
+#if COLLECTTIMERDATA || DEBUG
             if (s_DictionaryStarts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
             {
                 return s_Time.Elapsed - objStartTimeSpan;
             }
 
             return TimeSpan.Zero;
+#else
+            throw new NotSupportedException();
+#endif
         }
 
+#if COLLECTTIMERDATA || DEBUG
         public static TimeSpan Finish(string taskname)
         {
             TimeSpan final = TimeSpan.Zero;
@@ -79,10 +100,11 @@ namespace Chummer
 
                 Debug.WriteLine(strLogEntry);
 #endif
-
+#if COLLECTTIMERDATA
                 s_DictionaryStatistics.AddOrUpdate(taskname, _ => new ValueTuple<TimeSpan, int>(final, 1),
                                                    (_, y) => new ValueTuple<TimeSpan, int>(
                                                        y.Item1 + final, y.Item2 + 1));
+#endif
             }
             else
             {
@@ -90,9 +112,16 @@ namespace Chummer
             }
             return final;
         }
+#else
+        public static void Finish(string taskname)
+        {
+            // Deliberately empty so that we can still call this function, but the compiler will error out if we'd want to use the TimeSpan this function would normally create
+        }
+#endif
 
         public static void MakeLog()
         {
+#if COLLECTTIMERDATA
             string strLog;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdLog))
@@ -110,6 +139,9 @@ namespace Chummer
 
             Debug.WriteLine(strLog);
             Log.Info(strLog);
+#else
+            throw new NotSupportedException();
+#endif
         }
     }
 }

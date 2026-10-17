@@ -48,7 +48,7 @@
     <xsl:variable name="sortedspells">
       <xsl:for-each select="spells/spell">
         <xsl:sort select="category" />
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
         <xsl:copy-of select="current()" />
       </xsl:for-each>
     </xsl:variable>
@@ -92,10 +92,7 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td valign="top">
-          <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="limited = 'True'"> (<xsl:value-of select="$lang.Limited" />)</xsl:if>
-          <xsl:if test="alchemy = 'True'"> (<xsl:value-of select="$lang.Alchemical" />)</xsl:if>
+          <xsl:value-of select="fullname" />
         </td>
         <td style="text-align: center" valign="top">
           <xsl:value-of select="type" />

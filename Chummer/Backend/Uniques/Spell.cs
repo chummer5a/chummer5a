@@ -2526,6 +2526,26 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
+                // Spellcasting foci share a UniqueName. Only the highest Force in that group applies.
+                Dictionary<string, Improvement> dicBestUniqueSpellCategory = null;
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                {
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
+                        continue;
+                    if (objImprovement.ImproveType != Improvement.ImprovementType.SpellCategory
+                        || objImprovement.ImprovedName != Category
+                        || string.IsNullOrEmpty(objImprovement.UniqueName))
+                        continue;
+                    if (!string.IsNullOrEmpty(objImprovement.Condition)
+                        && !ImprovementManager.EvaluateImprovementCondition(objImprovement, this))
+                        continue;
+                    if (dicBestUniqueSpellCategory == null)
+                        dicBestUniqueSpellCategory = new Dictionary<string, Improvement>(1);
+                    if (!dicBestUniqueSpellCategory.TryGetValue(objImprovement.UniqueName, out Improvement objExisting)
+                        || objImprovement.Value > objExisting.Value)
+                        dicBestUniqueSpellCategory[objImprovement.UniqueName] = objImprovement;
+                }
+
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
@@ -2557,6 +2577,15 @@ namespace Chummer
                         case Improvement.ImprovementType.SpellCategory:
                             if (objImprovement.ImprovedName == Category)
                             {
+                                if (!string.IsNullOrEmpty(objImprovement.Condition)
+                                    && !ImprovementManager.EvaluateImprovementCondition(objImprovement, this))
+                                    break;
+                                // Empty UniqueName values stack. A named group contributes only its highest value.
+                                if (!string.IsNullOrEmpty(objImprovement.UniqueName)
+                                    && (dicBestUniqueSpellCategory == null
+                                        || !dicBestUniqueSpellCategory.TryGetValue(objImprovement.UniqueName, out Improvement objBestSpellCategory)
+                                        || !ReferenceEquals(objBestSpellCategory, objImprovement)))
+                                    break;
                                 // SR5 318: Regardless of the number of bonded foci you have,
                                 // only one focus may add its Force to a dicepool for any given test.
                                 // We need to do some checking to make sure this is the most powerful focus before we add it in
@@ -2644,6 +2673,27 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                // Spellcasting foci share a UniqueName. Only the highest Force in that group applies.
+                Dictionary<string, Improvement> dicBestUniqueSpellCategory = null;
+                await _objCharacter.Improvements.ForEachWithBreakAsync(async (objImprovement, t) =>
+                {
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
+                        return true;
+                    if (objImprovement.ImproveType != Improvement.ImprovementType.SpellCategory
+                        || objImprovement.ImprovedName != Category
+                        || string.IsNullOrEmpty(objImprovement.UniqueName))
+                        return true;
+                    if (!string.IsNullOrEmpty(objImprovement.Condition)
+                        && !await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, t).ConfigureAwait(false))
+                        return true;
+                    if (dicBestUniqueSpellCategory == null)
+                        dicBestUniqueSpellCategory = new Dictionary<string, Improvement>(1);
+                    if (!dicBestUniqueSpellCategory.TryGetValue(objImprovement.UniqueName, out Improvement objExisting)
+                        || objImprovement.Value > objExisting.Value)
+                        dicBestUniqueSpellCategory[objImprovement.UniqueName] = objImprovement;
+                    return true;
+                }, token: token).ConfigureAwait(false);
+
                 List<Improvement> lstReturn = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
                 await _objCharacter.Improvements.ForEachWithBreakAsync(async (objImprovement, t) =>
                 {
@@ -2690,7 +2740,14 @@ namespace Chummer
                                     if (!await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, t).ConfigureAwait(false))
                                         break;
                                 }
-                                
+
+                                // Empty UniqueName values stack. A named group contributes only its highest value.
+                                if (!string.IsNullOrEmpty(objImprovement.UniqueName)
+                                    && (dicBestUniqueSpellCategory == null
+                                        || !dicBestUniqueSpellCategory.TryGetValue(objImprovement.UniqueName, out Improvement objBestSpellCategory)
+                                        || !ReferenceEquals(objBestSpellCategory, objImprovement)))
+                                    break;
+
                                 // SR5 318: Regardless of the number of bonded foci you have,
                                 // only one focus may add its Force to a dicepool for any given test.
                                 // We need to do some checking to make sure this is the most powerful focus before we add it in

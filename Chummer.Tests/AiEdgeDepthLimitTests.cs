@@ -76,7 +76,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -114,7 +114,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -147,7 +147,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw;
+                throw ex;
             }
         }
 

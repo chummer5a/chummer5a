@@ -6475,9 +6475,9 @@ namespace Chummer
                         AugmentedMaximum = intAugmentedMaximum,
                         Exclude = strExclude,
                         AddToRating = blnAddToRating,
-                        Target = strTarget,
-                        Condition = strCondition
+                        Target = strTarget
                     };
+                    await objImprovement.SetConditionAsync(strCondition, token).ConfigureAwait(false);
                     await objImprovement.SetRatingAsync(intRating, token).ConfigureAwait(false);
                     await objImprovement.SetValueAsync(decValue, token).ConfigureAwait(false);
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above

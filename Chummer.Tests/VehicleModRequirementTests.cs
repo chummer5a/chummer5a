@@ -74,7 +74,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw;
+                throw ex;
             }
 #if MEMORYTESTING
             finally

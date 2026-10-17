@@ -28,8 +28,7 @@ namespace Chummer
 {
     /// <summary>
     /// Helping wrapper around an objArray taken from the shared objArray pool that will also respect the desired input size of the objArray when being read or enumerated.
-    /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times (but cannot be stackalloc'ed because they are for reference types).
-    /// Note: TemporaryArray is *not* read-only, only its size is unchangeable, it's just that there is no good interface for typed arrays
+    /// Should only be used as a way to prevent excessive heap allocations for small arrays that are only meant to be used a handful of times, but cannot be stackalloc'ed because they cannot accept pointers or cannot be used in an unsafe context, e.g., inside async.
     /// </summary>
     public readonly struct TemporaryArray<T> : IList<T>, IReadOnlyList<T>, IDisposable, IEquatable<TemporaryArray<T>> where T : unmanaged // DO NOT REMOVE UNMANAGED KEYWORD UNLESS YOU LIKE ADDING RANDOM MEMORY LEAKS VIA ARRAYPOOL<T>.SHARED!
     {
@@ -40,7 +39,7 @@ namespace Chummer
 
         public TemporaryArray(T[] items)
         {
-            _intSize = items.Length;
+            _intSize = items?.Length ?? 0;
             if (_intSize == 0)
                 _aobjInternal = Array.Empty<T>();
             else
@@ -52,7 +51,7 @@ namespace Chummer
 
         public TemporaryArray(IReadOnlyCollection<T> items)
         {
-            _intSize = items.Count;
+            _intSize = items?.Count ?? 0;
             if (_intSize == 0)
                 _aobjInternal = Array.Empty<T>();
             else
@@ -66,7 +65,7 @@ namespace Chummer
 
         public TemporaryArray(IReadOnlyList<T> items)
         {
-            _intSize = items.Count;
+            _intSize = items?.Count ?? 0;
             if (_intSize == 0)
                 _aobjInternal = Array.Empty<T>();
             else
@@ -79,6 +78,12 @@ namespace Chummer
 
         public TemporaryArray(IEnumerable<T> items)
         {
+            if (items == null)
+            {
+                _intSize = 0;
+                _aobjInternal = Array.Empty<T>();
+                return;
+            }
             using (IEnumerator<T> enumerator = items.GetEnumerator())
             {
                 if (enumerator.MoveNext())
@@ -332,7 +337,7 @@ namespace Chummer
                 }
                 else
                 {
-                    return new TemporaryArray<T>(Array.Empty<T>());
+                    return new TemporaryArray<T>((T[])null);
                 }
             }
         }

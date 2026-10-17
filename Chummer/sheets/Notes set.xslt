@@ -48,14 +48,13 @@
             <table class="tablestyle">
               <tr><th width="80%" /><th width="10%" /><th width="10%" /></tr>
               <xsl:for-each select="qualities/quality[notes != '']">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
                 <tr style="text-align: left" valign="top">
                   <xsl:if test="position() mod 2 != 1">
                     <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
                   </xsl:if>
                   <td>
-                    <xsl:value-of select="name" />
-                    <xsl:if test="extra != ''">: <xsl:value-of select="extra" /></xsl:if>
+                    <xsl:value-of select="fullname" />
                   </td>
                   <td />
                   <td style="text-align: center">
@@ -269,7 +268,7 @@
                 <th width="10%" />
               </tr>
               <xsl:for-each select="cyberwares/cyberware[notes != '' or gear[notes != ''] or children/cyberware[notes != '']]">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
                 <xsl:call-template name="cybernotes">
                   <xsl:with-param name="level" select="0" />
                 </xsl:call-template>
@@ -297,7 +296,7 @@
                 <th width="10%" />
               </tr>
               <xsl:for-each select="armors/armor[notes != '' or armormods/armormod[notes != ''] or gears/gear[notes != '']]">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname" />
                 <xsl:call-template name="armornotes" />
               </xsl:for-each>
             </table>
@@ -382,7 +381,7 @@
 <!--
                 <xsl:sort select="location" />
 -->
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname_noqty" />
                 <xsl:call-template name="gearnotes">
                   <xsl:with-param name="excludeCommlinks" select="True" />
                   <xsl:with-param name="level" select="0" />
@@ -411,7 +410,7 @@
                 <th width="10%" />
               </tr>
               <xsl:for-each select="gears/gear[iscommlink = 'True' and (notes != '' or children/gear[notes != ''])]">
-                <xsl:sort select="name" />
+                <xsl:sort select="fullname_noqty" />
                 <xsl:call-template name="gearnotes">
                   <xsl:with-param name="excludeCommlinks" select="False" />
                   <xsl:with-param name="level" select="0" />
@@ -498,8 +497,7 @@
         <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
       </xsl:if>
       <td style="padding: 0 {$level * 2}%;">
-	    <xsl:value-of select="name" />
-        <xsl:if test="location != ''"> (<xsl:value-of select="location" />)</xsl:if>
+	    <xsl:value-of select="fullname" />
       </td>
       <td style="text-align: center">
         <xsl:value-of select="source" />
@@ -518,13 +516,13 @@
       </tr>
     </xsl:if>
     <xsl:for-each select="children/cyberware[notes != '' or gear[notes != ''] or children/cyberware[notes != '']]">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <xsl:call-template name="cybernotes">
         <xsl:with-param name="level" select="$level + 1"></xsl:with-param>
       </xsl:call-template>
     </xsl:for-each>
     <xsl:for-each select="gears/gear[iscommlink != 'True' and notes != '']">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname_noqty" />
       <xsl:call-template name="gearnotes">
         <xsl:with-param name="excludeCommlinks" select="True" />
         <xsl:with-param name="level" select="$level + 1" />
@@ -540,8 +538,7 @@
     <tr style="text-align: left" valign="top">
       <xsl:if test="position() mod 2 != 1"><xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute></xsl:if>
       <td>
-	    <xsl:value-of select="name" />
-        <xsl:if test="armorname != ''"> ("<xsl:value-of select="armorname" />") </xsl:if>
+	    <xsl:value-of select="fullname" />
       </td>
       <td style="text-align: center">
         <xsl:value-of select="source" />
@@ -560,10 +557,10 @@
       </tr>
     </xsl:if>
     <xsl:for-each select="armormods/armormod[notes != '']">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <tr>
         <xsl:if test="position() mod 2 != 1"><xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute></xsl:if>
-        <td style="padding: 0 2%;"><xsl:value-of select="name" /></td>
+        <td style="padding: 0 2%;"><xsl:value-of select="fullname" /></td>
         <td style="text-align: center">
           <xsl:value-of select="source" />
           <xsl:text> </xsl:text>
@@ -584,7 +581,7 @@
         </tr>
       </xsl:if>
       <xsl:for-each select="gears/gear[iscommlink != 'True' and notes != '']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
         <xsl:call-template name="gearnotes">
           <xsl:with-param name="excludeCommlinks" select="True" />
           <xsl:with-param name="level" select="2" />
@@ -592,7 +589,7 @@
       </xsl:for-each>
     </xsl:for-each>
     <xsl:for-each select="gears/gear[iscommlink != 'True' and notes != '']">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname_noqty" />
       <xsl:call-template name="gearnotes">
         <xsl:with-param name="excludeCommlinks" select="True" />
         <xsl:with-param name="level" select="1" />
@@ -609,8 +606,7 @@
     <tr style="text-align: left" valign="top">
       <xsl:if test="position() mod 2 != 1"><xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute></xsl:if>
       <td style="padding: 0 {$level * 2}%;">
-        <xsl:value-of select="name" />
-        <xsl:if test="weaponname != ''"> ("<xsl:value-of select="weaponname" />") </xsl:if>
+        <xsl:value-of select="fullname" />
       </td>
       <td style="text-align: center">
         <xsl:value-of select="source" />
@@ -629,10 +625,10 @@
       </tr>
     </xsl:if>
     <xsl:for-each select="accessories/accessory[notes != '']">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <tr>
         <xsl:if test="position() mod 2 != 1"><xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute></xsl:if>
-        <td style="padding: 0 {($level + 1) * 2}%;"><xsl:value-of select="name" /></td>
+        <td style="padding: 0 {($level + 1) * 2}%;"><xsl:value-of select="fullname" /></td>
         <td style="text-align: center">
           <xsl:value-of select="source" />
           <xsl:text> </xsl:text>
@@ -652,7 +648,7 @@
         </tr>
       </xsl:if>
       <xsl:for-each select="gears/gear[iscommlink != 'True' and notes != '']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname_noqty" />
         <xsl:call-template name="gearnotes">
           <xsl:with-param name="excludeCommlinks" select="True" />
           <xsl:with-param name="level" select="$level + 2" />
@@ -690,9 +686,7 @@
     <tr style="text-align: left" valign="top">
       <xsl:if test="position() mod 2 != 1"><xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute></xsl:if>
       <td style="padding: 0 {$level * 2}%;">
-	    <xsl:value-of select="name" />
-        <xsl:if test="gearname != ''"> ("<xsl:value-of select="gearname" />") </xsl:if>
-        <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+	    <xsl:value-of select="fullname" />
       </td>
       <td style="text-align: center">
         <xsl:value-of select="source" />
@@ -713,7 +707,7 @@
     <xsl:choose>
       <xsl:when test="$excludeCommlinks = 'True'">
         <xsl:for-each select="children/gear[notes != '']">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname_noqty" />
           <xsl:call-template name="gearnotes">
             <xsl:with-param name="level" select="$level + 1" />
           </xsl:call-template>
@@ -721,7 +715,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:for-each select="children/gear[notes != '']">
-          <xsl:sort select="name" />
+          <xsl:sort select="fullname_noqty" />
           <xsl:call-template name="gearnotes">
             <xsl:with-param name="level" select="$level + 1" />
           </xsl:call-template>
@@ -736,15 +730,14 @@
 
   <xsl:template name="PowerNotes">
     <xsl:for-each select="powers/power[notes != '' or enhancements/enhancement[notes != '']]">
-      <xsl:sort select="name" />
+      <xsl:sort select="fullname" />
       <xsl:if test="notes != ''">
         <tr style="text-align: left" valign="top">
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
           <td>
-            <xsl:value-of select="name" />
-            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+            <xsl:value-of select="fullname" />
           </td>
           <td style="text-align: center">
             <xsl:if test="rating &gt; 0">
@@ -769,15 +762,15 @@
         </tr>
       </xsl:if>
       <xsl:for-each select="enhancements/enhancement[notes != '']">
-        <xsl:sort select="name" />
+        <xsl:sort select="fullname" />
         <tr style="text-align: left" valign="top">
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
           <td>
-            <xsl:value-of select="name" />
+            <xsl:value-of select="fullname" />
             <xsl:text> (</xsl:text>
-            <xsl:value-of select="../name" />
+            <xsl:value-of select="../fullname" />
             <xsl:text>)</xsl:text>
           </td>
           <td />

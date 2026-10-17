@@ -51,7 +51,8 @@ namespace Chummer.UI.Table
                     _table.SuspendLayout();
                     try
                     {
-                        int intCount = _table._columns.Count;
+                        TableColumnCollection<T> objColumns = _table._columns;
+                        int intCount = objColumns.Count;
                         int[] aintSharedWidths = intCount > Utils.MaxStackLimit32BitTypes
                             ? ArrayPool<int>.Shared.Rent(intCount)
                             : null;
@@ -70,7 +71,7 @@ namespace Chummer.UI.Table
                             for (int i = 0; i < intCount; i++)
                             {
                                 Size headerMinSize = _table._lstCells[i].header.MinimumSize;
-                                int width = Math.Max(_table._columns[i].MinWidth, headerMinSize.Width);
+                                int width = Math.Max(objColumns[i].MinWidth, headerMinSize.Width);
                                 if (y < headerMinSize.Height)
                                 {
                                     y = headerMinSize.Height;
@@ -113,7 +114,7 @@ namespace Chummer.UI.Table
                                 for (int i = 0; delta > 0 && i < widths.Length; i++)
                                 {
                                     int w = widths[i];
-                                    int pW = _table._columns[i].PrefWidth;
+                                    int pW = objColumns[i].PrefWidth;
                                     if (w < pW)
                                     {
                                         int diff = pW - w;
@@ -159,7 +160,7 @@ namespace Chummer.UI.Table
                                         row.Location = new Point(0, y);
                                         row.Width = widthSum;
                                         int dy = 0;
-                                        for (int i = 0; i < _table._columns.Count; i++)
+                                        for (int i = 0; i < objColumns.Count; i++)
                                         {
                                             TableCell cell = _table._lstCells[i].cells[index];
                                             cell.Location = new Point(x, row.Margin.Top);
@@ -172,7 +173,7 @@ namespace Chummer.UI.Table
                                             x += widths[i];
                                         }
 
-                                        for (int i = 0; i < _table._columns.Count; i++)
+                                        for (int i = 0; i < objColumns.Count; i++)
                                         {
                                             TableCell cell = _table._lstCells[i].cells[index];
                                             cell.UpdateAvailableSize(widths[i], dy);

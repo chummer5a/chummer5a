@@ -231,7 +231,7 @@
       <page>193</page>
     </power>
     <power>
-      <name>Astral Gateaway</name>
+      <name>Astral Gateway</name>
       <source>SG</source>
       <page>194</page>
     </power>
@@ -451,6 +451,41 @@
       <name>Resonance Spooling</name>
       <source>KC</source>
       <page>101</page>
+    </power>
+    <power>
+      <name>Coroutine</name>
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <name>Freenet</name>
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <name>Gatekeeper</name>
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <name>Grep</name>
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <name>Mangler</name>
+      <source>KC</source>
+      <page>92</page>
+    </power>
+    <power>
+      <name>Overdrive</name>
+      <source>KC</source>
+      <page>93</page>
+    </power>
+    <power>
+      <name>Sacrifice</name>
+      <source>KC</source>
+      <page>93</page>
     </power>
     <!-- End Region -->
   </powers>

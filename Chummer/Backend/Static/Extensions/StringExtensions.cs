@@ -480,186 +480,169 @@ namespace Chummer
         /// <summary>
         /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
-        public static Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
+        public static async Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled<string>(token);
-            int intStringsCount = lstStrings.Count;
+            token.ThrowIfCancellationRequested();
+            int intStringsCount = await lstStrings.GetCountAsync(token).ConfigureAwait(false);
             // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
             switch (intStringsCount)
             {
                 case 0:
-                    return Task.FromResult(string.Empty);
+                    return string.Empty;
                 case 1:
-                    return lstStrings.ElementAtBetterAsync(0, token);
+                    return await lstStrings.ElementAtBetterAsync(0, token).ConfigureAwait(false);
                 case 2:
                     {
-                        return Inner2();
-                        async Task<string> Inner2()
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            string str1 = string.Empty;
-                            string str2 = string.Empty;
-                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
-                            try
+                            token.ThrowIfCancellationRequested();
+                            if (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
+                                str1 = objEnumerator.Current;
                                 if (objEnumerator.MoveNext())
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    str1 = objEnumerator.Current;
-                                    if (objEnumerator.MoveNext())
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        str2 = objEnumerator.Current;
-                                    }
+                                    str2 = objEnumerator.Current;
                                 }
-                                token.ThrowIfCancellationRequested();
-                                return string.Concat(str1, str2);
                             }
-                            finally
-                            {
-                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
-                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
-                                else if (objEnumerator is IDisposable objDispose)
-                                    objDispose.Dispose();
-                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2);
+                        }
+                        finally
+                        {
+                            if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
                         }
                     }
                 case 3:
                     {
-                        return Inner3();
-                        async Task<string> Inner3()
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            string str1 = string.Empty;
-                            string str2 = string.Empty;
-                            string str3 = string.Empty;
-                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
-                            try
+                            token.ThrowIfCancellationRequested();
+                            if (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
+                                str1 = objEnumerator.Current;
                                 if (objEnumerator.MoveNext())
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    str1 = objEnumerator.Current;
+                                    str2 = objEnumerator.Current;
                                     if (objEnumerator.MoveNext())
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        str2 = objEnumerator.Current;
-                                        if (objEnumerator.MoveNext())
-                                        {
-                                            token.ThrowIfCancellationRequested();
-                                            str3 = objEnumerator.Current;
-                                        }
+                                        str3 = objEnumerator.Current;
                                     }
                                 }
-                                token.ThrowIfCancellationRequested();
-                                return string.Concat(str1, str2, str3);
                             }
-                            finally
-                            {
-                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
-                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
-                                else if (objEnumerator is IDisposable objDispose)
-                                    objDispose.Dispose();
-                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3);
+                        }
+                        finally
+                        {
+                            if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
                         }
                     }
                 case 4:
                     {
-                        return Inner4();
-                        async Task<string> Inner4()
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            string str1 = string.Empty;
-                            string str2 = string.Empty;
-                            string str3 = string.Empty;
-                            string str4 = string.Empty;
-                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
-                            try
+                            token.ThrowIfCancellationRequested();
+                            if (objEnumerator.MoveNext())
                             {
                                 token.ThrowIfCancellationRequested();
+                                str1 = objEnumerator.Current;
                                 if (objEnumerator.MoveNext())
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    str1 = objEnumerator.Current;
+                                    str2 = objEnumerator.Current;
                                     if (objEnumerator.MoveNext())
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        str2 = objEnumerator.Current;
+                                        str3 = objEnumerator.Current;
                                         if (objEnumerator.MoveNext())
                                         {
                                             token.ThrowIfCancellationRequested();
-                                            str3 = objEnumerator.Current;
-                                            if (objEnumerator.MoveNext())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                str4 = objEnumerator.Current;
-                                            }
+                                            str4 = objEnumerator.Current;
                                         }
                                     }
                                 }
-                                token.ThrowIfCancellationRequested();
-                                return string.Concat(str1, str2, str3, str4);
                             }
-                            finally
-                            {
-                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
-                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
-                                else if (objEnumerator is IDisposable objDispose)
-                                    objDispose.Dispose();
-                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                        finally
+                        {
+                            if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
                         }
                     }
             }
-            return Inner();
-            async Task<string> Inner()
+            int intTotalLength = 0;
+            IEnumerator<string> objEnumeratorFallback = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
-                int intTotalLength = 0;
-                IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
-                try
+                token.ThrowIfCancellationRequested();
+                while (objEnumeratorFallback.MoveNext())
                 {
                     token.ThrowIfCancellationRequested();
-                    while (objEnumerator.MoveNext())
+                    string strLoop = objEnumeratorFallback.Current;
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Concat(lstStrings);
+                }
+                token.ThrowIfCancellationRequested();
+                objEnumeratorFallback.Reset();
+                token.ThrowIfCancellationRequested();
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[intTotalLength];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    while (objEnumeratorFallback.MoveNext())
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLoop = objEnumerator.Current;
-                        if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
-                            return string.Concat(lstStrings);
-                    }
-                    token.ThrowIfCancellationRequested();
-                    objEnumerator.Reset();
-                    token.ThrowIfCancellationRequested();
-                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-                    unsafe
-                    {
-                        char* achrNewChars = stackalloc char[intTotalLength];
-                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                        int intCurrent = 0;
-                        while (objEnumerator.MoveNext())
+                        string strLoop = objEnumeratorFallback.Current;
+                        int intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            string strLoop = objEnumerator.Current;
-                            int intLoopLength = strLoop?.Length ?? 0;
-                            if (intLoopLength > 0)
+                            fixed (char* src = strLoop)
                             {
-                                fixed (char* src = strLoop)
-                                {
-                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
-                                }
-                                intCurrent += intLoopLength;
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
                             }
+                            intCurrent += intLoopLength;
                         }
-
-                        // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                        return new string(achrNewChars, 0, intCurrent);
                     }
+
+                    // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                    return new string(achrNewChars, 0, intCurrent);
                 }
-                finally
-                {
-                    if (objEnumerator is IAsyncDisposable objDisposeAsync)
-                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
-                    else if (objEnumerator is IDisposable objDispose)
-                        objDispose.Dispose();
-                }
+            }
+            finally
+            {
+                if (objEnumeratorFallback is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumeratorFallback is IDisposable objDispose)
+                    objDispose.Dispose();
             }
         }
 
@@ -2182,107 +2165,83 @@ namespace Chummer
         /// <summary>
         /// Async version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
-        public static Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
+        public static async Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled<string>(token);
-            int intStringsCount = lstStrings.Count;
+            token.ThrowIfCancellationRequested();
+            int intStringsCount = await lstStrings.GetCountAsync(token).ConfigureAwait(false);
             // Handle trivial cases first
             switch (intStringsCount)
             {
                 case 0:
-                    return Task.FromResult(string.Empty);
+                    return string.Empty;
                 case 1:
-                    return lstStrings.ElementAtBetterAsync(0, token);
+                    return await lstStrings.ElementAtBetterAsync(0, token).ConfigureAwait(false);
                 case 2:
-                    return Inner2();
-                    async Task<string> Inner2()
+                    IEnumerator<string> objEnumerator2 = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
-                        try
+                        objEnumerator2.MoveNext();
+                        string str1 = objEnumerator2.Current;
+                        objEnumerator2.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
                         {
-                            objEnumerator.MoveNext();
-                            string str1 = objEnumerator.Current;
-                            objEnumerator.MoveNext();
-                            if (string.IsNullOrEmpty(str1))
+                            return objEnumerator2.Current;
+                        }
+                        else
+                        {
+                            string str2 = objEnumerator2.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+                    finally
+                    {
+                        if (objEnumerator2 is IAsyncDisposable objDisposeAsync)
+                            await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                        else if (objEnumerator2 is IDisposable objDispose)
+                            objDispose.Dispose();
+                    }
+            }
+            int intSeparatorLength = strSeparator.Length;
+            if (intSeparatorLength == 0)
+                return await ConcatFastAsync(lstStrings, token).ConfigureAwait(false);
+            int intTotalLength = (intStringsCount - 1) * intSeparatorLength;
+            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strLoop = objEnumerator.Current ?? string.Empty;
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Join(strSeparator, lstStrings);
+                }
+                objEnumerator.Reset();
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                    unsafe
+                    {
+                        char* achrNewChars = stackalloc char[intTotalLength];
+                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                        int intCurrent = 0;
+                        int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+
+                        fixed (char* sep = strSeparator)
+                        {
+                            string strLoop = objEnumerator.Current;
+                            int intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
                             {
-                                return objEnumerator.Current;
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                intCurrent = intLoopLength;
                             }
                             else
                             {
-                                string str2 = objEnumerator.Current;
-                                return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
-                            }
-                        }
-                        finally
-                        {
-                            if (objEnumerator is IAsyncDisposable objDisposeAsync)
-                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
-                            else if (objEnumerator is IDisposable objDispose)
-                                objDispose.Dispose();
-                        }
-                    }
-            }
-            return Inner();
-            async Task<string> Inner()
-            {
-                int intSeparatorLength = strSeparator.Length;
-                if (intSeparatorLength == 0)
-                    return await ConcatFastAsync(lstStrings, token).ConfigureAwait(false);
-                int intTotalLength = (intStringsCount - 1) * intSeparatorLength;
-                IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
-                try
-                {
-                    while (objEnumerator.MoveNext())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        string strLoop = objEnumerator.Current ?? string.Empty;
-                        if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
-                            return string.Join(strSeparator, lstStrings);
-                    }
-                    objEnumerator.Reset();
-                    token.ThrowIfCancellationRequested();
-                    if (objEnumerator.MoveNext())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-                        unsafe
-                        {
-                            char* achrNewChars = stackalloc char[intTotalLength];
-                            // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
-                            int intCurrent = 0;
-                            int intSeparatorByteLength = intSeparatorLength * sizeof(char);
-
-                            fixed (char* sep = strSeparator)
-                            {
-                                string strLoop = objEnumerator.Current;
-                                int intLoopLength = strLoop?.Length ?? 0;
-                                if (intLoopLength > 0)
-                                {
-                                    fixed (char* src = strLoop)
-                                    {
-                                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                                    }
-                                    intCurrent = intLoopLength;
-                                }
-                                else
-                                {
-                                    while (objEnumerator.MoveNext())
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        strLoop = objEnumerator.Current;
-                                        intLoopLength = strLoop?.Length ?? 0;
-                                        if (intLoopLength > 0)
-                                        {
-                                            fixed (char* src = strLoop)
-                                            {
-                                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
-                                            }
-                                            intCurrent = intLoopLength;
-                                            break;
-                                        }
-                                    }
-                                }
                                 while (objEnumerator.MoveNext())
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -2290,30 +2249,45 @@ namespace Chummer
                                     intLoopLength = strLoop?.Length ?? 0;
                                     if (intLoopLength > 0)
                                     {
-                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
-                                        intCurrent += intSeparatorLength;
                                         fixed (char* src = strLoop)
                                         {
-                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
                                         }
-                                        intCurrent += intLoopLength;
+                                        intCurrent = intLoopLength;
+                                        break;
                                     }
                                 }
                             }
-                            // ... then we create a new string from the new CharArray (using intCurrent just in case)
-                            return new string(achrNewChars, 0, intCurrent);
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    intCurrent += intSeparatorLength;
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent += intLoopLength;
+                                }
+                            }
                         }
+                        // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                        return new string(achrNewChars, 0, intCurrent);
                     }
                 }
-                finally
-                {
-                    if (objEnumerator is IAsyncDisposable objDisposeAsync)
-                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
-                    else if (objEnumerator is IDisposable objDispose)
-                        objDispose.Dispose();
-                }
-                return string.Empty;
             }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -7142,10 +7116,16 @@ namespace Chummer
 
                             // Trim whitespace following break
                             intCurrentPosition += intLengthToRead;
-                            while (intCurrentPosition < intEndOfLinePosition
-                                   && char.IsWhiteSpace(strText[intCurrentPosition])
-                                   && !char.IsControl(strText[intCurrentPosition]))
-                                ++intCurrentPosition;
+                            if (intCurrentPosition < intEndOfLinePosition)
+                            {
+                                for (char chrLoop = strText[intCurrentPosition];
+                                    char.IsWhiteSpace(chrLoop) && !char.IsControl(chrLoop);
+                                    chrLoop = strText[intCurrentPosition])
+                                {
+                                    if (++intCurrentPosition >= intEndOfLinePosition)
+                                        break;
+                                }
+                            }
                         } while (intEndOfLinePosition > intCurrentPosition);
                     }
                     else
