@@ -344,8 +344,6 @@
       <forbidden>
         <oneof>
           <cyberware>Dermal Plating</cyberware>
-          <cyberware>Smartskin</cyberware>
-          <bioware>Chloroplast Skin</bioware>
         </oneof>
       </forbidden>
       <rating>4</rating>
@@ -415,11 +413,6 @@
           <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
         </selectskill>
       </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Skillwires</cyberware>
-        </oneof>
-      </forbidden>
       <source>SR5</source>
       <page>460</page>
     </bioware>
@@ -1833,11 +1826,6 @@
           <condition>LimitCondition_NakedStationary</condition>
         </skillgroup>
       </bonus>
-      <forbidden>
-        <oneof>
-          <bioware>Chloroplast Skin</bioware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>109</page>
     </bioware>
@@ -1861,11 +1849,6 @@
           <condition>LimitCondition_NakedStationary</condition>
         </skillgroup>
       </bonus>
-      <forbidden>
-        <oneof>
-          <bioware>Chloroplast Skin</bioware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>109</page>
     </bioware>
@@ -1888,22 +1871,6 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
-      <forbidden>
-        <oneof>
-          <bioware>Orthoskin</bioware>
-          <bioware>Orthoskin (2050)</bioware>
-          <bioware>Silky Skin</bioware>
-          <bioware>Chameleon Skin</bioware>
-          <bioware>Chameleon Skin (Dynamic)</bioware>
-          <bioware>Skin Pigmentation</bioware>
-          <bioware>Skin Pigmentation (Permanent)</bioware>
-          <bioware>Sensitive Skin</bioware>
-          <cyberware>Dermal Plating</cyberware>
-          <cyberware>Dermal Plating (2050)</cyberware>
-          <cyberware>Smartskin</cyberware>
-          <cyberware>Skin Toner</cyberware>
-        </oneof>
-      </forbidden>
       <bonus>
         <specificskill>
           <name>Survival</name>
@@ -1977,11 +1944,6 @@
         <selecttext />
       </bonus>
       <rating>20</rating>
-      <forbidden>
-        <oneof>
-          <bioware>Chloroplast Skin</bioware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>110</page>
     </bioware>
@@ -1996,13 +1958,6 @@
       <cost>500</cost>
       <source>CF</source>
       <page>110</page>
-      <forbidden>
-        <oneof>
-          <bioware>Orthoskin</bioware>
-          <cyberware>Dermal Plating</cyberware>
-          <bioware>Chloroplast Skin</bioware>
-        </oneof>
-      </forbidden>
     </bioware>
     <bioware>
       <id>487ba675-b689-48e0-bd45-e6729d671a51</id>
@@ -2016,11 +1971,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forbidden>
-        <oneof>
-          <bioware>Chloroplast Skin</bioware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>111</page>
     </bioware>
@@ -2036,11 +1986,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forbidden>
-        <oneof>
-          <bioware>Chloroplast Skin</bioware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>111</page>
     </bioware>
@@ -2926,11 +2871,6 @@
           <cyberware>Control Rig</cyberware>
         </oneof>
       </required>
-      <forbidden>
-        <oneof>
-          <cyberware>Control Rig Booster</cyberware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>165</page>
     </bioware>
@@ -3266,12 +3206,6 @@
       <bonus>
         <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
-      <forbidden>
-        <oneof>
-          <cyberware>Metatype Reduction (Ork)</cyberware>
-          <cyberware>Metatype Reduction (Troll)</cyberware>
-        </oneof>
-      </forbidden>
       <source>CF</source>
       <page>158</page>
     </bioware>
@@ -3842,7 +3776,6 @@
       <forbidden>
         <oneof>
           <bioware>Bone Density Augmentation</bioware>
-          <bioware>Chloroplast Skin</bioware>
         </oneof>
       </forbidden>
       <rating>3</rating>
