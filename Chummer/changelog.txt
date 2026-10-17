@@ -48,6 +48,7 @@ Critters:
 - Fixed the Astral Gateaway spirit power typo. It is now Astral Gateway.
 - Corrected metatype and metavariant entries, including natural weapon damage, reach, and AP, page references, and Real World Naiveté now being listed as a negative quality for A.I.s. Existing characters with these metatypes will need to remove and re-add them to see any changes.
 - Added a Corrosive Spit (Critter) weapon and range for the critter power.
+- Added the Restless and Servile spirit powers from Street Grimoire.
 
 Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
@@ -81,6 +82,7 @@ Gear:
 - Corrected the availability, cost, ratings, and bonuses of multiple gear and armor entries, including ammunition, explosives, Security and Hunter decks, autosofts, sensors, survival gear, and environmental armor. Existing characters with these items will need to remove and re-add them to see any changes.
 - Added the Quick-Access Medkit Pouch (used by the Generic CCOB armor), Betel Nut Gum (Piece), and the Atomizer Cartridge.
 - Corrected multiple drugs and added the Renfield and Amrita drugs. The Lighting drug component has been renamed to Lightning.
+- Added the Zubembie Powder toxin from Hard Targets.
 - Fixed the names of the Tanake Tiger, MCT Sarari-Man Terminal (2050), Mini Mokele-Mbembe, Ikoyi, and The Squealer™.
 - Combat Individualized Spellcasting Foci (Partial and Complete) now exclude alchemical preparations, matching other Spellcasting Foci. Existing characters with these foci need to Reapply Improvements.
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
@@ -156,6 +158,7 @@ Life Modules:
 Actions:
 - Added the Call a Shot, Dead Man's Trigger, Load Program, Unload Program, Swap Two Programs, Switch Two Matrix Attributes, Transfer Data, Terminate Data Transfer, Binding, Stunt, Cut-Off, and Catch-Up/Break Away actions.
 - Corrected multiple actions, including Reckless Spellcasting, Cast Spell, Suppressive Fire, Ramming, Data Spike, Jam Signals, Confuse Pilot, and several martial arts technique actions.
+- Added the Push the Limit, Second Chance, Seize the Initiative, Blitz, and Close Call Edge uses from the core rulebook, and the Lucky Move, Miracle Shot, Lucky Duck, Sixth Sense, and Lucky Cover Combat Edge options from Run & Gun.
 
 Lifestyles:
 - Cleaning Service (Standard, Mage Sensitive, and Pollution Sensitive) and Safety Third now ask for a description, so multiple copies on the same lifestyle can be told apart.

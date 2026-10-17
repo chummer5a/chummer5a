@@ -1652,5 +1652,19 @@
       </bonus>
     </drug>
     <!-- End Region -->
+    <!-- Region Hard Targets -->
+    <drug>
+      <id>0eff8fd3-df24-42d6-a95b-0ea2e1bd4118</id>
+      <name>Zubembie Powder</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>HT</source>
+      <page>131</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <speed>0</speed>
+      <vectors>Contact</vectors>
+    </drug>
+    <!-- End Region -->
   </drugs>
 </chummer>
