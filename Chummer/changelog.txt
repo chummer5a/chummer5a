@@ -40,6 +40,15 @@ Application:
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 - Fixed a rare potential deadlock around calculating adept power points currently being used.
 
+Critters:
+- Added the Ghost Hound (and its Astral Perception variant), Kokopelli, Chalcis (Great Hunter), Wild Hunt Hunter, Wild Hunt Hound, Woog, Engkanto, Chiron, Jabberwock, Lamia, Nibiinaabe, Manananggal (Whole, Torso, and Legs), Bunyip, and Sabgarifya (Farasi Bahari) critters.
+- Corrected the attributes, skills, powers, qualities, natural weapons, and page references of many existing critters to match their books.
+- Added the Agony, Corrosive Secretions, Sacrifice, and Secretion/Substance Extrusion (Silk/Webbing) critter powers, and the Coroutine, Freenet, Gatekeeper, Grep, Mangler, and Overdrive sprite powers from Kill Code.
+- Corrected multiple critter powers, including Binding, Compulsion, Confusion, Corrosive Spit, Elemental Attack, Materialization, Mimicry, Natural Weapon, and Possession.
+- Fixed the Astral Gateaway spirit power typo. It is now Astral Gateway.
+- Corrected metatype and metavariant entries, including natural weapon damage, reach, and AP, page references, and Real World Naiveté now being listed as a negative quality for A.I.s. Existing characters with these metatypes will need to remove and re-add them to see any changes.
+- Added a Corrosive Spit (Critter) weapon and range for the critter power.
+
 Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
 
@@ -137,6 +146,11 @@ Changed/New Strings:
 - String_Improvement_SelectSpiritType
 - String_Improvement_SelectSpiritTypeGeneric
 - String_GroupContactAbbrev
+- LimitCondition_ClimateChosen
+- LimitCondition_ClimateOpposite
+- LimitCondition_DimLightMatchingPattern
+- LimitCondition_TestEnhancedSense
+- LimitCondition_TestScent
 - Button_UpdateCustomDataDirectory
 - Message_CustomDataDirectory_UpdateAvailable
 - MessageTitle_CustomDataDirectory_UpdateAvailable
