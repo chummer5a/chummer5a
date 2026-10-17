@@ -105,6 +105,7 @@ Skills:
 - Fixed a bug that prevented dice pools for language skills from getting properly updated in some cases.
 - Fixed the program being unable to read if a knowledge or language skill has been marked as defaultable.
 - Language skills are now properly defaultable, as stipulated in the core rulebook. This will only affect new characters and new skills added to existing characters, existing skills remain unaffected.
+- The program can now combined conditional dice pool bonuses where the conditions are defined via translatable language strings with specializations that match those conditions.
 
 Magic:
 - Corrected multiple spells, including Stunball, Awaken, Mob Control, Mob Mind, Petrify, Radiation Shield, Vines, and Blood Blade.

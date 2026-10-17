@@ -437,6 +437,7 @@ namespace Chummer
         private int _intRating = 1;
         private string _strExclude = string.Empty;
         private string _strCondition = string.Empty;
+        private string _strCachedEnglishCondition = string.Empty;
         private string _strCachedDisplayCondition = string.Empty;
         private string _strCachedDisplayConditionLanguage = string.Empty;
         private string _strUniqueName = string.Empty;
@@ -624,6 +625,7 @@ namespace Chummer
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
+            CacheEnglishDisplayCondition(_strCondition);
         }
 
         #endregion Save and Load Methods
@@ -939,8 +941,57 @@ namespace Chummer
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
                     _strCachedDisplayCondition = string.Empty;
                     _strCachedDisplayConditionLanguage = string.Empty;
+                    CacheEnglishDisplayCondition(value);
                     this.ProcessRelevantEvents();
                 }
+            }
+        }
+
+        public async Task SetConditionAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strOldValue = Interlocked.Exchange(ref _strCondition, value);
+            if (strOldValue != value && Enabled)
+            {
+                if (string.IsNullOrEmpty(strOldValue) || string.IsNullOrEmpty(value))
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName, token);
+                _strCachedDisplayCondition = string.Empty;
+                _strCachedDisplayConditionLanguage = string.Empty;
+                await CacheEnglishDisplayConditionAsync(value, token).ConfigureAwait(false);
+                await this.ProcessRelevantEventsAsync(token: token).ConfigureAwait(false);
+            }
+        }
+
+        private void CacheEnglishDisplayCondition(string strCondition)
+        {
+            // Check if the condition is a language key (contains underscores) - if so, use GetString directly
+            if (strCondition.Contains('_'))
+            {
+                _strCachedEnglishCondition = LanguageManager.GetString(strCondition, GlobalSettings.DefaultLanguage, false);
+                if (string.IsNullOrWhiteSpace(_strCachedEnglishCondition))
+                    _strCachedEnglishCondition = strCondition;
+            }
+            else
+            {
+                // Otherwise, treat it as plain English text and use TranslateExtra to translate it
+                _strCachedEnglishCondition = strCondition;
+            }
+        }
+
+        private async Task CacheEnglishDisplayConditionAsync(string strCondition, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Check if the condition is a language key (contains underscores) - if so, use GetString directly
+            if (strCondition.Contains('_'))
+            {
+                _strCachedEnglishCondition = await LanguageManager.GetStringAsync(strCondition, GlobalSettings.DefaultLanguage, false, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(_strCachedEnglishCondition))
+                    _strCachedEnglishCondition = strCondition;
+            }
+            else
+            {
+                // Otherwise, treat it as plain English text and use TranslateExtra to translate it
+                _strCachedEnglishCondition = strCondition;
             }
         }
 
@@ -962,11 +1013,17 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strCondition))
                 return string.Empty;
             // If we've already cached a value for this, just return it.
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+            {
+                if (!string.IsNullOrWhiteSpace(_strCachedEnglishCondition))
+                    return _strCachedEnglishCondition;
+                return _strCondition;
+            }
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
             {
                 return _strCachedDisplayCondition;
             }
-
+            
             string strReturn;
             // Check if the condition is a language key (contains underscores) - if so, use GetString directly
             if (_strCondition.Contains('_'))
@@ -995,11 +1052,17 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strCondition))
                 return string.Empty;
             // If we've already cached a value for this, just return it.
+            if (strLanguage == GlobalSettings.DefaultLanguage)
+            {
+                if (!string.IsNullOrWhiteSpace(_strCachedEnglishCondition))
+                    return _strCachedEnglishCondition;
+                return _strCondition;
+            }
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
             {
                 return _strCachedDisplayCondition;
             }
-
+            
             string strReturn;
             // Check if the condition is a language key (contains underscores) - if so, use GetStringAsync directly
             if (_strCondition.Contains('_'))
