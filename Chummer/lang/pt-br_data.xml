@@ -2405,8 +2405,8 @@
       </bioware>
       <bioware>
         <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
-        <name>Revitilization</name>
-        <translate>Revitilization</translate>
+        <name>Revitalization</name>
+        <translate>Revitalization</translate>
         <altpage>157</altpage>
       </bioware>
       <bioware>
@@ -15931,8 +15931,8 @@
       </gear>
       <gear>
         <id>623827ad-2707-4522-ae26-615a6fdcd3a9</id>
-        <name>Taranke Tiger</name>
-        <translate>Taranke Tiger</translate>
+        <name>Tanake Tiger</name>
+        <translate>Tanake Tiger</translate>
         <altpage>143</altpage>
       </gear>
       <gear>
@@ -16447,8 +16447,8 @@
       </gear>
       <gear>
         <id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
-        <name>MTC Sarari-Man, Terminal (2050)</name>
-        <translate>MTC Sarari-Man, Terminal (2050)</translate>
+        <name>MCT Sarari-Man, Terminal (2050)</name>
+        <translate>MCT Sarari-Man, Terminal (2050)</translate>
         <altpage>170</altpage>
       </gear>
       <gear>
@@ -33934,8 +33934,8 @@
       </vehicle>
       <vehicle>
         <id>90234226-413e-4fac-89ce-ffce9db69b12</id>
-        <name>Ruhrmetal Wolf II</name>
-        <translate>Ruhrmetal Wolf II</translate>
+        <name>Ruhrmetall Wolf II</name>
+        <translate>Ruhrmetall Wolf II</translate>
         <altpage>77</altpage>
       </vehicle>
       <vehicle>
@@ -34306,8 +34306,8 @@
       </vehicle>
       <vehicle>
         <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-        <name>NeoNET Prarie Dog (Small)</name>
-        <translate>NeoNET Prarie Dog (Small)</translate>
+        <name>NeoNET Prairie Dog (Small)</name>
+        <translate>NeoNET Prairie Dog (Small)</translate>
         <altpage>134</altpage>
       </vehicle>
       <vehicle>
@@ -34426,8 +34426,8 @@
       </vehicle>
       <vehicle>
         <id>e0343c07-3a15-4596-bcc0-5a2d6d160a6b</id>
-        <name>Saeder-Krupp MK-170 Neptune (Large)</name>
-        <translate>Saeder-Krupp MK-170 Neptune (Large)</translate>
+        <name>Saeder-Krupp MK-17D Neptune (Large)</name>
+        <translate>Saeder-Krupp MK-17D Neptune (Large)</translate>
         <altpage>143</altpage>
       </vehicle>
       <vehicle>
@@ -35008,8 +35008,8 @@
       </vehicle>
       <vehicle>
         <id>bc26a329-cf64-4a2d-841a-599f480762ff</id>
-        <name>Hughes Stallion WK-4 (2050)</name>
-        <translate>Hughes Stallion WK-4 (2050)</translate>
+        <name>Hughes WK-2 Stallion (2050)</name>
+        <translate>Hughes WK-2 Stallion (2050)</translate>
         <altpage>210</altpage>
       </vehicle>
       <vehicle>
@@ -35296,8 +35296,8 @@
       </vehicle>
       <vehicle>
         <id>b448855b-57e7-435a-b523-174adb276674</id>
-        <name>NeoNET Juggernaut</name>
-        <translate>NeoNET Juggernaut</translate>
+        <name>NeoNET Juggernaught</name>
+        <translate>NeoNET Juggernaught</translate>
         <altpage>147</altpage>
       </vehicle>
       <vehicle>
@@ -36868,8 +36868,8 @@
       </weapon>
       <weapon>
         <id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
-        <name>Nissan Optimum II</name>
-        <translate>Nissan Optimum II</translate>
+        <name>Nitama Optimum II</name>
+        <translate>Nitama Optimum II</translate>
         <altpage>38</altpage>
       </weapon>
       <weapon>
@@ -37474,8 +37474,8 @@
       </weapon>
       <weapon>
         <id>c0857027-d3b2-4677-bc97-3f98bcc6f80f</id>
-        <name>Ultamax HMG-2</name>
-        <translate>Ultamax HMG-2</translate>
+        <name>Ultimax HMG-2</name>
+        <translate>Ultimax HMG-2</translate>
         <altpage>45</altpage>
       </weapon>
       <weapon>
@@ -37834,8 +37834,8 @@
       </weapon>
       <weapon>
         <id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
-        <name>Ultamax MMG</name>
-        <translate>Ultamax MMG</translate>
+        <name>Ultimax MMG</name>
+        <translate>Ultimax MMG</translate>
         <altpage>44</altpage>
       </weapon>
       <weapon>
@@ -38308,8 +38308,8 @@
       </weapon>
       <weapon>
         <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-        <name>Nissan Optimum II Shotgun</name>
-        <translate>Nissan Optimum II Shotgun</translate>
+        <name>Nitama Optimum II Shotgun</name>
+        <translate>Nitama Optimum II Shotgun</translate>
         <altpage>38</altpage>
       </weapon>
       <weapon>

@@ -11296,6 +11296,142 @@
       <key>LimitCondition_SkillsActiveLeadership</key>
       <text>Only for Leadership</text>
     </string>
+    <string>
+      <key>LimitCondition_AvoidUltrasound</key>
+      <text>Only to avoid detection via ultrasound</text>
+    </string>
+    <string>
+      <key>LimitCondition_CalmAtEmergency</key>
+      <text>Only to calm or pacify people at an emergency site</text>
+    </string>
+    <string>
+      <key>LimitCondition_DetectLies</key>
+      <text>Only to determine if someone is lying</text>
+    </string>
+    <string>
+      <key>LimitCondition_EscapeRestraints</key>
+      <text>Only for escaping hand restraints and small openings</text>
+    </string>
+    <string>
+      <key>LimitCondition_ExamineCloseActive</key>
+      <text>Only when examining material within 30 cm, Must be active</text>
+    </string>
+    <string>
+      <key>LimitCondition_FindFood</key>
+      <text>Only for finding food supplies</text>
+    </string>
+    <string>
+      <key>LimitCondition_FineManipulationActive</key>
+      <text>Only for fine manipulation, Must be active</text>
+    </string>
+    <string>
+      <key>LimitCondition_Hiding</key>
+      <text>Only while hiding</text>
+    </string>
+    <string>
+      <key>LimitCondition_IdentifyByImage</key>
+      <text>Only for Matrix Search to identify an individual by image</text>
+    </string>
+    <string>
+      <key>LimitCondition_IdentifySound</key>
+      <text>Only to identify a sound</text>
+    </string>
+    <string>
+      <key>LimitCondition_JumpedIn</key>
+      <text>Only when jumped into a vehicle or drone</text>
+    </string>
+    <string>
+      <key>LimitCondition_Knockdown</key>
+      <text>Only when comparing against DV for knockdown</text>
+    </string>
+    <string>
+      <key>LimitCondition_NakedStationary</key>
+      <text>Must be completely naked and stationary</text>
+    </string>
+    <string>
+      <key>LimitCondition_PerExposedBioTattoo</key>
+      <text>Per exposed bio-tattoo</text>
+    </string>
+    <string>
+      <key>LimitCondition_Rappelling</key>
+      <text>Only for rappelling</text>
+    </string>
+    <string>
+      <key>LimitCondition_ReadEmotions</key>
+      <text>Only to determine a target's emotional state</text>
+    </string>
+    <string>
+      <key>LimitCondition_SeductionVsMetahumans</key>
+      <text>Only for seduction vs metahumans</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionScent</key>
+      <text>Only for Perception (Scent)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionTaste</key>
+      <text>Only for Perception (Taste)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionTouch</key>
+      <text>Only for Perception (Touch)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsKnowledgeRelated</key>
+      <text>Only for related Knowledge Skill Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpeciesChosen</key>
+      <text>Only with the selected species</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainChosen</key>
+      <text>Only in the chosen terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainCold</key>
+      <text>Only in cold terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainDesert</key>
+      <text>Only in desert terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainHot</key>
+      <text>Only in hot terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestBuySellProduct</key>
+      <text>Only for Availability and Negotiation Tests to buy or sell the covered product type</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestMeleeCombat</key>
+      <text>Only for melee combat tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_TrackedTargets</key>
+      <text>Only regarding tracked targets</text>
+    </string>
+    <string>
+      <key>LimitCondition_UsingScent</key>
+      <text>Only when using olfactory sensors or the Scent critter power</text>
+    </string>
+    <string>
+      <key>LimitCondition_VsAnimals</key>
+      <text>Only vs animals</text>
+    </string>
+    <string>
+      <key>LimitCondition_VsGeneticSampleSource</key>
+      <text>Only vs the individual whose genetic sample was used</text>
+    </string>
+    <string>
+      <key>LimitCondition_VsMetahumans</key>
+      <text>Only vs metahumans</text>
+    </string>
+    <string>
+      <key>LimitCondition_WearerTroll</key>
+      <text>Only while the wearer is a troll</text>
+    </string>
     <!-- End Region -->
     <string>
       <key>String_CapacityRemaining</key>

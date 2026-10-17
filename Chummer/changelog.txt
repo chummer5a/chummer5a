@@ -53,16 +53,21 @@ Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
 
 Bioware:
+- Corrected multiple bioware entries, including Tailored Critter Pheromones, Bio-Tattoos, Chameleon Skin, and Tusk(s). Revitilization has been renamed to Revitalization. Existing characters with these items will need to remove and re-add them to see any changes.
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
 - Chemical Glands and Expanded Reservoir accept Drugs, Custom Drugs, Toxins, and BTLs through Add Drug; Chemicals/Custom gear still use Add Gear.
 - Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
 
 Vehicles:
+- Corrected the stats, mods, and page references of multiple vehicles and drones, including the Dodge Rhino, Evo Aquavida 2, GMC Riverine Military, Transys Steed, NeoNET Avenging Angel, and several Shadowrun 2050 vehicles. Existing characters with these vehicles will need to remove and re-add them to see any changes.
+- Fixed the names of the Ruhrmetall Wolf II, NeoNET Prairie Dog, Saeder-Krupp MK-17D Neptune, NeoNET Juggernaught, and Hughes WK-2 Stallion (2050).
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.
 - Optional Global Options setting to nest the Weapon Mounts folder under the Weapons vehicle-mod category when category grouping is enabled.
 - Fixed vehicle mod category display names looking up the wrong vehicles.xml path (`categories` instead of `modcategories`).
 
 Cyberware:
+- Corrected multiple cyberware entries, including Control Rig and Data Lock. Existing characters with these items will need to remove and re-add them to see any changes.
+- Cyberfinger (Pistol) now adds a Finger Pistol weapon.
 - Custom cyber implant weapons (Custom Heavy Pistol, Custom Grenade Launcher, etc.) now prompt the user to select a base weapon from the weapons catalog instead of failing when attempting to add gear. Conversion cost and base weapon cost are charged separately in Career mode; both count toward create-mode nuyen. Closes #727.
 - Added `weaponcategories` and `weaponfilter` XML support to cyberware entries for custom implant weapons.
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
@@ -73,6 +78,10 @@ Cyberware:
 - Fixed a crash when attempting to add a cyberware suite.
 
 Gear:
+- Corrected the availability, cost, ratings, and bonuses of multiple gear and armor entries, including ammunition, explosives, Security and Hunter decks, autosofts, sensors, survival gear, and environmental armor. Existing characters with these items will need to remove and re-add them to see any changes.
+- Added the Quick-Access Medkit Pouch (used by the Generic CCOB armor), Betel Nut Gum (Piece), and the Atomizer Cartridge.
+- Corrected multiple drugs and added the Renfield and Amrita drugs. The Lighting drug component has been renamed to Lightning.
+- Fixed the names of the Tanake Tiger, MCT Sarari-Man Terminal (2050), Mini Mokele-Mbembe, Ikoyi, and The Squealer™.
 - Combat Individualized Spellcasting Foci (Partial and Complete) now exclude alchemical preparations, matching other Spellcasting Foci. Existing characters with these foci need to Reapply Improvements.
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
 - Implemented a purchasing control for the Custom Item object in Career mode to allow the user to purchase more of the item while supporting markup and cost modifiers from services like Black Market Pipeline, Free!, etc. Closes #1261
@@ -82,6 +91,7 @@ Gear:
 - Gear quantities for non-currencies now have an "×" symbol at their end to help with readability for gear whose name starts with a number.
 
 PACKs:
+- Fixed PACKs that referred to the DocWagon Contract, Basic and Rappelling Gloves by outdated names, and corrected the names of the Tactical Helmet Pack and the Sim-Sational Pack.
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
 - Fixed PACKs that add Gear objects not correctly adding items when the name is referred to by name, due to incorrectly cleaning the name of the gear object when checking for it in the data files. Closes #5266.
 
@@ -119,6 +129,8 @@ Magic:
 - Fixed an issue with spellcasting foci incorrectly displaying twice in spell dicepools.
 
 Weapons:
+- Corrected the stats, ranges, and page references of multiple weapons, including bio-weapons, cyber-implant weapons, and Shadowrun 2050 weapons. Existing characters with these weapons will need to remove and re-add them to see any changes.
+- Fixed the names of the Nitama Optimum II, Nitama Optimum II Shotgun, Ultimax HMG-2, and Ultimax MMG.
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
 - Implemented a cap on the range modifier for weapons to prevent modifiers from reducing the range modifier above +0.
 - Fixed underbarrel weapons being blocked from being added to weapons.
@@ -182,6 +194,40 @@ Changed/New Strings:
 - MessageTitle_CustomDataDirectory_UpdateAvailable
 - Message_CustomDataDirectory_AlreadyUpToDate
 - MessageTitle_CustomDataDirectory_AlreadyUpToDate
+- LimitCondition_AvoidUltrasound
+- LimitCondition_CalmAtEmergency
+- LimitCondition_DetectLies
+- LimitCondition_EscapeRestraints
+- LimitCondition_ExamineCloseActive
+- LimitCondition_FindFood
+- LimitCondition_FineManipulationActive
+- LimitCondition_Hiding
+- LimitCondition_IdentifyByImage
+- LimitCondition_IdentifySound
+- LimitCondition_JumpedIn
+- LimitCondition_Knockdown
+- LimitCondition_NakedStationary
+- LimitCondition_PerExposedBioTattoo
+- LimitCondition_Rappelling
+- LimitCondition_ReadEmotions
+- LimitCondition_SeductionVsMetahumans
+- LimitCondition_SkillsActivePerceptionScent
+- LimitCondition_SkillsActivePerceptionTaste
+- LimitCondition_SkillsActivePerceptionTouch
+- LimitCondition_SkillsKnowledgeRelated
+- LimitCondition_SpeciesChosen
+- LimitCondition_TerrainChosen
+- LimitCondition_TerrainCold
+- LimitCondition_TerrainDesert
+- LimitCondition_TerrainHot
+- LimitCondition_TestBuySellProduct
+- LimitCondition_TestMeleeCombat
+- LimitCondition_TrackedTargets
+- LimitCondition_UsingScent
+- LimitCondition_VsAnimals
+- LimitCondition_VsGeneticSampleSource
+- LimitCondition_VsMetahumans
+- LimitCondition_WearerTroll
 - Message_CustomDataDirectory_UpdateSuccess
 - MessageTitle_CustomDataDirectory_UpdateSuccess
 - Message_CustomDataDirectory_UpdateFailed
