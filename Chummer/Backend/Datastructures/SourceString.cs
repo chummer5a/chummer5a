@@ -236,7 +236,36 @@ namespace Chummer
         /// </summary>
         /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<bool> HasLinkedPdf(CharacterSettings objSettings = null, CancellationToken token = default)
+        public bool HasLinkedPdf(CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = CommonFunctions.LanguageBookCodeFromAltCode(Code, Language, objSettings, token);
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!GlobalSettings.SourcebookInfos
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> HasLinkedPdfAsync(CharacterSettings objSettings = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Revert the sourcebook code to the one from the XML file if necessary.
@@ -258,6 +287,34 @@ namespace Chummer
 
             // Check if the file actually exists.
             return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Gets a textblock from the PDF linked to this source string at this source string's page number.
+        /// </summary>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public string GetTextFromPdf(string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = CommonFunctions.LanguageBookCodeFromAltCode(Code, Language, objSettings, token);
+            return CommonFunctions.GetTextFromPdf(strBook, Page, strText, objSettings, token);
+        }
+
+        /// <summary>
+        /// Gets a textblock from the PDF linked to this source string at this source string's page number.
+        /// </summary>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<string> GetTextFromPdfAsync(string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = await CommonFunctions.LanguageBookCodeFromAltCodeAsync(Code, Language, objSettings, token).ConfigureAwait(false);
+            return await CommonFunctions.GetTextFromPdfAsync(strBook, Page, strText, objSettings, token).ConfigureAwait(false);
         }
 
         public int CompareTo(object obj)

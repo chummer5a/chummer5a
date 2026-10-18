@@ -1601,7 +1601,9 @@ namespace Chummer
 
             using (objSettings.LockObject.EnterReadLock(token))
             {
-                string strNotes = GetTextFromPdf(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token);
+                string strNotes = int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage)
+                    ? GetTextFromPdf(strSource, intPage, strEnglishNameOnPage, objSettings, token)
+                    : GetTextFromPdf(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1618,7 +1620,10 @@ namespace Chummer
                     && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                     strTranslatedNameOnPage = strNameOnPage;
 
-                return GetTextFromPdf(strSource + " " + strDisplayPage,
+                return int.TryParse(strDisplayPage, NumberStyles.Integer, GlobalSettings.CultureInfo, out int intDisplayPage)
+                    ? GetTextFromPdf(strSource, intDisplayPage,
+                                      strTranslatedNameOnPage, objSettings, token)
+                    : GetTextFromPdf(strSource + " " + strDisplayPage,
                                       strTranslatedNameOnPage, objSettings, token);
             }
         }
@@ -1649,7 +1654,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strNotes = await GetTextFromPdfAsync(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
+                string strNotes = int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage)
+                    ? await GetTextFromPdfAsync(strSource, intPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false)
+                    : await GetTextFromPdfAsync(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1666,7 +1673,10 @@ namespace Chummer
                     && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                     strTranslatedNameOnPage = strNameOnPage;
 
-                return await GetTextFromPdfAsync(strSource + " " + strDisplayPage,
+                return int.TryParse(strDisplayPage, NumberStyles.Integer, GlobalSettings.CultureInfo, out int intDisplayPage)
+                    ? await GetTextFromPdfAsync(strSource, intDisplayPage,
+                                                 strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false)
+                    : await GetTextFromPdfAsync(strSource + " " + strDisplayPage,
                                                  strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false);
             }
             finally
@@ -2268,7 +2278,7 @@ namespace Chummer
                     }
                 }
 
-                if (string.IsNullOrEmpty(astrSourceParts[1]) || !int.TryParse(astrSourceParts[1], out intPage))
+                if (string.IsNullOrEmpty(astrSourceParts[1]) || !int.TryParse(astrSourceParts[1], NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage))
                     return;
 
                 // Make sure the page is actually a number that we can use as well as being 1 or higher.
@@ -2350,7 +2360,72 @@ namespace Chummer
         /// <param name="strSource">Book code and page number to check, can also be just the book code.</param>
         /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<bool> HasLinkedPdf(string strSource, CharacterSettings objSettings = null, CancellationToken token = default)
+        public static bool HasLinkedPdf(string strSource, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strBook;
+            string strSpace = LanguageManager.GetString("String_Space", token: token);
+            if (!string.IsNullOrEmpty(strSpace))
+            {
+                int intSpaceIndex = strSource.IndexOf(strSpace, StringComparison.Ordinal);
+                if (intSpaceIndex < 0)
+                    strBook = strSource;
+                else
+                    strBook = strSource.Substring(0, intSpaceIndex);
+            }
+            else
+            {
+                if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+                {
+                    strBook = "SR5";
+                }
+                else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                {
+                    strBook = "R5";
+                }
+                else
+                {
+                    int i = strSource.Length - 1;
+                    for (; i >= 0; --i)
+                    {
+                        if (!char.IsNumber(strSource, i))
+                        {
+                            break;
+                        }
+                    }
+
+                    strBook = strSource.Substring(0, i);
+                }
+            }
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            strBook = LanguageBookCodeFromAltCode(strBook, string.Empty, objSettings, token);
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!GlobalSettings.SourcebookInfos
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="strSource">Book code and page number to check, can also be just the book code.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<bool> HasLinkedPdfAsync(string strSource, CharacterSettings objSettings = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strBook;
@@ -2418,7 +2493,47 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static string GetTextFromPdf(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, t), token);
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+            if (string.IsNullOrEmpty(strSource))
+                return string.Empty;
+
+            string strBook;
+            int intPage;
+            string[] strTemp = strSource.SplitFixedSizePooledArray(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                if (string.IsNullOrEmpty(strTemp[1]) || !int.TryParse(strTemp[1], NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage))
+                    return string.Empty;
+                // Make sure the page is actually a number that we can use as well as being 1 or higher.
+                if (intPage < 1)
+                    return string.Empty;
+
+                token.ThrowIfCancellationRequested();
+
+                // Revert the sourcebook code to the one from the XML file if necessary.
+                strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objSettings, token);
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strTemp);
+            }
+
+            return GetTextFromPdf(strBook, intPage, strText, objSettings, token);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strBook">Book code to search.</param>
+        /// <param name="intPage">Page to search.</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string GetTextFromPdf(string strBook, int intPage, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strBook, intPage, strText, objSettings, t), token);
         }
 
         /// <summary>
@@ -2428,9 +2543,49 @@ namespace Chummer
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        public static async Task<string> GetTextFromPdfAsync(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            return GetTextFromPdfCoreAsync(false, strSource, strText, objSettings, token);
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+            if (string.IsNullOrEmpty(strSource))
+                return string.Empty;
+
+            string strBook;
+            int intPage;
+            string[] strTemp = strSource.SplitFixedSizePooledArray(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                if (string.IsNullOrEmpty(strTemp[1]) || !int.TryParse(strTemp[1], NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage))
+                    return string.Empty;
+                // Make sure the page is actually a number that we can use as well as being 1 or higher.
+                if (intPage < 1)
+                    return string.Empty;
+
+                token.ThrowIfCancellationRequested();
+
+                // Revert the sourcebook code to the one from the XML file if necessary.
+                strBook = await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objSettings, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                ArrayPool<string>.Shared.Return(strTemp);
+            }
+
+            return await GetTextFromPdfAsync(strBook, intPage, strText, objSettings, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strBook">Book code to search.</param>
+        /// <param name="intPage">Page to search.</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<string> GetTextFromPdfAsync(string strBook, int intPage, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            return GetTextFromPdfCoreAsync(false, strBook, intPage, strText, objSettings, token);
         }
 
         private static readonly ConcurrentHashSet<PdfDocument> _setDocumentsProcessing = new ConcurrentHashSet<PdfDocument>();
@@ -2497,37 +2652,15 @@ namespace Chummer
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, CharacterSettings objSettings, CancellationToken token = default)
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strBook, int intPage, string strText, CharacterSettings objSettings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
+            if (string.IsNullOrEmpty(strText))
                 return strText;
-
-            string strBook;
-            int intPage;
-            string[] strTemp = strSource.SplitFixedSizePooledArray(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            try
-            {
-                if (string.IsNullOrEmpty(strTemp[1]) || !int.TryParse(strTemp[1], out intPage))
-                    return string.Empty;
-                // Make sure the page is actually a number that we can use as well as being 1 or higher.
-                if (intPage < 1)
-                    return string.Empty;
-
-                token.ThrowIfCancellationRequested();
-
-                // Revert the sourcebook code to the one from the XML file if necessary.
-                strBook = blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objSettings, token)
-                    : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objSettings, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                ArrayPool<string>.Shared.Return(strTemp);
-            }
-
-            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strBook))
+                return string.Empty;
+            if (intPage < 1)
+                return string.Empty;
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             if (!(blnSync

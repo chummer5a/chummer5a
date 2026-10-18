@@ -863,7 +863,7 @@ namespace Chummer
                                 MasterIndexEntry objEntry)
                             {
                                 await objEntry.DisplaySource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
-                                bool blnEntryHasLinkedPdf = await objEntry.DisplaySource.HasLinkedPdf(_objSelectedSetting, token).ConfigureAwait(false);
+                                bool blnEntryHasLinkedPdf = await objEntry.DisplaySource.HasLinkedPdfAsync(_objSelectedSetting, token).ConfigureAwait(false);
                                 string strNotes = string.Empty;
                                 if (blnEntryHasLinkedPdf)
                                 {
@@ -881,19 +881,16 @@ namespace Chummer
                                                 async Task<string> InnerReturn(CancellationToken innerToken)
                                                 {
                                                     innerToken.ThrowIfCancellationRequested();
-                                                    string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                        await x.Source.ToStringAsync(innerToken).ConfigureAwait(false),
+                                                    string strReturn = await x.Source.GetTextFromPdfAsync(
                                                         x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
                                                     if (string.IsNullOrEmpty(strReturn))
-                                                        strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                                                             await x.DisplaySource.ToStringAsync(innerToken).ConfigureAwait(false),
+                                                        strReturn = await x.DisplaySource.GetTextFromPdfAsync(
                                                                                              x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
                                                                                          .ConfigureAwait(false);
                                                     return strReturn;
                                                 }
                                             }
-                                            return CommonFunctions.GetTextFromPdfAsync(
-                                                                    x.Source.ToString(),
+                                            return x.Source.GetTextFromPdfAsync(
                                                                     x.EnglishNameOnPage, _objSelectedSetting, token);
                                         }).ConfigureAwait(false);
                                     }
@@ -953,7 +950,7 @@ namespace Chummer
                     && await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is MasterIndexEntry objEntry
                     && !_dicCachedNotes.ContainsKey(objEntry)
                     // Do not attempt to set an entry in our cached notes, it will fail because we don't have a linked PDF
-                    && await objEntry.DisplaySource.HasLinkedPdf(_objSelectedSetting, _objGenericToken).ConfigureAwait(false))
+                    && await objEntry.DisplaySource.HasLinkedPdfAsync(_objSelectedSetting, _objGenericToken).ConfigureAwait(false))
                 {
                     CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
                     CancellationToken objNewToken = objNewCancellationTokenSource.Token;
@@ -981,19 +978,16 @@ namespace Chummer
                                     async Task<string> InnerReturn(CancellationToken innerToken)
                                     {
                                         innerToken.ThrowIfCancellationRequested();
-                                        string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            await x.Source.ToStringAsync(innerToken).ConfigureAwait(false),
+                                        string strReturn = await x.Source.GetTextFromPdfAsync(
                                             x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
-                                            strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                                                 await x.DisplaySource.ToStringAsync(innerToken).ConfigureAwait(false),
+                                            strReturn = await x.DisplaySource.GetTextFromPdfAsync(
                                                                                  x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
                                                                              .ConfigureAwait(false);
                                         return strReturn;
                                     }
                                 }
-                                return CommonFunctions.GetTextFromPdfAsync(
-                                                        x.Source.ToString(),
+                                return x.Source.GetTextFromPdfAsync(
                                                         x.EnglishNameOnPage, _objSelectedSetting, token);
                             }).ConfigureAwait(false);
                         }
