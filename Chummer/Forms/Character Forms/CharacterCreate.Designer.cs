@@ -776,6 +776,14 @@ namespace Chummer
             this.lblDrugAvail = new System.Windows.Forms.Label();
             this.lblDrugCost = new System.Windows.Forms.Label();
             this.lblDrugAddictionThreshold = new System.Windows.Forms.Label();
+            this.lblDrugAddictionTypeLabel = new System.Windows.Forms.Label();
+            this.lblDrugAddictionType = new System.Windows.Forms.Label();
+            this.lblDrugVectorsLabel = new System.Windows.Forms.Label();
+            this.lblDrugVectors = new System.Windows.Forms.Label();
+            this.lblDrugDurationLabel = new System.Windows.Forms.Label();
+            this.lblDrugDuration = new System.Windows.Forms.Label();
+            this.lblDrugSpeedLabel = new System.Windows.Forms.Label();
+            this.lblDrugSpeed = new System.Windows.Forms.Label();
             this.lblDrugAddictionRating = new System.Windows.Forms.Label();
             this.lblDrugComponents = new System.Windows.Forms.Label();
             this.lblDrugEffect = new System.Windows.Forms.Label();
@@ -11089,12 +11097,12 @@ namespace Chummer
             this.tlpDrugsCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpDrugsCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpDrugsCommon.Controls.Add(this.lblDrugNameLabel, 0, 0);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffectLabel, 0, 9);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffectLabel, 0, 13);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugName, 1, 0);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponentsLabel, 0, 8);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponentsLabel, 0, 12);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugCategoryLabel, 0, 1);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 6);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 7);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 11);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 10);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugCategory, 1, 1);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugQtyLabel, 0, 2);
             this.tlpDrugsCommon.Controls.Add(this.nudDrugQty, 1, 2);
@@ -11104,15 +11112,27 @@ namespace Chummer
             this.tlpDrugsCommon.Controls.Add(this.lblDrugAvailabel, 0, 4);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugAvail, 1, 4);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugCost, 1, 5);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThreshold, 1, 6);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRating, 1, 7);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponents, 1, 8);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffect, 1, 9);
-            this.tlpDrugsCommon.Controls.Add(this.flpDrugCheckboxes, 1, 10);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThreshold, 1, 11);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugDurationLabel, 0, 7);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugDuration, 1, 7);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugSpeedLabel, 0, 6);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugSpeed, 1, 6);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionTypeLabel, 0, 9);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionType, 1, 9);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugVectorsLabel, 0, 8);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugVectors, 1, 8);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRating, 1, 10);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponents, 1, 12);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffect, 1, 13);
+            this.tlpDrugsCommon.Controls.Add(this.flpDrugCheckboxes, 1, 14);
             this.tlpDrugsCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpDrugsCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpDrugsCommon.Name = "tlpDrugsCommon";
-            this.tlpDrugsCommon.RowCount = 11;
+            this.tlpDrugsCommon.RowCount = 15;
+            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -11206,8 +11226,8 @@ namespace Chummer
             this.lblDrugAddictionRatingLabel.Name = "lblDrugAddictionRatingLabel";
             this.lblDrugAddictionRatingLabel.Size = new System.Drawing.Size(41, 13);
             this.lblDrugAddictionRatingLabel.TabIndex = 90;
-            this.lblDrugAddictionRatingLabel.Tag = "Label_Rating";
-            this.lblDrugAddictionRatingLabel.Text = "Rating:";
+            this.lblDrugAddictionRatingLabel.Tag = "Label_AddictionRating";
+            this.lblDrugAddictionRatingLabel.Text = "Addiction Rating:";
             // 
             // lblDrugCategory
             // 
@@ -11327,6 +11347,98 @@ namespace Chummer
             this.lblDrugCost.Size = new System.Drawing.Size(34, 13);
             this.lblDrugCost.TabIndex = 80;
             this.lblDrugCost.Text = "[Cost]";
+            // 
+            // lblDrugAddictionTypeLabel
+            // 
+            this.lblDrugAddictionTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDrugAddictionTypeLabel.AutoSize = true;
+            this.lblDrugAddictionTypeLabel.Location = new System.Drawing.Point(3, 182);
+            this.lblDrugAddictionTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugAddictionTypeLabel.Name = "lblDrugAddictionTypeLabel";
+            this.lblDrugAddictionTypeLabel.Size = new System.Drawing.Size(80, 13);
+            this.lblDrugAddictionTypeLabel.TabIndex = 93;
+            this.lblDrugAddictionTypeLabel.Tag = "Label_AddictionType";
+            this.lblDrugAddictionTypeLabel.Text = "Addiction Type:";
+            // 
+            // lblDrugAddictionType
+            // 
+            this.lblDrugAddictionType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrugAddictionType.AutoSize = true;
+            this.lblDrugAddictionType.Location = new System.Drawing.Point(89, 182);
+            this.lblDrugAddictionType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugAddictionType.Name = "lblDrugAddictionType";
+            this.lblDrugAddictionType.Size = new System.Drawing.Size(85, 13);
+            this.lblDrugAddictionType.TabIndex = 87;
+            this.lblDrugAddictionType.Text = "[Addiction Type]";
+            // 
+            // lblDrugVectorsLabel
+            // 
+            this.lblDrugVectorsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDrugVectorsLabel.AutoSize = true;
+            this.lblDrugVectorsLabel.Location = new System.Drawing.Point(37, 207);
+            this.lblDrugVectorsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugVectorsLabel.Name = "lblDrugVectorsLabel";
+            this.lblDrugVectorsLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblDrugVectorsLabel.TabIndex = 94;
+            this.lblDrugVectorsLabel.Tag = "Label_Vectors";
+            this.lblDrugVectorsLabel.Text = "Vectors:";
+            // 
+            // lblDrugVectors
+            // 
+            this.lblDrugVectors.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrugVectors.AutoSize = true;
+            this.lblDrugVectors.Location = new System.Drawing.Point(89, 207);
+            this.lblDrugVectors.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugVectors.Name = "lblDrugVectors";
+            this.lblDrugVectors.Size = new System.Drawing.Size(55, 13);
+            this.lblDrugVectors.TabIndex = 89;
+            this.lblDrugVectors.Text = "[Vectors]";
+            // 
+            // lblDrugDurationLabel
+            // 
+            this.lblDrugDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDrugDurationLabel.AutoSize = true;
+            this.lblDrugDurationLabel.Location = new System.Drawing.Point(3, 182);
+            this.lblDrugDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugDurationLabel.Name = "lblDrugDurationLabel";
+            this.lblDrugDurationLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblDrugDurationLabel.TabIndex = 96;
+            this.lblDrugDurationLabel.Tag = "Label_Duration";
+            this.lblDrugDurationLabel.Text = "Duration:";
+            // 
+            // lblDrugDuration
+            // 
+            this.lblDrugDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrugDuration.AutoSize = true;
+            this.lblDrugDuration.Location = new System.Drawing.Point(89, 182);
+            this.lblDrugDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugDuration.Name = "lblDrugDuration";
+            this.lblDrugDuration.Size = new System.Drawing.Size(50, 13);
+            this.lblDrugDuration.TabIndex = 82;
+            this.lblDrugDuration.Text = "[Duration]";
+            // 
+            // lblDrugSpeedLabel
+            // 
+            this.lblDrugSpeedLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDrugSpeedLabel.AutoSize = true;
+            this.lblDrugSpeedLabel.Location = new System.Drawing.Point(3, 157);
+            this.lblDrugSpeedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugSpeedLabel.Name = "lblDrugSpeedLabel";
+            this.lblDrugSpeedLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblDrugSpeedLabel.TabIndex = 95;
+            this.lblDrugSpeedLabel.Tag = "Label_Speed";
+            this.lblDrugSpeedLabel.Text = "Speed:";
+            // 
+            // lblDrugSpeed
+            // 
+            this.lblDrugSpeed.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrugSpeed.AutoSize = true;
+            this.lblDrugSpeed.Location = new System.Drawing.Point(89, 157);
+            this.lblDrugSpeed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugSpeed.Name = "lblDrugSpeed";
+            this.lblDrugSpeed.Size = new System.Drawing.Size(50, 13);
+            this.lblDrugSpeed.TabIndex = 83;
+            this.lblDrugSpeed.Text = "[Speed]";
             // 
             // lblDrugAddictionThreshold
             // 
@@ -16892,6 +17004,14 @@ namespace Chummer
 	    private System.Windows.Forms.Label lblDrugNameLabel;
 	    private System.Windows.Forms.Label lblDrugAddictionRating;
 	    private System.Windows.Forms.Label lblDrugAddictionThreshold;
+	    private System.Windows.Forms.Label lblDrugAddictionTypeLabel;
+	    private System.Windows.Forms.Label lblDrugAddictionType;
+	    private System.Windows.Forms.Label lblDrugVectorsLabel;
+	    private System.Windows.Forms.Label lblDrugVectors;
+	    private System.Windows.Forms.Label lblDrugDurationLabel;
+	    private System.Windows.Forms.Label lblDrugDuration;
+	    private System.Windows.Forms.Label lblDrugSpeedLabel;
+	    private System.Windows.Forms.Label lblDrugSpeed;
 	    private System.Windows.Forms.Label lblDrugAddictionThresholdLabel;
 	    private System.Windows.Forms.Label lblDrugComponentsLabel;
 	    private System.Windows.Forms.Label lblDrugAddictionRatingLabel;

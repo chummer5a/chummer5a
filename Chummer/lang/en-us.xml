@@ -5582,6 +5582,42 @@
       <text>Addiction Threshold:</text>
     </string>
     <string>
+      <key>Label_AddictionType</key>
+      <text>Addiction Type:</text>
+    </string>
+    <string>
+      <key>String_AddictionType_Physiological</key>
+      <text>Physiological</text>
+    </string>
+    <string>
+      <key>String_AddictionType_Psychological</key>
+      <text>Psychological</text>
+    </string>
+    <string>
+      <key>String_AddictionType_Both</key>
+      <text>Both</text>
+    </string>
+    <string>
+      <key>Label_Vectors</key>
+      <text>Vectors:</text>
+    </string>
+    <string>
+      <key>String_Vector_Contact</key>
+      <text>Contact</text>
+    </string>
+    <string>
+      <key>String_Vector_Ingestion</key>
+      <text>Ingestion</text>
+    </string>
+    <string>
+      <key>String_Vector_Inhalation</key>
+      <text>Inhalation</text>
+    </string>
+    <string>
+      <key>String_Vector_Injection</key>
+      <text>Injection</text>
+    </string>
+    <string>
       <key>Label_DrugEffects</key>
       <text>Effects:</text>
     </string>
