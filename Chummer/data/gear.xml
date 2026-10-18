@@ -9728,6 +9728,18 @@
       <source>BB</source>
       <page>22</page>
       <avail>8</avail>
+      <bonus>
+        <specificskill>
+          <name>First Aid</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_TestDiagnosis</condition>
+        </specificskill>
+        <specificskill>
+          <name>Medicine</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_TestDiagnosis</condition>
+        </specificskill>
+      </bonus>
       <cost>2500</cost>
     </gear>
     <gear>
