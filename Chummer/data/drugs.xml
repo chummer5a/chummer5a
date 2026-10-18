@@ -45,6 +45,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>SR5</source>
       <page>411</page>
       <avail>3F</avail>
@@ -78,6 +79,7 @@
       <category>Drugs</category>
       <rating>4</rating>
       <threshold>3</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>SR5</source>
       <page>411</page>
       <avail>2R</avail>
@@ -98,6 +100,7 @@
       <name>Deepweed</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <addictiontype>Physiological</addictiontype>
       <source>SR5</source>
       <page>411</page>
       <avail>8F</avail>
@@ -126,6 +129,7 @@
       <category>Drugs</category>
       <rating>8</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>SR5</source>
       <page>411</page>
       <avail>2R</avail>
@@ -151,6 +155,7 @@
       <category>Drugs</category>
       <rating>9</rating>
       <threshold>3</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>SR5</source>
       <page>412</page>
       <avail>4R</avail>
@@ -189,6 +194,7 @@
       <category>Drugs</category>
       <rating>2</rating>
       <threshold>1</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>SR5</source>
       <page>412</page>
       <avail>0</avail>
@@ -203,6 +209,7 @@
       <category>Drugs</category>
       <rating>9</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>SR5</source>
       <page>412</page>
       <avail>2R</avail>
@@ -236,6 +243,7 @@
       <category>Drugs</category>
       <rating>7</rating>
       <threshold>2</threshold>
+      <addictiontype>Both</addictiontype>
       <source>SR5</source>
       <page>412</page>
       <avail>2R</avail>
@@ -269,6 +277,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>SR5</source>
       <page>412</page>
       <avail>0</avail>
@@ -297,6 +306,7 @@
       <category>Drugs</category>
       <rating>3</rating>
       <threshold>1</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>SR5</source>
       <page>412</page>
       <avail>4R</avail>
@@ -416,6 +426,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>1</threshold>
+      <addictiontype>Both</addictiontype>
       <source>LCD</source>
       <page>205</page>
       <avail>6R</avail>
@@ -432,6 +443,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>1</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>LCD</source>
       <page>204</page>
       <avail>6R</avail>
@@ -447,6 +459,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>1</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>LCD</source>
       <page>204</page>
       <avail>6R</avail>
@@ -467,6 +480,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>1</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>LCD</source>
       <page>204</page>
       <avail>6R</avail>
@@ -529,6 +543,7 @@
       <category>Drugs</category>
       <rating>1</rating>
       <threshold>1</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>179</page>
       <avail>4</avail>
@@ -542,6 +557,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>179</page>
       <avail>4</avail>
@@ -555,6 +571,7 @@
       <category>Drugs</category>
       <rating>3</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>186</page>
       <avail>6R</avail>
@@ -572,6 +589,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>184</page>
       <avail>14F</avail>
@@ -589,6 +607,7 @@
       <category>Drugs</category>
       <rating>9</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>5F</avail>
@@ -613,6 +632,7 @@
       <category>Drugs</category>
       <rating>0</rating>
       <threshold>2</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>4</avail>
@@ -632,6 +652,7 @@
       <category>Drugs</category>
       <rating>9</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>14F</avail>
@@ -660,6 +681,7 @@
       <category>Drugs</category>
       <rating>9</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>184</page>
       <avail>6F</avail>
@@ -682,6 +704,7 @@
       <category>Drugs</category>
       <rating>3</rating>
       <threshold>2</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>8</avail>
@@ -701,6 +724,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>3R</avail>
@@ -731,6 +755,7 @@
       <name>Forget-Me-Not</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>10F</avail>
@@ -745,6 +770,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>3</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>180</page>
       <avail>4R</avail>
@@ -776,6 +802,7 @@
       <category>Drugs</category>
       <rating>2</rating>
       <threshold>1</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>181</page>
       <avail>2</avail>
@@ -790,6 +817,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>181</page>
       <avail>8R</avail>
@@ -804,6 +832,7 @@
       <category>Drugs</category>
       <rating>4</rating>
       <threshold>2</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>185</page>
       <avail>12F</avail>
@@ -820,6 +849,7 @@
       <category>Drugs</category>
       <rating>4</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>181</page>
       <avail>2R</avail>
@@ -843,6 +873,7 @@
       <category>Drugs</category>
       <rating>8</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>186</page>
       <avail>14R</avail>
@@ -861,6 +892,7 @@
       <category>Drugs</category>
       <rating>11</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>181</page>
       <avail>16F</avail>
@@ -918,6 +950,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>3</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>12F</avail>
@@ -935,6 +968,7 @@
       <name>Memory Fog</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>181</page>
       <avail>6R</avail>
@@ -949,6 +983,7 @@
       <category>Drugs</category>
       <rating>1</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>182</page>
       <avail>3R</avail>
@@ -962,6 +997,7 @@
       <category>Drugs</category>
       <rating>3</rating>
       <threshold>1</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>182</page>
       <avail>3</avail>
@@ -978,6 +1014,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>3</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>186</page>
       <avail>6F</avail>
@@ -991,6 +1028,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>186</page>
       <avail>10F</avail>
@@ -1015,6 +1053,7 @@
       <category>Drugs</category>
       <rating>2</rating>
       <threshold>1</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>182</page>
       <avail>12R</avail>
@@ -1034,6 +1073,7 @@
       <category>Drugs</category>
       <rating>10</rating>
       <threshold>4</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>186</page>
       <avail>8F</avail>
@@ -1058,6 +1098,7 @@
       <category>Drugs</category>
       <rating>4</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>182</page>
       <avail>4F</avail>
@@ -1072,6 +1113,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>3</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>6F</avail>
@@ -1091,6 +1133,7 @@
       <category>Drugs</category>
       <rating>3</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>4R</avail>
@@ -1110,6 +1153,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>182</page>
       <avail>4R</avail>
@@ -1142,6 +1186,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>182</page>
       <avail>6F</avail>
@@ -1165,6 +1210,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>3</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>10R</avail>
@@ -1184,6 +1230,7 @@
       <category>Drugs</category>
       <rating>7</rating>
       <threshold>3</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>6R</avail>
@@ -1210,6 +1257,7 @@
       <category>Drugs</category>
       <rating>2</rating>
       <threshold>2</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>183</page>
       <avail>1R</avail>
@@ -1229,6 +1277,7 @@
       <name>Sober Time</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>183</page>
       <avail>6F</avail>
@@ -1255,6 +1304,7 @@
       <category>Drugs</category>
       <rating>6</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>186</page>
       <avail>10F</avail>
@@ -1279,6 +1329,7 @@
       <category>Drugs</category>
       <rating>5</rating>
       <threshold>2</threshold>
+      <addictiontype>Both</addictiontype>
       <source>CF</source>
       <page>184</page>
       <avail>3R</avail>
@@ -1292,6 +1343,7 @@
       <category>Drugs</category>
       <rating>4</rating>
       <threshold>1</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>12F</avail>
@@ -1310,6 +1362,7 @@
       <category>Drugs</category>
       <rating>1</rating>
       <threshold>3</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>184</page>
       <avail>8R</avail>
@@ -1334,6 +1387,7 @@
       <category>Drugs</category>
       <rating>2</rating>
       <threshold>3</threshold>
+      <addictiontype>Physiological</addictiontype>
       <source>CF</source>
       <page>187</page>
       <avail>12F</avail>
@@ -1348,6 +1402,7 @@
       <name>Shiva (Vintage)</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <addictiontype>Both</addictiontype>
       <avail>12F</avail>
       <cost>200</cost>
       <source>SAG</source>
@@ -1358,6 +1413,7 @@
       <name>Shiva II</name>
       <category>Drugs</category>
       <rating>0</rating>
+      <addictiontype>Physiological</addictiontype>
       <avail>6R</avail>
       <cost>150</cost>
       <source>SAG</source>
@@ -1371,6 +1427,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>192</page>
       <avail>4F</avail>
@@ -1392,6 +1449,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>192</page>
       <avail>4F</avail>
@@ -1413,6 +1471,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>192</page>
       <avail>4F</avail>
@@ -1442,6 +1501,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>193</page>
       <avail>4F</avail>
@@ -1471,6 +1531,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1500,6 +1561,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1521,6 +1583,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1558,6 +1621,7 @@
       <category>BTLs</category>
       <rating>6</rating>
       <threshold>2</threshold>
+      <addictiontype>Psychological</addictiontype>
       <source>CF</source>
       <page>193</page>
       <avail>8F</avail>
@@ -1589,6 +1653,7 @@
       <category>Drugs</category>
       <rating>8</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>SASS</source>
       <page>32</page>
       <avail>0</avail>
@@ -1624,6 +1689,7 @@
       <category>Drugs</category>
       <rating>8</rating>
       <threshold>3</threshold>
+      <addictiontype>Both</addictiontype>
       <source>DTR</source>
       <page>160</page>
       <avail>0</avail>

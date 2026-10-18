@@ -19557,6 +19557,40 @@ namespace Chummer
                         string strCategory = await objDrug.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                         await lblDrugCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                              .ConfigureAwait(false);
+                        bool blnHasDuration = await objDrug.GetHasDurationAsync(token).ConfigureAwait(false);
+                        await lblDrugDurationLabel.DoThreadSafeAsync(x => x.Visible = blnHasDuration, token)
+                                                  .ConfigureAwait(false);
+                        if (blnHasDuration)
+                        {
+                            string strDuration = await objDrug.GetCurrentDisplayDurationAsync(token).ConfigureAwait(false);
+                            await lblDrugDuration.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strDuration;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await lblDrugDuration.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                 .ConfigureAwait(false);
+                        }
+                        bool blnHasSpeed = objDrug.HasSpeed;
+                        await lblDrugSpeedLabel.DoThreadSafeAsync(x => x.Visible = blnHasSpeed, token)
+                                               .ConfigureAwait(false);
+                        if (blnHasSpeed)
+                        {
+                            string strSpeed = await objDrug.GetCurrentDisplaySpeedAsync(token).ConfigureAwait(false);
+                            await lblDrugSpeed.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strSpeed;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await lblDrugSpeed.DoThreadSafeAsync(x => x.Visible = false, token)
+                                              .ConfigureAwait(false);
+                        }
                         string strAddictionRating = (await objDrug.GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionRating
                               .DoThreadSafeAsync(
@@ -19567,6 +19601,12 @@ namespace Chummer
                               .DoThreadSafeAsync(
                                   x => x.Text = strAddictionThreshold, token)
                               .ConfigureAwait(false);
+                        string strAddictionType = await objDrug.DisplayAddictionTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                        await lblDrugAddictionType.DoThreadSafeAsync(x => x.Text = strAddictionType, token)
+                                                  .ConfigureAwait(false);
+                        string strVectors = await objDrug.DisplayVectorsAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                        await lblDrugVectors.DoThreadSafeAsync(x => x.Text = strVectors, token)
+                                            .ConfigureAwait(false);
                         string strText = await objDrug.GetEffectDescriptionAsync(token).ConfigureAwait(false);
                         await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -19578,8 +19618,14 @@ namespace Chummer
                                     await objComponent.GetCurrentDisplayNameAsync(t).ConfigureAwait(false));
                             }, token).ConfigureAwait(false);
                             string strComponents = sbdComponents.ToString();
-                            await lblDrugComponents.DoThreadSafeAsync(x => x.Text = strComponents, token)
-                                                   .ConfigureAwait(false);
+                            bool blnHasComponents = !string.IsNullOrEmpty(strComponents);
+                            await lblDrugComponentsLabel.DoThreadSafeAsync(x => x.Visible = blnHasComponents, token)
+                                                        .ConfigureAwait(false);
+                            await lblDrugComponents.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strComponents;
+                                x.Visible = blnHasComponents;
+                            }, token).ConfigureAwait(false);
                         }
                     }
                     else
