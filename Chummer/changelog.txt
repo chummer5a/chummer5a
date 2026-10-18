@@ -39,6 +39,10 @@ Application:
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 - Fixed a rare potential deadlock around calculating adept power points currently being used.
+- The default file name offered when creating a critter file for a spirit no longer contains a colon and now closes its parenthesis (e.g. "Watcher (Force 6)"), so it can be saved as is.
+- The Master Index now has a checkbox that lets the user toggle if they want the program to scrape linked PDFs for notes.
+- The Master Index now displays a different message if there is no linked PDF found for the source of the currently selected item.
+- When saving changes to global settings, if the user only changes settings that are automatically applied without needing to restart the program (e.g., linked PDFs), the program no longer prompts them to restart.
 
 Critters:
 - Added the Ghost Hound (and its Astral Perception variant), Kokopelli, Chalcis (Great Hunter), Wild Hunt Hunter, Wild Hunt Hound, Woog, Engkanto, Chiron, Jabberwock, Lamia, Nibiinaabe, Manananggal (Whole, Torso, and Legs), Bunyip, and Sabgarifya (Farasi Bahari) critters.
@@ -79,6 +83,7 @@ Cyberware:
 - Fixed a crash when attempting to add a cyberware suite.
 
 Gear:
+- The STATscan now gives its +2 dice for Diagnosis Tests as a conditional First Aid and Medicine bonus.
 - Corrected the availability, cost, ratings, and bonuses of multiple gear and armor entries, including ammunition, explosives, Security and Hunter decks, autosofts, sensors, survival gear, and environmental armor. Existing characters with these items will need to remove and re-add them to see any changes.
 - Added the Quick-Access Medkit Pouch (used by the Generic CCOB armor), Betel Nut Gum (Piece), and the Atomizer Cartridge.
 - Corrected multiple drugs and added the Renfield and Amrita drugs. The Lighting drug component has been renamed to Lightning.
@@ -149,8 +154,10 @@ Resonance:
 - Skill Autosoft and Skill Autosoft (Restricted) now only offer the skills allowed by Rigger 5.0.
 
 Traditions:
+- The Draconic tradition now lists its requirement of a Dracoform (Drake) quality.
 - Corrected multiple traditions and spirits, including Green Magic, Norse, Red Magic, Ancestor Shaman, the Homunculus spirits, Watcher, and several toxic spirits and shedim. Svetoid has been renamed to Svetovid.
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
+- Watcher and Master Shedim skill dice pools on printed sheets now use the linked attribute instead of Force. Shedim and Ally Spirit skills now also list their attribute.
 
 Life Modules:
 - Corrected the skills, knowledge skills, qualities, and page references of multiple life modules, including Trans-Polar Aleut Nation, the military service modules, and the Azania modules.
@@ -195,6 +202,7 @@ Changed/New Strings:
 - String_Vector_Ingestion
 - String_Vector_Inhalation
 - String_Vector_Injection
+- LimitCondition_TestDiagnosis
 - String_Improvement_SelectSpiritType
 - String_Improvement_SelectSpiritTypeGeneric
 - String_GroupContactAbbrev
@@ -307,6 +315,9 @@ Changed/New Strings:
 - MessageTitle_CustomDrug_CannotMixBtl
 - Message_DuplicateBtlWarning
 - Checkbox_Options_UseImprovementGroupNameInTooltips
+- Label_MasterIndex_NoLinkedPdfFound
+- Checkbox_FetchNotesFromPdf
+- Message_Options_CloseForms
 
 Build 226
 Application Changes:

@@ -68,8 +68,6 @@ namespace Chummer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MasterIndex));
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
-            this.txtSearch = new System.Windows.Forms.TextBox();
-            this.lblSearch = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceClickReminder = new System.Windows.Forms.Label();
@@ -82,10 +80,15 @@ namespace Chummer
             this.cmdEditCharacterSetting = new System.Windows.Forms.Button();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
+            this.lblSearch = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.chkFetchNotesFromPdf = new Chummer.ColorableCheckBox();
             this.tlpMain.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.tlpTopLeft.SuspendLayout();
             this.tlpGameplayOption.SuspendLayout();
+            this.tlpTopRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -95,16 +98,19 @@ namespace Chummer
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
+            this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.tlpTopLeft, 0, 0);
             this.tlpMain.Controls.Add(this.lstItems, 0, 1);
-            this.tlpMain.Controls.Add(this.tlpGameplayOption, 0, 2);
+            this.tlpMain.Controls.Add(this.tlpGameplayOption, 0, 3);
+            this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
+            this.tlpMain.Controls.Add(this.chkFetchNotesFromPdf, 1, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 0;
@@ -117,65 +123,39 @@ namespace Chummer
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Controls.Add(this.txtSearch, 1, 0);
-            this.tlpRight.Controls.Add(this.lblSearch, 0, 0);
-            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 1);
-            this.tlpRight.Controls.Add(this.lblSource, 1, 1);
-            this.tlpRight.Controls.Add(this.lblSourceClickReminder, 2, 1);
-            this.tlpRight.Controls.Add(this.txtNotes, 0, 2);
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 0);
+            this.tlpRight.Controls.Add(this.lblSourceClickReminder, 2, 0);
+            this.tlpRight.Controls.Add(this.txtNotes, 0, 1);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(383, 0);
+            this.tlpRight.Location = new System.Drawing.Point(383, 27);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
-            this.tlpRight.RowCount = 3;
-            this.tlpMain.SetRowSpan(this.tlpRight, 2);
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowCount = 2;
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Size = new System.Drawing.Size(383, 514);
+            this.tlpRight.Size = new System.Drawing.Size(383, 464);
             this.tlpRight.TabIndex = 1;
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpRight.SetColumnSpan(this.txtSearch, 2);
-            this.txtSearch.Location = new System.Drawing.Point(53, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(327, 20);
-            this.txtSearch.TabIndex = 0;
-            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshList);
-            // 
-            // lblSearch
-            // 
-            this.lblSearch.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(3, 6);
-            this.lblSearch.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSearch.Name = "lblSearch";
-            this.lblSearch.Size = new System.Drawing.Size(44, 13);
-            this.lblSearch.TabIndex = 1;
-            this.lblSearch.Tag = "String_Search";
-            this.lblSearch.Text = "Search:";
+            this.tlpRight.Visible = false;
             // 
             // lblSourceLabel
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(3, 32);
+            this.lblSourceLabel.Location = new System.Drawing.Point(3, 6);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 2;
             this.lblSourceLabel.Tag = "Label_Source";
             this.lblSourceLabel.Text = "Source:";
-            this.lblSourceLabel.Visible = false;
             // 
             // lblSource
             // 
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(53, 32);
+            this.lblSource.Location = new System.Drawing.Point(53, 6);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(55, 13);
@@ -189,7 +169,7 @@ namespace Chummer
             // 
             this.lblSourceClickReminder.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSourceClickReminder.AutoSize = true;
-            this.lblSourceClickReminder.Location = new System.Drawing.Point(114, 32);
+            this.lblSourceClickReminder.Location = new System.Drawing.Point(114, 6);
             this.lblSourceClickReminder.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceClickReminder.Name = "lblSourceClickReminder";
             this.lblSourceClickReminder.Size = new System.Drawing.Size(142, 13);
@@ -197,21 +177,19 @@ namespace Chummer
             this.lblSourceClickReminder.Tag = "Label_MasterIndex_SourceClickReminder";
             this.lblSourceClickReminder.Text = "<- Click to Open Linked PDF";
             this.lblSourceClickReminder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblSourceClickReminder.Visible = false;
             // 
             // txtNotes
             // 
             this.tlpRight.SetColumnSpan(this.txtNotes, 3);
             this.txtNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNotes.Location = new System.Drawing.Point(3, 54);
+            this.txtNotes.Location = new System.Drawing.Point(3, 28);
             this.txtNotes.MaxLength = 2147483647;
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
             this.txtNotes.ReadOnly = true;
             this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtNotes.Size = new System.Drawing.Size(377, 457);
+            this.txtNotes.Size = new System.Drawing.Size(377, 433);
             this.txtNotes.TabIndex = 6;
-            this.txtNotes.Visible = false;
             // 
             // tlpTopLeft
             // 
@@ -260,6 +238,7 @@ namespace Chummer
             this.lstItems.FormattingEnabled = true;
             this.lstItems.Location = new System.Drawing.Point(3, 30);
             this.lstItems.Name = "lstItems";
+            this.tlpMain.SetRowSpan(this.lstItems, 2);
             this.lstItems.Size = new System.Drawing.Size(377, 481);
             this.lstItems.TabIndex = 2;
             this.lstItems.SelectedIndexChanged += new System.EventHandler(this.lstItems_SelectedIndexChanged);
@@ -323,6 +302,63 @@ namespace Chummer
             this.cboCharacterSetting.TabIndex = 21;
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
+            // tlpTopRight
+            // 
+            this.tlpTopRight.AutoSize = true;
+            this.tlpTopRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTopRight.ColumnCount = 2;
+            this.tlpTopRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTopRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopRight.Controls.Add(this.lblSearch, 0, 0);
+            this.tlpTopRight.Controls.Add(this.txtSearch, 1, 0);
+            this.tlpTopRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTopRight.Location = new System.Drawing.Point(383, 0);
+            this.tlpTopRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTopRight.Name = "tlpTopRight";
+            this.tlpTopRight.RowCount = 1;
+            this.tlpTopRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopRight.Size = new System.Drawing.Size(383, 27);
+            this.tlpTopRight.TabIndex = 4;
+            // 
+            // lblSearch
+            // 
+            this.lblSearch.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSearch.AutoSize = true;
+            this.lblSearch.Location = new System.Drawing.Point(3, 7);
+            this.lblSearch.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSearch.Name = "lblSearch";
+            this.lblSearch.Size = new System.Drawing.Size(44, 13);
+            this.lblSearch.TabIndex = 1;
+            this.lblSearch.Tag = "String_Search";
+            this.lblSearch.Text = "Search:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(53, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(327, 20);
+            this.txtSearch.TabIndex = 0;
+            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshList);
+            // 
+            // chkFetchNotesFromPdf
+            // 
+            this.chkFetchNotesFromPdf.AutoSize = true;
+            this.chkFetchNotesFromPdf.Checked = true;
+            this.chkFetchNotesFromPdf.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFetchNotesFromPdf.DefaultColorScheme = true;
+            this.chkFetchNotesFromPdf.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chkFetchNotesFromPdf.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
+            this.chkFetchNotesFromPdf.Location = new System.Drawing.Point(386, 494);
+            this.chkFetchNotesFromPdf.Name = "chkFetchNotesFromPdf";
+            this.chkFetchNotesFromPdf.Size = new System.Drawing.Size(222, 17);
+            this.chkFetchNotesFromPdf.TabIndex = 5;
+            this.chkFetchNotesFromPdf.Tag = "Checkbox_FetchNotesFromPdf";
+            this.chkFetchNotesFromPdf.Text = "Attempt to Fetch Notes from Linked PDFs";
+            this.chkFetchNotesFromPdf.ToolTipText = "";
+            this.chkFetchNotesFromPdf.UseVisualStyleBackColor = true;
+            this.chkFetchNotesFromPdf.CheckedChanged += new System.EventHandler(this.chkFetchNotesFromPdf_CheckedChanged);
+            // 
             // MasterIndex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -346,6 +382,8 @@ namespace Chummer
             this.tlpTopLeft.PerformLayout();
             this.tlpGameplayOption.ResumeLayout(false);
             this.tlpGameplayOption.PerformLayout();
+            this.tlpTopRight.ResumeLayout(false);
+            this.tlpTopRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -369,5 +407,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCharacterSetting;
         private System.Windows.Forms.Button cmdEditCharacterSetting;
         private ElasticComboBox cboCharacterSetting;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
+        private ColorableCheckBox chkFetchNotesFromPdf;
     }
 }

@@ -426,7 +426,7 @@ namespace Chummer
             this.cboDefaultMasterIndexSetting.Name = "cboDefaultMasterIndexSetting";
             this.cboDefaultMasterIndexSetting.Size = new System.Drawing.Size(202, 21);
             this.cboDefaultMasterIndexSetting.TabIndex = 85;
-            this.cboDefaultMasterIndexSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboDefaultMasterIndexSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // lblDefaultMasterIndexSetting
             // 
@@ -1015,7 +1015,7 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudMugshotCompressionQuality.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudMugshotCompressionQuality.ValueChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // cboMugshotCompression
             // 
@@ -1102,7 +1102,7 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with Rating 0 or higher";
             this.chkPrintSkillsWithZeroRating.ToolTipText = "";
             this.chkPrintSkillsWithZeroRating.UseVisualStyleBackColor = true;
-            this.chkPrintSkillsWithZeroRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkPrintSkillsWithZeroRating.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkPrintExpenses
             // 
@@ -1136,7 +1136,7 @@ namespace Chummer
             this.chkPrintFreeExpenses.Text = "Print Free Karma and Nuyen Expenses";
             this.chkPrintFreeExpenses.ToolTipText = "";
             this.chkPrintFreeExpenses.UseVisualStyleBackColor = true;
-            this.chkPrintFreeExpenses.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkPrintFreeExpenses.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkDatesIncludeTime
             // 
@@ -1171,7 +1171,7 @@ namespace Chummer
             this.chkPrintNotes.Text = "Print Notes";
             this.chkPrintNotes.ToolTipText = "";
             this.chkPrintNotes.UseVisualStyleBackColor = true;
-            this.chkPrintNotes.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkPrintNotes.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkHideMasterIndex
             // 
@@ -1206,7 +1206,7 @@ namespace Chummer
             this.chkSearchInCategoryOnly.Text = "Searching in selection forms is restricted to the current Category";
             this.chkSearchInCategoryOnly.ToolTipText = "";
             this.chkSearchInCategoryOnly.UseVisualStyleBackColor = true;
-            this.chkSearchInCategoryOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkSearchInCategoryOnly.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkGroupVehicleModsByCategory
             // 
@@ -1389,7 +1389,7 @@ namespace Chummer
             this.cboDefaultCharacterSetting.Name = "cboDefaultCharacterSetting";
             this.cboDefaultCharacterSetting.Size = new System.Drawing.Size(202, 21);
             this.cboDefaultCharacterSetting.TabIndex = 7;
-            this.cboDefaultCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboDefaultCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkStartupFullscreen
             // 
@@ -1406,7 +1406,7 @@ namespace Chummer
             this.chkStartupFullscreen.Text = "Start Chummer in fullscreen";
             this.chkStartupFullscreen.ToolTipText = "";
             this.chkStartupFullscreen.UseVisualStyleBackColor = true;
-            this.chkStartupFullscreen.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkStartupFullscreen.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkAllowSkillDiceRolling
             // 
@@ -1442,7 +1442,7 @@ namespace Chummer
             this.chkCreateBackupOnCareer.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkCreateBackupOnCareer.ToolTipText = "";
             this.chkCreateBackupOnCareer.UseVisualStyleBackColor = true;
-            this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkSaveCompressionLevel
             // 
@@ -1465,7 +1465,7 @@ namespace Chummer
             this.cboChum5lzCompressionLevel.Name = "cboChum5lzCompressionLevel";
             this.cboChum5lzCompressionLevel.Size = new System.Drawing.Size(240, 21);
             this.cboChum5lzCompressionLevel.TabIndex = 87;
-            this.cboChum5lzCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboChum5lzCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // lblPDFAppPath
             // 
@@ -1502,7 +1502,7 @@ namespace Chummer
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(202, 21);
             this.cboPDFParameters.TabIndex = 26;
-            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // flpBrowserVersion
             // 
@@ -1552,7 +1552,7 @@ namespace Chummer
             0,
             0,
             0});
-            this.nudBrowserVersion.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            this.nudBrowserVersion.ValueChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkLiveUpdateCleanCharacterFiles
             // 
@@ -1637,7 +1637,7 @@ namespace Chummer
             this.chkPrintToFileFirst.Text = "Apply Linux printing fix";
             this.chkPrintToFileFirst.ToolTipText = "";
             this.chkPrintToFileFirst.UseVisualStyleBackColor = true;
-            this.chkPrintToFileFirst.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkPrintToFileFirst.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkAllowHoverIncrement
             // 
@@ -1678,7 +1678,7 @@ namespace Chummer
             this.chkInsertPdfNotesIfAvailable.Text = "Add scraped text from available PDFs as Notes for newly added items ";
             this.chkInsertPdfNotesIfAvailable.ToolTipText = "";
             this.chkInsertPdfNotesIfAvailable.UseVisualStyleBackColor = true;
-            this.chkInsertPdfNotesIfAvailable.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkInsertPdfNotesIfAvailable.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkHideCharacterRoster
             // 
@@ -1730,7 +1730,7 @@ namespace Chummer
             this.chkConfirmKarmaExpense.Text = "Ask for confirmation for Karma expenses";
             this.chkConfirmKarmaExpense.ToolTipText = "";
             this.chkConfirmKarmaExpense.UseVisualStyleBackColor = true;
-            this.chkConfirmKarmaExpense.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkConfirmKarmaExpense.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // chkConfirmDelete
             // 
@@ -1747,7 +1747,7 @@ namespace Chummer
             this.chkConfirmDelete.Text = "Ask for confirmation when deleting items";
             this.chkConfirmDelete.ToolTipText = "";
             this.chkConfirmDelete.UseVisualStyleBackColor = true;
-            this.chkConfirmDelete.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            this.chkConfirmDelete.CheckedChanged += new System.EventHandler(this.OptionsChangedNoRestartNeeded);
             // 
             // tlpHasNotesColor
             // 

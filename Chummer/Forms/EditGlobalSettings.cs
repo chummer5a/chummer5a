@@ -51,7 +51,9 @@ namespace Chummer
         // List of sourcebook infos, needed to make sure we don't directly modify ones in the options unless we save our options
         private ConcurrentDictionary<string, SourcebookInfo> _dicSourcebookInfos;
 
-        private bool _blnDirty;
+        private bool _blnDirtyRestartNeeded;
+
+        private bool _blnDirtyNoRestartNeeded;
         private int _intSkipRefresh;
         private int _intLoading = 1;
         private string _strSelectedLanguage = GlobalSettings.Language;
@@ -139,7 +141,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                if (_blnDirty)
+                if (_blnDirtyRestartNeeded || _blnDirtyNoRestartNeeded)
                 {
                     string text = await LanguageManager.GetStringAsync("Message_Options_SaveForms",
                                                                        _strSelectedLanguage).ConfigureAwait(false);
@@ -160,7 +162,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            if (_blnDirty)
+            if (_blnDirtyRestartNeeded)
             {
                 await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms")
                            .ConfigureAwait(false);
@@ -232,7 +234,7 @@ namespace Chummer
             try
             {
                 await PopulateXsltList().ConfigureAwait(false);
-                OptionsChanged(sender, e);
+                OptionsChangedNoRestartNeeded(sender, e);
             }
             finally
             {
@@ -533,7 +535,7 @@ namespace Chummer
             bool blnShowQualitySelector = "jpeg_manual".Equals(cboMugshotCompression.SelectedValue?.ToString(), StringComparison.Ordinal);
             lblMugshotCompressionQuality.Visible = blnShowQualitySelector;
             nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
-            OptionsChanged(sender, e);
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private async void cboColorMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -582,7 +584,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            OptionsChanged(sender, e);
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private async void btnHasNotesColorSelect_Click(object sender, EventArgs e)
@@ -602,7 +604,7 @@ namespace Chummer
                 if (_eSelectedColorModeSetting == ColorMode.Dark || (_eSelectedColorModeSetting == ColorMode.Automatic && ColorManager.DoesRegistrySayDarkMode()))
                     objPreviewColor = ColorManager.GenerateDarkModeColor(objPreviewColor);
                 await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
-                OptionsChanged(sender, e);
+                OptionsChangedNoRestartNeeded(sender, e);
             }
         }
 
@@ -620,13 +622,14 @@ namespace Chummer
                 chkPrintFreeExpenses.Checked = false;
             }
 
-            OptionsChanged(sender, e);
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private void cmdRemovePDFLocation_Click(object sender, EventArgs e)
         {
             UpdateSourcebookInfoPath(string.Empty);
             txtPDFLocation.Text = string.Empty;
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private void txtPDFLocation_TextChanged(object sender, EventArgs e)
@@ -635,7 +638,7 @@ namespace Chummer
                 return;
             cmdRemovePDFLocation.Enabled = txtPDFLocation.TextLength > 0;
             cmdPDFTest.Enabled = txtPDFAppPath.TextLength > 0 && txtPDFLocation.TextLength > 0;
-            OptionsChanged(sender, e);
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private void cmdRemoveCharacterRoster_Click(object sender, EventArgs e)
@@ -650,7 +653,7 @@ namespace Chummer
             txtPDFAppPath.Text = string.Empty;
             cmdRemovePDFAppPath.Enabled = false;
             cmdPDFTest.Enabled = false;
-            OptionsChanged(sender, e);
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private async void chkLifeModules_CheckedChanged(object sender, EventArgs e)
@@ -1139,7 +1142,7 @@ namespace Chummer
         {
             cmdRemovePDFAppPath.Enabled = txtPDFAppPath.TextLength > 0;
             cmdPDFTest.Enabled = txtPDFAppPath.TextLength > 0 && txtPDFLocation.TextLength > 0;
-            OptionsChanged(sender, e);
+            OptionsChangedNoRestartNeeded(sender, e);
         }
 
         private async void lsbCustomDataDirectories_SelectedIndexChanged(object sender, EventArgs e)
@@ -2718,7 +2721,22 @@ namespace Chummer
         {
             if (_intLoading == 0)
             {
-                _blnDirty = true;
+                _blnDirtyRestartNeeded = true;
+            }
+
+            if (ReferenceEquals(sender, chkGroupVehicleModsByCategory))
+            {
+                chkNestWeaponMountsUnderWeaponsCategory.Enabled = chkGroupVehicleModsByCategory.Checked;
+                if (!chkGroupVehicleModsByCategory.Checked)
+                    chkNestWeaponMountsUnderWeaponsCategory.Checked = false;
+            }
+        }
+
+        private void OptionsChangedNoRestartNeeded(object sender, EventArgs e)
+        {
+            if (_intLoading == 0)
+            {
+                _blnDirtyNoRestartNeeded = true;
             }
 
             if (ReferenceEquals(sender, chkGroupVehicleModsByCategory))

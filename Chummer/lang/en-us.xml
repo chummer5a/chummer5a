@@ -1680,6 +1680,14 @@
       <key>Label_MasterIndex_SourceClickReminder</key>
       <text>&lt;- Click to Open Linked PDF</text>
     </string>
+    <string>
+      <key>Label_MasterIndex_NoLinkedPdfFound</key>
+      <text>&lt;- No Linked PDF Found, Click to Link a PDF</text>
+    </string>
+    <string>
+      <key>Checkbox_FetchNotesFromPdf</key>
+      <text>Attempt to Fetch Notes from Linked PDFs</text>
+    </string>
     <!-- End Region -->
     <!-- Region About -->
     <string>
@@ -8240,7 +8248,7 @@
     </string>
     <string>
       <key>Message_Options_CloseForms</key>
-      <text>Settings are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
+      <text>Some of the settings that were changed are only enumerated on startup, so their changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
     </string>
     <string>
       <key>Message_Options_SaveForms</key>
@@ -11159,6 +11167,10 @@
     <string>
       <key>LimitCondition_TestVehicleStunt</key>
       <text>Only for Vehicle Stunt Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestDiagnosis</key>
+      <text>Only for Diagnosis Tests</text>
     </string>
     <string>
       <key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
