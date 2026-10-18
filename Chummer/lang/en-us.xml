@@ -8212,7 +8212,7 @@
     </string>
     <string>
       <key>Message_Options_CloseForms</key>
-      <text>Settings are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
+      <text>Some of the settings that were changed are only enumerated on startup, so their changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
     </string>
     <string>
       <key>Message_Options_SaveForms</key>
