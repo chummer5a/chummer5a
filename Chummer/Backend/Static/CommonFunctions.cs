@@ -2345,6 +2345,71 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="strSource">Book code and page number to check, can also be just the book code.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<bool> HasLinkedPdf(string strSource, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strBook;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strSpace))
+            {
+                int intSpaceIndex = strSource.IndexOf(strSpace, StringComparison.Ordinal);
+                if (intSpaceIndex < 0)
+                    strBook = strSource;
+                else
+                    strBook = strSource.Substring(0, intSpaceIndex);
+            }
+            else
+            {
+                if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+                {
+                    strBook = "SR5";
+                }
+                else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                {
+                    strBook = "R5";
+                }
+                else
+                {
+                    int i = strSource.Length - 1;
+                    for (; i >= 0; --i)
+                    {
+                        if (!char.IsNumber(strSource, i))
+                        {
+                            break;
+                        }
+                    }
+
+                    strBook = strSource.Substring(0, i);
+                }
+            }
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            strBook = await LanguageBookCodeFromAltCodeAsync(strBook, string.Empty, objSettings, token).ConfigureAwait(false);
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
         /// Gets a textblock from a given PDF document.
         /// </summary>
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>

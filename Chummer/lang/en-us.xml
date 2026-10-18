@@ -1680,6 +1680,14 @@
       <key>Label_MasterIndex_SourceClickReminder</key>
       <text>&lt;- Click to Open Linked PDF</text>
     </string>
+    <string>
+      <key>Label_MasterIndex_NoLinkedPdfFound</key>
+      <text>&lt;- No Linked PDF Found, Click to Link a PDF</text>
+    </string>
+    <string>
+      <key>Checkbox_FetchNotesFromPdf</key>
+      <text>Attempt to Fetch Notes from Linked PDFs</text>
+    </string>
     <!-- End Region -->
     <!-- Region About -->
     <string>

@@ -40,6 +40,8 @@ Application:
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 - Fixed a rare potential deadlock around calculating adept power points currently being used.
 - The default file name offered when creating a critter file for a spirit no longer contains a colon and now closes its parenthesis (e.g. "Watcher (Force 6)"), so it can be saved as is.
+- The Master Index now has a checkbox that lets the user toggle if they want the program to scrape linked PDFs for notes.
+- The Master Index now displays a different message if there is no linked PDF found for the source of the currently selected item.
 
 Critters:
 - Added the Ghost Hound (and its Astral Perception variant), Kokopelli, Chalcis (Great Hunter), Wild Hunt Hunter, Wild Hunt Hound, Woog, Engkanto, Chiron, Jabberwock, Lamia, Nibiinaabe, Manananggal (Whole, Torso, and Legs), Bunyip, and Sabgarifya (Farasi Bahari) critters.
@@ -298,6 +300,8 @@ Changed/New Strings:
 - MessageTitle_CustomDrug_CannotMixBtl
 - Message_DuplicateBtlWarning
 - Checkbox_Options_UseImprovementGroupNameInTooltips
+- Label_MasterIndex_NoLinkedPdfFound
+- Checkbox_FetchNotesFromPdf
 
 Build 226
 Application Changes:
