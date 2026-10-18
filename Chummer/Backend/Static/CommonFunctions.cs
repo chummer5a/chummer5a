@@ -2149,17 +2149,17 @@ namespace Chummer
                 return;
             Control objLoopControl = objControl;
             CharacterSettings objSettings = null;
-            while (objLoopControl != null)
+            for (; objLoopControl != null; objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false))
             {
-                if (objLoopControl is CharacterShared objShared)
+                if (objLoopControl is IHasCharacterObject objShared)
                 {
                     Character objCharacter = objShared.CharacterObject;
                     if (objCharacter != null)
+                    {
                         objSettings = await objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                    break;
+                        break;
+                    }
                 }
-
-                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false);
             }
             await OpenPdfFromControl(sender, objSettings, token).ConfigureAwait(false);
         }
