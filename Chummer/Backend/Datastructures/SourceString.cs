@@ -60,17 +60,7 @@ namespace Chummer
         public static SourceString GetSourceString(string strSourceString, string strLanguage = "",
                                                    CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
-            string strCode = strSourceString ?? string.Empty;
-            int intPage = 0;
-            int intWhitespaceIndex = strCode.IndexOf(' ');
-            if (intWhitespaceIndex != -1)
-            {
-                strCode = strCode.Substring(0, intWhitespaceIndex);
-                if (intWhitespaceIndex + 1 < strCode.Length)
-                {
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
-                }
-            }
+            (string strCode, int intPage) = CommonFunctions.SourceStringToBookPagePair(strSourceString, objSettings: objSettings, objCultureInfo: objCultureInfo);
             return GetSourceString(strCode, intPage, strLanguage, objCultureInfo, objSettings);
         }
 
@@ -79,21 +69,11 @@ namespace Chummer
             return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, objCharacter != null ? await objCharacter.GetSettingsAsync(token).ConfigureAwait(false) : null, token).ConfigureAwait(false);
         }
 
-        public static Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
+        public static async Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
                                                                          CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            string strCode = strSourceString ?? string.Empty;
-            int intPage = 0;
-            int intWhitespaceIndex = strCode.IndexOf(' ');
-            if (intWhitespaceIndex != -1)
-            {
-                strCode = strCode.Substring(0, intWhitespaceIndex);
-                if (intWhitespaceIndex + 1 < strCode.Length)
-                {
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
-                }
-            }
-            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objSettings, token);
+            (string strCode, int intPage) = await CommonFunctions.SourceStringToBookPagePairAsync(strSourceString, objSettings: objSettings, objCultureInfo: objCultureInfo, token: token).ConfigureAwait(false);
+            return await GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objSettings, token).ConfigureAwait(false);
         }
 
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
@@ -104,7 +84,8 @@ namespace Chummer
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage = "",
                                                    CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
-            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+            if (!int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out int intPage))
+                int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
             return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objSettings);
         }
 
@@ -116,7 +97,8 @@ namespace Chummer
         public static Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
                                                                    CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+            if (!int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out int intPage))
+                int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
             return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objSettings, token);
         }
 
