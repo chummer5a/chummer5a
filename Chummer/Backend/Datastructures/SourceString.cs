@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -229,6 +230,35 @@ namespace Chummer
 
         private readonly Lazy<string> _objTooltipInitializer;
         private readonly AsyncLazy<string> _objAsyncTooltipInitializer;
+
+        /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> HasLinkedPdf(CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = await CommonFunctions.LanguageBookCodeFromAltCodeAsync(Code, Language, objSettings, token).ConfigureAwait(false);
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
 
         public int CompareTo(object obj)
         {

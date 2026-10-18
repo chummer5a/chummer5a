@@ -863,7 +863,7 @@ namespace Chummer
                                 MasterIndexEntry objEntry)
                             {
                                 await objEntry.DisplaySource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
-                                bool blnEntryHasLinkedPdf = await CommonFunctions.HasLinkedPdf(objEntry.DisplaySource.Code, _objSelectedSetting, token).ConfigureAwait(false);
+                                bool blnEntryHasLinkedPdf = await objEntry.DisplaySource.HasLinkedPdf(_objSelectedSetting, token).ConfigureAwait(false);
                                 string strNotes = string.Empty;
                                 if (blnEntryHasLinkedPdf)
                                 {
@@ -953,7 +953,7 @@ namespace Chummer
                     && await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is MasterIndexEntry objEntry
                     && !_dicCachedNotes.ContainsKey(objEntry)
                     // Do not attempt to set an entry in our cached notes, it will fail because we don't have a linked PDF
-                    && await CommonFunctions.HasLinkedPdf(objEntry.DisplaySource.Code, _objSelectedSetting, _objGenericToken).ConfigureAwait(false))
+                    && await objEntry.DisplaySource.HasLinkedPdf(_objSelectedSetting, _objGenericToken).ConfigureAwait(false))
                 {
                     CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
                     CancellationToken objNewToken = objNewCancellationTokenSource.Token;
