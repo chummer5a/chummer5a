@@ -364,8 +364,12 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("vectors_english", Vectors, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("initiative", (await GetInitiativeAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("initiativedice", (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("speed", (await GetSpeedAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("duration", (await GetDurationAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed", await GetDisplaySpeedAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed_english", await GetDisplaySpeedAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed_raw", _intCatalogSpeed != int.MinValue ? _intCatalogSpeed.ToString(GlobalSettings.InvariantCultureInfo) : string.Empty, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("duration", await GetDisplayDurationAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("duration_english", await GetDisplayDurationAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("duration_raw", Components.Count == 0 ? _strDuration ?? string.Empty : string.Empty, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("crashdamage", (await GetCrashDamageAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
                     "avail", await TotalAvailAsync(GlobalSettings.CultureInfo, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1373,13 +1377,16 @@ namespace Chummer.Backend.Equipment
                 : await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Speed, token).ConfigureAwait(false) + _intSpeed;
         }
 
-        public string CurrentDisplaySpeed => GetDisplaySeconds(Speed, GlobalSettings.CultureInfo, GlobalSettings.Language);
+        public string CurrentDisplaySpeed => GetDisplaySpeed(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public async Task<string> GetCurrentDisplaySpeedAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplaySpeedAsync(CancellationToken token = default) => GetDisplaySpeedAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        public string GetDisplaySpeed(CultureInfo objCulture, string strLanguage) => GetDisplaySeconds(Speed, objCulture, strLanguage);
+
+        public async Task<string> GetDisplaySpeedAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await GetDisplaySecondsAsync(await GetSpeedAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo,
-                GlobalSettings.Language, token).ConfigureAwait(false);
+            return await GetDisplaySecondsAsync(await GetSpeedAsync(token).ConfigureAwait(false), objCulture, strLanguage, token).ConfigureAwait(false);
         }
 
         private int _intCachedDuration = int.MinValue;
