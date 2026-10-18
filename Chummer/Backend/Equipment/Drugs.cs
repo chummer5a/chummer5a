@@ -195,16 +195,16 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
-            bool blnHasAddictionType = objXmlData.TryGetStringFieldQuickly("addictiontype", ref _strAddictionType);
-            bool blnHasVectors = objXmlData.TryGetStringFieldQuickly("vectors", ref _strVectors);
+            objXmlData.TryGetStringFieldQuickly("addictiontype", ref _strAddictionType);
+            objXmlData.TryGetStringFieldQuickly("vectors", ref _strVectors);
             // ReSharper disable once MethodHasAsyncOverload
             XPathNavigator objCatalogNode = blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
             if (objCatalogNode != null)
             {
                 // Legacy shim: characters saved before drugs stored their addiction type and vectors get them from the catalog entry.
-                if (!blnHasAddictionType)
+                if (string.IsNullOrEmpty(_strAddictionType))
                     objCatalogNode.TryGetStringFieldQuickly("addictiontype", ref _strAddictionType);
-                if (!blnHasVectors)
+                if (string.IsNullOrEmpty(_strVectors))
                     objCatalogNode.TryGetStringFieldQuickly("vectors", ref _strVectors);
                 // Speed and duration are not saved, so they always come from the catalog entry.
                 objCatalogNode.TryGetInt32FieldQuickly("speed", ref _intCatalogSpeed);

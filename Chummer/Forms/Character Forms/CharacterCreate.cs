@@ -19558,27 +19558,39 @@ namespace Chummer
                         await lblDrugCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                              .ConfigureAwait(false);
                         bool blnHasDuration = await objDrug.GetHasDurationAsync(token).ConfigureAwait(false);
-                        string strDuration = blnHasDuration
-                            ? await objDrug.GetCurrentDisplayDurationAsync(token).ConfigureAwait(false)
-                            : string.Empty;
                         await lblDrugDurationLabel.DoThreadSafeAsync(x => x.Visible = blnHasDuration, token)
                                                   .ConfigureAwait(false);
-                        await lblDrugDuration.DoThreadSafeAsync(x =>
+                        if (blnHasDuration)
                         {
-                            x.Text = strDuration;
-                            x.Visible = blnHasDuration;
-                        }, token).ConfigureAwait(false);
+                            string strDuration = await objDrug.GetCurrentDisplayDurationAsync(token).ConfigureAwait(false);
+                            await lblDrugDuration.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strDuration;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await lblDrugDuration.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                 .ConfigureAwait(false);
+                        }
                         bool blnHasSpeed = objDrug.HasSpeed;
-                        string strSpeed = blnHasSpeed
-                            ? await objDrug.GetCurrentDisplaySpeedAsync(token).ConfigureAwait(false)
-                            : string.Empty;
                         await lblDrugSpeedLabel.DoThreadSafeAsync(x => x.Visible = blnHasSpeed, token)
                                                .ConfigureAwait(false);
-                        await lblDrugSpeed.DoThreadSafeAsync(x =>
+                        if (blnHasSpeed)
                         {
-                            x.Text = strSpeed;
-                            x.Visible = blnHasSpeed;
-                        }, token).ConfigureAwait(false);
+                            string strSpeed = await objDrug.GetCurrentDisplaySpeedAsync(token).ConfigureAwait(false);
+                            await lblDrugSpeed.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strSpeed;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await lblDrugSpeed.DoThreadSafeAsync(x => x.Visible = false, token)
+                                              .ConfigureAwait(false);
+                        }
                         string strAddictionRating = (await objDrug.GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblDrugAddictionRating
                               .DoThreadSafeAsync(
