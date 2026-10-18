@@ -7205,6 +7205,25 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Normalizes line endings to always be that of Environment.NewLine.
+        /// </summary>
+        /// <param name="strInput">String to normalize.</param>
+        /// <param name="blnEscaped">If the line endings in the string are defined in an escaped fashion (e.g. as "\\n"), set to true.</param>
+        /// <returns></returns>
+        public static StringBuilder NormalizeLineEndings(this StringBuilder sbdInput, bool blnEscaped = false)
+        {
+            if (sbdInput == null)
+                return sbdInput;
+            string[] astrLineEndingStrings = blnEscaped ? s_astrEscapedLineEndingStrings : s_astrLineEndingStrings;
+            // Two-step process so that newlines normalized in earlier iterations of the loop are not re-detected by later iterations
+            // Yes, this will replace null characters with newlines as well, too bad, we shouldn't have null characters in our strings anyway
+            foreach (string strSequence in astrLineEndingStrings)
+                sbdInput.Replace(strSequence, s_strNullsToUseAsPlaceholder);
+            sbdInput.Replace(s_strNullsToUseAsPlaceholder, Environment.NewLine);
+            return sbdInput;
+        }
+
         // Use a placeholder length that matches the length of our new line string to reduce the amount of allocations needed in StringBuilder
         private static readonly string s_strNullsToUseAsPlaceholder = Environment.NewLine.Length == 2 ? "\u0000\u0000" : "\u0000";
 
