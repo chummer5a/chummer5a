@@ -60,7 +60,6 @@ Bioware:
 - Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
 
 Vehicles:
-- Touch Sensors now give their +1 Handling bonus.
 - Corrected the stats, mods, and page references of multiple vehicles and drones, including the Dodge Rhino, Evo Aquavida 2, GMC Riverine Military, Transys Steed, NeoNET Avenging Angel, and several Shadowrun 2050 vehicles. Existing characters with these vehicles will need to remove and re-add them to see any changes.
 - Fixed the names of the Ruhrmetall Wolf II, NeoNET Prairie Dog, Saeder-Krupp MK-17D Neptune, NeoNET Juggernaught, and Hughes WK-2 Stallion (2050).
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.

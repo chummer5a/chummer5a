@@ -12691,10 +12691,6 @@
       <cost>number(Body = 0) * 250 + Body * 500</cost>
       <rating>0</rating>
       <slots>3</slots>
-      <bonus>
-        <handling>+1</handling>
-        <offroadhandling>+1</offroadhandling>
-      </bonus>
     </mod>
     <!-- End Region -->
     <!-- Region Cosmetic -->
