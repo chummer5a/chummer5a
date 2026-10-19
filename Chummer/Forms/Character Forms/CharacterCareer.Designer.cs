@@ -995,6 +995,8 @@ namespace Chummer
             this.lblDrugEffect = new System.Windows.Forms.Label();
             this.lblDrugNameLabel = new System.Windows.Forms.Label();
             this.lblDrugName = new System.Windows.Forms.Label();
+            this.lblDrugSourceLabel = new System.Windows.Forms.Label();
+            this.lblDrugSource = new Chummer.LabelWithToolTip();
             this.lblDrugCategoryLabel = new System.Windows.Forms.Label();
             this.lblDrugComponents = new System.Windows.Forms.Label();
             this.lblDrugComponentsLabel = new System.Windows.Forms.Label();
@@ -16339,28 +16341,30 @@ namespace Chummer
             this.tlpDrugsCommon.ColumnCount = 2;
             this.tlpDrugsCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpDrugsCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffectsLabel, 0, 13);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffect, 1, 13);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffectsLabel, 0, 14);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugEffect, 1, 14);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugNameLabel, 0, 0);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugName, 1, 0);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugSourceLabel, 0, 6);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugSource, 1, 6);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugCategoryLabel, 0, 1);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponents, 1, 12);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponentsLabel, 0, 12);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRating, 1, 10);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThreshold, 1, 11);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugDurationLabel, 0, 7);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugDuration, 1, 7);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugSpeedLabel, 0, 6);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugSpeed, 1, 6);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionTypeLabel, 0, 9);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionType, 1, 9);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugVectorsLabel, 0, 8);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugVectors, 1, 8);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponents, 1, 13);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugComponentsLabel, 0, 13);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRating, 1, 11);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThreshold, 1, 12);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugDurationLabel, 0, 8);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugDuration, 1, 8);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugSpeedLabel, 0, 7);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugSpeed, 1, 7);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionTypeLabel, 0, 10);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionType, 1, 10);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugVectorsLabel, 0, 9);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugVectors, 1, 9);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugCost, 1, 5);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugAvail, 1, 4);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 10);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionRatingLabel, 0, 11);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugAvailabel, 0, 4);
-            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 11);
+            this.tlpDrugsCommon.Controls.Add(this.lblDrugAddictionThresholdLabel, 0, 12);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugGrade, 1, 3);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugGradeLabel, 0, 3);
             this.tlpDrugsCommon.Controls.Add(this.lblDrugQtyLabel, 0, 2);
@@ -16370,7 +16374,8 @@ namespace Chummer
             this.tlpDrugsCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpDrugsCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpDrugsCommon.Name = "tlpDrugsCommon";
-            this.tlpDrugsCommon.RowCount = 14;
+            this.tlpDrugsCommon.RowCount = 15;
+            this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugsCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -16411,6 +16416,28 @@ namespace Chummer
             this.lblDrugEffect.Tag = "";
             this.lblDrugEffect.Text = "[Effects]";
             // 
+            // lblDrugSourceLabel
+            //
+            this.lblDrugSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDrugSourceLabel.AutoSize = true;
+            this.lblDrugSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugSourceLabel.Name = "lblDrugSourceLabel";
+            this.lblDrugSourceLabel.Tag = "Label_Source";
+            this.lblDrugSourceLabel.Text = "Source:";
+            this.lblDrugSourceLabel.Visible = false;
+            //
+            // lblDrugSource
+            //
+            this.lblDrugSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDrugSource.AutoSize = true;
+            this.lblDrugSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblDrugSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDrugSource.Name = "lblDrugSource";
+            this.lblDrugSource.Text = "[Source]";
+            this.lblDrugSource.ToolTipText = "";
+            this.lblDrugSource.Visible = false;
+            this.lblDrugSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
+            //
             // lblDrugNameLabel
             // 
             this.lblDrugNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -24081,6 +24108,8 @@ namespace Chummer
         private Label lblDrugCategory;
         private Label lblDrugCategoryLabel;
         private Label lblDrugName;
+        private System.Windows.Forms.Label lblDrugSourceLabel;
+        private LabelWithToolTip lblDrugSource;
         private Label lblDrugNameLabel;
         private Button btnDeleteCustomDrug;
         private TreeView treCustomDrugs;

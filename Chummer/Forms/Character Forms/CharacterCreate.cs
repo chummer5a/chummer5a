@@ -19609,6 +19609,17 @@ namespace Chummer
                                             .ConfigureAwait(false);
                         string strText = await objDrug.GetEffectDescriptionAsync(token).ConfigureAwait(false);
                         await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(objDrug.Source))
+                        {
+                            await lblDrugSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await lblDrugSource.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await objDrug.SetSourceDetailAsync(lblDrugSource, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await lblDrugSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblDrugSource.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        }
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdComponents))
                         {
