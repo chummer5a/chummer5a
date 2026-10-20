@@ -208,6 +208,14 @@ Changed/New Strings:
 - String_Vector_Ingestion
 - String_Vector_Inhalation
 - String_Vector_Injection
+- Label_Elements
+- String_Element_Acid
+- String_Element_Cold
+- String_Element_Electricity
+- String_Element_Fire
+- String_Element_Pollutant
+- String_Element_Radiation
+- String_Element_Water
 - LimitCondition_TestDiagnosis
 - String_Improvement_SelectSpiritType
 - String_Improvement_SelectSpiritTypeGeneric
