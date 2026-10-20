@@ -19696,6 +19696,16 @@ namespace Chummer
                         string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, GlobalSettings.CultureInfo, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
+                        string strElements = await objSpell.DisplayElementsAsync(GlobalSettings.Language, token)
+                                                           .ConfigureAwait(false);
+                        bool blnHasElements = !string.IsNullOrEmpty(strElements);
+                        await lblSpellElementsLabel.DoThreadSafeAsync(x => x.Visible = blnHasElements, token)
+                                                   .ConfigureAwait(false);
+                        await lblSpellElements.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strElements;
+                            x.Visible = blnHasElements;
+                        }, token).ConfigureAwait(false);
                         string strText6 = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token)
                                                         .ConfigureAwait(false);
                         await lblSpellDuration.DoThreadSafeAsync(x => x.Text = strText6, token).ConfigureAwait(false);

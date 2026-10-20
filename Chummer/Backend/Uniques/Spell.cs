@@ -52,6 +52,7 @@ namespace Chummer
         private string _strType = string.Empty;
         private string _strRange = string.Empty;
         private string _strDamage = string.Empty;
+        private string _strElements = string.Empty;
         private string _strDuration = string.Empty;
         private string _strDV = string.Empty;
         private string _strSource = string.Empty;
@@ -143,6 +144,7 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
                 objXmlSpellNode.TryGetStringFieldQuickly("range", ref _strRange);
                 objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+                objXmlSpellNode.TryGetStringFieldQuickly("elements", ref _strElements);
                 objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
                 objXmlSpellNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
@@ -238,6 +240,7 @@ namespace Chummer
                 objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
                 objXmlSpellNode.TryGetStringFieldQuickly("range", ref _strRange);
                 objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+                objXmlSpellNode.TryGetStringFieldQuickly("elements", ref _strElements);
                 objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
                 objXmlSpellNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
@@ -328,6 +331,7 @@ namespace Chummer
                 objWriter.WriteElementString("type", _strType);
                 objWriter.WriteElementString("range", _strRange);
                 objWriter.WriteElementString("damage", _strDamage);
+                objWriter.WriteElementString("elements", _strElements);
                 objWriter.WriteElementString("duration", _strDuration);
                 objWriter.WriteElementString("dv", _strDV);
                 objWriter.WriteElementString("useskill", _strUseSkill);
@@ -415,6 +419,9 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("type", ref _strType);
                 objNode.TryGetStringFieldQuickly("range", ref _strRange);
                 objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+                // Legacy shim: characters saved before spells stored their elements get them from the catalog entry.
+                if (!objNode.TryGetStringFieldQuickly("elements", ref _strElements))
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("elements", ref _strElements);
                 objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
                 if (objNode["improvementsource"] != null)
                 {
@@ -535,6 +542,11 @@ namespace Chummer
                             token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("damage_english", await DisplayDamageAsync(GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "elements", await DisplayElementsAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                            token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("elements_english", await DisplayElementsAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "duration", await DisplayDurationAsync(strLanguageToPrint, token).ConfigureAwait(false),
@@ -1327,6 +1339,99 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                     _strDamage = value;
+            }
+        }
+
+        /// <summary>
+        /// Comma-separated elements of the Spell's damage or effect (Acid, Cold, Electricity, Fire, Pollutant, Radiation, Water).
+        /// </summary>
+        public string Elements
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strElements;
+            }
+        }
+
+        /// <summary>
+        /// Translated Elements, or an empty string if the Spell has none.
+        /// </summary>
+        public string DisplayElements(string strLanguage = "")
+        {
+            using (LockObject.EnterReadLock())
+                return TranslateElements(_strElements, strLanguage);
+        }
+
+        /// <summary>
+        /// Translated Elements, or an empty string if the Spell has none.
+        /// </summary>
+        public async Task<string> DisplayElementsAsync(string strLanguage = "", CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await TranslateElementsAsync(_strElements, strLanguage, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Translate a comma-separated list of spell elements, as found in the spells data file.
+        /// </summary>
+        /// <param name="strElements">Comma-separated element names, like "Fire, Water".</param>
+        /// <param name="strLanguage">Language to translate into.</param>
+        /// <returns>The translated elements, or an empty string if there are none.</returns>
+        public static string TranslateElements(string strElements, string strLanguage = "")
+        {
+            if (string.IsNullOrWhiteSpace(strElements))
+                return string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdElements))
+            {
+                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                foreach (string strElement in strElements.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (sbdElements.Length > 0)
+                        sbdElements.Append(',', strSpace);
+                    sbdElements.Append(LanguageManager.GetString("String_Element_" + strElement.Trim(), strLanguage));
+                }
+
+                return sbdElements.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Translate a comma-separated list of spell elements, as found in the spells data file.
+        /// </summary>
+        /// <param name="strElements">Comma-separated element names, like "Fire, Water".</param>
+        /// <param name="strLanguage">Language to translate into.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The translated elements, or an empty string if there are none.</returns>
+        public static async Task<string> TranslateElementsAsync(string strElements, string strLanguage = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strElements))
+                return string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdElements))
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                                                       .ConfigureAwait(false);
+                foreach (string strElement in strElements.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (sbdElements.Length > 0)
+                        sbdElements.Append(',', strSpace);
+                    sbdElements.Append(await LanguageManager
+                                             .GetStringAsync("String_Element_" + strElement.Trim(), strLanguage, token: token)
+                                             .ConfigureAwait(false));
+                }
+
+                return sbdElements.ToString();
             }
         }
 

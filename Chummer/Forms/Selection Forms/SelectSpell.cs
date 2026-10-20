@@ -876,6 +876,17 @@ namespace Chummer
                     break;
             }
 
+            string strElements = await Spell.TranslateElementsAsync(
+                xmlSpell.SelectSingleNodeAndCacheExpression("elements", token)?.Value, GlobalSettings.Language,
+                token).ConfigureAwait(false);
+            bool blnHasElements = !string.IsNullOrEmpty(strElements);
+            await lblElementsLabel.DoThreadSafeAsync(x => x.Visible = blnHasElements, token: token).ConfigureAwait(false);
+            await lblElements.DoThreadSafeAsync(x =>
+            {
+                x.Text = strElements;
+                x.Visible = blnHasElements;
+            }, token: token).ConfigureAwait(false);
+
             string strDv = xmlSpell.SelectSingleNodeAndCacheExpression("dv", token)?.Value.Replace('/', '÷').Replace('*', '×') ?? string.Empty;
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
