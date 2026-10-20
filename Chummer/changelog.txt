@@ -21,6 +21,7 @@ Application:
 - Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier. Optional `category` attribute restricts the bonus to drugs with that category (`Custom Drugs`, `Drugs`, `BTLs`, etc.; `All` for every category). Narco uses `Custom Drugs` and `Drugs`.
 - Premade catalog drugs (including Chrome Flesh BTLs) can be added from the Drugs tab via Add Drug. Catalog effects live in `drugs.xml` as `<bonus>` nodes (same vocabulary as gear, with a compile step for drug-specific `<attribute>`/`<limit>`). Create Custom Drug is for Foundation/Block/Enhancer recipes only. Closes #5148.
 - Split premade drug catalog and grades into `drugs.xml`; `drugcomponents.xml` now holds only custom-drug design components.
+- Added clickable sourcebook and page references to drug Info panels in character creation and career mode.
 - Adding a catalog or custom drug creates its improvement group immediately (disabled). Enable the group on the Improvements tab to take the dose.
 - Fixed enabling custom drug improvements that use UniqueName (e.g. Cram's Initiative Dice) incorrectly caching a non-zero ValueOf with an empty used-improvements list.
 - Black Market Pipeline on drugs applies the 10% price discount (`DiscountCost`) instead of marking the dose Stolen. Stolen Gear remains a separate checkbox.
