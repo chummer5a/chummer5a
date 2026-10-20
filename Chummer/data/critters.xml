@@ -29917,6 +29917,791 @@
       <!-- End Region Street Grimoire -->
       <!-- Region Parazoology -->
       <metatype>
+         <id>6ab768cc-fe8c-5be5-9fac-fb4149cab444</id>
+         <name>Abrams Lobster (Parazoology)</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>5</strmin>
+         <strmax>5</strmax>
+         <straug>5</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/1/0</walk>
+         <run>0/2/0</run>
+         <sprint>0/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Sonar">Enhanced Senses</power>
+            <power select="Toxins">Immunity</power>
+            <power>Gills</power>
+            <power select="Claws: DV 6P, AP -1">Natural Weapon</power>
+            <power>Gestalt Consciousness</power>
+            <power rating="6">Hardened Armor</power>
+         </powers>
+         <skills>
+            <skill rating="5">Swimming</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>3</page>
+      </metatype>
+      <metatype>
+         <id>4d7d75e9-85be-482e-920e-74ae64474034</id>
+         <name>Alicanto</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/3</walk>
+         <run>0/0/8</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Magic Sense</power>
+            <power select="Bite/Claws: DV 4P, AP 0">Natural Weapon</power>
+            <power>Confusion</power>
+            <power select="Gold, Silver">Dietary Requirement</power>
+         </powers>
+         <skills>
+            <skill rating="5">Flight</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>4</page>
+      </metatype>
+      <metatype>
+         <id>a0d5dd28-a2a5-59a4-8218-4a2e98489949</id>
+         <name>Talis Cat (Cheetah)</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>5</bodmin>
+         <bodmax>5</bodmax>
+         <bodaug>5</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>10/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Aura Masking</power>
+            <power select="Self">Movement</power>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power select="Claws/Bite: DV 5P, AP 0, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="3">Gymnastics</skill>
+            <skill rating="7">Running</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>6</page>
+      </metatype>
+      <metatype>
+         <id>35437a5a-9b72-5a28-a280-f335deb03747</id>
+         <name>Talis Cat (House Cat)</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>5</bodmin>
+         <bodmax>5</bodmax>
+         <bodaug>5</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Aura Masking</power>
+            <power select="Self">Movement</power>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power>Desire Reflection</power>
+         </powers>
+         <skills>
+            <skill rating="3">Gymnastics</skill>
+            <skill rating="7">Running</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>6</page>
+      </metatype>
+      <metatype>
+         <id>0bb14cd8-7e0c-5b36-bb98-2fe3544417e9</id>
+         <name>Ammit</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>7</bodmin>
+         <bodmax>7</bodmax>
+         <bodaug>7</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>7</strmin>
+         <strmax>7</strmax>
+         <straug>7</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Adaptive Camouflage</power>
+            <power select="Smell">Enhanced Senses</power>
+            <power select="Bite: DV 9P, AP -2">Natural Weapon</power>
+            <power rating="4">Hardened Armor</power>
+         </powers>
+         <skills>
+            <skill rating="9">Sneaking</skill>
+            <skill rating="5">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>7</page>
+      </metatype>
+      <metatype>
+         <id>9fabe323-cfa2-536a-872d-40549d094816</id>
+         <name>Bahari</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>4</wilmin>
+         <wilmax>4</wilmax>
+         <wilaug>4</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/3/0</walk>
+         <run>0/8/0</run>
+         <sprint>0/4/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Aura Masking</power>
+            <power>Dual Natured</power>
+            <power select="Bite/Claws: DV 9P, AP 0, Reach 0">Natural Weapon</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power>Compulsion</power>
+         </powers>
+         <skills>
+            <skill rating="7">Gymnastics</skill>
+            <skill rating="7">Swimming</skill>
+            <skill rating="5">Spellcasting</skill>
+            <skill rating="3">Diving</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>8</page>
+      </metatype>
+      <metatype>
+         <id>79d9abad-ea07-4391-88b5-ef8aa422d2ec</id>
+         <name>Bayard</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>9</bodmin>
+         <bodmax>9</bodmax>
+         <bodaug>9</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>3/1/0</walk>
+         <run>10/0/0</run>
+         <sprint>6/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Movement</power>
+            <power>Empathy</power>
+            <power>Noxious Breath</power>
+            <power select="Kick: DV 4P, AP 0">Natural Weapon</power>
+            <power select="Adults only">Mist Form</power>
+            <power select="Stallions only">Sonic Projection</power>
+            <power select="Equines">Animal Control</power>
+         </powers>
+         <skills>
+            <skill rating="7">Running</skill>
+            <skill rating="3">Unarmed Combat</skill>
+         </skills>
+         <source>PZG</source>
+         <page>9</page>
+      </metatype>
+      <metatype>
+         <id>df7bf0b2-38b8-4a6e-ac1c-adadf4855f8f</id>
+         <name>Blood Kite</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/3</walk>
+         <run>0/0/6</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Enhanced Vision">Enhanced Senses</power>
+            <power select="Thermographic Vision">Enhanced Senses</power>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power select="Bite/Claws: DV 3P, AP 0">Natural Weapon</power>
+            <power select="[Sense] Removal">Innate Spell</power>
+         </powers>
+         <skills>
+            <skill rating="5">Flight</skill>
+            <skill rating="5">Spellcasting</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>10</page>
+      </metatype>
+      <metatype>
+         <id>4ba1b3a9-b55c-5cdc-a839-1dd7b358f078</id>
+         <name>Bombardier</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Smell">Enhanced Senses</power>
+            <power>Psychokinesis</power>
+         </powers>
+         <skills>
+            <skill rating="9">Gymnastics</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>11</page>
+      </metatype>
+      <metatype>
+         <id>29e7e5f2-2b91-5a07-8b6a-3c03bf897070</id>
+         <name>Brucha</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>5</strmin>
+         <strmax>5</strmax>
+         <straug>5</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Smell">Enhanced Senses</power>
+            <power select="Bite/Spines: DV 5P, AP -1, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="1">Running</skill>
+            <skill rating="5">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>14</page>
+      </metatype>
+      <metatype>
+         <id>cb44259a-8557-4314-b7a8-88dda13657ad</id>
+         <name>Bulldog Stoat</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>2</agimin>
+         <agimax>2</agimax>
+         <agiaug>2</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>4</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>3/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Pathogens">Immunity</power>
+            <power select="Toxins">Immunity</power>
+            <power>Magical Guard</power>
+            <power select="Bite: DV 3P, AP 0, Reach -1">Natural Weapon</power>
+            <power>Gestalt Consciousness</power>
+            <power select="Self">Concealment</power>
+            <power rating="1">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>15</page>
+      </metatype>
+      <metatype>
          <id>c32a14ad-5065-4456-899e-32bc86381429</id>
          <name>Bunyip</name>
          <category>Paranormal Critters</category>
@@ -29994,6 +30779,1722 @@
          <page>16</page>
       </metatype>
       <metatype>
+         <id>bd9a1f56-c787-5885-a15f-6e7a568cfe8b</id>
+         <name>Cuero</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>5</bodmin>
+         <bodmax>5</bodmax>
+         <bodaug>5</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/2/0</walk>
+         <run>0/6/0</run>
+         <sprint>0/2/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Adaptive Coloration</power>
+            <power>Gills</power>
+            <power select="Bite: DV 8P, AP -1, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="5">Escape Artist</skill>
+            <skill rating="9">Sneaking</skill>
+            <skill rating="5">Swimming</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>17</page>
+      </metatype>
+      <metatype>
+         <id>17dd1e2c-1ec0-421d-8c03-3c7f60583811</id>
+         <name>Electric Marten</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>2</agimin>
+         <agimax>2</agimax>
+         <agiaug>2</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>4</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>3/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Electrosense">Enhanced Senses</power>
+            <power select="Radar">Enhanced Senses</power>
+            <power select="Bite: DV 3P, AP 0, Reach -1">Natural Weapon</power>
+            <power select="Lightning Bolt">Innate Spell</power>
+            <power select="Interference">Innate Spell</power>
+         </powers>
+         <skills>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="7">Spellcasting</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>19</page>
+      </metatype>
+      <metatype>
+         <id>452b1781-be57-4aa5-b4ec-74c8c5e0a9e4</id>
+         <name>Rock Lizard</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Smell">Enhanced Senses</power>
+            <power>Venom</power>
+            <power select="Toxins">Immunity</power>
+            <power select="Bite/Claws: DV 4P, AP 0">Natural Weapon</power>
+            <power>Regeneration</power>
+            <power select="Cold">Vulnerability</power>
+         </powers>
+         <skills>
+            <skill rating="3" spec="Tongue">Exotic Ranged Weapon</skill>
+            <skill rating="9">Sneaking</skill>
+            <skill rating="5">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>20</page>
+      </metatype>
+      <metatype>
+         <id>9216a805-61a7-5693-8eab-924212060f3f</id>
+         <name>Fiji Mermaid</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>7</reamin>
+         <reamax>7</reamax>
+         <reaaug>7</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>11</inimin>
+         <inimax>11</inimax>
+         <iniaug>11</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/3/0</walk>
+         <run>0/8/0</run>
+         <sprint>0/4/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Hearing">Enhanced Senses</power>
+            <power select="Claws: DV 4P, AP 0, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="9">Swimming</skill>
+            <skill rating="5">Tracking</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>21</page>
+      </metatype>
+      <metatype>
+         <id>01e11702-6f4f-5a86-96dd-42b055b13e10</id>
+         <name>Aerial Lionhead</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>5</strmin>
+         <strmax>5</strmax>
+         <straug>5</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/1</walk>
+         <run>0/0/2</run>
+         <sprint>0/0/1</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Electricity">Energy Aura</power>
+            <power select="Electrical">Energy Drain</power>
+            <power select="Electrosense">Enhanced Senses</power>
+            <power select="Electricity">Immunity</power>
+            <power select="Cold">Immunity</power>
+            <power select="Tentacles: DV 5P, AP 0, Reach 5">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="3">Flight</skill>
+            <skill rating="7">Unarmed Combat</skill>
+         </skills>
+         <source>PZG</source>
+         <page>22</page>
+      </metatype>
+      <metatype>
+         <id>073daa03-aa25-419b-af74-81621c17baad</id>
+         <name>Scintillant Albatross</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>3</strmin>
+         <strmax>3</strmax>
+         <straug>3</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/3</walk>
+         <run>0/0/6</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Fire">Energy Aura</power>
+            <power select="Seabirds">Animal Control</power>
+            <power select="Fish">Dietary Requirement</power>
+         </powers>
+         <skills>
+            <skill rating="7">Flight</skill>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>23</page>
+      </metatype>
+      <metatype>
+         <id>d9d76ec3-eb89-414f-867f-1ea1d0774cc5</id>
+         <name>Ghost Dolphin</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>4</wilmin>
+         <wilmax>4</wilmax>
+         <wilaug>4</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/3/0</walk>
+         <run>0/8/0</run>
+         <sprint>0/4/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Sonar">Enhanced Senses</power>
+            <power select="Mist">Innate Spell</power>
+            <power>Mist Form</power>
+            <power>Search</power>
+            <power>Accident</power>
+         </powers>
+         <skills>
+            <skill rating="7">Gymnastics</skill>
+            <skill rating="7">Swimming</skill>
+            <skill rating="7">Spellcasting</skill>
+            <skill rating="3">Diving</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>24</page>
+      </metatype>
+      <metatype>
+         <id>1730e3dc-8f3e-4d79-9f85-6669dd1bc909</id>
+         <name>Ghazu Horse</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>6</agimin>
+         <agimax>6</agimax>
+         <agiaug>6</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>3/1/0</walk>
+         <run>10/0/0</run>
+         <sprint>6/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Self">Movement</power>
+            <power>Dual Natured</power>
+            <power>Empathy</power>
+            <power>Magic Sense</power>
+            <power>Magical Guard</power>
+            <power select="Kick: DV 8P, AP 0">Natural Weapon</power>
+            <power>Guard</power>
+         </powers>
+         <skills>
+            <skill rating="7">Running</skill>
+            <skill rating="7">Unarmed Combat</skill>
+         </skills>
+         <source>PZG</source>
+         <page>25</page>
+      </metatype>
+      <metatype>
+         <id>f3e8ab81-4c1e-46b7-a77b-fecc1d96229d</id>
+         <name>Burrowing Beaver</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>3/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Pervasion</power>
+            <power select="Echolocation">Enhanced Senses</power>
+            <power select="Thermosense">Enhanced Senses</power>
+            <power select="Bite: DV 3P, AP 0, Reach -1">Natural Weapon</power>
+            <power select="Shatter">Innate Spell</power>
+            <power select="Earth">Engulf</power>
+         </powers>
+         <skills>
+            <skill rating="3">Swimming</skill>
+            <skill rating="3">Spellcasting</skill>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>26</page>
+      </metatype>
+      <metatype>
+         <id>8da386e9-0551-507c-9aa8-eeaf4dafb6da</id>
+         <name>Greater Dancing White Lady</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Self">Movement</power>
+            <power select="Vibration Sense">Enhanced Senses</power>
+            <power>Venom</power>
+            <power>Paralyzing Touch</power>
+            <power rating="2">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="1">Gymnastics</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="9">Swimming</skill>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>28</page>
+      </metatype>
+      <metatype>
+         <id>d99e571d-0b63-5432-b2a1-32c530cd98cf</id>
+         <name>Pit Badger</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>3</strmin>
+         <strmax>3</strmax>
+         <straug>3</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>3</edgmin>
+         <edgmax>3</edgmax>
+         <edgaug>3</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power select="Smell, Low-Light Vision">Enhanced Senses</power>
+            <power select="Toxins">Immunity</power>
+            <power select="Claws/Bite: DV 4P, AP 0, Reach 0">Natural Weapon</power>
+            <power>Accident</power>
+            <power>Concealment</power>
+         </powers>
+         <skills>
+            <skill rating="5">Gymnastics</skill>
+            <skill rating="5">Sneaking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="7">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>29</page>
+      </metatype>
+      <metatype>
+         <id>965c9634-afbf-4f6f-a25b-71bc105c597f</id>
+         <name>Century Ferret</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>2</agimin>
+         <agimax>2</agimax>
+         <agiaug>2</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>4</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>3/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Magic Sense</power>
+         </powers>
+         <skills>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>30</page>
+      </metatype>
+      <metatype>
+         <id>1788b02a-5f85-5863-8a93-01532029c083</id>
+         <name>Karkadann</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>12</bodmin>
+         <bodmax>12</bodmax>
+         <bodaug>12</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>16</strmin>
+         <strmax>16</strmax>
+         <straug>16</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>3/1/0</walk>
+         <run>8/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Magical Guard</power>
+            <power select="Horn: DV 16P, AP -2, Reach 0">Natural Weapon</power>
+            <power rating="6">Armor</power>
+         </powers>
+         <skills>
+            <skill rating="7">Counterspelling</skill>
+            <skill rating="3">Running</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>31</page>
+      </metatype>
+      <metatype>
+         <id>91ad7f23-fe96-59e8-8806-e6b470791d82</id>
+         <name>Kludde (Dog)</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>8/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Desire Reflection</power>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power>Magic Sense</power>
+            <power select="Self">Magical Guard</power>
+            <power select="[Sense] Removal">Innate Spell</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power>Psychokinesis</power>
+            <power select="Sunlight, Mild">Allergy</power>
+            <power select="Smell">Enhanced Senses</power>
+            <power>Fear</power>
+            <power select="Bite: DV 5P, AP 0, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="5">Counterspelling</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>32</page>
+      </metatype>
+      <metatype>
+         <id>d6e65cb7-1b8d-5bd9-a235-b557a32fe45d</id>
+         <name>Kludde (Raven)</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/2</walk>
+         <run>0/0/4</run>
+         <sprint>0/0/2</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Desire Reflection</power>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power>Magic Sense</power>
+            <power select="Self">Magical Guard</power>
+            <power select="[Sense] Removal">Innate Spell</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power>Psychokinesis</power>
+            <power select="Sunlight, Mild">Allergy</power>
+            <power select="Auditory">Hypnosis</power>
+         </powers>
+         <skills>
+            <skill rating="5">Counterspelling</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+            <skill rating="7">Flight</skill>
+         </skills>
+         <source>PZG</source>
+         <page>32</page>
+      </metatype>
+      <metatype>
+         <id>dfc2e674-4b9a-5f86-864e-6e343b597166</id>
+         <name>Kludde (Cat)</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>3/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Desire Reflection</power>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power>Magic Sense</power>
+            <power select="Self">Magical Guard</power>
+            <power select="[Sense] Removal">Innate Spell</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power>Psychokinesis</power>
+            <power select="Sunlight, Mild">Allergy</power>
+         </powers>
+         <skills>
+            <skill rating="5">Counterspelling</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+            <skill rating="3">Gymnastics</skill>
+         </skills>
+         <source>PZG</source>
+         <page>32</page>
+      </metatype>
+      <metatype>
+         <id>92f2f075-b906-4af2-98cc-0a8a6c0ae22c</id>
+         <name>Gyre</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/3</walk>
+         <run>0/0/6</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power select="Pathogens">Immunity</power>
+            <power select="Toxins">Immunity</power>
+            <power select="Bite/Claws: DV 3P, AP 0">Natural Weapon</power>
+            <power select="Control Emotions">Innate Spell</power>
+            <power select="Detect Life">Innate Spell</power>
+            <power select="Pollutants, Severe">Allergy</power>
+         </powers>
+         <skills>
+            <skill rating="5">Flight</skill>
+            <skill rating="5">Spellcasting</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>33</page>
+      </metatype>
+      <metatype>
+         <id>bb47b69e-44e8-5c70-85dc-f88444cf6800</id>
+         <name>Madagascar Jelly</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>0</logmin>
+         <logmax>0</logmax>
+         <logaug>0</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <reach>4</reach>
+         </bonus>
+         <powers>
+            <power select="Motion Sense">Enhanced Senses</power>
+            <power>Paralyzing Touch</power>
+            <power>Regeneration</power>
+            <power select="Self">Concealment</power>
+            <power>Engulf</power>
+         </powers>
+         <skills>
+            <skill rating="7">Sneaking</skill>
+            <skill rating="1">Swimming</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>34</page>
+      </metatype>
+      <metatype>
+         <id>7568ddf7-d82a-5814-a729-5e2d385ef424</id>
+         <name>Minhocão</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>3</bodmin>
+         <bodmax>3</bodmax>
+         <bodaug>3</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Corrosive Spit</power>
+            <power select="Toxins">Immunity</power>
+            <power select="Shape [Material]">Innate Spell</power>
+            <power select="Clean [Element]">Innate Spell</power>
+            <power rating="8">Armor</power>
+         </powers>
+         <skills>
+            <skill rating="7" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
+            <skill rating="5">Spellcasting</skill>
+            <skill rating="5">Unarmed Combat</skill>
+         </skills>
+         <source>PZG</source>
+         <page>36</page>
+      </metatype>
+      <metatype>
+         <id>1ecc7163-2c3e-5f4e-9c5f-e7cf83244009</id>
+         <name>Mini Mokele-Mbembe</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>1</intmin>
+         <intmax>1</intmax>
+         <intaug>1</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>3</inimin>
+         <inimax>3</inimax>
+         <iniaug>3</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power>Wall Walking</power>
+            <power rating="2">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>37</page>
+      </metatype>
+      <metatype>
+         <id>f2541440-ad0f-4c75-9563-69cfd75a3a8f</id>
+         <name>Moon Dolphin</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>4</wilmin>
+         <wilmax>4</wilmax>
+         <wilaug>4</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/3/0</walk>
+         <run>0/8/0</run>
+         <sprint>0/4/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Astral Form</power>
+            <power>Fey Glamour</power>
+            <power select="Sonar">Enhanced Senses</power>
+         </powers>
+         <skills>
+            <skill rating="7">Gymnastics</skill>
+            <skill rating="7">Swimming</skill>
+            <skill rating="3">Diving</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>38</page>
+      </metatype>
+      <metatype>
+         <id>d44e33c2-4448-5380-b8f5-19b31affef7a</id>
+         <name>Parrot Fox</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>2</agimin>
+         <agimax>2</agimax>
+         <agiaug>2</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <reach>-1</reach>
+         </bonus>
+         <powers>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power>Mimicry</power>
+            <power select="Bite: DV 3P, AP 0, Reach -1">Natural Weapon</power>
+            <power rating="1">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>39</page>
+      </metatype>
+      <metatype>
+         <id>edd437ef-efa9-5614-b3eb-d83f42008d7a</id>
+         <name>Hoofoe</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/2</walk>
+         <run>0/0/4</run>
+         <sprint>0/0/2</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <reach>-1</reach>
+         </bonus>
+         <powers>
+            <power select="Hearing">Enhanced Senses</power>
+            <power>Mimicry</power>
+            <power rating="2">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="7">Flight</skill>
+            <skill rating="7">Sneaking</skill>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>40</page>
+      </metatype>
+      <metatype>
+         <id>e6e24563-36d7-5ca8-a949-f9b491bd1258</id>
+         <name>Giant Boar</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>7</bodmin>
+         <bodmax>7</bodmax>
+         <bodaug>7</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>9</strmin>
+         <strmax>9</strmax>
+         <straug>9</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Pathogens">Immunity</power>
+            <power select="Toxins">Immunity</power>
+            <power select="Tusks: DV 9P, AP 0, Reach 0">Natural Weapon</power>
+            <power>Regeneration</power>
+         </powers>
+         <skills>
+            <skill rating="3">Running</skill>
+            <skill rating="1">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>41</page>
+      </metatype>
+      <metatype>
          <id>9460d2fb-936a-411b-aa34-0d06969d1f16</id>
          <name>Sabgarifya (Farasi Bahari)</name>
          <category>Paranormal Critters</category>
@@ -30063,6 +32564,1836 @@
          </skills>
          <source>PZG</source>
          <page>42</page>
+      </metatype>
+      <metatype>
+         <id>2eedec07-828b-437a-a3d7-e385407486e3</id>
+         <name>Snow Moose</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>11</bodmin>
+         <bodmax>11</bodmax>
+         <bodaug>11</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>9</strmin>
+         <strmax>9</strmax>
+         <straug>9</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>3</edgmin>
+         <edgmax>3</edgmax>
+         <edgaug>3</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power select="Cold">Immunity</power>
+            <power select="Antlers: DV 9P, AP 0, Reach +1">Natural Weapon</power>
+            <power>Silence</power>
+            <power>Traceless Walk</power>
+         </powers>
+         <skills>
+            <skill rating="5">Running</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>43</page>
+      </metatype>
+      <metatype>
+         <id>92b2db1b-acd3-5484-b199-6c3cb2538ede</id>
+         <name>Jenny Haniver</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/2/0</walk>
+         <run>0/6/0</run>
+         <sprint>0/2/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Gills</power>
+            <power select="Bite: DV 2P, AP 0, Reach -1">Natural Weapon</power>
+            <power rating="1">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="3">Clubs</skill>
+            <skill rating="7">Sneaking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+            <skill rating="1">Throwing Weapons</skill>
+            <group rating="5">Athletics</group>
+         </skills>
+         <source>PZG</source>
+         <page>44</page>
+      </metatype>
+      <metatype>
+         <id>9150afcb-9b62-5d21-82b3-bd7cc8d2f887</id>
+         <name>Shasta Deer</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>4</bodmax>
+         <bodaug>4</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>3</strmin>
+         <strmax>3</strmax>
+         <straug>3</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>6</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>3/1/0</walk>
+         <run>10/0/0</run>
+         <sprint>6/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <optionalpowers count="3">
+               <optionalpower>Empathy</optionalpower>
+               <optionalpower>Magic Sense</optionalpower>
+               <optionalpower select="Detect Enemies">Innate Spell</optionalpower>
+               <optionalpower select="Clout">Innate Spell</optionalpower>
+               <optionalpower>Silence</optionalpower>
+            </optionalpowers>
+         </bonus>
+         <powers>
+            <power>Aura Masking</power>
+            <power>Magical Guard</power>
+            <power select="Antlers: DV 5P, AP 0, Reach 0">Natural Weapon</power>
+            <power>Concealment</power>
+            <power>Vanishing</power>
+         </powers>
+         <skills>
+            <skill rating="7">Counterspelling</skill>
+            <skill rating="7">Running</skill>
+            <skill rating="9">Spellcasting</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>45</page>
+      </metatype>
+      <metatype>
+         <id>216eb365-e7cb-476f-9d0b-79f27f341ab9</id>
+         <name>Stone Toad</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>1</intmin>
+         <intmax>1</intmax>
+         <intaug>1</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>3</inimin>
+         <inimax>3</inimax>
+         <iniaug>3</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Corrosive Secretions</power>
+            <power select="Hallucinogen">Venom</power>
+         </powers>
+         <skills>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>46</page>
+      </metatype>
+      <metatype>
+         <id>4298b872-2405-4afa-9535-310506fd78b2</id>
+         <name>Putrimart</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>2</agimin>
+         <agimax>2</agimax>
+         <agiaug>2</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>4</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>3/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Bite: DV 3P, AP 0, Reach -1">Natural Weapon</power>
+            <power select="Skunk Spray">Secretion/Substance Extrusion</power>
+            <power>Concealment</power>
+         </powers>
+         <skills>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>47</page>
+      </metatype>
+      <metatype>
+         <id>3780aaa3-cb99-548e-88c2-9143d908ae9a</id>
+         <name>Strix</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/2</walk>
+         <run>0/0/6</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power>Venom</power>
+            <power select="Bite/Claws: DV 3P, AP 0, Reach 0">Natural Weapon</power>
+            <power select="[Sense] Removal">Innate Spell</power>
+            <power select="Enabler">Innate Spell</power>
+            <power>Concealment</power>
+            <power select="Blood">Dietary Requirement</power>
+         </powers>
+         <skills>
+            <skill rating="5">Flight</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="7">Spellcasting</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>48</page>
+      </metatype>
+      <metatype>
+         <id>a9ded5d2-237a-518f-8ce2-7557026f3c81</id>
+         <name>Storm Wolf</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>3</strmin>
+         <strmax>3</strmax>
+         <straug>3</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>3</edgmin>
+         <edgmax>3</edgmax>
+         <edgaug>3</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>8/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power select="Claws/Bite: DV 4P, AP 0, Reach 0">Natural Weapon</power>
+            <power>Shadow Cloak</power>
+            <power>Storm</power>
+         </powers>
+         <skills>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>49</page>
+      </metatype>
+      <metatype>
+         <id>25c6fdde-4d11-5fea-bf85-04c7c39577ff</id>
+         <name>Swamp Lizard</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>10</bodmin>
+         <bodmax>10</bodmax>
+         <bodaug>10</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>10</strmin>
+         <strmax>10</strmax>
+         <straug>10</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>4</wilmin>
+         <wilmax>4</wilmax>
+         <wilaug>4</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Smell">Enhanced Senses</power>
+            <power>Venom</power>
+            <power select="Bite: DV 12P, AP -1, Reach +1">Natural Weapon</power>
+            <power rating="2">Hardened Armor</power>
+            <power select="Symbiont">Dietary Requirement</power>
+         </powers>
+         <skills>
+            <skill rating="5">Swimming</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>50</page>
+      </metatype>
+      <metatype>
+         <id>d94d3bdd-953c-5087-a0f2-bd436016cc63</id>
+         <name>Swamp Swallow</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>0</bodmin>
+         <bodmax>0</bodmax>
+         <bodaug>0</bodaug>
+         <agimin>2</agimin>
+         <agimax>2</agimax>
+         <agiaug>2</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>1</intmin>
+         <intmax>1</intmax>
+         <intaug>1</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>3</inimin>
+         <inimax>3</inimax>
+         <iniaug>3</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/2</walk>
+         <run>0/0/8</run>
+         <sprint>0/0/2</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+         </bonus>
+         <powers>
+            <power select="Visual">Hypnosis</power>
+            <power>Gestalt Consciousness</power>
+         </powers>
+         <skills>
+            <skill rating="3">Flight</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>51</page>
+      </metatype>
+      <metatype>
+         <id>132d39c8-d96a-4622-9e19-d96f2faa55ad</id>
+         <name>Tachypus</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>4</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>3/1/0</walk>
+         <run>8/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Movement</power>
+            <power select="Bite/Claws: DV 4P, AP 0">Natural Weapon</power>
+            <power select="Horns: DV 4P, AP -1">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="5">Gymnastics</skill>
+            <skill rating="3">Running</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>54</page>
+      </metatype>
+      <metatype>
+         <id>88af0d05-8878-5a74-ba40-6a69425379e6</id>
+         <name>Tinpuk</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>3</bodmin>
+         <bodmax>3</bodmax>
+         <bodaug>3</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>4</strmin>
+         <strmax>4</strmax>
+         <straug>4</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/2</walk>
+         <run>0/0/4</run>
+         <sprint>0/0/2</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Dual Natured</power>
+            <power select="Bite/Claws: DV 4P, AP -3, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="3">Astral Combat</skill>
+            <skill rating="7">Flight</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="7">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>55</page>
+      </metatype>
+      <metatype>
+         <id>4d5913dd-1e96-5431-bb21-67d1dfb79b48</id>
+         <name>Yale</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Horns: DV 8P, AP 0, Reach +1">Natural Weapon</power>
+            <power select="Tusks: DV 8P, AP 0, Reach 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="3">Running</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>56</page>
+      </metatype>
+      <metatype>
+         <id>443863e4-5982-48c1-9be8-1a170c6e61e0</id>
+         <name>Amikuk</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>9</bodmin>
+         <bodmax>9</bodmax>
+         <bodaug>9</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>6</strmin>
+         <strmax>6</strmax>
+         <straug>6</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>5</wilmin>
+         <wilmax>5</wilmax>
+         <wilaug>5</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>2</magmin>
+         <magmax>2</magmax>
+         <magaug>2</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>0/2/0</walk>
+         <run>0/4/0</run>
+         <sprint>0/2/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Devouring</power>
+            <power select="Bite: DV 6P, AP 0">Natural Weapon</power>
+            <power select="Claws: DV 6P, AP 0, Reach +2">Natural Weapon</power>
+            <power rating="3">Armor</power>
+            <power select="Sunlight, Mild">Allergy</power>
+         </powers>
+         <skills>
+            <skill rating="5">Swimming</skill>
+            <skill rating="3">Diving</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>61</page>
+      </metatype>
+      <metatype>
+         <id>378cba8d-197c-5ceb-ad36-b363becdc078</id>
+         <name>Protean</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>0</bodmin>
+         <bodmax>0</bodmax>
+         <bodaug>0</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Corrosive Secretions</power>
+            <power>Adaptive Coloration</power>
+            <power select="Normal Weapons">Immunity</power>
+            <power select="Shapechange">Innate Spell</power>
+            <power>Engulf</power>
+            <power select="Fire, Water, Alkalis, EM Weapons">Vulnerability</power>
+         </powers>
+         <skills>
+            <skill rating="9">Sneaking</skill>
+            <skill rating="7">Spellcasting</skill>
+            <skill rating="5">Unarmed Combat</skill>
+         </skills>
+         <source>PZG</source>
+         <page>62</page>
+      </metatype>
+      <metatype>
+         <id>4b2e8640-841a-4057-8e8a-58014f313f87</id>
+         <name>Echeneis</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>2</reamin>
+         <reamax>2</reamax>
+         <reaaug>2</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>4</inimin>
+         <inimax>4</inimax>
+         <iniaug>4</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/2/0</walk>
+         <run>0/4/0</run>
+         <sprint>0/2/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Corrosive Spit</power>
+            <power select="Smell">Enhanced Senses</power>
+            <power select="Normal Weapons">Immunity</power>
+            <power>Gills</power>
+            <power select="Bite: DV 4P, AP 0">Natural Weapon</power>
+            <power select="Iron, Fiberglass">Dietary Requirement</power>
+         </powers>
+         <skills>
+            <skill rating="5">Swimming</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>63</page>
+      </metatype>
+      <metatype>
+         <id>9c68b1ad-153a-4b12-a857-4b02cba19d7a</id>
+         <name>Heliodromus</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>6</agimin>
+         <agimax>6</agimax>
+         <agiaug>6</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>8</strmin>
+         <strmax>8</strmax>
+         <straug>8</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>5</intmin>
+         <intmax>5</intmax>
+         <intaug>5</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>4</wilmin>
+         <wilmax>4</wilmax>
+         <wilaug>4</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/0/3</walk>
+         <run>0/0/6</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Smell">Enhanced Senses</power>
+            <power select="Vision Magnification">Enhanced Senses</power>
+            <power>Fear</power>
+            <power select="Claws: DV 12P, AP -1">Natural Weapon</power>
+            <power select="Decaying Flesh">Dietary Requirement</power>
+         </powers>
+         <skills>
+            <skill rating="7">Flight</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="9">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>65</page>
+      </metatype>
+      <metatype>
+         <id>a815deb9-446c-5e9a-875e-094e6e99d0f1</id>
+         <name>Montauk (Parazoology)</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>5</intmin>
+         <intmax>5</intmax>
+         <intaug>5</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/1/0</walk>
+         <run>6/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Hearing, Smell, Low-Light Vision">Enhanced Senses</power>
+            <power select="Vector: Injection, Speed: 1 Combat Turn, Power: 8, Effect: Physical Damage, Malaise">Venom</power>
+            <power>Animal Control</power>
+            <power>Accident</power>
+            <power select="Sunlight, Mild">Allergy</power>
+         </powers>
+         <skills>
+            <skill rating="5">Sneaking</skill>
+            <skill rating="3">Locksmith</skill>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="7">Perception</skill>
+            <group rating="5">Athletics</group>
+         </skills>
+         <source>PZG</source>
+         <page>66</page>
+      </metatype>
+      <metatype>
+         <id>d502abaf-9bd7-490e-8c54-ff08b9c0497b</id>
+         <name>Mongolian Death Worm</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>5</bodmin>
+         <bodmax>5</bodmax>
+         <bodaug>5</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>6</reamin>
+         <reamax>6</reamax>
+         <reaaug>6</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>1</logmin>
+         <logmax>1</logmax>
+         <logaug>1</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>3</magmin>
+         <magmax>3</magmax>
+         <magaug>3</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Corrosive Spit</power>
+            <power select="Seismic Sense">Enhanced Senses</power>
+            <power select="Pathogens">Immunity</power>
+            <power select="Toxins">Immunity</power>
+            <power select="Bite: DV 5P, AP 0">Natural Weapon</power>
+            <power rating="4">Armor</power>
+            <power>Regeneration</power>
+            <power>Taint</power>
+            <power select="Sunlight, Mild">Allergy</power>
+         </powers>
+         <skills>
+            <skill rating="7" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
+            <skill rating="5">Unarmed Combat</skill>
+         </skills>
+         <source>PZG</source>
+         <page>67</page>
+      </metatype>
+      <metatype>
+         <id>96196b25-470e-4789-81af-59a6325f30db</id>
+         <name>Sea Wolf</name>
+         <category>Toxic Critters</category>
+         <karma>0</karma>
+         <bodmin>10</bodmin>
+         <bodmax>10</bodmax>
+         <bodaug>10</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>11</strmin>
+         <strmax>11</strmax>
+         <straug>11</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>4</wilmin>
+         <wilmax>4</wilmax>
+         <wilaug>4</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>4</magmin>
+         <magmax>4</magmax>
+         <magaug>4</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>6</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>0/3/0</walk>
+         <run>0/8/0</run>
+         <sprint>0/4/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power>Movement</power>
+            <power>Binding</power>
+            <power select="Cold">Energy Aura</power>
+            <power select="Hearing">Enhanced Senses</power>
+            <power select="Smell">Enhanced Senses</power>
+            <power select="Sonar">Enhanced Senses</power>
+            <power select="Howl">Fear</power>
+            <power>Mutagen</power>
+            <power select="Bite: DV 11P, AP 0">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="7">Gymnastics</skill>
+            <skill rating="7">Swimming</skill>
+            <skill rating="5">Tracking</skill>
+            <skill rating="3">Diving</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>68</page>
+      </metatype>
+      <metatype>
+         <id>33eafc85-86f0-5dc6-8b6c-cee6d1a69e4e</id>
+         <name>Angeleno Cockroach</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>1</agimin>
+         <agimax>1</agimax>
+         <agiaug>1</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>0</strmin>
+         <strmax>0</strmax>
+         <straug>0</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>2</intmin>
+         <intmax>2</intmax>
+         <intaug>2</intaug>
+         <logmin>0</logmin>
+         <logmax>0</logmax>
+         <logaug>0</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <reach>-1</reach>
+         </bonus>
+         <powers>
+            <power>Gestalt Consciousness</power>
+            <power>Wall Walking</power>
+            <power rating="2">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="5">Gymnastics</skill>
+            <skill rating="5">Sneaking</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>69</page>
+      </metatype>
+      <metatype>
+         <id>c6815a46-d825-4707-a16a-38d9c126335f</id>
+         <name>Cactus Cat</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>3</bodmin>
+         <bodmax>3</bodmax>
+         <bodaug>3</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>4</reamin>
+         <reamax>4</reamax>
+         <reaaug>4</reaaug>
+         <strmin>3</strmin>
+         <strmax>3</strmax>
+         <straug>3</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>1</intmin>
+         <intmax>1</intmax>
+         <intaug>1</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>5</inimin>
+         <inimax>5</inimax>
+         <iniaug>5</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>3</essmin>
+         <essmax>3</essmax>
+         <essaug>3</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <qualities>
+            <positive>
+               <quality>High Pain Tolerance</quality>
+            </positive>
+         </qualities>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Claws/Bite: DV 6P, AP 0">Natural Weapon</power>
+            <power select="Spines: DV 4P, AP +1">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="3">Gymnastics</skill>
+            <skill rating="3" spec="Spines">Exotic Melee Weapon</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>70</page>
+      </metatype>
+      <metatype>
+         <id>92441b47-2ddf-59f8-ad95-26558f098c77</id>
+         <name>Mall Hawk</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>2</bodmin>
+         <bodmax>2</bodmax>
+         <bodaug>2</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>5</reamin>
+         <reamax>5</reamax>
+         <reaaug>5</reaaug>
+         <strmin>2</strmin>
+         <strmax>2</strmax>
+         <straug>2</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>4</intmin>
+         <intmax>4</intmax>
+         <intaug>4</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>1</wilmin>
+         <wilmax>1</wilmax>
+         <wilaug>1</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>3</essmin>
+         <essmax>3</essmax>
+         <essaug>3</essaug>
+         <walk>0/0/3</walk>
+         <run>0/0/8</run>
+         <sprint>0/0/4</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Low-Light Vision">Enhanced Senses</power>
+            <power select="Bite/Claws: DV 6P, AP 0">Natural Weapon</power>
+            <power rating="1">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="5">Flight</skill>
+            <skill rating="3">Tracking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>71</page>
+      </metatype>
+      <metatype>
+         <id>40d1d78b-985e-4bc0-bcf1-2d7083a4e67c</id>
+         <name>Vorpal Beaver</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Tail/Claws: DV 4P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV 4P, AP -1, Reach -1">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="5" spec="Tail">Exotic Melee Weapon</skill>
+            <skill rating="3">Swimming</skill>
+            <skill rating="5">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>72</page>
+      </metatype>
+      <metatype>
+         <id>6a18d97e-4d31-4fd1-889a-81dbae966323</id>
+         <name>Shadow Crab</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>1/1/0</walk>
+         <run>2/0/0</run>
+         <sprint>1/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Tetrodotoxin">Venom</power>
+            <power select="Claws: DV 5P, AP 0">Natural Weapon</power>
+            <power select="Petroleum">Dietary Requirement</power>
+            <power rating="2">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="3">Swimming</skill>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>73</page>
+      </metatype>
+      <metatype>
+         <id>ee0ba870-2cea-48d6-b65a-ffb2c6a84922</id>
+         <name>Squiddoth</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>12</bodmin>
+         <bodmax>12</bodmax>
+         <bodaug>12</bodaug>
+         <agimin>4</agimin>
+         <agimax>4</agimax>
+         <agiaug>4</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>16</strmin>
+         <strmax>16</strmax>
+         <straug>16</straug>
+         <chamin>1</chamin>
+         <chamax>1</chamax>
+         <chaaug>1</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>3</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Tusks: DV 20P, AP -2, Reach +2">Natural Weapon</power>
+            <power select="Bite: DV 18P, AP -1">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="5">Clubs</skill>
+            <skill rating="5">Running</skill>
+            <skill rating="7">Unarmed Combat</skill>
+            <skill rating="5">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>74</page>
+      </metatype>
+      <metatype>
+         <id>36fcce78-3cf3-441b-9fd4-d2c401cb6b96</id>
+         <name>Jackalope</name>
+         <category>Mutant Critters</category>
+         <karma>0</karma>
+         <bodmin>1</bodmin>
+         <bodmax>1</bodmax>
+         <bodaug>1</bodaug>
+         <agimin>3</agimin>
+         <agimax>3</agimax>
+         <agiaug>3</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>1</strmin>
+         <strmax>1</strmax>
+         <straug>1</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>2</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>6</inimin>
+         <inimax>6</inimax>
+         <iniaug>6</iniaug>
+         <edgmin>0</edgmin>
+         <edgmax>0</edgmax>
+         <edgaug>0</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>5</essmin>
+         <essmax>5</essmax>
+         <essaug>5</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>4/1/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Antlers: DV 3P, AP 0, Reach -1">Natural Weapon</power>
+            <power rating="2">Fragile</power>
+         </powers>
+         <skills>
+            <skill rating="1">Unarmed Combat</skill>
+            <skill rating="3">Perception</skill>
+         </skills>
+         <source>PZG</source>
+         <page>75</page>
       </metatype>
       <!-- End Region Parazoology -->
    </metatypes>

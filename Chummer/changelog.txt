@@ -47,6 +47,8 @@ Application:
 - Fixed an issue where certain languages that did not use Latin space characters for their spaces could not properly deal with PDF-related code.
 
 Critters:
+- Added 58 Parazoologie 2075 (PZG) critters, including alternate forms and book-specific profiles.
+- Added the Adaptive Camouflage, Pervasion, Hypnosis, and Taint critter powers from PZG.
 - Added the Ghost Hound (and its Astral Perception variant), Kokopelli, Chalcis (Great Hunter), Wild Hunt Hunter, Wild Hunt Hound, Woog, Engkanto, Chiron, Jabberwock, Lamia, Nibiinaabe, Manananggal (Whole, Torso, and Legs), Bunyip, and Sabgarifya (Farasi Bahari) critters.
 - Corrected the attributes, skills, powers, qualities, natural weapons, and page references of many existing critters to match their books.
 - Added the Agony, Corrosive Secretions, Sacrifice, and Secretion/Substance Extrusion (Silk/Webbing) critter powers, and the Coroutine, Freenet, Gatekeeper, Grep, Mangler, and Overdrive sprite powers from Kill Code.
