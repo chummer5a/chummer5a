@@ -876,10 +876,11 @@ namespace Chummer
                     break;
             }
 
-            string strElements = await Spell.TranslateElementsAsync(
-                xmlSpell.SelectSingleNodeAndCacheExpression("elements", token)?.Value, GlobalSettings.Language,
-                token).ConfigureAwait(false);
-            bool blnHasElements = !string.IsNullOrEmpty(strElements);
+            string strRawElements = xmlSpell.SelectSingleNodeAndCacheExpression("elements", token)?.Value;
+            bool blnHasElements = !string.IsNullOrWhiteSpace(strRawElements);
+            string strElements = blnHasElements
+                ? await Spell.TranslateElementsAsync(strRawElements, GlobalSettings.Language, token).ConfigureAwait(false)
+                : string.Empty;
             await lblElementsLabel.DoThreadSafeAsync(x => x.Visible = blnHasElements, token: token).ConfigureAwait(false);
             await lblElements.DoThreadSafeAsync(x =>
             {
