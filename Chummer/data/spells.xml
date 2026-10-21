@@ -39,6 +39,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Acid</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -52,6 +53,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Acid</elements>
       <descriptor>Indirect, Elemental, Area</descriptor>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -143,6 +145,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -156,6 +159,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire</elements>
       <descriptor>Indirect, Elemental, Area</descriptor>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -169,6 +173,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Electricity</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -182,6 +187,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Electricity</elements>
       <descriptor>Indirect, Elemental, Area</descriptor>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1054,6 +1060,7 @@
       <source>SR5</source>
       <category>Manipulation</category>
       <damage>0</damage>
+      <elements>Fire</elements>
       <descriptor>Physical</descriptor>
       <duration>P</duration>
       <dv>F-1</dv>
@@ -1333,6 +1340,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Acid</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-5</dv>
@@ -1349,6 +1357,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Acid</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -1365,6 +1374,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Acid</elements>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1429,6 +1439,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire, Water</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-2</dv>
@@ -1442,6 +1453,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire, Water</elements>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F</dv>
@@ -1471,6 +1483,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Cold</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -1484,6 +1497,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Cold</elements>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F+1</dv>
@@ -1593,6 +1607,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Radiation</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -1609,6 +1624,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Radiation</elements>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -1625,6 +1641,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Pollutant</elements>
       <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
@@ -1641,6 +1658,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Pollutant</elements>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-1</dv>
@@ -3866,6 +3884,7 @@
       <source>SSP</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire</elements>
       <descriptor>Direct, Elemental</descriptor>
       <duration>S</duration>
       <dv>F+1</dv>
@@ -4314,6 +4333,7 @@
       <source>SSP</source>
       <category>Manipulation</category>
       <damage>0</damage>
+      <elements>Fire, Water</elements>
       <descriptor>Physical, Environmental</descriptor>
       <duration>S</duration>
       <dv>F</dv>
@@ -4715,6 +4735,7 @@
       <source>FA</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire, Acid</elements>
       <descriptor>Indirect, Area, Elemental</descriptor>
       <duration>I</duration>
       <dv>F</dv>
@@ -4821,6 +4842,7 @@
       <source>FA</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire</elements>
       <descriptor>Blood, Direct, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-2</dv>
@@ -4878,6 +4900,7 @@
       <source>FA</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Acid</elements>
       <descriptor>Blood, Direct, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-4</dv>
@@ -4916,6 +4939,7 @@
       <source>FA</source>
       <category>Combat</category>
       <damage>P</damage>
+      <elements>Fire</elements>
       <descriptor>Blood, Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-4</dv>

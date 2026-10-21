@@ -5626,6 +5626,38 @@
       <text>Injection</text>
     </string>
     <string>
+      <key>Label_Elements</key>
+      <text>Elements:</text>
+    </string>
+    <string>
+      <key>String_Element_Acid</key>
+      <text>Acid</text>
+    </string>
+    <string>
+      <key>String_Element_Cold</key>
+      <text>Cold</text>
+    </string>
+    <string>
+      <key>String_Element_Electricity</key>
+      <text>Electricity</text>
+    </string>
+    <string>
+      <key>String_Element_Fire</key>
+      <text>Fire</text>
+    </string>
+    <string>
+      <key>String_Element_Pollutant</key>
+      <text>Pollutant</text>
+    </string>
+    <string>
+      <key>String_Element_Radiation</key>
+      <text>Radiation</text>
+    </string>
+    <string>
+      <key>String_Element_Water</key>
+      <text>Water</text>
+    </string>
+    <string>
       <key>Label_DrugEffects</key>
       <text>Effects:</text>
     </string>

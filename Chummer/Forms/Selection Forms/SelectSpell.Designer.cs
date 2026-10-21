@@ -39,6 +39,8 @@ namespace Chummer
             this.lblRange = new System.Windows.Forms.Label();
             this.lblDamageLabel = new System.Windows.Forms.Label();
             this.lblDamage = new System.Windows.Forms.Label();
+            this.lblElementsLabel = new System.Windows.Forms.Label();
+            this.lblElements = new System.Windows.Forms.Label();
             this.lblDurationLabel = new System.Windows.Forms.Label();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblDVLabel = new System.Windows.Forms.Label();
@@ -171,6 +173,29 @@ namespace Chummer
             this.lblDamage.Size = new System.Drawing.Size(53, 13);
             this.lblDamage.TabIndex = 9;
             this.lblDamage.Text = "[Damage]";
+            // 
+            // lblElementsLabel
+            // 
+            this.lblElementsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblElementsLabel.AutoSize = true;
+            this.lblElementsLabel.Location = new System.Drawing.Point(15, 106);
+            this.lblElementsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblElementsLabel.Name = "lblElementsLabel";
+            this.lblElementsLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblElementsLabel.TabIndex = 43;
+            this.lblElementsLabel.Tag = "Label_Elements";
+            this.lblElementsLabel.Text = "Elements:";
+            // 
+            // lblElements
+            // 
+            this.lblElements.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblElements.AutoSize = true;
+            this.lblElements.Location = new System.Drawing.Point(72, 106);
+            this.lblElements.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblElements.Name = "lblElements";
+            this.lblElements.Size = new System.Drawing.Size(57, 13);
+            this.lblElements.TabIndex = 44;
+            this.lblElements.Text = "[Elements]";
             // 
             // lblDurationLabel
             // 
@@ -450,29 +475,32 @@ namespace Chummer
             this.tlpRight.ColumnCount = 2;
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Controls.Add(this.lblSource, 1, 10);
-            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 10);
-            this.tlpRight.Controls.Add(this.chkFreeBonus, 0, 9);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 11);
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 11);
+            this.tlpRight.Controls.Add(this.chkFreeBonus, 0, 10);
             this.tlpRight.Controls.Add(this.lblTypeLabel, 0, 1);
             this.tlpRight.Controls.Add(this.lblType, 1, 1);
             this.tlpRight.Controls.Add(this.lblDescriptors, 1, 0);
             this.tlpRight.Controls.Add(this.lblDescriptorsLabel, 0, 0);
-            this.tlpRight.Controls.Add(this.chkExtended, 0, 7);
-            this.tlpRight.Controls.Add(this.chkLimited, 0, 6);
+            this.tlpRight.Controls.Add(this.chkExtended, 0, 8);
+            this.tlpRight.Controls.Add(this.chkLimited, 0, 7);
             this.tlpRight.Controls.Add(this.lblRange, 1, 2);
-            this.tlpRight.Controls.Add(this.lblDV, 1, 5);
-            this.tlpRight.Controls.Add(this.lblDuration, 1, 4);
-            this.tlpRight.Controls.Add(this.lblDVLabel, 0, 5);
-            this.tlpRight.Controls.Add(this.lblDurationLabel, 0, 4);
+            this.tlpRight.Controls.Add(this.lblDV, 1, 6);
+            this.tlpRight.Controls.Add(this.lblDuration, 1, 5);
+            this.tlpRight.Controls.Add(this.lblDVLabel, 0, 6);
+            this.tlpRight.Controls.Add(this.lblDurationLabel, 0, 5);
             this.tlpRight.Controls.Add(this.lblDamage, 1, 3);
             this.tlpRight.Controls.Add(this.lblDamageLabel, 0, 3);
+            this.tlpRight.Controls.Add(this.lblElementsLabel, 0, 4);
+            this.tlpRight.Controls.Add(this.lblElements, 1, 4);
             this.tlpRight.Controls.Add(this.lblRangeLabel, 0, 2);
-            this.tlpRight.Controls.Add(this.chkAlchemical, 0, 8);
+            this.tlpRight.Controls.Add(this.chkAlchemical, 0, 9);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRight.Location = new System.Drawing.Point(303, 26);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
-            this.tlpRight.RowCount = 11;
+            this.tlpRight.RowCount = 12;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -571,6 +599,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblRange;
         private System.Windows.Forms.Label lblDamageLabel;
         private System.Windows.Forms.Label lblDamage;
+        private System.Windows.Forms.Label lblElementsLabel;
+        private System.Windows.Forms.Label lblElements;
         private System.Windows.Forms.Label lblDurationLabel;
         private System.Windows.Forms.Label lblDuration;
         private System.Windows.Forms.Label lblDVLabel;

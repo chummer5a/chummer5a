@@ -416,6 +416,8 @@ namespace Chummer
             this.lblSpellDicePool = new Chummer.LabelWithToolTip();
             this.lblSpellSource = new Chummer.LabelWithToolTip();
             this.lblSpellSourceLabel = new System.Windows.Forms.Label();
+            this.lblSpellElementsLabel = new System.Windows.Forms.Label();
+            this.lblSpellElements = new System.Windows.Forms.Label();
             this.tlpMagicianBottom = new System.Windows.Forms.TableLayoutPanel();
             this.panSpirits = new System.Windows.Forms.Panel();
             this.cmdAddSpirit = new System.Windows.Forms.Button();
@@ -5823,6 +5825,8 @@ namespace Chummer
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDicePool, 1, 3);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellSource, 1, 4);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellSourceLabel, 0, 4);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellElementsLabel, 2, 4);
+            this.tlpMagicianSpell.Controls.Add(this.lblSpellElements, 3, 4);
             this.tlpMagicianSpell.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpMagicianSpell.Location = new System.Drawing.Point(310, 29);
             this.tlpMagicianSpell.Margin = new System.Windows.Forms.Padding(0);
@@ -6047,6 +6051,29 @@ namespace Chummer
             this.lblSpellSourceLabel.TabIndex = 87;
             this.lblSpellSourceLabel.Tag = "Label_Source";
             this.lblSpellSourceLabel.Text = "Source:";
+            // 
+            // lblSpellElementsLabel
+            // 
+            this.lblSpellElementsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSpellElementsLabel.AutoSize = true;
+            this.lblSpellElementsLabel.Location = new System.Drawing.Point(339, 106);
+            this.lblSpellElementsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellElementsLabel.Name = "lblSpellElementsLabel";
+            this.lblSpellElementsLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblSpellElementsLabel.TabIndex = 89;
+            this.lblSpellElementsLabel.Tag = "Label_Elements";
+            this.lblSpellElementsLabel.Text = "Elements:";
+            // 
+            // lblSpellElements
+            // 
+            this.lblSpellElements.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSpellElements.AutoSize = true;
+            this.lblSpellElements.Location = new System.Drawing.Point(396, 106);
+            this.lblSpellElements.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSpellElements.Name = "lblSpellElements";
+            this.lblSpellElements.Size = new System.Drawing.Size(57, 13);
+            this.lblSpellElements.TabIndex = 90;
+            this.lblSpellElements.Text = "[Elements]";
             // 
             // tlpMagicianBottom
             // 
@@ -16845,6 +16872,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblSpellDicePoolLabel;
         private LabelWithToolTip lblSpellSource;
         private System.Windows.Forms.Label lblSpellSourceLabel;
+        private System.Windows.Forms.Label lblSpellElementsLabel;
+        private System.Windows.Forms.Label lblSpellElements;
         private System.Windows.Forms.Label lblSpellType;
         private System.Windows.Forms.Label lblSpellTypeLabel;
         private LabelWithToolTip lblSpellDV;
