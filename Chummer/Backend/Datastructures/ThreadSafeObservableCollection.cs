@@ -513,13 +513,37 @@ namespace Chummer
             return new ValueTuple<bool, T>(false, default);
         }
 
+        /// <inheritdoc cref="Enumerable.ToList{TSource}(IEnumerable{TSource})" />
+        public List<T> ToList()
+        {
+            using (LockObject.EnterReadLock())
+            {
+                return _lstData.ToList();
+            }
+        }
+
+        public async Task<List<T>> ToListAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstData.ToList();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <inheritdoc />
         public T[] ToArray()
         {
             using (LockObject.EnterReadLock())
             {
-                T[] aobjReturn = new T[Count];
-                for (int i = 0; i < Count; ++i)
+                int intCount = Count;
+                T[] aobjReturn = new T[intCount];
+                for (int i = 0; i < intCount; ++i)
                 {
                     aobjReturn[i] = _lstData[i];
                 }
@@ -533,10 +557,11 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                int intCount = await GetCountAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                T[] aobjReturn = new T[await GetCountAsync(token).ConfigureAwait(false)];
+                T[] aobjReturn = new T[intCount];
                 token.ThrowIfCancellationRequested();
-                for (int i = 0; i < await GetCountAsync(token).ConfigureAwait(false); ++i)
+                for (int i = 0; i < intCount; ++i)
                     aobjReturn[i] = await _lstData.GetValueAtAsync(i, token).ConfigureAwait(false);
                 return aobjReturn;
             }

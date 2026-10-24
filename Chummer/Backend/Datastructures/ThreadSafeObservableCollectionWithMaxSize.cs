@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,22 +34,14 @@ namespace Chummer
             _intMaxSize = intMaxSize;
         }
 
-        public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(list, objParentLock, blnLockReadOnlyForParent)
+        public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(list.Take(intMaxSize), objParentLock, blnLockReadOnlyForParent)
         {
             _intMaxSize = intMaxSize;
-            for (int intCount = Count; intCount >= _intMaxSize; --intCount)
-            {
-                RemoveAt(intCount - 1);
-            }
         }
 
-        public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(collection, objParentLock, blnLockReadOnlyForParent)
+        public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(collection.Take(intMaxSize), objParentLock, blnLockReadOnlyForParent)
         {
             _intMaxSize = intMaxSize;
-            for (int intCount = Count; intCount >= _intMaxSize; --intCount)
-            {
-                RemoveAt(intCount - 1);
-            }
         }
 
         /// <inheritdoc cref="List{T}.Insert" />

@@ -4690,64 +4690,69 @@ namespace Chummer
                     && objXmlNode.SelectSingleNodeAndCacheExpression("books/book", token) == null
                     && objXmlNode.SelectSingleNodeAndCacheExpression("customdatadirectorynames/directoryname", token) == null)
                 {
-                    foreach (string strMruCharacterFile in GlobalSettings.MostRecentlyUsedCharacters)
+                    await GlobalSettings.MostRecentlyUsedCharacters.ForEachWithBreakAsync(async (strMruCharacterFile, t) =>
                     {
                         XPathDocument objXmlDocument;
                         if (!File.Exists(strMruCharacterFile))
-                            continue;
+                            return false;
                         try
                         {
-                            objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strMruCharacterFile, token: token).ConfigureAwait(false);
+                            objXmlDocument
+                                = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(
+                                    strMruCharacterFile, token: t).ConfigureAwait(false);
                         }
                         catch (XmlException)
                         {
-                            continue;
+                            return false;
                         }
 
                         xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
-                                                                          .SelectSingleNodeAndCacheExpression("/character", token);
+                                                                          .SelectSingleNodeAndCacheExpression(
+                                                                              "/character", t);
 
                         if (xmlLegacyCharacterNavigator == null)
-                            continue;
+                            return false;
 
                         string strLoopSettingsFile = xmlLegacyCharacterNavigator
-                            .SelectSingleNodeAndCacheExpression("settings", token)?.Value;
+                            .SelectSingleNodeAndCacheExpression("settings", t)?.Value;
                         if (strLoopSettingsFile == _strFileName)
-                            break;
+                            return true;
                         xmlLegacyCharacterNavigator = null;
-                    }
+                        return false;
+                    }, token).ConfigureAwait(false);
 
                     if (xmlLegacyCharacterNavigator == null)
                     {
-                        foreach (string strMruCharacterFile in GlobalSettings.FavoriteCharacters)
+                        await GlobalSettings.FavoriteCharacters.ForEachWithBreakAsync(async (strMruCharacterFile, t) =>
                         {
                             XPathDocument objXmlDocument;
                             if (!File.Exists(strMruCharacterFile))
-                                continue;
+                                return false;
                             try
                             {
                                 objXmlDocument
                                     = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(
-                                        strMruCharacterFile, token: token).ConfigureAwait(false);
+                                        strMruCharacterFile, token: t).ConfigureAwait(false);
                             }
                             catch (XmlException)
                             {
-                                continue;
+                                return false;
                             }
 
                             xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
                                                                               .SelectSingleNodeAndCacheExpression(
-                                                                                  "/character", token);
+                                                                                  "/character", t);
 
                             if (xmlLegacyCharacterNavigator == null)
-                                continue;
+                                return false;
 
                             string strLoopSettingsFile = xmlLegacyCharacterNavigator
-                                .SelectSingleNodeAndCacheExpression("settings", token)?.Value;
+                                .SelectSingleNodeAndCacheExpression("settings", t)?.Value;
                             if (strLoopSettingsFile == _strFileName)
-                                break;
+                                return true;
                             xmlLegacyCharacterNavigator = null;
-                        }
+                            return false;
+                        }, token).ConfigureAwait(false);
                     }
                 }
 

@@ -1127,7 +1127,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            List<string> lstFavorites = (await GlobalSettings.FavoriteCharacters.ToArrayAsync(token).ConfigureAwait(false)).ToList();
+            List<string> lstFavorites = await GlobalSettings.FavoriteCharacters.ToListAsync(token).ConfigureAwait(false);
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Favorite", false), token).ConfigureAwait(false);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -1140,7 +1140,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             bool blnAddRecentNode = false;
-            List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync(token).ConfigureAwait(false)).ToList();
+            List<string> lstRecents = await GlobalSettings.MostRecentlyUsedCharacters.ToListAsync(token).ConfigureAwait(false);
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
             foreach (Character objCharacter in Program.MainForm.OpenFormsWithCharacters.SelectMany(
                          x => x.CharacterObjects))
