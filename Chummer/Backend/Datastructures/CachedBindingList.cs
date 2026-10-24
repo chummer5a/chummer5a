@@ -109,7 +109,7 @@ namespace Chummer
                 IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
-                    if (_setBeforeRemoveAsync.Count > 0)
+                    if (!_setBeforeRemoveAsync.IsEmpty)
                     {
                         RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(_setBeforeRemoveAsync.Count);
@@ -144,7 +144,7 @@ namespace Chummer
                 IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
-                    if (_setBeforeRemoveAsync.Count > 0)
+                    if (!_setBeforeRemoveAsync.IsEmpty)
                     {
                         List<RemovingOldEventArgs> lstArgsList = new List<RemovingOldEventArgs>(Items.Count);
                         for (int i = 0; i < Items.Count; ++i)
@@ -210,7 +210,7 @@ namespace Chummer
                     try
                     {
 
-                        if (_setBeforeRemoveAsync.Count > 0)
+                        if (!_setBeforeRemoveAsync.IsEmpty)
                         {
                             RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
                             List<Func<Task>> lstFuncs = new List<Func<Task>>(_setBeforeRemoveAsync.Count);
@@ -246,7 +246,7 @@ namespace Chummer
             IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
             try
             {
-                if (_setAddingNewAsync.Count > 0)
+                if (!_setAddingNewAsync.IsEmpty)
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_setAddingNewAsync.Count);
                     lstFuncs.AddRange(_setAddingNewAsync.Select(objEvent => (Func<Task>)(() => objEvent.Invoke(this, e))));
@@ -271,7 +271,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_setAddingNewAsync.Count > 0)
+                if (!_setAddingNewAsync.IsEmpty)
                     await ParallelExtensions.ForEachAsync(_setAddingNewAsync, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 base.OnAddingNew(e);
             }
@@ -302,7 +302,7 @@ namespace Chummer
                 // INotifyPropertyChangedAsync will call PropertyChangedAsync anyway, which does everything we would do here
                 if (e.ListChangedType == ListChangedType.ItemChanged && Count > 0 && this[0] is INotifyPropertyChangedAsync)
                     return;
-                if (_setListChangedAsync.Count > 0)
+                if (!_setListChangedAsync.IsEmpty)
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_setListChangedAsync.Count);
                     lstFuncs.AddRange(_setListChangedAsync.Select(objEvent => (Func<Task>)(() => objEvent.Invoke(this, e))));
@@ -326,7 +326,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_setListChangedAsync.Count > 0)
+                if (!_setListChangedAsync.IsEmpty)
                     await ParallelExtensions.ForEachAsync(_setListChangedAsync, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 base.OnListChanged(e);
             }
@@ -373,7 +373,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_setBeforeRemoveAsync.Count > 0)
+                if (!_setBeforeRemoveAsync.IsEmpty)
                 {
                     List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>> lstAsyncEventsList
                             = new List<ValueTuple<AsyncBeforeRemoveEventHandler, RemovingOldEventArgs>>(Items.Count * _setBeforeRemoveAsync.Count);
@@ -475,7 +475,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_setBeforeRemoveAsync.Count > 0)
+                    if (!_setBeforeRemoveAsync.IsEmpty)
                     {
                         RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
                         await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
@@ -559,7 +559,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_setBeforeRemoveAsync.Count > 0)
+                if (!_setBeforeRemoveAsync.IsEmpty)
                 {
                     RemovingOldEventArgs objArgs = new RemovingOldEventArgs(Items[index], index);
                     await ParallelExtensions.ForEachAsync(_setBeforeRemoveAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);

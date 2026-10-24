@@ -815,7 +815,7 @@ namespace Chummer.Controls.Shared
                 try
                 {
                     PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(nameof(Contents));
-                    if (_setChildPropertyChangedAsync.Count > 0)
+                    if (!_setChildPropertyChangedAsync.IsEmpty)
                     {
                         await ParallelExtensions.ForEachAsync(_setChildPropertyChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                     }
@@ -1028,7 +1028,7 @@ namespace Chummer.Controls.Shared
                     _visible = !_visible;
                 }
 
-                if (_parent._setChildPropertyChangedAsync.Count > 0)
+                if (!_parent._setChildPropertyChangedAsync.IsEmpty)
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_parent._setChildPropertyChangedAsync.Count);
                     foreach (PropertyChangedAsyncEventHandler objEvent in _parent._setChildPropertyChangedAsync)
@@ -1053,7 +1053,7 @@ namespace Chummer.Controls.Shared
                     _visible = !_visible;
                 }
 
-                if (_parent._setChildPropertyChangedAsync.Count > 0)
+                if (!_parent._setChildPropertyChangedAsync.IsEmpty)
                     await ParallelExtensions.ForEachAsync(_parent._setChildPropertyChangedAsync, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 if (_parent.ChildPropertyChanged != null)
                     await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);

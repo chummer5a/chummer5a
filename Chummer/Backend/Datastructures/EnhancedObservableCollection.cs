@@ -183,7 +183,7 @@ namespace Chummer
 
         public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            if (_setMultiplePropertiesChangedAsync.Count > 0)
+            if (!_setMultiplePropertiesChangedAsync.IsEmpty)
             {
                 MultiplePropertiesChangedEventArgs objArgs =
                     new MultiplePropertiesChangedEventArgs(lstPropertyNames);
@@ -214,7 +214,7 @@ namespace Chummer
                 });
             }
 
-            if (_setPropertyChangedAsync.Count > 0)
+            if (!_setPropertyChangedAsync.IsEmpty)
             {
                 List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
                 List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
@@ -258,7 +258,7 @@ namespace Chummer
 
         public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
-            if (_setMultiplePropertiesChangedAsync.Count > 0)
+            if (!_setMultiplePropertiesChangedAsync.IsEmpty)
             {
                 MultiplePropertiesChangedEventArgs objArgs =
                     new MultiplePropertiesChangedEventArgs(lstPropertyNames);
@@ -283,7 +283,7 @@ namespace Chummer
                 }, token: token).ConfigureAwait(false);
             }
 
-            if (_setPropertyChangedAsync.Count > 0)
+            if (!_setPropertyChangedAsync.IsEmpty)
             {
                 List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames
                     .Select(x => new PropertyChangedEventArgs(x)).ToList();
@@ -360,7 +360,7 @@ namespace Chummer
             {
                 using (BlockReentrancy())
                 {
-                    if (_setBeforeClearCollectionChangedAsync.Count != 0)
+                    if (!_setBeforeClearCollectionChangedAsync.IsEmpty)
                     {
                         NotifyCollectionChangedEventArgs objArgs =
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
@@ -401,7 +401,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 using (BlockReentrancy())
                 {
-                    if (_setBeforeClearCollectionChangedAsync.Count != 0)
+                    if (!_setBeforeClearCollectionChangedAsync.IsEmpty)
                     {
                         NotifyCollectionChangedEventArgs objArgs =
                                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
@@ -474,7 +474,7 @@ namespace Chummer
             IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
             try
             {
-                if (_setCollectionChangedAsync.Count != 0)
+                if (!_setCollectionChangedAsync.IsEmpty)
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_setCollectionChangedAsync.Count);
                     foreach (AsyncNotifyCollectionChangedEventHandler objEvent in _setCollectionChangedAsync)
@@ -498,7 +498,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_setCollectionChangedAsync.Count != 0)
+                if (!_setCollectionChangedAsync.IsEmpty)
                 {
                     await ParallelExtensions.ForEachAsync(_setCollectionChangedAsync, (x, t) => x.Invoke(this, e, t), token)
                         .ConfigureAwait(false);
