@@ -137,9 +137,10 @@ namespace Chummer
         /// <returns>True if at least one cached directory has an update available.</returns>
         public static bool HasAnyUpdatesAvailable()
         {
-            foreach (CustomDataUpdateAvailability objAvailability in s_dicUpdateAvailabilityCache.Values)
+            // Need to enumerate key-value pairs because of how ConcurrentDictionary's locks work (enumerating over just Keys or Values doesn't lock the underlying dictionary against writes)
+            foreach (KeyValuePair<string, CustomDataUpdateAvailability> kvpAvailability in s_dicUpdateAvailabilityCache)
             {
-                if (objAvailability.IsUpdateAvailable)
+                if (kvpAvailability.Value.IsUpdateAvailable)
                     return true;
             }
 

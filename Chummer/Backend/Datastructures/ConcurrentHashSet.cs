@@ -123,11 +123,17 @@ namespace Chummer
             return false;
         }
 
+        /// <inheritdoc cref="Enumerable.ToList{TSource}(IEnumerable{TSource})" />
+        public List<T> ToList()
+        {
+            // Don't use Keys collection directly because iterating over it does not lock the main dictionary against changes
+            return DicInternal.GetKeysToListSafe();
+        }
+
         /// <inheritdoc />
         public T[] ToArray()
         {
-            // Don't use Keys collection directly because iterating over it does not lock the main dictionary against changes
-            return DicInternal.GetKeysToListSafe().ToArray();
+            return ToList().ToArray();
         }
 
         /// <inheritdoc />
