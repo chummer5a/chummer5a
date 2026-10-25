@@ -115,7 +115,14 @@ namespace Chummer
             while (!DicInternal.IsEmpty)
             {
                 // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                item = DicInternal.First().Key;
+                try
+                {
+                    item = DicInternal.First().Key;
+                }
+                catch (InvalidOperationException)
+                {
+                    break;
+                }
                 if (DicInternal.TryRemove(item, out bool _))
                     return true;
             }
