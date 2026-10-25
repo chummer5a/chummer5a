@@ -141,6 +141,7 @@ Magic:
 - Passenger now properly has a drain code of F-1 instead of F.
 - Fixed an issue with spellcasting foci incorrectly displaying twice in spell dicepools.
 - Elemental spells now list their elements (Acid, Cold, Electricity, Fire, Pollutant, Radiation or Water) in the spell data, and the spell info and the spell selection window show them.
+- Fixed the Free flag for spells only being available if the character didn't have enough karma available to purchase the spell, even if they had FreeSpell improvements applied that had not been consumed.
 
 Weapons:
 - Corrected the stats, ranges, and page references of multiple weapons, including bio-weapons, cyber-implant weapons, and Shadowrun 2050 weapons. Existing characters with these weapons will need to remove and re-add them to see any changes.

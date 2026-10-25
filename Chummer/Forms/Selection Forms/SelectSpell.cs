@@ -827,12 +827,33 @@ namespace Chummer
             }
             else
             {
-                bool blnVisible = _blnCanGenericSpellBeFree || (_blnCanTouchOnlySpellBeFree && (strRange == "T" || strRange == "T (A)"));
+                bool blnCanBeFree = _blnCanGenericSpellBeFree
+                                    || (_blnCanTouchOnlySpellBeFree && (strRange == "T" || strRange == "T (A)"));
                 await chkFreeBonus.DoThreadSafeAsync(x =>
                 {
-                    x.Checked = FreeOnly;
-                    x.Visible = blnVisible;
-                    x.Enabled = FreeOnly;
+                    // FreeOnly means the character cannot pay karma, so an eligible spell has to be free.
+                    // Otherwise the box stays enabled: a free slot is optional, including for mystic adepts
+                    // whose Barehanded Adept spells are not forced the way a pure adept's are.
+                    // Keep a manual check across refreshes (Limited/Extended). A box that was locked on
+                    // by the pure-adept path should not stay checked once this spell is optional.
+                    bool blnKeepUserChoice = x.Enabled;
+                    x.Visible = blnCanBeFree;
+                    if (!blnCanBeFree)
+                    {
+                        x.Checked = false;
+                        x.Enabled = false;
+                    }
+                    else if (FreeOnly)
+                    {
+                        x.Checked = true;
+                        x.Enabled = false;
+                    }
+                    else
+                    {
+                        x.Enabled = true;
+                        if (!blnKeepUserChoice)
+                            x.Checked = false;
+                    }
                 }, token: token).ConfigureAwait(false);
                 blnBarehandedAdept = false;
                 await chkLimited.DoThreadSafeAsync(x => x.Enabled = true, token: token).ConfigureAwait(false);
