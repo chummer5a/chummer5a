@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,30 +28,43 @@ namespace Chummer.Tests
     [TestClass]
     public class SpiritBoundLimitTests
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void TraditionsXml_WatcherAndHomunculus_IgnoreBoundSpiritLimit()
         {
-            string strPath = Path.Combine(Utils.GetDataFolderPath, "traditions.xml");
-            Assert.IsTrue(File.Exists(strPath), "traditions.xml not found at " + strPath);
+            try
+            {
+                XPathNavigator objRoot = XmlManager.LoadXPath("traditions.xml", token: TestContext.CancellationToken);
 
-            XPathDocument objDoc = new XPathDocument(strPath);
-            XPathNavigator objRoot = objDoc.CreateNavigator();
+                Assert.AreEqual("True",
+                    objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Watcher']/ignoreboundspiritlimit")?.Value);
 
-            Assert.AreEqual("True",
-                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Watcher']/ignoreboundspiritlimit")?.Value);
+                Assert.IsEmpty(
+                    objRoot.Select(
+                        "/chummer/spirits/spirit[starts-with(name, 'Homunculus') and not(ignoreboundspiritlimit = 'True')]"),
+                    "Every Homunculus spirit should set ignoreboundspiritlimit");
 
-            Assert.IsEmpty(
-                objRoot.Select(
-                    "/chummer/spirits/spirit[starts-with(name, 'Homunculus') and not(ignoreboundspiritlimit = 'True')]"),
-                "Every Homunculus spirit should set ignoreboundspiritlimit");
+                Assert.IsNull(
+                    objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Spirit of Fire']/ignoreboundspiritlimit"),
+                    "Normal spirits should not set ignoreboundspiritlimit");
 
-            Assert.IsNull(
-                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Spirit of Fire']/ignoreboundspiritlimit"),
-                "Normal spirits should not set ignoreboundspiritlimit");
-
-            Assert.AreEqual("True",
-                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Ally Spirit']/ignoreboundspiritlimit")?.Value,
-                "Ally Spirit should ignore the bound spirit limit");
+                Assert.AreEqual("True",
+                    objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Ally Spirit']/ignoreboundspiritlimit")?.Value,
+                    "Ally Spirit should ignore the bound spirit limit");
+            }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw ex;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
     }
 }
