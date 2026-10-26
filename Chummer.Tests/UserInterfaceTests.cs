@@ -92,13 +92,11 @@ namespace Chummer.Tests
 #endif
         }
 
-        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod, Timeout(30 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadAllCharacterForms()
         {
             try
             {
-                Debug.WriteLine("Unit test initialized for: Test07_LoadCharacterForms()");
                 ChummerMainForm frmOldMainForm = Program.MainForm;
                 ChummerMainForm frmTestForm = null;
                 // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren

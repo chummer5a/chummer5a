@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,9 +37,6 @@ namespace Chummer.Tests
     {
         public TestContext TestContext { get; set; }
 
-        /// <summary>
-        /// Tests saving a given character.
-        /// </summary>
         private static void SaveCharacter(Character objCharacter, string strPath, LzmaHelper.ChummerCompressionPreset eCompressionForChum5Lz = LzmaHelper.ChummerCompressionPreset.Fastest, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -81,9 +79,48 @@ namespace Chummer.Tests
             }
         }
 
-        /// <summary>
-        /// Tests exporting a given character.
-        /// </summary>
+        private static async Task SaveCharacterAsync(Character objCharacter, string strPath, LzmaHelper.ChummerCompressionPreset eCompressionForChum5Lz = LzmaHelper.ChummerCompressionPreset.Fastest, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Assert.IsNotNull(objCharacter);
+            try
+            {
+                Debug.WriteLine("Saving: " + await objCharacter.GetNameAsync(token).ConfigureAwait(false) + ", " + Path.GetFileName(strPath));
+                await objCharacter.SaveAsync(strPath, false, false, eCompressionForChum5Lz, token).ConfigureAwait(false);
+                Debug.WriteLine("Character saved: " + await objCharacter.GetNameAsync(token).ConfigureAwait(false) + " to " + Path.GetFileName(strPath));
+            }
+            catch (AssertFailedException e)
+            {
+                e = e.Demystify();
+                string strErrorMessage = "Could not save " + Path.GetFileName(strPath) + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+            catch (InvalidOperationException e)
+            {
+                e = e.Demystify();
+                string strErrorMessage = "Could not save to " + strPath + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+            catch (Exception e)
+            {
+                e = e.Demystify();
+                string strErrorMessage = "Exception while saving " + Path.GetFileName(strPath) + ':';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+        }
+
         private static void DoAndSaveExport(Character objCharacter, string strExportLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -145,7 +182,70 @@ namespace Chummer.Tests
             }
         }
 
-        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        private static async Task DoAndSaveExportAsync(Character objCharacter, string strExportLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Assert.IsNotNull(objCharacter);
+            string strPath = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, strExportLanguage + " " + Path.GetFileNameWithoutExtension(await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)) + ".xml");
+            try
+            {
+                Debug.WriteLine("Exporting: " + await objCharacter.GetNameAsync(token).ConfigureAwait(false) + " to " + Path.GetFileName(strPath));
+                CultureInfo objExportCultureInfo;
+                try
+                {
+                    objExportCultureInfo = new CultureInfo(strExportLanguage);
+                }
+                catch (CultureNotFoundException)
+                {
+                    objExportCultureInfo = CultureInfo.InvariantCulture;
+                }
+
+                XmlDocument xmlDocument
+                    = await objCharacter.GenerateExportXml(objExportCultureInfo,
+                                                             strExportLanguage, token).ConfigureAwait(false);
+                using (FileStream objFileStream
+                       = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    xmlDocument.Save(objFileStream);
+                Debug.WriteLine("Character exported: " + await objCharacter.GetNameAsync(token).ConfigureAwait(false) + " to " + Path.GetFileName(strPath));
+            }
+            catch (AssertFailedException e)
+            {
+                e = e.Demystify();
+                string strErrorMessage = "Could not export " + Path.GetFileName(await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)) + " in "
+                                         + strExportLanguage + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+            catch (InvalidOperationException e)
+            {
+                e = e.Demystify();
+                string strErrorMessage = "Could not export to " + strPath + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                e = e.Demystify();
+                string strErrorMessage = "Exception while exporting " + Path.GetFileName(await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)) + " in "
+                                         + strExportLanguage + ':';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+        }
+
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharacters()
         {
@@ -168,7 +268,6 @@ namespace Chummer.Tests
             }
         }
 
-        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveAsChum5lz()
         {

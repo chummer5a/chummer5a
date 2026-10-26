@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests
@@ -131,6 +132,59 @@ namespace Chummer.Tests
                 if (objCharacter != null && objExistingCharacter == null)
                 {
                     objCharacter.Dispose();
+                }
+                string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ':';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+
+            return objCharacter;
+        }
+
+        /// <summary>
+        /// Validate that a given list of Characters can be successfully loaded.
+        /// </summary>
+        // ReSharper disable once SuggestBaseTypeForParameter
+        public static async Task<Character> LoadCharacterAsync(FileInfo objFileInfo, Character objExistingCharacter = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Character objCharacter = objExistingCharacter;
+            try
+            {
+                Debug.WriteLine("Loading: " + objFileInfo.Name);
+                if (objExistingCharacter != null)
+                    await objCharacter.ResetCharacterAsync(token).ConfigureAwait(false);
+                else
+                    objCharacter = new Character();
+                await objCharacter.SetFileNameAsync(objFileInfo.FullName, token).ConfigureAwait(false);
+
+                bool blnSuccess = await objCharacter.LoadAsync(token: token).ConfigureAwait(false);
+                Assert.IsTrue(blnSuccess);
+                Debug.WriteLine("Character loaded: " + await objCharacter.GetNameAsync(token).ConfigureAwait(false) + ", " + objFileInfo.Name);
+            }
+            catch (AssertFailedException e)
+            {
+                e = e.Demystify();
+                if (objCharacter != null && objExistingCharacter == null)
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
+                string strErrorMessage = "Could not load " + objFileInfo.FullName + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+                throw e;
+            }
+            catch (Exception e)
+            {
+                e = e.Demystify();
+                if (objCharacter != null && objExistingCharacter == null)
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
                 string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ':';
                 strErrorMessage += Environment.NewLine + e;
