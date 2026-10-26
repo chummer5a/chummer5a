@@ -30,7 +30,7 @@ namespace Chummer.Tests
     {
         public TestContext TestContext { get; set; }
 
-        [TestMethod, Timeout(3 * 60 * 1000)]
+        [TestMethod, Timeout(3 * 60 * 1000, CooperativeCancellation = true)]
         public void MoveGearRootAsync_SelectedGearHeader_ReordersOntoLaterLocation()
         {
             try
@@ -77,7 +77,7 @@ namespace Chummer.Tests
 #endif
         }
 
-        [TestMethod, Timeout(3 * 60 * 1000)]
+        [TestMethod, Timeout(3 * 60 * 1000, CooperativeCancellation = true)]
         public void MoveGearRoot_SelectedGearHeader_ReordersOntoEarlierLocation()
         {
             try
@@ -124,7 +124,7 @@ namespace Chummer.Tests
 #endif
         }
 
-        [TestMethod, Timeout(3 * 60 * 1000)]
+        [TestMethod, Timeout(3 * 60 * 1000, CooperativeCancellation = true)]
         public void MoveGearRoot_WithoutHeader_UsesLocationOrder()
         {
             try

@@ -146,7 +146,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, Timeout(5 * 60 * 1000)]
+        [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharacters()
         {
             try
@@ -169,7 +169,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, Timeout(5 * 60 * 1000)]
+        [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveAsChum5lz()
         {
             try
@@ -210,7 +210,7 @@ namespace Chummer.Tests
 #endif
         }
 
-        [TestMethod, Timeout(5 * 60 * 1000)]
+        [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveIsDeterministic()
         {
             try
@@ -342,7 +342,7 @@ namespace Chummer.Tests
 #endif
         }
 
-        [TestMethod, Timeout(5 * 60 * 1000)]
+        [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenPrint()
         {
             try

@@ -30,7 +30,7 @@ namespace Chummer.Tests
     {
         public TestContext TestContext { get; set; }
 
-        [TestMethod, Timeout(30 * 1000)]
+        [TestMethod, Timeout(30 * 1000, CooperativeCancellation = true)]
         public void DoBasicStartup()
         {
             try
@@ -93,7 +93,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, Timeout(30 * 60 * 1000)]
+        [TestMethod, Timeout(30 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadAllCharacterForms()
         {
             try
