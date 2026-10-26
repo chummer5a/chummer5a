@@ -78,6 +78,12 @@ namespace Chummer.Tests
                 Assert.Fail(ex.Message);
                 throw ex;
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
@@ -116,6 +122,12 @@ namespace Chummer.Tests
                 Assert.Fail(ex.Message);
                 throw ex;
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
@@ -149,6 +161,12 @@ namespace Chummer.Tests
                 Assert.Fail(ex.Message);
                 throw ex;
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         private static async Task<Character> CreateAiCharacterAsync(CancellationToken token)
@@ -170,6 +188,12 @@ namespace Chummer.Tests
                 await objCharacter.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
     }
 }
