@@ -1103,8 +1103,8 @@ namespace Chummer
                     string strFilePath = objCache.FilePath;
                     if (!string.IsNullOrEmpty(strFilePath))
                     {
-                        strTooltip = strFilePath.Replace(Utils.GetStartupPath,
-                                                               "<" + Application.ProductName + ">");
+                        strTooltip = strFilePath.CheapReplace(Utils.GetStartupPath,
+                                                              () => "<" + Application.ProductName + ">");
                     }
 
                     string strErrorText = objCache.ErrorText;
