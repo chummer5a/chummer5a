@@ -3855,6 +3855,11 @@ namespace Chummer
             return s_strTempPath;
         }
 
+        /// <summary>
+        /// Threshold to use for "smart" methods that only use parallelization if the call would be expensive enough that the overhead to set up and close down the parallelized runs would be worth it
+        /// </summary>
+        public const int ThresholdToParallelizeForSmartMethods = ushort.MaxValue;
+
         private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider
         {
             MaximumRetained = DefaultPoolSize

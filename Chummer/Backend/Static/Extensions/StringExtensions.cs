@@ -4054,6 +4054,165 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            if (astrNeedles == null)
+                return false;
+            int intNumNeedles = astrNeedles.Count;
+            if (intNumNeedles == 0)
+                return false;
+
+            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+
+            return MathExtensions.CeilingLog2(intHaystackLength) * intNumNeedles > Utils.ThresholdToParallelizeForSmartMethods
+                ? astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison))
+                : astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison));
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            return astrNeedles != null &&
+                   // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+                   // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+                   (MathExtensions.CeilingLog2(intHaystackLength) * 2 > Utils.ThresholdToParallelizeForSmartMethods
+                    ? astrNeedles.AsParallel().Any(strNeedle => strHaystack.Contains(strNeedle, eComparison))
+                    : astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison)));
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, params string[] astrNeedles)
+        {
+            return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.Contains(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (uses parallelized code if it's likely to get performance savings, otherwise doesn't).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnySmart(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.ContainsAnySmart(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
         /// Syntactic sugar for <see cref="string.Split(char[], StringSplitOptions)"/> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
@@ -7191,7 +7350,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             string[] astrLineEndingStrings = blnEscaped ? s_astrEscapedLineEndingStrings : s_astrLineEndingStrings;
-            if (!strInput.ContainsAnyParallel(astrLineEndingStrings))
+            if (!strInput.ContainsAnySmart(astrLineEndingStrings))
                 return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -7273,7 +7432,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
-            if (!strToClean.ContainsAnyParallel(s_astrStringsToProcessForHtmlConversion))
+            if (!strToClean.ContainsAnySmart(s_astrStringsToProcessForHtmlConversion))
                 return strToClean;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
