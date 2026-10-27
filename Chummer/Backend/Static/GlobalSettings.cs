@@ -1438,7 +1438,7 @@ namespace Chummer
                 {
                     frmMain.TranslateWinForm();
                     IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
-                    if (lstToProcess != null)
+                    if (lstToProcess != null && lstToProcess.Count > 0)
                     {
                         foreach (Form frmLoop in lstToProcess)
                         {
@@ -1447,7 +1447,7 @@ namespace Chummer
                     }
 
                     lstToProcess = frmMain.OpenCharacterSheetViewers;
-                    if (lstToProcess != null)
+                    if (lstToProcess != null && lstToProcess.Count > 0)
                     {
                         foreach (Form frmLoop in lstToProcess)
                         {
@@ -1456,7 +1456,7 @@ namespace Chummer
                     }
 
                     lstToProcess = frmMain.OpenCharacterExportForms;
-                    if (lstToProcess != null)
+                    if (lstToProcess != null && lstToProcess.Count > 0)
                     {
                         foreach (Form frmLoop in lstToProcess)
                         {
@@ -1499,29 +1499,20 @@ namespace Chummer
             if (frmMain != null)
             {
                 await frmMain.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
-                if (lstToProcess != null)
+                ThreadSafeObservableCollection<CharacterShared> lstToProcess1 = frmMain.OpenCharacterEditorForms;
+                if (lstToProcess1 != null && await lstToProcess1.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                    }
+                    await lstToProcess1.ForEachAsync((x, t) => x.TranslateWinFormAsync(token: t), token).ConfigureAwait(false);
                 }
-                lstToProcess = frmMain.OpenCharacterSheetViewers;
-                if (lstToProcess != null)
+                ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2 = frmMain.OpenCharacterSheetViewers;
+                if (lstToProcess2 != null && await lstToProcess2.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                    }
+                    await lstToProcess2.ForEachAsync((x, t) => x.TranslateWinFormAsync(token: t), token).ConfigureAwait(false);
                 }
-                lstToProcess = frmMain.OpenCharacterExportForms;
-                if (lstToProcess != null)
+                ThreadSafeObservableCollection<ExportCharacter> lstToProcess3 = frmMain.OpenCharacterExportForms;
+                if (lstToProcess3 != null && await lstToProcess3.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                    }
+                    await lstToProcess3.ForEachAsync((x, t) => x.TranslateWinFormAsync(token: t), token).ConfigureAwait(false);
                 }
                 Form frmToProcess = frmMain.PrintMultipleCharactersForm;
                 if (frmToProcess != null)

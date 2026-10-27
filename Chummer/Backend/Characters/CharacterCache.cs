@@ -1079,7 +1079,8 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess1
                                 = Program.MainForm.OpenCharacterEditorForms;
-                            if (lstToProcess1 != null && await lstToProcess1
+                            if (lstToProcess1 != null && await lstToProcess1.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess1
                                     .AnyAsync(
                                         async (x, t) => !x.CharacterObject.IsDisposed &&
                                                    string.Equals(
@@ -1089,7 +1090,8 @@ namespace Chummer
                                 sbdMarker.Append('*');
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
                                 = Program.MainForm.OpenCharacterSheetViewers;
-                            if (lstToProcess2 != null && await lstToProcess2
+                            if (lstToProcess2 != null && await lstToProcess2.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess2
                                     .AnyAsync(
                                         (x, t1) => x.CharacterObjects.AnyAsync(
                                             async (y, t2) => !y.IsDisposed && string.Equals(
@@ -1098,7 +1100,8 @@ namespace Chummer
                                 sbdMarker.Append('^');
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                                 = Program.MainForm.OpenCharacterExportForms;
-                            if (lstToProcess3 != null && await lstToProcess3
+                            if (lstToProcess3 != null && await lstToProcess3.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess3
                                     .AnyAsync(
                                         async (x, t) => !x.CharacterObject.IsDisposed &&
                                                    string.Equals(

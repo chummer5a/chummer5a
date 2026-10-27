@@ -1184,7 +1184,7 @@ namespace Chummer
             {
                 Form frmReturn;
                 ThreadSafeObservableCollection<CharacterShared> lstForms1 = MainForm.OpenCharacterEditorForms;
-                if (lstForms1 != null)
+                if (lstForms1 != null && await lstForms1.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
                         x => ReferenceEquals(x.CharacterObject, objCharacter), token: innerToken).ConfigureAwait(false);
@@ -1192,7 +1192,7 @@ namespace Chummer
                         return frmReturn;
                 }
                 ThreadSafeObservableCollection<CharacterSheetViewer> lstForms2 = MainForm.OpenCharacterSheetViewers;
-                if (lstForms2 != null)
+                if (lstForms2 != null && await lstForms2.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     frmReturn = await lstForms2.FirstOrDefaultAsync(
                         x => x.CharacterObjects.Contains(objCharacter), token: innerToken).ConfigureAwait(false);
@@ -1200,7 +1200,7 @@ namespace Chummer
                         return frmReturn;
                 }
                 ThreadSafeObservableCollection<ExportCharacter> lstForms3 = MainForm.OpenCharacterExportForms;
-                if (lstForms3 != null)
+                if (lstForms3 != null && await lstForms3.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
                         x => ReferenceEquals(x.CharacterObject, objCharacter), token: innerToken).ConfigureAwait(false);

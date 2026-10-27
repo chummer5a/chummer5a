@@ -232,7 +232,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -321,7 +321,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -389,7 +389,7 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -471,7 +471,7 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -552,7 +552,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -643,7 +643,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -2357,7 +2357,7 @@ namespace Chummer
                 if (Interlocked.Decrement(ref _intSkipReopenUntilAllClear) >= 0)
                 {
                     ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                    if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) != 0)
+                    if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                     {
                         Interlocked.Increment(ref _intSkipReopenUntilAllClear);
                         return;
@@ -2396,7 +2396,7 @@ namespace Chummer
                     if (objCharacter == null)
                         return false;
                     ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                    if (lstToProcess == null)
+                    if (lstToProcess == null || await lstToProcess.GetCountAsync(token).ConfigureAwait(false) <= 0)
                         return false;
                     CharacterShared objCharacterForm
                         = await lstToProcess.FirstOrDefaultAsync(
@@ -2451,7 +2451,7 @@ namespace Chummer
                     if (objCharacter == null)
                         return false;
                     ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess = OpenCharacterSheetViewers;
-                    if (lstToProcess == null)
+                    if (lstToProcess == null || await lstToProcess.GetCountAsync(token).ConfigureAwait(false) <= 0)
                         return false;
                     CharacterSheetViewer objCharacterForm
                         = await lstToProcess.FirstOrDefaultAsync(
@@ -2520,7 +2520,7 @@ namespace Chummer
                     if (objCharacter == null)
                         return false;
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                    if (lstToProcess == null)
+                    if (lstToProcess == null || await lstToProcess.GetCountAsync(token).ConfigureAwait(false) <= 0)
                         return false;
                     ExportCharacter objCharacterForm
                         = await lstToProcess.FirstOrDefaultAsync(
@@ -3580,8 +3580,9 @@ namespace Chummer
                                                                             + ")", token: token)
                                                 .ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null && await lstToProcess.AnyAsync(
-                                    x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
+                                        x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
                             if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
                                 && await Program.ShowScrollableMessageBoxAsync(
@@ -3728,7 +3729,8 @@ namespace Chummer
                                 if (objCharacter == null)
                                     continue;
                                 ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                                if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
                                 if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
@@ -3925,7 +3927,8 @@ namespace Chummer
                                                .ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess.AnyAsync(
                                     x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                                 return;
 
@@ -4092,7 +4095,8 @@ namespace Chummer
                                     continue;
                                 ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                     = OpenCharacterSheetViewers;
-                                if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
                                         x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                                     continue;
 
@@ -4314,7 +4318,8 @@ namespace Chummer
                                                                             + ")", token: token)
                                                 .ConfigureAwait(false);
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess.AnyAsync(
                                     x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
                             if (Program.MyProcess.HandleCount >= 9500
@@ -4462,7 +4467,8 @@ namespace Chummer
                                 if (objCharacter == null)
                                     continue;
                                 ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                                if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
                                 if (Program.MyProcess.HandleCount >= 9500
