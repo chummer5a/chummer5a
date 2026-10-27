@@ -57,7 +57,6 @@ namespace Chummer
                     {
                         AllowLinksHandling = true,
                         AutoPopDelay = 3600000,
-                        BaseStylesheet = null,
                         InitialDelay = 250,
                         IsBalloon = false,
                         MaximumSize = new System.Drawing.Size(0, 0),
@@ -94,7 +93,6 @@ namespace Chummer
                     {
                         AllowLinksHandling = true,
                         AutoPopDelay = 3600000,
-                        BaseStylesheet = null,
                         InitialDelay = 250,
                         IsBalloon = false,
                         MaximumSize = new System.Drawing.Size(0, 0),

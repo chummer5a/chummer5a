@@ -1537,15 +1537,15 @@ namespace Chummer
             foreach (string strLoopPath in lstPaths)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Directory.Exists(strLoopPath))
-                    continue;
                 if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (strFileName == "packs.xml")
+                    if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
                         yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
                     else
                         continue;
                 }
+                else if (!Directory.Exists(strLoopPath))
+                    continue;
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))
                 {
@@ -1557,6 +1557,78 @@ namespace Chummer
                     {
                         yield return strLoopPath;
                         break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Filter through a list of data paths and return a list of ones that modify the given file. Used to recycle data files between different rule sets.
+        /// </summary>
+        /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
+        /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
+        /// <param name="token">CancellationToken to use.</param>
+        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in <paramref name="lstPaths"/>.</returns>
+        private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (strFileName == "improvements.xml" || lstPaths == null)
+                yield break;
+            if (lstPaths.Count > Utils.ThresholdToParallelizeForSmartMethods / 4) // We don't know how many files each directory will have, so we'll assume 4
+            {
+                foreach (string strLoopPath in lstPaths.AsParallel())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
+                            yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                        else
+                            continue;
+                    }
+                    else if (!Directory.Exists(strLoopPath))
+                        continue;
+                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                            SearchOption.AllDirectories))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strInnerFileName = Path.GetFileName(strLoopFile);
+                        if (strInnerFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                            || strInnerFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                            || strInnerFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return strLoopPath;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (string strLoopPath in lstPaths)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
+                            yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                        else
+                            continue;
+                    }
+                    else if (!Directory.Exists(strLoopPath))
+                        continue;
+                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                            SearchOption.AllDirectories))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strInnerFileName = Path.GetFileName(strLoopFile);
+                        if (strInnerFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                            || strInnerFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                            || strInnerFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return strLoopPath;
+                            break;
+                        }
                     }
                 }
             }

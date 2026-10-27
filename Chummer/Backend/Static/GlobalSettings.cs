@@ -654,7 +654,8 @@ namespace Chummer
             {
                 string strPluginsJson = string.Empty;
                 LoadStringFromRegistry(ref strPluginsJson, "plugins");
-                if (!string.IsNullOrEmpty(strPluginsJson))
+                if (!string.IsNullOrEmpty(strPluginsJson)
+                    && strPluginsJson.Contains(bool.TrueString, StringComparison.OrdinalIgnoreCase)) // Sanity check so that we don't bother going through Json deserialization overhead if we know we don't have any plugins to load
                 {
                     ConcurrentDictionary<string, bool> dicTemp
                         = Newtonsoft.Json.JsonConvert.DeserializeObject<ConcurrentDictionary<string, bool>>(strPluginsJson);
@@ -963,7 +964,12 @@ namespace Chummer
                 objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
 
                 //Save the Plugins-Dictionary
-                objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
+                if (PluginsEnabledDic.IsEmpty
+                    // Don't bother saving it if we don't have any plugins enabled
+                    || PluginsEnabledDic.GetValuesToListSafe().All(x => !x))
+                    objRegistry.SetValue("plugins", string.Empty);
+                else
+                    objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
 
                 token.ThrowIfCancellationRequested();
                 // Save the SourcebookInfo.
