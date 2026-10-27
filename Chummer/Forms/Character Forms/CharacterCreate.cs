@@ -21277,7 +21277,7 @@ namespace Chummer
                                                                .ConfigureAwait(false)
                                                            + ").chum5";
                             string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(strFileName) && strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            if (!string.IsNullOrEmpty(strFileName) && strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                                 strNewName += "lz";
                             strNewName = Path.Combine(Utils.GetBackupSavesFolderPath, strNewName);
 

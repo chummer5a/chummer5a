@@ -65,11 +65,11 @@ namespace Chummer
             }
 
             // Make sure the file name starts with custom and ends with _packs.xml.
-            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", Utils.PathStringComparison))
             {
                 strFileName = "custom_" + strFileName;
             }
-            if (!strFileName.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.EndsWith("_packs.xml", Utils.PathStringComparison))
             {
                 strFileName += "_packs.xml";
             }

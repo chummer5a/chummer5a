@@ -77,8 +77,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                    if (!strPath.StartsWith(Utils.GetStartupPath, StringComparison.OrdinalIgnoreCase)
-                        && !strPath.StartsWith(Utils.GetTempPath(), StringComparison.OrdinalIgnoreCase))
+                    if (!strPath.StartsWith(Utils.GetStartupPath, Utils.PathStringComparison)
+                        && !strPath.StartsWith(Utils.GetTempPath(), Utils.PathStringComparison))
                     {
                         token.ThrowIfCancellationRequested();
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself

@@ -276,8 +276,8 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strSaveFile))
                     return;
 
-                if (!strSaveFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
-                    && !strSaveFile.EndsWith(".htm", StringComparison.OrdinalIgnoreCase))
+                if (!strSaveFile.EndsWith(".html", Utils.PathStringComparison)
+                    && !strSaveFile.EndsWith(".htm", Utils.PathStringComparison))
                     strSaveFile += ".htm";
 
                 using (StreamWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
@@ -304,7 +304,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strSaveFile))
                     return;
 
-                if (!strSaveFile.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                if (!strSaveFile.EndsWith(".xml", Utils.PathStringComparison))
                     strSaveFile += ".xml";
 
                 try
@@ -447,7 +447,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strSaveFile))
                         return;
 
-                    if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                    if (!strSaveFile.EndsWith(".pdf", Utils.PathStringComparison))
                         strSaveFile += ".pdf";
 
                     if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))

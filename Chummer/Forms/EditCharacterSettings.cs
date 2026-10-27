@@ -1319,7 +1319,7 @@ namespace Chummer
                             {
                                 // For entries without GUID, find by name and pick highest version
                                 objInfo = GlobalSettings.CustomDataDirectoryInfos
-                                    .Where(x => x.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                                    .Where(x => x.Name.Equals(strKey, Utils.PathStringComparison))
                                     .OrderByDescending(x => x.MyVersion)
                                     .FirstOrDefault();
                             }
@@ -1581,7 +1581,7 @@ namespace Chummer
                                 {
                                     // For entries without GUID, find by name and pick highest version
                                     objInfo = GlobalSettings.CustomDataDirectoryInfos
-                                        .Where(x => x.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                                        .Where(x => x.Name.Equals(strKey, Utils.PathStringComparison))
                                         .OrderByDescending(x => x.MyVersion)
                                         .FirstOrDefault();
                                 }

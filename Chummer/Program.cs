@@ -324,7 +324,7 @@ namespace Chummer
                         foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,
-                                               StringComparison.OrdinalIgnoreCase))
+                                               Utils.PathStringComparison))
                                 lstToDelete.Add(strProfileFile);
                         }
                         foreach (string strProfileFile in lstToDelete)
@@ -1302,8 +1302,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strFileName))
                 return null;
             Character objCharacter = null;
-            if (File.Exists(strFileName) && (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                             || strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
+            if (File.Exists(strFileName) && (strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                                             || strFileName.EndsWith(".chum5lz", Utils.PathStringComparison)))
             {
                 //Timekeeper.Start("loading");
                 if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
@@ -1328,7 +1328,7 @@ namespace Chummer
                     string strAutosaveName = string.Empty;
                     if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                     {
-                        if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                        if (!strFileName.StartsWith(strAutosavesPath, Utils.PathStringComparison))
                         {
                             string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
                             if (!string.IsNullOrEmpty(strBaseFileName))
@@ -1453,7 +1453,7 @@ namespace Chummer
                         // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                         if (blnClearFileName
                             // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                            || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                            || objCharacter.FileName.StartsWith(strAutosavesPath, Utils.PathStringComparison))
                             objCharacter.FileName = string.Empty;
                     }
                     else
@@ -1464,7 +1464,7 @@ namespace Chummer
                         // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                         if (blnClearFileName
                             // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                            || (await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)).StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                            || (await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)).StartsWith(strAutosavesPath, Utils.PathStringComparison))
                             await objCharacter.SetFileNameAsync(string.Empty, token).ConfigureAwait(false);
                     }
                 }

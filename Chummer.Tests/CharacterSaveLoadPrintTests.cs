@@ -281,9 +281,9 @@ namespace Chummer.Tests
                         Debug.WriteLine("Checking " + strFileName);
                         string strDestination =
                             Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
-                        if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (!strDestination.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
-                            if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            if (strDestination.EndsWith(".chum5", Utils.PathStringComparison))
                                 strDestination += "lz";
                             else
                                 strDestination += ".chum5lz";

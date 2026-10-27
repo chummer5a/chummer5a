@@ -471,7 +471,7 @@ namespace Chummer
                 {
                     string strAssetUrl = objAsset["browser_download_url"]?.ToString();
                     if (!string.IsNullOrEmpty(strAssetUrl)
-                        && strAssetUrl.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                        && strAssetUrl.EndsWith(".zip", Utils.PathStringComparison))
                     {
                         strDownloadUrl = strAssetUrl;
                         break;

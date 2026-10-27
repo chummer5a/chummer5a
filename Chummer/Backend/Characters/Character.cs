@@ -4328,14 +4328,14 @@ namespace Chummer
                     return false;
                 }
             }
-            else if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                     && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+            else if (!strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                     && !strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
             {
                 strFileName = Path.GetFileNameWithoutExtension(strFileName) + ".chum5";
                 string strExistingFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(strExistingFileName)
-                    && strExistingFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    && strExistingFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                     strFileName += "lz";
             }
 
@@ -5748,7 +5748,7 @@ namespace Chummer
                         using (FileStream objFileStream
                                = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
-                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            if (strFileName.EndsWith(".chum5", Utils.PathStringComparison))
                                 objDoc.Save(objFileStream);
                             else
                             {
@@ -6194,8 +6194,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strFileName))
                 strFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
-            if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                              && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
+            if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                                              && !strFileName.EndsWith(".chum5lz", Utils.PathStringComparison)))
                 return false;
 
             IDisposable objLocker = null;
@@ -6252,9 +6252,9 @@ namespace Chummer
                                     try
                                     {
                                         innerToken.ThrowIfCancellationRequested();
-                                        if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                        if (strFileName.EndsWith(".chum5", Utils.PathStringComparison))
                                             objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: innerToken);
-                                        else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                        else if (strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                                             objXmlDocument.LoadStandardFromLzmaCompressedPatient(
                                                 strFileName, !blnErrorCaught, token: innerToken);
                                         else
@@ -19533,14 +19533,14 @@ namespace Chummer
             set
             {
                 if (!string.IsNullOrWhiteSpace(value)
-                    && !value.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                    && !value.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    && !value.EndsWith(".chum5", Utils.PathStringComparison)
+                    && !value.EndsWith(".chum5lz", Utils.PathStringComparison))
                 {
                     value = Path.GetFileNameWithoutExtension(value) + ".chum5";
                     using (LockObject.EnterReadLock())
                     {
                         if (!string.IsNullOrWhiteSpace(_strFileName)
-                            && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            && _strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                             value += "lz";
                     }
                 }
@@ -19579,15 +19579,15 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrWhiteSpace(value)
-                && !value.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                && !value.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                && !value.EndsWith(".chum5", Utils.PathStringComparison)
+                && !value.EndsWith(".chum5lz", Utils.PathStringComparison))
             {
                 value = Path.GetFileNameWithoutExtension(value) + ".chum5";
                 IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (!string.IsNullOrWhiteSpace(_strFileName)
-                        && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        && _strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                         value += "lz";
                 }
                 finally

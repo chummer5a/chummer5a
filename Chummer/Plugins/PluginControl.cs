@@ -246,7 +246,7 @@ namespace Chummer.Plugins
                     foreach (string plugindir in Directory.EnumerateDirectories(path))
                     {
                         blnAnyPlugins = true;
-                        if (plugindir.Contains("SamplePlugin", StringComparison.OrdinalIgnoreCase))
+                        if (plugindir.Contains("SamplePlugin", Utils.PathStringComparison))
                         {
                             Log.Warn(
                                 "Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
@@ -476,7 +476,7 @@ namespace Chummer.Plugins
             {
                 objNewWatcher.Changed += (_, e) =>
                 {
-                    if (e.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    if (e.Name.EndsWith(".dll", Utils.PathStringComparison) || e.Name.EndsWith(".exe", Utils.PathStringComparison))
                         Refresh();
                 };
                 objNewWatcher.EnableRaisingEvents = true;

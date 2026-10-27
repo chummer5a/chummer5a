@@ -996,10 +996,10 @@ namespace Chummer
 
         public int CompareTo(CustomDataDirectoryInfo other)
         {
-            int intReturn = string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+            int intReturn = string.Compare(Name, other.Name, Utils.PathStringComparison);
             if (intReturn == 0)
             {
-                intReturn = string.Compare(DirectoryPath, other.DirectoryPath, StringComparison.OrdinalIgnoreCase);
+                intReturn = string.Compare(DirectoryPath, other.DirectoryPath, Utils.PathStringComparison);
                 //Should basically never happen, because paths are supposed to be unique. But this "future proofs" it.
                 if (intReturn == 0)
                     intReturn = MyVersion.CompareTo(other.MyVersion);
@@ -1018,8 +1018,8 @@ namespace Chummer
         public bool Equals(CustomDataDirectoryInfo other)
         {
             //This should be enough to uniquely identify an object.
-            return other != null && Name.Equals(other.Name, StringComparison.OrdinalIgnoreCase) &&
-                   DirectoryPath.Equals(other.DirectoryPath, StringComparison.OrdinalIgnoreCase) &&
+            return other != null && Name.Equals(other.Name, Utils.PathStringComparison) &&
+                   DirectoryPath.Equals(other.DirectoryPath, Utils.PathStringComparison) &&
                    (other.Guid == Guid || (!other.HasManifest && !HasManifest)) && other.MyVersion.Equals(MyVersion) &&
                    other.DependenciesList.CollectionEqual(DependenciesList) &&
                    other.IncompatibilitiesList.CollectionEqual(IncompatibilitiesList);

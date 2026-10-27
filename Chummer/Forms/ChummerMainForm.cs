@@ -776,7 +776,7 @@ namespace Chummer
                                                              "*.chum5*",
                                                              SearchOption.AllDirectories))
                                             {
-                                                if (!strAutosave.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strAutosave.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                                if (!strAutosave.EndsWith(".chum5", Utils.PathStringComparison) && !strAutosave.EndsWith(".chum5lz", Utils.PathStringComparison))
                                                     continue;
                                                 FileInfo objAutosave;
                                                 try
@@ -3466,7 +3466,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -3831,7 +3831,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenPrintCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -4220,7 +4220,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenExportCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -4956,7 +4956,7 @@ namespace Chummer
                                                  "*.chum5*", SearchOption.AllDirectories))
                                     {
                                         _objGenericToken.ThrowIfCancellationRequested();
-                                        if (!strAutosave.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strAutosave.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                        if (!strAutosave.EndsWith(".chum5", Utils.PathStringComparison) && !strAutosave.EndsWith(".chum5lz", Utils.PathStringComparison))
                                             continue;
                                         FileInfo objAutosave;
                                         try
@@ -5085,7 +5085,7 @@ namespace Chummer
                 {
                     if (++intIndex >= intLength)
                         return objReturn;
-                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
+                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), Utils.PathStringComparison))
                         continue;
                     switch (strArg.ToUpperInvariant())
                     {
@@ -5123,13 +5123,13 @@ namespace Chummer
 
                                 string strExtension = Path.GetExtension(strArg);
                                 // This check is needed because applications in .NET 8 are .dlls, and .exe files just serve to launch the .dlls (presumably for cross-platform support)
-                                if (!string.Equals(strExtension, ".dll", StringComparison.OrdinalIgnoreCase)
+                                if (!string.Equals(strExtension, ".dll", Utils.PathStringComparison)
                                     || !string.Equals(Path.GetFileNameWithoutExtension(strArg),
                                         Path.GetFileNameWithoutExtension(Application.ExecutablePath),
-                                        StringComparison.OrdinalIgnoreCase))
+                                        Utils.PathStringComparison))
                                 {
-                                    if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
-                                        && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                    if (!string.Equals(strExtension, ".chum5", Utils.PathStringComparison)
+                                        && !string.Equals(strExtension, ".chum5lz", Utils.PathStringComparison))
                                         Utils.BreakIfDebug();
                                     setFilesToLoad.Add(strArg);
                                 }

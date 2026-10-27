@@ -775,8 +775,8 @@ namespace Chummer
                         if (eResult != DialogResult.OK)
                             return;
 
-                        if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (!strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                            && !strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                             strFileName += ".chum5";
                         await objCharacter.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
 

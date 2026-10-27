@@ -12942,10 +12942,10 @@ namespace Chummer
 
                         string strFileName = dlgSaveFile.FileName;
                         if (!string.IsNullOrEmpty(strFileName)
-                            && !strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            && !strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                            && !strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
-                            strFileName += strShowFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)
+                            strFileName += strShowFileName.EndsWith(".chum5lz", Utils.PathStringComparison)
                                 ? ".chum5lz"
                                 : ".chum5";
                         }

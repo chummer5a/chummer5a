@@ -3185,10 +3185,10 @@ namespace Chummer
                     if (!blnError)
                     {
                         string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                        if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (strFile.EndsWith(".chum5", Utils.PathStringComparison)
+                            || strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
-                            if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => string.Equals(x.FileName, strFile, StringComparison.OrdinalIgnoreCase))) == null)
+                            if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => string.Equals(x.FileName, strFile, Utils.PathStringComparison))) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                        = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
@@ -3299,11 +3299,11 @@ namespace Chummer
                     if (!blnError)
                     {
                         string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                        if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (strFile.EndsWith(".chum5", Utils.PathStringComparison)
+                            || strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
                             if ((_objLinkedCharacter = await Program.OpenCharacters
-                                    .FirstOrDefaultAsync(async (x, t) => string.Equals(strFile, await x.GetFileNameAsync(t).ConfigureAwait(false), StringComparison.OrdinalIgnoreCase),
+                                    .FirstOrDefaultAsync(async (x, t) => string.Equals(strFile, await x.GetFileNameAsync(t).ConfigureAwait(false), Utils.PathStringComparison),
                                         token: token).ConfigureAwait(false)) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar

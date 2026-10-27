@@ -798,7 +798,7 @@ namespace Chummer
                 if (_setCustomDataDirectoryInfos.Any(x =>
                                                          objNewCustomDataDirectory.CharacterSettingsSaveKey.Equals(
                                                              x.CharacterSettingsSaveKey,
-                                                             StringComparison.OrdinalIgnoreCase))
+                                                             Utils.PathStringComparison))
                     && await Program.ShowScrollableMessageBoxAsync(this,
                         StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
@@ -874,7 +874,7 @@ namespace Chummer
                 if (_setCustomDataDirectoryInfos.Any(x => x != objInfoToRename &&
                                                           objNewInfo.CharacterSettingsSaveKey.Equals(
                                                               x.CharacterSettingsSaveKey,
-                                                              StringComparison.OrdinalIgnoreCase)) &&
+                                                              Utils.PathStringComparison)) &&
                     await Program.ShowScrollableMessageBoxAsync(this,
                         StringExtensions.FastFormat(
                             await LanguageManager.GetStringAsync(
@@ -1588,7 +1588,7 @@ namespace Chummer
                                 = (CustomDataDirectoryInfo)objExistingItem.Value;
                             CustomDataDirectoryInfo objCurrentInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x =>
                                 x.DirectoryPath.Equals(objExistingInfo.DirectoryPath,
-                                    StringComparison.OrdinalIgnoreCase));
+                                    Utils.PathStringComparison));
                             if (objCurrentInfo == null)
                             {
                                 lsbCustomDataDirectories.Items.RemoveAt(iI);
@@ -1633,7 +1633,7 @@ namespace Chummer
                 for (int i = 0; i < lsbCustomDataDirectories.Items.Count; ++i)
                 {
                     if (((CustomDataDirectoryInfo)((ListItem)lsbCustomDataDirectories.Items[i]).Value).DirectoryPath
-                        .Equals(strOldSelectedPath, StringComparison.OrdinalIgnoreCase))
+                        .Equals(strOldSelectedPath, Utils.PathStringComparison))
                     {
                         lsbCustomDataDirectories.SelectedIndex = i;
                         return;
@@ -1777,7 +1777,7 @@ namespace Chummer
                 return ((CustomDataDirectoryInfo)objItem.Value).DirectoryPath;
             }, token).ConfigureAwait(false);
             CustomDataDirectoryInfo objFreshInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x =>
-                x.DirectoryPath.Equals(strSelectedPath, StringComparison.OrdinalIgnoreCase));
+                x.DirectoryPath.Equals(strSelectedPath, Utils.PathStringComparison));
             if (objFreshInfo != null)
                 await UpdateCustomDataDirectoryInfoPanelAsync(objFreshInfo, token).ConfigureAwait(false);
         }
@@ -2486,7 +2486,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
                     continue;
                 string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strLanguageName))

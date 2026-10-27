@@ -124,7 +124,7 @@ namespace Chummer
                     {
                         // We need to test this explicitly because .NET Framework has weird behavior with search patterns for asterisk and then a three-letter extension
                         // (It allows any files whose extension begins with those three letters through, so e.g. it would allow xslt files here)
-                        if (strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
+                        if (strFile.EndsWith(".xsl", Utils.PathStringComparison))
                         {
                             string strFileName = Path.GetFileNameWithoutExtension(strFile);
                             lstExportMethods.Add(new ListItem(strFileName, strFileName));
@@ -673,9 +673,9 @@ namespace Chummer
                 strSaveFile = dlgSaveFile.FileName;
                 if (string.IsNullOrEmpty(strSaveFile))
                     return;
-                if (!strSaveFile.EndsWith("." + strExtensionLower, StringComparison.OrdinalIgnoreCase)
-                    && (!strExtensionLower.TrimEndOnce('l').Equals("htm", StringComparison.OrdinalIgnoreCase)
-                        || !strSaveFile.TrimEndOnce('l', 'L').EndsWith(".htm", StringComparison.OrdinalIgnoreCase)))
+                if (!strSaveFile.EndsWith("." + strExtensionLower, Utils.PathStringComparison)
+                    && (!strExtensionLower.TrimEndOnce('l').Equals("htm", Utils.PathStringComparison)
+                        || !strSaveFile.TrimEndOnce('l', 'L').EndsWith(".htm", Utils.PathStringComparison)))
                     strSaveFile += "." + strExtensionLower;
             }
             if (string.IsNullOrEmpty(strSaveFile))
@@ -923,7 +923,7 @@ namespace Chummer
                 strSaveFile = dlgSaveFile.FileName;
                 if (string.IsNullOrWhiteSpace(strSaveFile))
                     return;
-                if (!strSaveFile.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                if (!strSaveFile.EndsWith(".json", Utils.PathStringComparison))
                     strSaveFile += ".json";
             }
             if (string.IsNullOrWhiteSpace(strSaveFile))

@@ -157,7 +157,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
                     continue;
                 string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strLanguageName))
@@ -408,7 +408,7 @@ namespace Chummer
                     string strSaveArchive = dlgSaveFile.FileName;
                     if (string.IsNullOrEmpty(strSaveArchive))
                         return;
-                    if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    if (!strSaveArchive.EndsWith(".zip", Utils.PathStringComparison))
                         strSaveArchive += ".zip";
                     await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
                     IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);

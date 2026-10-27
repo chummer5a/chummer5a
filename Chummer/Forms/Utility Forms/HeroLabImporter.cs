@@ -107,7 +107,7 @@ namespace Chummer
                     foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
                     {
                         string strEntryFullName = objEntry.FullName;
-                        if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
+                        if (strEntryFullName.EndsWith(".xml", Utils.PathStringComparison)
                             && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                         {
                             // If we run into any problems loading the character cache, fail out early.

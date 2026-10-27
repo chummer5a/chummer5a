@@ -184,7 +184,7 @@ namespace Chummer
 
         private async void DeleteSingleWatchNode(object sender, FileSystemEventArgs e)
         {
-            if (!e.Name.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !e.Name.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+            if (!e.Name.EndsWith(".chum5", Utils.PathStringComparison) && !e.Name.EndsWith(".chum5lz", Utils.PathStringComparison))
                 return;
             try
             {
@@ -235,7 +235,7 @@ namespace Chummer
 
         private async void RefreshSingleWatchNode(object sender, FileSystemEventArgs e)
         {
-            if (!e.Name.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !e.Name.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+            if (!e.Name.EndsWith(".chum5", Utils.PathStringComparison) && !e.Name.EndsWith(".chum5lz", Utils.PathStringComparison))
                 return;
             try
             {
@@ -1328,7 +1328,7 @@ namespace Chummer
                                                                SearchOption.AllDirectories))
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (!strFile.EndsWith(".chum5", Utils.PathStringComparison) && !strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                             continue;
                         FileInfo objInfo = new FileInfo(strFile);
                         string strDirectoryFullName = objInfo.Directory?.FullName ?? string.Empty;
@@ -2234,7 +2234,7 @@ namespace Chummer
                         string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                         Character objCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase),
+                                async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, Utils.PathStringComparison),
                                 _objGenericToken).ConfigureAwait(false);
                         if (objCharacter == null)
                         {
@@ -2282,7 +2282,7 @@ namespace Chummer
                     string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase),
+                            async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, Utils.PathStringComparison),
                             _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
@@ -2329,7 +2329,7 @@ namespace Chummer
                     string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase),
+                            async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, Utils.PathStringComparison),
                             _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
@@ -2456,7 +2456,7 @@ namespace Chummer
                 try
                 {
                     Character objOpenCharacter
-                        = await Program.OpenCharacters.FirstOrDefaultAsync(async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), _objGenericToken)
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), _objGenericToken)
                                        .ConfigureAwait(false);
                     if (objOpenCharacter != null)
                     {
@@ -2504,11 +2504,11 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strTag))
                     {
                         bool blnIncludeCloseOpenCharacter
-                            = (strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            = (strTag.EndsWith(".chum5", Utils.PathStringComparison)
                                || strTag.EndsWith(
-                                   ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                   ".chum5lz", Utils.PathStringComparison))
                               && await Program.MainForm.OpenFormsWithCharacters.AnyAsync(
-                                  (x, t1) => x.CharacterObjects.AnyAsync((y, t2) => string.Equals(await y.GetFileNameAsync(t2).ConfigureAwait(false), strTag, StringComparison.OrdinalIgnoreCase), t1), _objGenericToken).ConfigureAwait(false);
+                                  (x, t1) => x.CharacterObjects.AnyAsync(async (y, t2) => string.Equals(await y.GetFileNameAsync(t2).ConfigureAwait(false), strTag, Utils.PathStringComparison), t1), _objGenericToken).ConfigureAwait(false);
                         ContextMenuStrip objStrip =
                             await CreateContextMenuStripAsync(blnIncludeCloseOpenCharacter, _objGenericToken)
                                 .ConfigureAwait(false);

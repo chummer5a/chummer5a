@@ -75,7 +75,7 @@ namespace Chummer
         /// <param name="token"></param>
         private async Task LoadCharacter(string fileName, CancellationToken token = default)
         {
-            if (File.Exists(fileName) && (fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
+            if (File.Exists(fileName) && (fileName.EndsWith(".chum5", Utils.PathStringComparison) || fileName.EndsWith(".chum5lz", Utils.PathStringComparison)))
             {
                 Character objCharacter = new Character();
                 try

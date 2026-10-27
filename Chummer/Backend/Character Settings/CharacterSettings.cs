@@ -745,7 +745,7 @@ namespace Chummer
                                         KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
                                         KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
                                         if (!string.Equals(kvpMine.Key, kvpOther.Key,
-                                                StringComparison.OrdinalIgnoreCase)
+                                                Utils.PathStringComparison)
                                             || kvpMine.Value != kvpOther.Value)
                                         {
                                             blnDoRebuildDirectoryKeys = true;
@@ -880,7 +880,7 @@ namespace Chummer
                                         KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys
                                             .GetValueAtAsync(i, token).ConfigureAwait(false);
                                         if (!string.Equals(kvpMine.Key, kvpOther.Key,
-                                                StringComparison.OrdinalIgnoreCase)
+                                                Utils.PathStringComparison)
                                             || kvpMine.Value != kvpOther.Value)
                                         {
                                             blnDoRebuildDirectoryKeys = true;
@@ -1177,7 +1177,7 @@ namespace Chummer
                     {
                         KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys.GetValueAt(i, token);
                         KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys.GetValueAt(i, token);
-                        if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                        if (!string.Equals(kvpMine.Key, kvpOther.Key, Utils.PathStringComparison)
                             || kvpMine.Value != kvpOther.Value)
                         {
                             return false;
@@ -1248,7 +1248,7 @@ namespace Chummer
                                 KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys
                                     .GetValueAtAsync(i, token)
                                     .ConfigureAwait(false);
-                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                if (!string.Equals(kvpMine.Key, kvpOther.Key, Utils.PathStringComparison)
                                     || kvpMine.Value != kvpOther.Value)
                                 {
                                     return false;
@@ -2337,9 +2337,9 @@ namespace Chummer
                         string strDirectoryName = kvpDirectoryInfo.Key;
                         bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                         if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
-                                x => x.DirectoryPath.StartsWith(strCustomDataRootPath, StringComparison.Ordinal)
+                                x => x.DirectoryPath.StartsWith(strCustomDataRootPath, Utils.PathStringComparison)
                                         && x.CharacterSettingsSaveKey.Equals(
-                                            strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                                            strDirectoryName, Utils.PathStringComparison)))
                             return; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         // ReSharper disable AccessToDisposedClosure
                         objWriter.WriteStartElement("customdatadirectoryname");
@@ -3268,9 +3268,9 @@ namespace Chummer
                         string strDirectoryName = kvpDirectoryInfo.Key;
                         bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                         if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
-                                x => x.DirectoryPath.StartsWith(strCustomDataRootPath, StringComparison.Ordinal)
+                                x => x.DirectoryPath.StartsWith(strCustomDataRootPath, Utils.PathStringComparison)
                                         && x.CharacterSettingsSaveKey.Equals(
-                                            strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                                            strDirectoryName, Utils.PathStringComparison)))
                             return; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         // ReSharper disable AccessToDisposedClosure
                         await objWriter.WriteStartElementAsync("customdatadirectoryname", token: t)
@@ -3921,7 +3921,7 @@ namespace Chummer
                                           == bool.TrueString;
                     if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                             ? GlobalSettings.CustomDataDirectoryInfos.Any(
-                                x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                x => x.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                             : GlobalSettings.CustomDataDirectoryInfos.Any(
                                 x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                     {
@@ -3961,7 +3961,7 @@ namespace Chummer
                             CustomDataDirectoryInfo objExistingInfo = null;
                             foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                             {
-                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                if (!objLoopInfo.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                     continue;
                                 if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                     objExistingInfo = objLoopInfo;
@@ -4014,7 +4014,7 @@ namespace Chummer
                                 CustomDataDirectoryInfo objExistingInfo = null;
                                 foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                                 {
-                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                         continue;
                                     if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                         objExistingInfo = objLoopInfo;
@@ -4082,7 +4082,7 @@ namespace Chummer
                                   == bool.TrueString;
                             if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                                     ? GlobalSettings.CustomDataDirectoryInfos.Any(
-                                        x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                        x => x.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                     : GlobalSettings.CustomDataDirectoryInfos.Any(
                                         x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                             {
@@ -4093,7 +4093,7 @@ namespace Chummer
                                                  .CustomDataDirectoryInfos)
                                     {
                                         if (!objLoopInfo.Name.Equals(strDirectoryKey,
-                                                                     StringComparison.OrdinalIgnoreCase))
+                                                                     Utils.PathStringComparison))
                                             continue;
                                         if (objExistingInfo == null
                                             || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
@@ -4154,7 +4154,7 @@ namespace Chummer
                                 CustomDataDirectoryInfo objExistingInfo = null;
                                 foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                                 {
-                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                         continue;
                                     if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                         objExistingInfo = objLoopInfo;
@@ -4790,7 +4790,7 @@ namespace Chummer
                                           == bool.TrueString;
                     if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                             ? GlobalSettings.CustomDataDirectoryInfos.Any(
-                                x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                x => x.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                             : GlobalSettings.CustomDataDirectoryInfos.Any(
                                 x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                     {
@@ -4833,7 +4833,7 @@ namespace Chummer
                             CustomDataDirectoryInfo objExistingInfo = null;
                             foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                             {
-                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                if (!objLoopInfo.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                     continue;
                                 if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                     objExistingInfo = objLoopInfo;
@@ -4888,7 +4888,7 @@ namespace Chummer
                                 CustomDataDirectoryInfo objExistingInfo = null;
                                 foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                                 {
-                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                         continue;
                                     if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                         objExistingInfo = objLoopInfo;
@@ -4965,7 +4965,7 @@ namespace Chummer
                                   == bool.TrueString;
                             if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                                     ? GlobalSettings.CustomDataDirectoryInfos.Any(
-                                        x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                        x => x.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                     : GlobalSettings.CustomDataDirectoryInfos.Any(
                                         x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                             {
@@ -4976,7 +4976,7 @@ namespace Chummer
                                                  .CustomDataDirectoryInfos)
                                     {
                                         if (!objLoopInfo.Name.Equals(strDirectoryKey,
-                                                                     StringComparison.OrdinalIgnoreCase))
+                                                                     Utils.PathStringComparison))
                                             continue;
                                         if (objExistingInfo == null
                                             || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
@@ -5044,7 +5044,7 @@ namespace Chummer
                                 CustomDataDirectoryInfo objExistingInfo = null;
                                 foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                                 {
-                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, Utils.PathStringComparison))
                                         continue;
                                     if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                         objExistingInfo = objLoopInfo;
@@ -6698,7 +6698,7 @@ namespace Chummer
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
                             t.ThrowIfCancellationRequested();
-                            if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                            if (!objLoopInfo.Name.Equals(strKey, Utils.PathStringComparison))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
                                 objInfoToAdd = objLoopInfo;
@@ -6765,7 +6765,7 @@ namespace Chummer
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
                             t.ThrowIfCancellationRequested();
-                            if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                            if (!objLoopInfo.Name.Equals(strKey, Utils.PathStringComparison))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
                                 objInfoToAdd = objLoopInfo;

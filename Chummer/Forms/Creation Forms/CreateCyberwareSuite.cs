@@ -69,7 +69,7 @@ namespace Chummer
             strFileName = strFileName.CleanForFileName();
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
-            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith("_" + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", Utils.PathStringComparison) || !strFileName.EndsWith("_" + _strType + ".xml", Utils.PathStringComparison))
             {
                 await Program.ShowScrollableMessageBoxAsync(this, StringExtensions.FastFormat(await LanguageManager.GetStringAsync("Message_CyberwareSuite_InvalidFileName").ConfigureAwait(false), _strType),
                     await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_InvalidFileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
