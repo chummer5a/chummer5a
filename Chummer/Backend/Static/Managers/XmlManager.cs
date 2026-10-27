@@ -636,9 +636,7 @@ namespace Chummer
             }
 
             bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-            List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
-            lstKey.AddRange(astrRelevantCustomDataPaths);
-            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+            KeyArray<string> objDataKey = new KeyArray<string>(strLanguage, strPath, astrRelevantCustomDataPaths);
 
             token.ThrowIfCancellationRequested();
             IDisposable objLocker3 = null;
@@ -818,9 +816,7 @@ namespace Chummer
                     astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
                         .ToArray();
                 bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
-                lstKey.AddRange(astrRelevantCustomDataPaths);
-                KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+                KeyArray<string> objDataKey = new KeyArray<string>(strLanguage, strPath, astrRelevantCustomDataPaths);
 
                 XmlDocument xmlReturn = null;
                 // Create a new document that everything will be merged into.

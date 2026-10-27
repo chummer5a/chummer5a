@@ -43,11 +43,91 @@ namespace Chummer
             _intHashCode = _aobjItems.GetEnsembleHashCode();
         }
 
-        private KeyArray(params T[] aobjItems)
+        public KeyArray(params T[] aobjItems)
         {
             _intLength = aobjItems.Length;
             _aobjItems = new T[_intLength];
             Array.Copy(aobjItems, 0, _aobjItems, 0, _intLength);
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0)
+        {
+            _intLength = 1;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, T objItem1)
+        {
+            _intLength = 2;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _aobjItems[1] = objItem1;
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, T objItem1, T objItem2)
+        {
+            _intLength = 3;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _aobjItems[1] = objItem1;
+            _aobjItems[2] = objItem2;
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, T objItem1, T objItem2, T objItem3)
+        {
+            _intLength = 4;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _aobjItems[1] = objItem1;
+            _aobjItems[2] = objItem2;
+            _aobjItems[3] = objItem3;
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, ICollection<T> lstItems)
+        {
+            _intLength = 1 + lstItems.Count;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            lstItems.CopyTo(_aobjItems, 1);
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, T objItem1, ICollection<T> lstItems)
+        {
+            _intLength = 2 + lstItems.Count;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _aobjItems[1] = objItem1;
+            lstItems.CopyTo(_aobjItems, 2);
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, T objItem1, T objItem2, ICollection<T> lstItems)
+        {
+            _intLength = 3 + lstItems.Count;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _aobjItems[1] = objItem1;
+            _aobjItems[2] = objItem2;
+            lstItems.CopyTo(_aobjItems, 3);
+            _intHashCode = _aobjItems.GetEnsembleHashCode();
+        }
+
+        public KeyArray(T objItem0, T objItem1, T objItem2, T objItem3, ICollection<T> lstItems)
+        {
+            _intLength = 4 + lstItems.Count;
+            _aobjItems = new T[_intLength];
+            _aobjItems[0] = objItem0;
+            _aobjItems[1] = objItem1;
+            _aobjItems[2] = objItem2;
+            _aobjItems[3] = objItem3;
+            lstItems.CopyTo(_aobjItems, 4);
             _intHashCode = _aobjItems.GetEnsembleHashCode();
         }
 
