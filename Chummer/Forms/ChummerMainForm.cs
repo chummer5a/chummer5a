@@ -3584,7 +3584,7 @@ namespace Chummer
                                     && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
-                            if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm
                                 && await Program.ShowScrollableMessageBoxAsync(
                                     StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                     strTooManyHandlesTitle,
@@ -3733,7 +3733,7 @@ namespace Chummer
                                     && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
-                                if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
+                                if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
@@ -3932,7 +3932,7 @@ namespace Chummer
                                     x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                                 return;
 
-                            if (Program.MyProcess.HandleCount >= 9500
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                 && await Program.ShowScrollableMessageBoxAsync(
                                     StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                     strTooManyHandlesTitle,
@@ -4100,7 +4100,7 @@ namespace Chummer
                                         x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                                     continue;
 
-                                if (Program.MyProcess.HandleCount >= 9500
+                                if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
@@ -4322,7 +4322,7 @@ namespace Chummer
                                 && await lstToProcess.AnyAsync(
                                     x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
-                            if (Program.MyProcess.HandleCount >= 9500
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                 && await Program.ShowScrollableMessageBoxAsync(
                                     StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                     strTooManyHandlesTitle,
@@ -4471,7 +4471,7 @@ namespace Chummer
                                     && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
-                                if (Program.MyProcess.HandleCount >= 9500
+                                if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
