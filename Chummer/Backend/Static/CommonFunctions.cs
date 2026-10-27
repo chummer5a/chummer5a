@@ -81,6 +81,18 @@ namespace Chummer
             return !decimal.TryParse(strTrimmedExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
         }
 
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
+        {
+            '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+
+        private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
+
+        private static readonly int s_intXPathProcessingParallelizationThreshold = Utils.ThresholdToParallelizeForSmartMethods.DivAwayFromZero(s_setUppercaseLatinCharsAndOpenCurlyBracket.Count);
+
         /// <summary>
         /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
         /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
@@ -119,18 +131,6 @@ namespace Chummer
                 ? sbdExpression.Enumerate().AsParallel().Contains('{')
                 : sbdExpression.Enumerate().Contains('{');
         }
-
-        private static readonly int s_intXPathProcessingParallelizationThreshold = Utils.ThresholdToParallelizeForSmartMethods.DivAwayFromZero(s_setUppercaseLatinCharsAndOpenCurlyBracket.Count);
-
-        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
-        private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
-        {
-            '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-        };
-
-        private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
