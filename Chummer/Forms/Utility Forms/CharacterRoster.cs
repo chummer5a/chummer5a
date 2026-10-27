@@ -744,7 +744,7 @@ namespace Chummer
                     foreach (ExportCharacter objForm in e.OldItems)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strFile = objForm.CharacterObject.FileName;
+                        string strFile = await objForm.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
                         setToRefresh.Add(strFile);
                         if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
                                 strFile, token: token).ConfigureAwait(false))
@@ -785,7 +785,7 @@ namespace Chummer
                             foreach (ExportCharacter objForm in e.NewItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                setToRefresh.Add(objForm.CharacterObject.FileName);
+                                setToRefresh.Add(await objForm.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false));
                             }
 
                             await RefreshNodeTexts(token: token).ConfigureAwait(false);
@@ -805,7 +805,7 @@ namespace Chummer
                                 foreach (ExportCharacter objForm in e.OldItems)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    string strFile = objForm.CharacterObject.FileName;
+                                    string strFile = await objForm.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
                                     setToRefresh.Add(strFile);
                                     if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
                                             strFile, token: token).ConfigureAwait(false))
@@ -856,7 +856,8 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             setCharacters.Clear();
-                            setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                            foreach (Character objLoop in objForm.CharacterObjects)
+                                setCharacters.Add(await objLoop.GetFileNameAsync(token).ConfigureAwait(false));
                             setToRefresh.AddRange(setCharacters);
                             setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
                             setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
@@ -897,7 +898,8 @@ namespace Chummer
                             foreach (CharacterSheetViewer objForm in e.NewItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                setToRefresh.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                                foreach (Character objLoop in objForm.CharacterObjects)
+                                    setToRefresh.Add(await objLoop.GetFileNameAsync(token).ConfigureAwait(false));
                             }
                             await RefreshNodeTexts(setToRefresh, token).ConfigureAwait(false);
                         }
@@ -920,7 +922,8 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     setCharacters.Clear();
-                                    setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                                    foreach (Character objLoop in objForm.CharacterObjects)
+                                        setCharacters.Add(await objLoop.GetFileNameAsync(token).ConfigureAwait(false));
                                     setToRefresh.AddRange(setCharacters);
                                     setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
                                     setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
@@ -967,7 +970,7 @@ namespace Chummer
                     foreach (CharacterShared objForm in e.OldItems)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strFile = objForm.CharacterObject.FileName;
+                        string strFile = await objForm.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
                         setToRefresh.Add(strFile);
                         if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
                                 strFile, token: token).ConfigureAwait(false))
@@ -1008,7 +1011,7 @@ namespace Chummer
                             foreach (CharacterShared objForm in e.NewItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                setToRefresh.Add(objForm.CharacterObject.FileName);
+                                setToRefresh.Add(await objForm.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false));
                             }
 
                             await RefreshNodeTexts(token: token).ConfigureAwait(false);
@@ -1027,14 +1030,14 @@ namespace Chummer
                             foreach (CharacterShared objForm in e.OldItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                string strFile = objForm.CharacterObject.FileName;
+                                string strFile = await objForm.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
                                 setToRefresh.Add(strFile);
                                 if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                                                            objForm.CharacterObject.FileName, token: token)
+                                                            strFile, token: token)
                                                         .ConfigureAwait(false))
                                     continue;
                                 if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                                            objForm.CharacterObject.FileName, token: token)
+                                                            strFile, token: token)
                                                         .ConfigureAwait(false))
                                     continue;
                                 blnRefreshMru = true;
@@ -2231,7 +2234,8 @@ namespace Chummer
                         string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                         Character objCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
+                                async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase),
+                                _objGenericToken).ConfigureAwait(false);
                         if (objCharacter == null)
                         {
                             string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
@@ -2278,7 +2282,8 @@ namespace Chummer
                     string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
+                            async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase),
+                            _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
                         string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
@@ -2324,7 +2329,8 @@ namespace Chummer
                     string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(
-                            x => x.FileName == strFileName, _objGenericToken).ConfigureAwait(false);
+                            async (x, t2) => string.Equals(await x.GetFileNameAsync(t2).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase),
+                            _objGenericToken).ConfigureAwait(false);
                     if (objCharacter == null)
                     {
                         string strFilePath = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
@@ -2450,7 +2456,7 @@ namespace Chummer
                 try
                 {
                     Character objOpenCharacter
-                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, _objGenericToken)
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), _objGenericToken)
                                        .ConfigureAwait(false);
                     if (objOpenCharacter != null)
                     {
@@ -2501,8 +2507,8 @@ namespace Chummer
                             = (strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                                || strTag.EndsWith(
                                    ".chum5lz", StringComparison.OrdinalIgnoreCase))
-                              && Program.MainForm.OpenFormsWithCharacters.Any(
-                                  x => x.CharacterObjects.Any(y => y.FileName == strTag));
+                              && await Program.MainForm.OpenFormsWithCharacters.AnyAsync(
+                                  (x, t1) => x.CharacterObjects.AnyAsync((y, t2) => string.Equals(await y.GetFileNameAsync(t2).ConfigureAwait(false), strTag, StringComparison.OrdinalIgnoreCase), t1), _objGenericToken).ConfigureAwait(false);
                         ContextMenuStrip objStrip =
                             await CreateContextMenuStripAsync(blnIncludeCloseOpenCharacter, _objGenericToken)
                                 .ConfigureAwait(false);

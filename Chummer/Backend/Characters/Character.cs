@@ -4322,7 +4322,7 @@ namespace Chummer
 
             if (string.IsNullOrWhiteSpace(strFileName))
             {
-                strFileName = FileName;
+                strFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(strFileName))
                 {
                     return false;
@@ -4332,7 +4332,7 @@ namespace Chummer
                      && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
             {
                 strFileName = Path.GetFileNameWithoutExtension(strFileName) + ".chum5";
-                string strExistingFileName = FileName;
+                string strExistingFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(strExistingFileName)
                     && strExistingFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
@@ -6193,7 +6193,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strFileName))
-                strFileName = FileName;
+                strFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
             if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                                               && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
                 return false;

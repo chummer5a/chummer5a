@@ -1445,14 +1445,28 @@ namespace Chummer
                     if (!blnLoaded)
                         return null;
 
-                    // If a new name is given, set the character's name to match (used in cloning).
-                    if (!string.IsNullOrEmpty(strNewName))
-                        objCharacter.Name = strNewName;
-                    // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                    if (blnClearFileName
-                        // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                        || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
-                        objCharacter.FileName = string.Empty;
+                    if (blnSync)
+                    {
+                        // If a new name is given, set the character's name to match (used in cloning).
+                        if (!string.IsNullOrEmpty(strNewName))
+                            objCharacter.Name = strNewName;
+                        // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                        if (blnClearFileName
+                            // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                            || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                            objCharacter.FileName = string.Empty;
+                    }
+                    else
+                    {
+                        // If a new name is given, set the character's name to match (used in cloning).
+                        if (!string.IsNullOrEmpty(strNewName))
+                            await objCharacter.SetNameAsync(strNewName, token).ConfigureAwait(false);
+                        // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                        if (blnClearFileName
+                            // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                            || (await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)).StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                            await objCharacter.SetFileNameAsync(string.Empty, token).ConfigureAwait(false);
+                    }
                 }
                 catch
                 {

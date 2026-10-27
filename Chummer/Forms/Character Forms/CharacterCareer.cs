@@ -5018,7 +5018,7 @@ namespace Chummer
                             await objVessel.SetFileNameAsync(strFileName, GenericToken).ConfigureAwait(false);
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                       Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7,
+                                       Path.GetFileName(await objVessel.GetFileNameAsync(GenericToken).ConfigureAwait(false)), Character.NumLoadingSections * 2 + 7,
                                        GenericToken).ConfigureAwait(false))
                             {
                                 bool blnSuccess = await objVessel
@@ -5182,7 +5182,7 @@ namespace Chummer
                             await objVessel.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        string strShowFileName = Path.GetFileName(objMerge.FileName);
+                        string strShowFileName = Path.GetFileName(await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false));
                         if (string.IsNullOrEmpty(strShowFileName))
                             strShowFileName = objMerge.CharacterName;
                         strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz")
@@ -5203,11 +5203,11 @@ namespace Chummer
                             await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
                                                                         LoadingBar.ProgressBarTextPatterns.Saving,
                                                                         token: GenericToken).ConfigureAwait(false);
-                            objMerge.FileName = dlgSaveFile.FileName;
+                            await objMerge.SetFileNameAsync(dlgSaveFile.FileName, GenericToken).ConfigureAwait(false);
                             if (await objMerge.SaveAsync(token: GenericToken).ConfigureAwait(false))
                             {
                                 // Get the name of the file and destroy the references to the Vessel and the merged character.
-                                strOpenFile = objMerge.FileName;
+                                strOpenFile = await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false);
                             }
                         }
                     }

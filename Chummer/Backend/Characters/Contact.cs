@@ -3188,7 +3188,7 @@ namespace Chummer
                         if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                             || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                         {
-                            if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile)) == null)
+                            if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => string.Equals(x.FileName, strFile, StringComparison.OrdinalIgnoreCase))) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                        = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
@@ -3303,8 +3303,8 @@ namespace Chummer
                             || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                         {
                             if ((_objLinkedCharacter = await Program.OpenCharacters
-                                    .FirstOrDefaultAsync(x => x.FileName == strFile, token: token)
-                                    .ConfigureAwait(false)) == null)
+                                    .FirstOrDefaultAsync(async (x, t) => string.Equals(strFile, await x.GetFileNameAsync(t).ConfigureAwait(false), StringComparison.OrdinalIgnoreCase),
+                                        token: token).ConfigureAwait(false)) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                        = await Program

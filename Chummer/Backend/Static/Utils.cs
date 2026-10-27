@@ -980,7 +980,10 @@ namespace Chummer
                     {
                         foreach (CharacterShared objOpenCharacterForm in lstToProcess)
                         {
-                            string strLoopFileName = objOpenCharacterForm.CharacterObject?.FileName ?? string.Empty;
+                            Character objLoop = objOpenCharacterForm.CharacterObject;
+                            string strLoopFileName = objLoop != null
+                                ? await objLoop.GetFileNameAsync(token).ConfigureAwait(false)
+                                : string.Empty;
                             if (!string.IsNullOrEmpty(strLoopFileName))
                                 sbdArguments.Append('\"', strLoopFileName, "\" ");
                         }

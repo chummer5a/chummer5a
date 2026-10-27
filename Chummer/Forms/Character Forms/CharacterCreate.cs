@@ -21257,7 +21257,7 @@ namespace Chummer
                                 }
                             }
 
-                            string strNewName = Path.GetFileNameWithoutExtension(CharacterObject.FileName);
+                            string strNewName = Path.GetFileNameWithoutExtension(await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false));
                             if (string.IsNullOrEmpty(strNewName))
                             {
                                 strNewName = await CharacterObject.GetAliasAsync(token).ConfigureAwait(false);
@@ -21276,8 +21276,8 @@ namespace Chummer
                                                                    "Title_CreateMode", token: token)
                                                                .ConfigureAwait(false)
                                                            + ").chum5";
-                            if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) ==
-                                true)
+                            string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strFileName) && strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                 strNewName += "lz";
                             strNewName = Path.Combine(Utils.GetBackupSavesFolderPath, strNewName);
 

@@ -711,7 +711,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
                 objOpenCharacter = await Program.OpenCharacters
-                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal), token)
+                    .FirstOrDefaultAsync(async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFileName, StringComparison.OrdinalIgnoreCase), token)
                     .ConfigureAwait(false);
                 if (objOpenCharacter == null)
                 {
@@ -1005,16 +1005,16 @@ namespace Chummer
                         {
                             if (Program.MainForm.OpenCharacterEditorForms?.Any(
                                 x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
-                                    StringComparison.Ordinal)) == true)
+                                    StringComparison.OrdinalIgnoreCase)) == true)
                                 sbdMarker.Append('*');
                             if (Program.MainForm.OpenCharacterSheetViewers?.Any(
                                     x => x.CharacterObjects.Any(y =>
                                         !y.IsDisposed && string.Equals(y.FileName, strFilePath,
-                                            StringComparison.Ordinal))) == true)
+                                            StringComparison.OrdinalIgnoreCase))) == true)
                                 sbdMarker.Append('^');
                             if (Program.MainForm.OpenCharacterExportForms?.Any(
                                     x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
-                                        StringComparison.Ordinal)) == true)
+                                        StringComparison.OrdinalIgnoreCase)) == true)
                                 sbdMarker.Append('\'');
                             if (sbdMarker.Length > 0)
                                 sbdReturn.Insert(0, sbdMarker.Append(strSpace).ToString());
@@ -1078,13 +1078,13 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMarker))
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess1
-                            = Program.MainForm.OpenCharacterEditorForms;
+                                = Program.MainForm.OpenCharacterEditorForms;
                             if (lstToProcess1 != null && await lstToProcess1
                                     .AnyAsync(
                                         async (x, t) => !x.CharacterObject.IsDisposed &&
                                                    string.Equals(
                                                        await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
-                                                       strFilePath, StringComparison.Ordinal), token)
+                                                       strFilePath, StringComparison.OrdinalIgnoreCase), token)
                                     .ConfigureAwait(false))
                                 sbdMarker.Append('*');
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
@@ -1094,7 +1094,7 @@ namespace Chummer
                                         (x, t1) => x.CharacterObjects.AnyAsync(
                                             async (y, t2) => !y.IsDisposed && string.Equals(
                                                 await y.GetFileNameAsync(t2).ConfigureAwait(false), strFilePath,
-                                                StringComparison.Ordinal), t1), token).ConfigureAwait(false))
+                                                StringComparison.OrdinalIgnoreCase), t1), token).ConfigureAwait(false))
                                 sbdMarker.Append('^');
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                                 = Program.MainForm.OpenCharacterExportForms;
@@ -1103,7 +1103,7 @@ namespace Chummer
                                         async (x, t) => !x.CharacterObject.IsDisposed &&
                                                    string.Equals(
                                                        await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
-                                                       strFilePath, StringComparison.Ordinal), token)
+                                                       strFilePath, StringComparison.OrdinalIgnoreCase), token)
                                     .ConfigureAwait(false))
                                 sbdMarker.Append('\'');
                             if (sbdMarker.Length > 0)

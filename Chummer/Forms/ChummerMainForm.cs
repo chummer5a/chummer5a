@@ -3466,7 +3466,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFile, token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -3639,10 +3639,13 @@ namespace Chummer
                                         stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                                 }
                             }, token).ConfigureAwait(false);
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
+                            if (blnIncludeInMru)
+                            {
+                                string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, strFileName, token).ConfigureAwait(false);
+                            }
                             //Timekeeper.Finish("load_event_time");
                         }
                     }
@@ -3784,10 +3787,13 @@ namespace Chummer
                                             stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                                     }
                                 }, token).ConfigureAwait(false);
-                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                    && File.Exists(objCharacter.FileName))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                if (blnIncludeInMru)
+                                {
+                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFileName, token).ConfigureAwait(false);
+                                }
                                 //Timekeeper.Finish("load_event_time");
                             }
                         }
@@ -3825,7 +3831,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFile, token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenPrintCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -3948,10 +3954,13 @@ namespace Chummer
                                 };
                             }, token: token).ConfigureAwait(false);
 
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
+                            if (blnIncludeInMru)
+                            {
+                                string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, strFileName, token).ConfigureAwait(false);
+                            }
                             //Timekeeper.Finish("load_event_time");
                         }
 
@@ -4114,10 +4123,13 @@ namespace Chummer
                                         new ValueTuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
                                 }, token: token).ConfigureAwait(false);
 
-                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                    && File.Exists(objCharacter.FileName))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                if (blnIncludeInMru)
+                                {
+                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFileName, token).ConfigureAwait(false);
+                                }
                                 //Timekeeper.Finish("load_event_time");
                             }
                         }
@@ -4208,7 +4220,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFile, token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, StringComparison.OrdinalIgnoreCase), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenExportCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
