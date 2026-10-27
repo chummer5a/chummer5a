@@ -105,19 +105,22 @@ namespace Chummer
         /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
         public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnIncludeLetters = true)
         {
-            if (sbdExpression.Length == 0)
+            int intLength = sbdExpression.Length;
+            if (intLength == 0)
                 return false;
             if (blnIncludeLetters)
             {
                 // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
-                if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
-                    return sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
-                return sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
+                return intLength > s_intXPathProcessingParallelizationThreshold
+                    ? sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x))
+                    : sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
             }
-            if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
-                return sbdExpression.Enumerate().Contains('{');
-            return sbdExpression.Enumerate().AsParallel().Contains('{');
+            return intLength > s_intXPathProcessingParallelizationThreshold
+                ? sbdExpression.Enumerate().AsParallel().Contains('{')
+                : sbdExpression.Enumerate().Contains('{');
         }
+
+        private static readonly int s_intXPathProcessingParallelizationThreshold = Utils.ThresholdToParallelizeForSmartMethods.DivAwayFromZero(s_setUppercaseLatinCharsAndOpenCurlyBracket.Count);
 
         // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
         private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
