@@ -46,6 +46,7 @@ Application:
 - When saving changes to global settings, if the user only changes settings that are automatically applied without needing to restart the program (e.g., linked PDFs), the program no longer prompts them to restart.
 - When attempting to open a linked PDF from a source label within a form that is not part of the basic character editor forms, the program now properly respects custom dataset changes to book codes when it attempts to find the PDF it needs to open.
 - Fixed an issue where certain languages that did not use Latin space characters for their spaces could not properly deal with PDF-related code.
+- The program will now also warn about potential handle issues when attempting to create a new character, not just when opening an existing one.
 
 Critters:
 - Added 58 Parazoologie 2075 (PZG) critters, including alternate forms and book-specific profiles.
@@ -333,6 +334,7 @@ Changed/New Strings:
 - Label_MasterIndex_NoLinkedPdfFound
 - Checkbox_FetchNotesFromPdf
 - Message_Options_CloseForms
+- String_ANewCharacter
 
 Build 226
 Application Changes:

@@ -2045,6 +2045,26 @@ namespace Chummer
                     Character objCharacter = new Character();
                     try
                     {
+                        if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm)
+                        {
+                            string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                   .ConfigureAwait(false);
+                            string strTooManyHandlesTitle
+                                = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            string strCharacterName
+                                = await LanguageManager.GetStringAsync("String_ANewCharacter", token: _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            if (await Program.ShowScrollableMessageBoxAsync(
+                                                                StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                                strTooManyHandlesTitle,
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
+                            {
+                                return;
+                            }
+                        }
+
                         using (ThreadSafeForm<SelectBuildMethod> frmPickSetting
                                = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
                                    () => new SelectBuildMethod(objCharacter), _objGenericToken).ConfigureAwait(false))
@@ -3350,12 +3370,32 @@ namespace Chummer
         {
             try
             {
-                Character objCharacter = new Character();
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                    Character objCharacter = new Character();
                     try
                     {
+                        if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm)
+                        {
+                            string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                   .ConfigureAwait(false);
+                            string strTooManyHandlesTitle
+                                = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            string strCharacterName
+                                = await LanguageManager.GetStringAsync("String_ANewCharacter", token: _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            if (await Program.ShowScrollableMessageBoxAsync(
+                                                                StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                                strTooManyHandlesTitle,
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
+                            {
+                                return;
+                            }
+                        }
+
                         // Show the BP selection window.
                         using (ThreadSafeForm<SelectBuildMethod> frmBP
                                = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
@@ -3388,15 +3428,7 @@ namespace Chummer
                         }
 
                         await Program.OpenCharacters.AddAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
 
-                    objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                    try
-                    {
                         await this.DoThreadSafeAsync(x =>
                         {
                             CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
@@ -3432,12 +3464,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        await objCharacter.DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                     }
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -3562,12 +3594,7 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
-                        string strTooManyHandles
-                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
-                                                   .ConfigureAwait(false);
-                        string strTooManyHandlesTitle
-                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
-                                                   .ConfigureAwait(false);
+                        
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
                                               .ConfigureAwait(false))
@@ -3584,19 +3611,25 @@ namespace Chummer
                                     && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
-                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm
-                                && await Program.ShowScrollableMessageBoxAsync(
-                                    StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm)
                             {
-                                if (await Program.OpenCharacters
-                                        .AllAsync(
-                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
-                                            token).ConfigureAwait(false))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token)
-                                        .ConfigureAwait(false);
-                                return;
+                                string strTooManyHandles
+                                    = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
+                                string strTooManyHandlesTitle
+                                    = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
+                                if (await Program.ShowScrollableMessageBoxAsync(
+                                                                StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                                strTooManyHandlesTitle,
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                                {
+                                    if (await Program.OpenCharacters
+                                            .AllAsync(
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
+                                                token).ConfigureAwait(false))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                            .ConfigureAwait(false);
+                                    return;
+                                }
                             }
 
                             //Timekeeper.Start("load_event_time");
