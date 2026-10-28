@@ -14724,11 +14724,6 @@
             <val>4</val>
             <type>Knowledge</type>
           </skill>
-          <skill>
-            <name>Magical Theory</name>
-            <val>4</val>
-            <type>Knowledge</type>
-          </skill>
         </oneof>
       </required>
       <source>FA</source>
@@ -16010,7 +16005,7 @@
               <val>4</val>
             </skill>
             <skill>
-              <name>Magical Traditions</name>
+              <name>Magic Traditions</name>
               <val>5</val>
               <type>Knowledge</type>
             </skill>
@@ -16025,7 +16020,7 @@
               <val>2</val>
             </skill>
             <skill>
-              <name>Magical Traditions</name>
+              <name>Magic Traditions</name>
               <val>3</val>
               <type>Knowledge</type>
             </skill>
@@ -17575,7 +17570,6 @@
         <oneof>
           <quality>Crystal Eye (One Eye)</quality>
           <quality>Crystal Eye (Two Eyes)</quality>
-          <quality>Crystal Eye (Three Eyes)</quality>
         </oneof>
       </required>
       <source>FA</source>
