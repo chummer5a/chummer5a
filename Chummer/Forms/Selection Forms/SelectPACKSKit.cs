@@ -859,7 +859,7 @@ namespace Chummer
             // Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
             foreach (string strFile in Directory.EnumerateFiles(Utils.GetPacksFolderPath, "*_packs.xml"))
             {
-                if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("custom_", Utils.PathStringComparison))
                     continue;
                 using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
                 {

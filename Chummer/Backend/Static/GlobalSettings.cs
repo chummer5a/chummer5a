@@ -654,7 +654,8 @@ namespace Chummer
             {
                 string strPluginsJson = string.Empty;
                 LoadStringFromRegistry(ref strPluginsJson, "plugins");
-                if (!string.IsNullOrEmpty(strPluginsJson))
+                if (!string.IsNullOrEmpty(strPluginsJson)
+                    && strPluginsJson.Contains(bool.TrueString, StringComparison.OrdinalIgnoreCase)) // Sanity check so that we don't bother going through Json deserialization overhead if we know we don't have any plugins to load
                 {
                     ConcurrentDictionary<string, bool> dicTemp
                         = Newtonsoft.Json.JsonConvert.DeserializeObject<ConcurrentDictionary<string, bool>>(strPluginsJson);
@@ -845,39 +846,46 @@ namespace Chummer
 
             XmlManager.RebuildDataDirectoryInfo(s_SetCustomDataDirectoryInfos);
 
-            for (int i = 1; i <= MaxMruSize; i++)
+            using (s_LstFavoriteCharacters.LockObject.EnterUpgradeableReadLock()) // Just in case (also slightly helps speed writes up)
             {
-                object objLoopValue = s_ObjBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
-                if (objLoopValue != null)
+                for (int i = 1; i <= MaxMruSize; i++)
                 {
-                    string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !s_LstFavoriteCharacters.Contains(strFileName))
-                        s_LstFavoriteCharacters.Add(strFileName);
+                    object objLoopValue = s_ObjBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
+                    if (objLoopValue != null)
+                    {
+                        string strFileName = objLoopValue.ToString();
+                        if (File.Exists(strFileName) && !s_LstFavoriteCharacters.Contains(strFileName))
+                            s_LstFavoriteCharacters.Add(strFileName);
+                    }
                 }
-            }
 
-            s_LstFavoriteCharacters.Sort();
-            for (int i = 1; i <= MaxMruSize; ++i)
-            {
-                if (i <= s_LstFavoriteCharacters.Count)
-                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoriteCharacters[i - 1]);
-                else
-                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-            }
-            s_LstFavoriteCharacters.CollectionChangedAsync += LstFavoritedCharactersOnCollectionChanged;
-
-            for (int i = 1; i <= MaxMruSize; i++)
-            {
-                object objLoopValue = s_ObjBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
-                if (objLoopValue != null)
+                s_LstFavoriteCharacters.Sort();
+                int intNumFavorites = s_LstFavoriteCharacters.Count;
+                for (int i = 1; i <= MaxMruSize; ++i)
                 {
-                    string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !s_LstMostRecentlyUsedCharacters.Contains(strFileName))
-                        s_LstMostRecentlyUsedCharacters.Add(strFileName);
+                    if (i <= intNumFavorites)
+                        s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoriteCharacters[i - 1]);
+                    else
+                        s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                 }
+                s_LstFavoriteCharacters.CollectionChangedAsync += LstFavoritedCharactersOnCollectionChanged;
             }
 
-            s_LstMostRecentlyUsedCharacters.CollectionChangedAsync += LstMostRecentlyUsedCharactersOnCollectionChanged;
+            using (s_LstMostRecentlyUsedCharacters.LockObject.EnterUpgradeableReadLock()) // Just in case (also slightly helps speed writes up)
+            {
+                for (int i = 1; i <= MaxMruSize; i++)
+                {
+                    object objLoopValue = s_ObjBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
+                    if (objLoopValue != null)
+                    {
+                        string strFileName = objLoopValue.ToString();
+                        if (File.Exists(strFileName) && !s_LstMostRecentlyUsedCharacters.Contains(strFileName))
+                            s_LstMostRecentlyUsedCharacters.Add(strFileName);
+                    }
+                }
+
+                s_LstMostRecentlyUsedCharacters.CollectionChangedAsync += LstMostRecentlyUsedCharactersOnCollectionChanged;
+            }
 
             if (blnFirstEverLaunch)
                 ShowCharacterCustomDataWarning = false;
@@ -956,7 +964,12 @@ namespace Chummer
                 objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
 
                 //Save the Plugins-Dictionary
-                objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
+                if (PluginsEnabledDic.IsEmpty
+                    // Don't bother saving it if we don't have any plugins enabled
+                    || PluginsEnabledDic.GetValuesToListSafe().All(x => !x))
+                    objRegistry.SetValue("plugins", string.Empty);
+                else
+                    objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
 
                 token.ThrowIfCancellationRequested();
                 // Save the SourcebookInfo.
@@ -1425,7 +1438,7 @@ namespace Chummer
                 {
                     frmMain.TranslateWinForm();
                     IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
-                    if (lstToProcess != null)
+                    if (lstToProcess != null && lstToProcess.Count > 0)
                     {
                         foreach (Form frmLoop in lstToProcess)
                         {
@@ -1434,7 +1447,7 @@ namespace Chummer
                     }
 
                     lstToProcess = frmMain.OpenCharacterSheetViewers;
-                    if (lstToProcess != null)
+                    if (lstToProcess != null && lstToProcess.Count > 0)
                     {
                         foreach (Form frmLoop in lstToProcess)
                         {
@@ -1443,7 +1456,7 @@ namespace Chummer
                     }
 
                     lstToProcess = frmMain.OpenCharacterExportForms;
-                    if (lstToProcess != null)
+                    if (lstToProcess != null && lstToProcess.Count > 0)
                     {
                         foreach (Form frmLoop in lstToProcess)
                         {
@@ -1486,29 +1499,20 @@ namespace Chummer
             if (frmMain != null)
             {
                 await frmMain.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
-                if (lstToProcess != null)
+                ThreadSafeObservableCollection<CharacterShared> lstToProcess1 = frmMain.OpenCharacterEditorForms;
+                if (lstToProcess1 != null && await lstToProcess1.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                    }
+                    await lstToProcess1.ForEachAsync((x, t) => x.TranslateWinFormAsync(token: t), token).ConfigureAwait(false);
                 }
-                lstToProcess = frmMain.OpenCharacterSheetViewers;
-                if (lstToProcess != null)
+                ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2 = frmMain.OpenCharacterSheetViewers;
+                if (lstToProcess2 != null && await lstToProcess2.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                    }
+                    await lstToProcess2.ForEachAsync((x, t) => x.TranslateWinFormAsync(token: t), token).ConfigureAwait(false);
                 }
-                lstToProcess = frmMain.OpenCharacterExportForms;
-                if (lstToProcess != null)
+                ThreadSafeObservableCollection<ExportCharacter> lstToProcess3 = frmMain.OpenCharacterExportForms;
+                if (lstToProcess3 != null && await lstToProcess3.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                    }
+                    await lstToProcess3.ForEachAsync((x, t) => x.TranslateWinFormAsync(token: t), token).ConfigureAwait(false);
                 }
                 Form frmToProcess = frmMain.PrintMultipleCharactersForm;
                 if (frmToProcess != null)
@@ -2478,9 +2482,10 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
+                        int intCount = await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
                         for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                            if (i <= intCount)
                                 s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
                                     await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
                             else
@@ -2492,9 +2497,10 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
+                        int intCount = await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
                         for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                            if (i <= intCount)
                                 s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
                                     await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
                             else
@@ -2511,9 +2517,10 @@ namespace Chummer
                                 "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                         else
                         {
+                            int intCount = await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                if (i <= intCount)
                                     s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
                                         await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token)
                                             .ConfigureAwait(false));
@@ -2554,9 +2561,10 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Reset:
                     {
+                        int intCount = await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
                         for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                            if (i <= intCount)
                                 s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
                                     await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
                             else
@@ -2602,9 +2610,10 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                     {
+                        int intCount = await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
                         for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                            if (i <= intCount)
                                 s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
                                     await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
                                         .ConfigureAwait(false));
@@ -2616,9 +2625,10 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Remove:
                     {
+                        int intCount = await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
                         for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                            if (i <= intCount)
                                 s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
                                     await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
                                         .ConfigureAwait(false));
@@ -2638,10 +2648,10 @@ namespace Chummer
                         }
                         else
                         {
+                            int intCount = await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token)
-                                        .ConfigureAwait(false))
+                                if (i <= intCount)
                                     s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
                                         await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
                                             .ConfigureAwait(false));
@@ -2681,9 +2691,10 @@ namespace Chummer
                     }
                     case NotifyCollectionChangedAction.Reset:
                     {
+                        int intCount = await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
                         for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                            if (i <= intCount)
                                 s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
                                     await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
                                         .ConfigureAwait(false));

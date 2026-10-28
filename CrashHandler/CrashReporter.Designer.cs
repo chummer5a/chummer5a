@@ -35,6 +35,7 @@ namespace CrashHandler
             this.tabUserStories = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.tlpUserStory = new System.Windows.Forms.TableLayoutPanel();
+            this.txtDescription = new System.Windows.Forms.TextBox();
             this.txtIdSelectable2 = new System.Windows.Forms.TextBox();
             this.txtIdSelectable = new System.Windows.Forms.TextBox();
             this.lblDetails = new System.Windows.Forms.Label();
@@ -45,10 +46,9 @@ namespace CrashHandler
             this.cmdSubmitIssue = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdReportToDiscord = new System.Windows.Forms.Button();
             this.cmdRestart = new System.Windows.Forms.Button();
             this.lblDescriptionWarning = new System.Windows.Forms.Label();
-            this.txtDescription = new System.Windows.Forms.TextBox();
-            this.cmdReportToDiscord = new System.Windows.Forms.Button();
             this.stpMain.SuspendLayout();
             this.tabUserStories.SuspendLayout();
             this.tabGeneral.SuspendLayout();
@@ -135,6 +135,24 @@ namespace CrashHandler
             this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpUserStory.Size = new System.Drawing.Size(764, 456);
             this.tlpUserStory.TabIndex = 21;
+            // 
+            // txtDescription
+            // 
+            this.txtDescription.BackColor = System.Drawing.SystemColors.Control;
+            this.txtDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tlpUserStory.SetColumnSpan(this.txtDescription, 2);
+            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescription.Location = new System.Drawing.Point(6, 289);
+            this.txtDescription.Margin = new System.Windows.Forms.Padding(6);
+            this.txtDescription.MaxLength = 2147483647;
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.ReadOnly = true;
+            this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDescription.Size = new System.Drawing.Size(752, 161);
+            this.txtDescription.TabIndex = 25;
+            this.txtDescription.TabStop = false;
+            this.txtDescription.Text = "[DESC]";
             // 
             // txtIdSelectable2
             // 
@@ -288,6 +306,20 @@ namespace CrashHandler
             this.tlpButtons.Size = new System.Drawing.Size(456, 42);
             this.tlpButtons.TabIndex = 14;
             // 
+            // cmdReportToDiscord
+            // 
+            this.cmdReportToDiscord.AutoSize = true;
+            this.cmdReportToDiscord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdReportToDiscord.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdReportToDiscord.Location = new System.Drawing.Point(3, 3);
+            this.cmdReportToDiscord.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdReportToDiscord.Name = "cmdReportToDiscord";
+            this.cmdReportToDiscord.Size = new System.Drawing.Size(108, 36);
+            this.cmdReportToDiscord.TabIndex = 14;
+            this.cmdReportToDiscord.Text = "Report to Chummer\r\nDiscord Server";
+            this.cmdReportToDiscord.UseVisualStyleBackColor = true;
+            this.cmdReportToDiscord.Click += new System.EventHandler(this.cmdReportToDiscord_Click);
+            // 
             // cmdRestart
             // 
             this.cmdRestart.AutoSize = true;
@@ -313,38 +345,6 @@ namespace CrashHandler
             this.lblDescriptionWarning.TabIndex = 15;
             this.lblDescriptionWarning.Text = "Please make sure you have written some useful information in the Error Descriptio" +
     "n before creating an issue on GitHub.";
-            // 
-            // txtDescription
-            // 
-            this.txtDescription.BackColor = System.Drawing.SystemColors.Control;
-            this.txtDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tlpUserStory.SetColumnSpan(this.txtDescription, 2);
-            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescription.Location = new System.Drawing.Point(6, 289);
-            this.txtDescription.Margin = new System.Windows.Forms.Padding(6);
-            this.txtDescription.MaxLength = 2147483647;
-            this.txtDescription.Multiline = true;
-            this.txtDescription.Name = "txtDescription";
-            this.txtDescription.ReadOnly = true;
-            this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDescription.Size = new System.Drawing.Size(752, 161);
-            this.txtDescription.TabIndex = 25;
-            this.txtDescription.TabStop = false;
-            this.txtDescription.Text = "[DESC]";
-            // 
-            // cmdReportToDiscord
-            // 
-            this.cmdReportToDiscord.AutoSize = true;
-            this.cmdReportToDiscord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdReportToDiscord.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdReportToDiscord.Location = new System.Drawing.Point(3, 3);
-            this.cmdReportToDiscord.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdReportToDiscord.Name = "cmdReportToDiscord";
-            this.cmdReportToDiscord.Size = new System.Drawing.Size(108, 36);
-            this.cmdReportToDiscord.TabIndex = 14;
-            this.cmdReportToDiscord.Text = "Report to Chummer\r\nDiscord Server";
-            this.cmdReportToDiscord.UseVisualStyleBackColor = true;
-            this.cmdReportToDiscord.Click += new System.EventHandler(this.cmdReportToDiscord_Click);
             // 
             // CrashReporter
             // 

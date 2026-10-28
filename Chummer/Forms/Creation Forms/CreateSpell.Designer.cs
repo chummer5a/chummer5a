@@ -195,6 +195,7 @@ namespace Chummer
             this.chkRestricted.Size = new System.Drawing.Size(108, 17);
             this.chkRestricted.TabIndex = 8;
             this.chkRestricted.Text = "Restricted Target";
+            this.chkRestricted.ToolTipText = "";
             this.chkRestricted.UseVisualStyleBackColor = true;
             this.chkRestricted.CheckedChanged += new System.EventHandler(this.chkRestricted_CheckedChanged);
             // 
@@ -208,6 +209,7 @@ namespace Chummer
             this.chkVeryRestricted.Size = new System.Drawing.Size(132, 17);
             this.chkVeryRestricted.TabIndex = 9;
             this.chkVeryRestricted.Text = "Very Restricted Target";
+            this.chkVeryRestricted.ToolTipText = "";
             this.chkVeryRestricted.UseVisualStyleBackColor = true;
             this.chkVeryRestricted.CheckedChanged += new System.EventHandler(this.chkVeryRestricted_CheckedChanged);
             // 
@@ -291,6 +293,7 @@ namespace Chummer
             this.chkModifier14.Size = new System.Drawing.Size(100, 17);
             this.chkModifier14.TabIndex = 13;
             this.chkModifier14.Text = "[Modifier Name]";
+            this.chkModifier14.ToolTipText = "";
             this.chkModifier14.UseVisualStyleBackColor = true;
             this.chkModifier14.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -303,6 +306,7 @@ namespace Chummer
             this.chkModifier13.Size = new System.Drawing.Size(100, 17);
             this.chkModifier13.TabIndex = 12;
             this.chkModifier13.Text = "[Modifier Name]";
+            this.chkModifier13.ToolTipText = "";
             this.chkModifier13.UseVisualStyleBackColor = true;
             this.chkModifier13.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -315,6 +319,7 @@ namespace Chummer
             this.chkModifier12.Size = new System.Drawing.Size(100, 17);
             this.chkModifier12.TabIndex = 11;
             this.chkModifier12.Text = "[Modifier Name]";
+            this.chkModifier12.ToolTipText = "";
             this.chkModifier12.UseVisualStyleBackColor = true;
             this.chkModifier12.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -327,6 +332,7 @@ namespace Chummer
             this.chkModifier11.Size = new System.Drawing.Size(100, 17);
             this.chkModifier11.TabIndex = 10;
             this.chkModifier11.Text = "[Modifier Name]";
+            this.chkModifier11.ToolTipText = "";
             this.chkModifier11.UseVisualStyleBackColor = true;
             this.chkModifier11.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -339,6 +345,7 @@ namespace Chummer
             this.chkModifier10.Size = new System.Drawing.Size(100, 17);
             this.chkModifier10.TabIndex = 9;
             this.chkModifier10.Text = "[Modifier Name]";
+            this.chkModifier10.ToolTipText = "";
             this.chkModifier10.UseVisualStyleBackColor = true;
             this.chkModifier10.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -377,6 +384,7 @@ namespace Chummer
             this.chkModifier9.Size = new System.Drawing.Size(100, 17);
             this.chkModifier9.TabIndex = 8;
             this.chkModifier9.Text = "[Modifier Name]";
+            this.chkModifier9.ToolTipText = "";
             this.chkModifier9.UseVisualStyleBackColor = true;
             this.chkModifier9.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -389,6 +397,7 @@ namespace Chummer
             this.chkModifier8.Size = new System.Drawing.Size(100, 17);
             this.chkModifier8.TabIndex = 7;
             this.chkModifier8.Text = "[Modifier Name]";
+            this.chkModifier8.ToolTipText = "";
             this.chkModifier8.UseVisualStyleBackColor = true;
             this.chkModifier8.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -401,6 +410,7 @@ namespace Chummer
             this.chkModifier7.Size = new System.Drawing.Size(100, 17);
             this.chkModifier7.TabIndex = 6;
             this.chkModifier7.Text = "[Modifier Name]";
+            this.chkModifier7.ToolTipText = "";
             this.chkModifier7.UseVisualStyleBackColor = true;
             this.chkModifier7.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -413,6 +423,7 @@ namespace Chummer
             this.chkModifier6.Size = new System.Drawing.Size(100, 17);
             this.chkModifier6.TabIndex = 5;
             this.chkModifier6.Text = "[Modifier Name]";
+            this.chkModifier6.ToolTipText = "";
             this.chkModifier6.UseVisualStyleBackColor = true;
             this.chkModifier6.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -425,6 +436,7 @@ namespace Chummer
             this.chkModifier5.Size = new System.Drawing.Size(100, 17);
             this.chkModifier5.TabIndex = 4;
             this.chkModifier5.Text = "[Modifier Name]";
+            this.chkModifier5.ToolTipText = "";
             this.chkModifier5.UseVisualStyleBackColor = true;
             this.chkModifier5.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -437,6 +449,7 @@ namespace Chummer
             this.chkModifier4.Size = new System.Drawing.Size(100, 17);
             this.chkModifier4.TabIndex = 3;
             this.chkModifier4.Text = "[Modifier Name]";
+            this.chkModifier4.ToolTipText = "";
             this.chkModifier4.UseVisualStyleBackColor = true;
             this.chkModifier4.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -450,6 +463,7 @@ namespace Chummer
             this.chkModifier3.Size = new System.Drawing.Size(100, 17);
             this.chkModifier3.TabIndex = 2;
             this.chkModifier3.Text = "[Modifier Name]";
+            this.chkModifier3.ToolTipText = "";
             this.chkModifier3.UseVisualStyleBackColor = true;
             this.chkModifier3.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -462,6 +476,7 @@ namespace Chummer
             this.chkModifier2.Size = new System.Drawing.Size(100, 17);
             this.chkModifier2.TabIndex = 1;
             this.chkModifier2.Text = "[Modifier Name]";
+            this.chkModifier2.ToolTipText = "";
             this.chkModifier2.UseVisualStyleBackColor = true;
             this.chkModifier2.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -474,6 +489,7 @@ namespace Chummer
             this.chkModifier1.Size = new System.Drawing.Size(100, 17);
             this.chkModifier1.TabIndex = 0;
             this.chkModifier1.Text = "[Modifier Name]";
+            this.chkModifier1.ToolTipText = "";
             this.chkModifier1.UseVisualStyleBackColor = true;
             this.chkModifier1.CheckedChanged += new System.EventHandler(this.chkModifier_CheckedChanged);
             // 
@@ -510,6 +526,7 @@ namespace Chummer
             this.chkArea.TabIndex = 19;
             this.chkArea.Tag = "String_DescArea";
             this.chkArea.Text = "Area";
+            this.chkArea.ToolTipText = "";
             this.chkArea.UseVisualStyleBackColor = true;
             this.chkArea.CheckedChanged += new System.EventHandler(this.chkArea_CheckedChanged);
             // 
@@ -524,6 +541,7 @@ namespace Chummer
             this.chkLimited.TabIndex = 20;
             this.chkLimited.Tag = "Checkbox_SelectSpell_LimitedSpell";
             this.chkLimited.Text = "Limited Spell";
+            this.chkLimited.ToolTipText = "";
             this.chkLimited.UseVisualStyleBackColor = true;
             // 
             // tlpMain

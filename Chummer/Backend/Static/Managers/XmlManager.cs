@@ -636,9 +636,7 @@ namespace Chummer
             }
 
             bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-            List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
-            lstKey.AddRange(astrRelevantCustomDataPaths);
-            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+            KeyArray<string> objDataKey = new KeyArray<string>(strLanguage, strPath, astrRelevantCustomDataPaths);
 
             token.ThrowIfCancellationRequested();
             IDisposable objLocker3 = null;
@@ -789,7 +787,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
-                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase) && strFileName != "packs.xml")
+                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison) && strFileName != "packs.xml")
                         continue;
                     strPath = Path.Combine(strDirectory, strFileName);
                     if (File.Exists(strPath))
@@ -818,9 +816,7 @@ namespace Chummer
                     astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
                         .ToArray();
                 bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
-                lstKey.AddRange(astrRelevantCustomDataPaths);
-                KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
+                KeyArray<string> objDataKey = new KeyArray<string>(strLanguage, strPath, astrRelevantCustomDataPaths);
 
                 XmlDocument xmlReturn = null;
                 // Create a new document that everything will be merged into.
@@ -1537,26 +1533,98 @@ namespace Chummer
             foreach (string strLoopPath in lstPaths)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Directory.Exists(strLoopPath))
-                    continue;
-                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase))
+                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison))
                 {
-                    if (strFileName == "packs.xml")
+                    if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
                         yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
                     else
                         continue;
                 }
+                else if (!Directory.Exists(strLoopPath))
+                    continue;
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))
                 {
                     token.ThrowIfCancellationRequested();
                     string strInnerFileName = Path.GetFileName(strLoopFile);
-                    if (strInnerFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                        || strInnerFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                        || strInnerFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                    if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                        || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                        || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
                     {
                         yield return strLoopPath;
                         break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Filter through a list of data paths and return a list of ones that modify the given file. Used to recycle data files between different rule sets.
+        /// </summary>
+        /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
+        /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
+        /// <param name="token">CancellationToken to use.</param>
+        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in <paramref name="lstPaths"/>.</returns>
+        private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (strFileName == "improvements.xml" || lstPaths == null)
+                yield break;
+            if (lstPaths.Count > Utils.ThresholdToParallelizeForSmartMethods / 4) // We don't know how many files each directory will have, so we'll assume 4
+            {
+                foreach (string strLoopPath in lstPaths.AsParallel())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison))
+                    {
+                        if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
+                            yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                        else
+                            continue;
+                    }
+                    else if (!Directory.Exists(strLoopPath))
+                        continue;
+                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                            SearchOption.AllDirectories))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strInnerFileName = Path.GetFileName(strLoopFile);
+                        if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                            || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                            || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                        {
+                            yield return strLoopPath;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (string strLoopPath in lstPaths)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison))
+                    {
+                        if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
+                            yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                        else
+                            continue;
+                    }
+                    else if (!Directory.Exists(strLoopPath))
+                        continue;
+                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                            SearchOption.AllDirectories))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strInnerFileName = Path.GetFileName(strLoopFile);
+                        if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                            || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                            || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                        {
+                            yield return strLoopPath;
+                            break;
+                        }
                     }
                 }
             }
@@ -1574,16 +1642,16 @@ namespace Chummer
                 if (s_DicCustomFilePathsWithExceptions.ContainsKey(strFile))
                     continue;
                 string strLoopFileName = Path.GetFileName(strFile);
-                if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                    && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                    && !strLoopFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                if (!strLoopFileName.StartsWith("override_", Utils.PathStringComparison)
+                    && !strLoopFileName.StartsWith("custom_", Utils.PathStringComparison)
+                    && !strLoopFileName.StartsWith("amend_", Utils.PathStringComparison))
                     continue;
                 lstPossibleCustomFiles.Add(strFile);
             }
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("override_", Utils.PathStringComparison))
                     continue;
                 try
                 {
@@ -1671,7 +1739,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("custom_", Utils.PathStringComparison))
                     continue;
                 try
                 {
@@ -1818,7 +1886,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("amend_", Utils.PathStringComparison))
                     continue;
                 try
                 {
@@ -1884,16 +1952,16 @@ namespace Chummer
                 if (s_DicCustomFilePathsWithExceptions.ContainsKey(strFile))
                     continue;
                 string strLoopFileName = Path.GetFileName(strFile);
-                if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                    && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                    && !strLoopFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                if (!strLoopFileName.StartsWith("override_", Utils.PathStringComparison)
+                    && !strLoopFileName.StartsWith("custom_", Utils.PathStringComparison)
+                    && !strLoopFileName.StartsWith("amend_", Utils.PathStringComparison))
                     continue;
                 lstPossibleCustomFiles.Add(strFile);
             }
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("override_", Utils.PathStringComparison))
                     continue;
                 try
                 {
@@ -1984,7 +2052,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("custom_", Utils.PathStringComparison))
                     continue;
                 try
                 {
@@ -2132,7 +2200,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetFileName(strFile).StartsWith("amend_", Utils.PathStringComparison))
                     continue;
                 try
                 {
@@ -3166,12 +3234,12 @@ namespace Chummer
                         string strFileName = Path.GetFileName(strFile);
 
                         if (string.IsNullOrEmpty(strFileName)
-                            || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith("packs.xml", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith("lifemodules.xml", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith("sheets.xml", StringComparison.OrdinalIgnoreCase))
+                            || strFileName.StartsWith("amend_", Utils.PathStringComparison)
+                            || strFileName.StartsWith("custom_", Utils.PathStringComparison)
+                            || strFileName.StartsWith("override_", Utils.PathStringComparison)
+                            || strFile.EndsWith("packs.xml", Utils.PathStringComparison)
+                            || strFile.EndsWith("lifemodules.xml", Utils.PathStringComparison)
+                            || strFile.EndsWith("sheets.xml", Utils.PathStringComparison))
                             continue;
 
                         // First pass: make sure the document exists.
@@ -3218,10 +3286,10 @@ namespace Chummer
                                              || strTypeName == "comforts"
                                              || strTypeName == "neighborhoods"
                                              || strTypeName == "securities")
-                                            && strFile.EndsWith("lifestyles.xml", StringComparison.OrdinalIgnoreCase))
+                                            && strFile.EndsWith("lifestyles.xml", Utils.PathStringComparison))
                                             continue;
                                         if (strTypeName == "modifiers"
-                                            && strFile.EndsWith("ranges.xml", StringComparison.OrdinalIgnoreCase))
+                                            && strFile.EndsWith("ranges.xml", Utils.PathStringComparison))
                                             continue;
 
                                         string strChildName = objChild.Name;
@@ -3262,9 +3330,9 @@ namespace Chummer
                                                         blnAltPage = true;
 
                                                     if (strFile.EndsWith("mentors.xml",
-                                                                         StringComparison.OrdinalIgnoreCase)
+                                                                         Utils.PathStringComparison)
                                                         || strFile.EndsWith(
-                                                            "paragons.xml", StringComparison.OrdinalIgnoreCase))
+                                                            "paragons.xml", Utils.PathStringComparison))
                                                     {
                                                         if (xmlNode.SelectSingleNodeAndCacheExpression(
                                                                 "altadvantage", token: token) != null)
@@ -3415,7 +3483,7 @@ namespace Chummer
                                         {
                                             //Ignore this node, as it's a comment node.
                                         }
-                                        else if (strFile.EndsWith("tips.xml", StringComparison.OrdinalIgnoreCase))
+                                        else if (strFile.EndsWith("tips.xml", Utils.PathStringComparison))
                                         {
                                             XPathNavigator xmlText
                                                 = objChild.SelectSingleNodeAndCacheExpression("text", token: token);

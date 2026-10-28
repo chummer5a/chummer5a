@@ -171,7 +171,7 @@ namespace Chummer
                             UpdateTrackedNodes_Location();
                     }
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -202,7 +202,7 @@ namespace Chummer
                         });
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
@@ -331,7 +331,7 @@ namespace Chummer
                             await UpdateTrackedNodes_LocationAsync(token).ConfigureAwait(false);
                     }
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -356,7 +356,7 @@ namespace Chummer
                         }, token: token).ConfigureAwait(false);
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
@@ -3229,10 +3229,10 @@ namespace Chummer
                     if (!blnError)
                     {
                         string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                        if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (strFile.EndsWith(".chum5", Utils.PathStringComparison)
+                            || strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
-                            if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile)) == null)
+                            if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => string.Equals(x.FileName, strFile, Utils.PathStringComparison))) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                        = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
@@ -3343,12 +3343,12 @@ namespace Chummer
                     if (!blnError)
                     {
                         string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                        if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        if (strFile.EndsWith(".chum5", Utils.PathStringComparison)
+                            || strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
                             if ((_objLinkedCharacter = await Program.OpenCharacters
-                                    .FirstOrDefaultAsync(x => x.FileName == strFile, token: token)
-                                    .ConfigureAwait(false)) == null)
+                                    .FirstOrDefaultAsync(async (x, t) => string.Equals(strFile, await x.GetFileNameAsync(t).ConfigureAwait(false), Utils.PathStringComparison),
+                                        token: token).ConfigureAwait(false)) == null)
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                        = await Program

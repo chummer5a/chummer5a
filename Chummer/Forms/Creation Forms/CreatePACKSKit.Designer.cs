@@ -68,6 +68,7 @@ namespace Chummer
             this.chkAttributes.TabIndex = 4;
             this.chkAttributes.Tag = "Checkbox_CreatePACKSKit_Attributes";
             this.chkAttributes.Text = "Attributes";
+            this.chkAttributes.ToolTipText = "";
             this.chkAttributes.UseVisualStyleBackColor = true;
             // 
             // chkQualities
@@ -81,6 +82,7 @@ namespace Chummer
             this.chkQualities.TabIndex = 5;
             this.chkQualities.Tag = "Checkbox_CreatePACKSKit_Qualities";
             this.chkQualities.Text = "Qualities";
+            this.chkQualities.ToolTipText = "";
             this.chkQualities.UseVisualStyleBackColor = true;
             // 
             // chkStartingNuyen
@@ -94,6 +96,7 @@ namespace Chummer
             this.chkStartingNuyen.TabIndex = 6;
             this.chkStartingNuyen.Tag = "Checkbox_CreatePACKSKit_StartingNuyen";
             this.chkStartingNuyen.Text = "Starting Nuyen";
+            this.chkStartingNuyen.ToolTipText = "";
             this.chkStartingNuyen.UseVisualStyleBackColor = true;
             // 
             // chkActiveSkills
@@ -107,6 +110,7 @@ namespace Chummer
             this.chkActiveSkills.TabIndex = 7;
             this.chkActiveSkills.Tag = "Checkbox_CreatePACKSKit_ActiveSkills";
             this.chkActiveSkills.Text = "Active Skills";
+            this.chkActiveSkills.ToolTipText = "";
             this.chkActiveSkills.UseVisualStyleBackColor = true;
             this.chkActiveSkills.Visible = false;
             // 
@@ -121,6 +125,7 @@ namespace Chummer
             this.chkKnowledgeSkills.TabIndex = 8;
             this.chkKnowledgeSkills.Tag = "Checkbox_CreatePACKSKit_KnowledgeSkills";
             this.chkKnowledgeSkills.Text = "Knowledge Skills";
+            this.chkKnowledgeSkills.ToolTipText = "";
             this.chkKnowledgeSkills.UseVisualStyleBackColor = true;
             this.chkKnowledgeSkills.Visible = false;
             // 
@@ -135,6 +140,7 @@ namespace Chummer
             this.chkMartialArts.TabIndex = 9;
             this.chkMartialArts.Tag = "Checkbox_CreatePACKSKit_MartialArts";
             this.chkMartialArts.Text = "Martial Arts";
+            this.chkMartialArts.ToolTipText = "";
             this.chkMartialArts.UseVisualStyleBackColor = true;
             // 
             // chkSpells
@@ -148,6 +154,7 @@ namespace Chummer
             this.chkSpells.TabIndex = 10;
             this.chkSpells.Tag = "Checkbox_CreatePACKSKit_Spells";
             this.chkSpells.Text = "Spells";
+            this.chkSpells.ToolTipText = "";
             this.chkSpells.UseVisualStyleBackColor = true;
             // 
             // chkComplexForms
@@ -161,6 +168,7 @@ namespace Chummer
             this.chkComplexForms.TabIndex = 11;
             this.chkComplexForms.Tag = "Checkbox_CreatePACKSKit_ComplexForms";
             this.chkComplexForms.Text = "Complex Forms";
+            this.chkComplexForms.ToolTipText = "";
             this.chkComplexForms.UseVisualStyleBackColor = true;
             // 
             // chkCyberware
@@ -174,6 +182,7 @@ namespace Chummer
             this.chkCyberware.TabIndex = 12;
             this.chkCyberware.Tag = "Checkbox_CreatePACKSKit_Cyberware";
             this.chkCyberware.Text = "Cyberware/Bioware";
+            this.chkCyberware.ToolTipText = "";
             this.chkCyberware.UseVisualStyleBackColor = true;
             // 
             // chkLifestyle
@@ -187,6 +196,7 @@ namespace Chummer
             this.chkLifestyle.TabIndex = 13;
             this.chkLifestyle.Tag = "Checkbox_CreatePACKSKit_Lifestyle";
             this.chkLifestyle.Text = "Lifestyle";
+            this.chkLifestyle.ToolTipText = "";
             this.chkLifestyle.UseVisualStyleBackColor = true;
             // 
             // chkArmor
@@ -200,6 +210,7 @@ namespace Chummer
             this.chkArmor.TabIndex = 14;
             this.chkArmor.Tag = "Checkbox_CreatePACKSKit_Armor";
             this.chkArmor.Text = "Armor";
+            this.chkArmor.ToolTipText = "";
             this.chkArmor.UseVisualStyleBackColor = true;
             // 
             // chkWeapons
@@ -213,6 +224,7 @@ namespace Chummer
             this.chkWeapons.TabIndex = 15;
             this.chkWeapons.Tag = "Checkbox_CreatePACKSKit_Weapons";
             this.chkWeapons.Text = "Weapons";
+            this.chkWeapons.ToolTipText = "";
             this.chkWeapons.UseVisualStyleBackColor = true;
             // 
             // chkGear
@@ -226,6 +238,7 @@ namespace Chummer
             this.chkGear.TabIndex = 16;
             this.chkGear.Tag = "Checkbox_CreatePACKSKit_Gear";
             this.chkGear.Text = "Gear";
+            this.chkGear.ToolTipText = "";
             this.chkGear.UseVisualStyleBackColor = true;
             // 
             // chkVehicles
@@ -239,6 +252,7 @@ namespace Chummer
             this.chkVehicles.TabIndex = 17;
             this.chkVehicles.Tag = "Checkbox_CreatePACKSKit_Vehicles";
             this.chkVehicles.Text = "Vehicles";
+            this.chkVehicles.ToolTipText = "";
             this.chkVehicles.UseVisualStyleBackColor = true;
             // 
             // lblNameLabel

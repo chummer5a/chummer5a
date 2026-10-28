@@ -2721,7 +2721,7 @@
       </bioware>
       <bioware>
         <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
-        <name>Revitilization</name>
+        <name>Revitalization</name>
         <translate>Revitalisierung</translate>
         <altpage>158</altpage>
       </bioware>
@@ -5309,6 +5309,30 @@
         <translate>Spinndrüse</translate>
         <altpage>168</altpage>
       </power>
+      <power>
+        <id>ae7ff2ce-d465-5ab9-bbe6-51b9c6e7be52</id>
+        <name>Adaptive Camouflage</name>
+        <translate>Adaptive Tarnung</translate>
+        <altpage>76</altpage>
+      </power>
+      <power>
+        <id>7535cfeb-0007-5413-be12-74b55bfe907b</id>
+        <name>Pervasion</name>
+        <translate>Durchdringung</translate>
+        <altpage>76</altpage>
+      </power>
+      <power>
+        <id>d3037241-8810-52b1-908d-ef5ca8ffafb7</id>
+        <name>Hypnosis</name>
+        <translate>Hypnose</translate>
+        <altpage>77</altpage>
+      </power>
+      <power>
+        <id>693a141c-0807-51db-9dca-00c4b61ddd49</id>
+        <name>Taint</name>
+        <translate>Trübung</translate>
+        <altpage>79</altpage>
+      </power>
     </powers>
   </chummer>
   <chummer file="critters.xml">
@@ -7820,7 +7844,7 @@
       </metatype>
       <metatype>
         <id>1730e3dc-8f3e-4d79-9f85-6669dd1bc909</id>
-        <name>Ghazu Horses</name>
+        <name>Ghazu Horse</name>
         <translate>Ghazu</translate>
         <altpage>13</altpage>
       </metatype>
@@ -9198,6 +9222,132 @@
         <name>Detritus Spirit</name>
         <translate>Geröllgeist</translate>
         <altpage>53</altpage>
+      </metatype>
+      <metatype>
+        <id>6ab768cc-fe8c-5be5-9fac-fb4149cab444</id>
+        <name>Abrams Lobster (Parazoology)</name>
+        <translate>Abramshummer (Parazoologie)</translate>
+        <altpage>3</altpage>
+      </metatype>
+      <metatype>
+        <id>a815deb9-446c-5e9a-875e-094e6e99d0f1</id>
+        <name>Montauk (Parazoology)</name>
+        <translate>Montauk (Parazoologie)</translate>
+        <altpage>66</altpage>
+      </metatype>
+      <metatype>
+        <id>d99e571d-0b63-5432-b2a1-32c530cd98cf</id>
+        <name>Pit Badger</name>
+        <translate>Grubendachs</translate>
+        <altpage>29</altpage>
+      </metatype>
+      <metatype>
+        <id>a0d5dd28-a2a5-59a4-8218-4a2e98489949</id>
+        <name>Talis Cat (Cheetah)</name>
+        <translate>Alpkatze (Gepard)</translate>
+        <altpage>6</altpage>
+      </metatype>
+      <metatype>
+        <id>35437a5a-9b72-5a28-a280-f335deb03747</id>
+        <name>Talis Cat (House Cat)</name>
+        <translate>Alpkatze (Hauskatze)</translate>
+        <altpage>6</altpage>
+      </metatype>
+      <metatype>
+        <id>9216a805-61a7-5693-8eab-924212060f3f</id>
+        <name>Fiji Mermaid</name>
+        <translate>Fidschi-Meerjungfrau</translate>
+        <altpage>21</altpage>
+      </metatype>
+      <metatype>
+        <id>01e11702-6f4f-5a86-96dd-42b055b13e10</id>
+        <name>Aerial Lionhead</name>
+        <translate>Flugqualle</translate>
+        <altpage>22</altpage>
+      </metatype>
+      <metatype>
+        <id>8da386e9-0551-507c-9aa8-eeaf4dafb6da</id>
+        <name>Greater Dancing White Lady</name>
+        <translate>Große Fallenspinne</translate>
+        <altpage>28</altpage>
+      </metatype>
+      <metatype>
+        <id>bb47b69e-44e8-5c70-85dc-f88444cf6800</id>
+        <name>Madagascar Jelly</name>
+        <translate>Madagaskarqualle</translate>
+        <altpage>34</altpage>
+      </metatype>
+      <metatype>
+        <id>d44e33c2-4448-5380-b8f5-19b31affef7a</id>
+        <name>Parrot Fox</name>
+        <translate>Papageienfuchs</translate>
+        <altpage>39</altpage>
+      </metatype>
+      <metatype>
+        <id>edd437ef-efa9-5614-b3eb-d83f42008d7a</id>
+        <name>Hoofoe</name>
+        <translate>Papageienhopf</translate>
+        <altpage>40</altpage>
+      </metatype>
+      <metatype>
+        <id>e6e24563-36d7-5ca8-a949-f9b491bd1258</id>
+        <name>Giant Boar</name>
+        <translate>Riesenwildschwein</translate>
+        <altpage>41</altpage>
+      </metatype>
+      <metatype>
+        <id>92b2db1b-acd3-5484-b199-6c3cb2538ede</id>
+        <name>Jenny Haniver</name>
+        <translate>Schwimmkapuziner</translate>
+        <altpage>44</altpage>
+      </metatype>
+      <metatype>
+        <id>9150afcb-9b62-5d21-82b3-bd7cc8d2f887</id>
+        <name>Shasta Deer</name>
+        <translate>Shasta-Hirsch</translate>
+        <altpage>45</altpage>
+      </metatype>
+      <metatype>
+        <id>a9ded5d2-237a-518f-8ce2-7557026f3c81</id>
+        <name>Storm Wolf</name>
+        <translate>Sturmwolf</translate>
+        <altpage>49</altpage>
+      </metatype>
+      <metatype>
+        <id>25c6fdde-4d11-5fea-bf85-04c7c39577ff</id>
+        <name>Swamp Lizard</name>
+        <translate>Sumpfechse</translate>
+        <altpage>50</altpage>
+      </metatype>
+      <metatype>
+        <id>d94d3bdd-953c-5087-a0f2-bd436016cc63</id>
+        <name>Swamp Swallow</name>
+        <translate>Sumpfschwalbe</translate>
+        <altpage>51</altpage>
+      </metatype>
+      <metatype>
+        <id>378cba8d-197c-5ceb-ad36-b363becdc078</id>
+        <name>Protean</name>
+        <translate>Amöboid</translate>
+        <altpage>62</altpage>
+      </metatype>
+      <metatype>
+        <id>33eafc85-86f0-5dc6-8b6c-cee6d1a69e4e</id>
+        <name>Angeleno Cockroach</name>
+        <translate>Angeleno-Schabe</translate>
+        <altpage>69</altpage>
+      </metatype>
+      <metatype>
+        <id>92441b47-2ddf-59f8-ad95-26558f098c77</id>
+        <name>Mall Hawk</name>
+        <translate>Kaufhausfalke</translate>
+        <altpage>71</altpage>
+      </metatype>
+      <metatype>
+        <id>1ecc7163-2c3e-5f4e-9c5f-e7cf83244009</id>
+        <name>Mini Mokele-Mbembe</name>
+        <translate>Mini-Mokele-Mbembe</translate>
+        <altpage>37</altpage>
       </metatype>
     </metatypes>
   </chummer>
@@ -15614,8 +15764,8 @@
       </gear>
       <gear>
         <id>65f9b202-299c-4cc9-8979-67ebcb208e32</id>
-        <name>MTC Sarari-Man, Terminal (2050)</name>
-        <translate>MTC Sarari-Man, Terminal</translate>
+        <name>MCT Sarari-Man, Terminal (2050)</name>
+        <translate>MCT Sarari-Man, Terminal</translate>
         <altpage>170</altpage>
       </gear>
       <gear>
@@ -18900,8 +19050,8 @@
       </gear>
       <gear translated="True">
         <id>623827ad-2707-4522-ae26-615a6fdcd3a9</id>
-        <name>Taranke Tiger</name>
-        <translate>Taranke Tiger</translate>
+        <name>Tanake Tiger</name>
+        <translate>Tanake Tiger</translate>
         <altpage>144</altpage>
       </gear>
       <gear translated="True">
@@ -40607,8 +40757,8 @@
       </vehicle>
       <vehicle>
         <id>bc26a329-cf64-4a2d-841a-599f480762ff</id>
-        <name>Hughes Stallion WK-4 (2050)</name>
-        <translate>Hughes Stallion WK-4 (2050)</translate>
+        <name>Hughes WK-2 Stallion (2050)</name>
+        <translate>Hughes WK-2 Stallion (2050)</translate>
         <altpage>210</altpage>
       </vehicle>
       <vehicle>
@@ -41158,8 +41308,8 @@
       </vehicle>
       <vehicle translated="True">
         <id>90234226-413e-4fac-89ce-ffce9db69b12</id>
-        <name>Ruhrmetal Wolf II</name>
-        <translate>Ruhrmetal Wolf II</translate>
+        <name>Ruhrmetall Wolf II</name>
+        <translate>Ruhrmetall Wolf II</translate>
         <altpage>82</altpage>
       </vehicle>
       <vehicle translated="True">
@@ -41530,8 +41680,8 @@
       </vehicle>
       <vehicle>
         <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-        <name>NeoNET Prarie Dog (Small)</name>
-        <translate>NeoNET Prarie Dog</translate>
+        <name>NeoNET Prairie Dog (Small)</name>
+        <translate>NeoNET Prairie Dog</translate>
         <altpage>141</altpage>
       </vehicle>
       <vehicle>
@@ -41650,7 +41800,7 @@
       </vehicle>
       <vehicle>
         <id>e0343c07-3a15-4596-bcc0-5a2d6d160a6b</id>
-        <name>Saeder-Krupp MK-170 Neptune (Large)</name>
+        <name>Saeder-Krupp MK-17D Neptune (Large)</name>
         <translate>Saeder-Krupp MK-17D Neptune</translate>
         <altpage>151</altpage>
       </vehicle>
@@ -41812,7 +41962,7 @@
       </vehicle>
       <vehicle>
         <id>b448855b-57e7-435a-b523-174adb276674</id>
-        <name>NeoNET Juggernaut</name>
+        <name>NeoNET Juggernaught</name>
         <translate>NeoNET Juggernaught</translate>
         <altpage>154</altpage>
       </vehicle>
@@ -44733,7 +44883,7 @@
       </weapon>
       <weapon translated="True">
         <id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
-        <name>Nissan Optimum II</name>
+        <name>Nitama Optimum II</name>
         <translate>Nitama Optimum II</translate>
         <altpage>38</altpage>
       </weapon>
@@ -44979,8 +45129,8 @@
       </weapon>
       <weapon>
         <id>c0857027-d3b2-4677-bc97-3f98bcc6f80f</id>
-        <name>Ultamax HMG-2</name>
-        <translate>Ultamax SMG-2</translate>
+        <name>Ultimax HMG-2</name>
+        <translate>Ultimax SMG-2</translate>
         <altpage>45</altpage>
       </weapon>
       <weapon translated="True">
@@ -45435,7 +45585,7 @@
       </weapon>
       <weapon>
         <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-        <name>Nissan Optimum II Shotgun</name>
+        <name>Nitama Optimum II Shotgun</name>
         <translate>Nitama Optimum II Unterlauf-Schrotflinte</translate>
         <altpage>38</altpage>
       </weapon>
@@ -46275,7 +46425,7 @@
       </weapon>
       <weapon translated="True">
         <id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
-        <name>Ultamax MMG</name>
+        <name>Ultimax MMG</name>
         <translate>Ultimax MMG</translate>
         <altpage>44</altpage>
       </weapon>
@@ -51040,7 +51190,7 @@
       </drugcomponent>
       <drugcomponent>
         <id>04f24ebd-e1cc-4b57-abe7-c8aa3fa91539</id>
-        <name>Lighting</name>
+        <name>Lightning</name>
         <translate>Blitzangriff</translate>
         <altpage>190</altpage>
       </drugcomponent>

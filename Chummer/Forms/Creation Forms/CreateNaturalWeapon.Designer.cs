@@ -137,6 +137,11 @@ namespace Chummer
             this.nudDVMod.Name = "nudDVMod";
             this.nudDVMod.Size = new System.Drawing.Size(35, 20);
             this.nudDVMod.TabIndex = 7;
+            this.nudDVMod.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // lblDVPlus
             // 
@@ -168,6 +173,11 @@ namespace Chummer
             this.nudAP.Name = "nudAP";
             this.nudAP.Size = new System.Drawing.Size(35, 20);
             this.nudAP.TabIndex = 9;
+            this.nudAP.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // lblAP
             // 
@@ -230,6 +240,11 @@ namespace Chummer
             this.nudReach.Name = "nudReach";
             this.nudReach.Size = new System.Drawing.Size(35, 20);
             this.nudReach.TabIndex = 13;
+            this.nudReach.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // lblReach
             // 

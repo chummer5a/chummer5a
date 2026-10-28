@@ -390,6 +390,7 @@ namespace Chummer
             this.lblFilePath.TabIndex = 38;
             this.lblFilePath.Text = "[None]";
             this.lblFilePath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFilePath.ToolTipText = "";
             // 
             // lblFilePathLabel
             // 

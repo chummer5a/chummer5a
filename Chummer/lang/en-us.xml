@@ -1387,6 +1387,10 @@
       <text>Because Chummer is built on a very old foundation, it has problems with handling too many characters open at once. The program has detected that it is nearing that threshold and could potentially silently crash if it opens {0}.\n\nDo you wish to continue?</text>
     </string>
     <string>
+      <key>String_ANewCharacter</key>
+      <text>a new character</text>
+    </string>
+    <string>
       <key>MessageTitle_TooManyHandlesWarning</key>
       <text>Potential Silent Crash Possible</text>
     </string>
@@ -1679,6 +1683,14 @@
     <string>
       <key>Label_MasterIndex_SourceClickReminder</key>
       <text>&lt;- Click to Open Linked PDF</text>
+    </string>
+    <string>
+      <key>Label_MasterIndex_NoLinkedPdfFound</key>
+      <text>&lt;- No Linked PDF Found, Click to Link a PDF</text>
+    </string>
+    <string>
+      <key>Checkbox_FetchNotesFromPdf</key>
+      <text>Attempt to Fetch Notes from Linked PDFs</text>
     </string>
     <!-- End Region -->
     <!-- Region About -->
@@ -5590,6 +5602,74 @@
       <text>Addiction Threshold:</text>
     </string>
     <string>
+      <key>Label_AddictionType</key>
+      <text>Addiction Type:</text>
+    </string>
+    <string>
+      <key>String_AddictionType_Physiological</key>
+      <text>Physiological</text>
+    </string>
+    <string>
+      <key>String_AddictionType_Psychological</key>
+      <text>Psychological</text>
+    </string>
+    <string>
+      <key>String_AddictionType_Both</key>
+      <text>Both</text>
+    </string>
+    <string>
+      <key>Label_Vectors</key>
+      <text>Vectors:</text>
+    </string>
+    <string>
+      <key>String_Vector_Contact</key>
+      <text>Contact</text>
+    </string>
+    <string>
+      <key>String_Vector_Ingestion</key>
+      <text>Ingestion</text>
+    </string>
+    <string>
+      <key>String_Vector_Inhalation</key>
+      <text>Inhalation</text>
+    </string>
+    <string>
+      <key>String_Vector_Injection</key>
+      <text>Injection</text>
+    </string>
+    <string>
+      <key>Label_Elements</key>
+      <text>Elements:</text>
+    </string>
+    <string>
+      <key>String_Element_Acid</key>
+      <text>Acid</text>
+    </string>
+    <string>
+      <key>String_Element_Cold</key>
+      <text>Cold</text>
+    </string>
+    <string>
+      <key>String_Element_Electricity</key>
+      <text>Electricity</text>
+    </string>
+    <string>
+      <key>String_Element_Fire</key>
+      <text>Fire</text>
+    </string>
+    <string>
+      <key>String_Element_Pollutant</key>
+      <text>Pollutant</text>
+    </string>
+    <string>
+      <key>String_Element_Radiation</key>
+      <text>Radiation</text>
+    </string>
+    <string>
+      <key>String_Element_Water</key>
+      <text>Water</text>
+    </string>
+    <string>
       <key>Label_DrugEffects</key>
       <text>Effects:</text>
     </string>
@@ -8228,7 +8308,7 @@
     </string>
     <string>
       <key>Message_Options_CloseForms</key>
-      <text>Settings are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
+      <text>Some of the settings that were changed are only enumerated on startup, so their changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
     </string>
     <string>
       <key>Message_Options_SaveForms</key>
@@ -11149,6 +11229,10 @@
       <text>Only for Vehicle Stunt Tests</text>
     </string>
     <string>
+      <key>LimitCondition_TestDiagnosis</key>
+      <text>Only for Diagnosis Tests</text>
+    </string>
+    <string>
       <key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
       <text>Only for Performance, Must use linked synthtrument</text>
     </string>
@@ -11319,6 +11403,142 @@
     <string>
       <key>LimitCondition_SkillsActiveLeadership</key>
       <text>Only for Leadership</text>
+    </string>
+    <string>
+      <key>LimitCondition_AvoidUltrasound</key>
+      <text>Only to avoid detection via ultrasound</text>
+    </string>
+    <string>
+      <key>LimitCondition_CalmAtEmergency</key>
+      <text>Only to calm or pacify people at an emergency site</text>
+    </string>
+    <string>
+      <key>LimitCondition_DetectLies</key>
+      <text>Only to determine if someone is lying</text>
+    </string>
+    <string>
+      <key>LimitCondition_EscapeRestraints</key>
+      <text>Only for escaping hand restraints and small openings</text>
+    </string>
+    <string>
+      <key>LimitCondition_ExamineCloseActive</key>
+      <text>Only when examining material within 30 cm, Must be active</text>
+    </string>
+    <string>
+      <key>LimitCondition_FindFood</key>
+      <text>Only for finding food supplies</text>
+    </string>
+    <string>
+      <key>LimitCondition_FineManipulationActive</key>
+      <text>Only for fine manipulation, Must be active</text>
+    </string>
+    <string>
+      <key>LimitCondition_Hiding</key>
+      <text>Only while hiding</text>
+    </string>
+    <string>
+      <key>LimitCondition_IdentifyByImage</key>
+      <text>Only for Matrix Search to identify an individual by image</text>
+    </string>
+    <string>
+      <key>LimitCondition_IdentifySound</key>
+      <text>Only to identify a sound</text>
+    </string>
+    <string>
+      <key>LimitCondition_JumpedIn</key>
+      <text>Only when jumped into a vehicle or drone</text>
+    </string>
+    <string>
+      <key>LimitCondition_Knockdown</key>
+      <text>Only when comparing against DV for knockdown</text>
+    </string>
+    <string>
+      <key>LimitCondition_NakedStationary</key>
+      <text>Must be completely naked and stationary</text>
+    </string>
+    <string>
+      <key>LimitCondition_PerExposedBioTattoo</key>
+      <text>Per exposed bio-tattoo</text>
+    </string>
+    <string>
+      <key>LimitCondition_Rappelling</key>
+      <text>Only for rappelling</text>
+    </string>
+    <string>
+      <key>LimitCondition_ReadEmotions</key>
+      <text>Only to determine a target's emotional state</text>
+    </string>
+    <string>
+      <key>LimitCondition_SeductionVsMetahumans</key>
+      <text>Only for seduction vs metahumans</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionScent</key>
+      <text>Only for Perception (Scent)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionTaste</key>
+      <text>Only for Perception (Taste)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionTouch</key>
+      <text>Only for Perception (Touch)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsKnowledgeRelated</key>
+      <text>Only for related Knowledge Skill Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_SpeciesChosen</key>
+      <text>Only with the selected species</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainChosen</key>
+      <text>Only in the chosen terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainCold</key>
+      <text>Only in cold terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainDesert</key>
+      <text>Only in desert terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TerrainHot</key>
+      <text>Only in hot terrain</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestBuySellProduct</key>
+      <text>Only for Availability and Negotiation Tests to buy or sell the covered product type</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestMeleeCombat</key>
+      <text>Only for melee combat tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_TrackedTargets</key>
+      <text>Only regarding tracked targets</text>
+    </string>
+    <string>
+      <key>LimitCondition_UsingScent</key>
+      <text>Only when using olfactory sensors or the Scent critter power</text>
+    </string>
+    <string>
+      <key>LimitCondition_VsAnimals</key>
+      <text>Only vs animals</text>
+    </string>
+    <string>
+      <key>LimitCondition_VsGeneticSampleSource</key>
+      <text>Only vs the individual whose genetic sample was used</text>
+    </string>
+    <string>
+      <key>LimitCondition_VsMetahumans</key>
+      <text>Only vs metahumans</text>
+    </string>
+    <string>
+      <key>LimitCondition_WearerTroll</key>
+      <text>Only while the wearer is a troll</text>
     </string>
     <!-- End Region -->
     <string>

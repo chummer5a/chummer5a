@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -59,17 +60,7 @@ namespace Chummer
         public static SourceString GetSourceString(string strSourceString, string strLanguage = "",
                                                    CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
-            string strCode = strSourceString ?? string.Empty;
-            int intPage = 0;
-            int intWhitespaceIndex = strCode.IndexOf(' ');
-            if (intWhitespaceIndex != -1)
-            {
-                strCode = strCode.Substring(0, intWhitespaceIndex);
-                if (intWhitespaceIndex + 1 < strCode.Length)
-                {
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
-                }
-            }
+            (string strCode, int intPage) = CommonFunctions.SourceStringToBookPagePair(strSourceString, objSettings: objSettings, objCultureInfo: objCultureInfo);
             return GetSourceString(strCode, intPage, strLanguage, objCultureInfo, objSettings);
         }
 
@@ -78,21 +69,11 @@ namespace Chummer
             return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, objCharacter != null ? await objCharacter.GetSettingsAsync(token).ConfigureAwait(false) : null, token).ConfigureAwait(false);
         }
 
-        public static Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
+        public static async Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
                                                                          CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            string strCode = strSourceString ?? string.Empty;
-            int intPage = 0;
-            int intWhitespaceIndex = strCode.IndexOf(' ');
-            if (intWhitespaceIndex != -1)
-            {
-                strCode = strCode.Substring(0, intWhitespaceIndex);
-                if (intWhitespaceIndex + 1 < strCode.Length)
-                {
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
-                }
-            }
-            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objSettings, token);
+            (string strCode, int intPage) = await CommonFunctions.SourceStringToBookPagePairAsync(strSourceString, objSettings: objSettings, objCultureInfo: objCultureInfo, token: token).ConfigureAwait(false);
+            return await GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objSettings, token).ConfigureAwait(false);
         }
 
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
@@ -103,7 +84,8 @@ namespace Chummer
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage = "",
                                                    CultureInfo objCultureInfo = null, CharacterSettings objSettings = null)
         {
-            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+            if (!int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out int intPage))
+                int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
             return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objSettings);
         }
 
@@ -115,7 +97,8 @@ namespace Chummer
         public static Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
                                                                    CultureInfo objCultureInfo = null, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+            if (!int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out int intPage))
+                int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
             return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objSettings, token);
         }
 
@@ -229,6 +212,92 @@ namespace Chummer
 
         private readonly Lazy<string> _objTooltipInitializer;
         private readonly AsyncLazy<string> _objAsyncTooltipInitializer;
+
+        /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public bool HasLinkedPdf(CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = CommonFunctions.LanguageBookCodeFromAltCode(Code, Language, objSettings, token);
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!GlobalSettings.SourcebookInfos
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> HasLinkedPdfAsync(CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = await CommonFunctions.LanguageBookCodeFromAltCodeAsync(Code, Language, objSettings, token).ConfigureAwait(false);
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Gets a textblock from the PDF linked to this source string at this source string's page number.
+        /// </summary>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public string GetTextFromPdf(string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = CommonFunctions.LanguageBookCodeFromAltCode(Code, Language, objSettings, token);
+            return CommonFunctions.GetTextFromPdf(strBook, Page, strText, objSettings, token);
+        }
+
+        /// <summary>
+        /// Gets a textblock from the PDF linked to this source string at this source string's page number.
+        /// </summary>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<string> GetTextFromPdfAsync(string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = await CommonFunctions.LanguageBookCodeFromAltCodeAsync(Code, Language, objSettings, token).ConfigureAwait(false);
+            return await CommonFunctions.GetTextFromPdfAsync(strBook, Page, strText, objSettings, token).ConfigureAwait(false);
+        }
 
         public int CompareTo(object obj)
         {

@@ -1828,7 +1828,7 @@ namespace Chummer
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                                StringComparison.OrdinalIgnoreCase))
+                                                Utils.PathStringComparison))
                                             : aobjPaths;
                                     ParallelOptions objOptions = new ParallelOptions
                                     {
@@ -1925,7 +1925,7 @@ namespace Chummer
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                                StringComparison.OrdinalIgnoreCase))
+                                                Utils.PathStringComparison))
                                             : aobjPaths;
                                     string strInnerReturn = string.Empty;
                                     await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource, t) =>
@@ -2336,7 +2336,7 @@ namespace Chummer
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
                                 ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                                                     StringComparison.OrdinalIgnoreCase))
+                                                                     Utils.PathStringComparison))
                                 : aobjPaths;
                         ParallelOptions objOptions = new ParallelOptions
                         {
@@ -2432,7 +2432,7 @@ namespace Chummer
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
                                 ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                    StringComparison.OrdinalIgnoreCase))
+                                    Utils.PathStringComparison))
                                 : aobjPaths;
                         string strInnerReturn = string.Empty;
                         await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource, t) =>
@@ -2653,7 +2653,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
                     continue;
                 string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
                 if (string.IsNullOrEmpty(strLanguageName))
@@ -2679,7 +2679,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
                     continue;
                 string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
                 if (string.IsNullOrEmpty(strLanguageName))
@@ -2704,7 +2704,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
                     continue;
                 string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strLanguageName))
@@ -2730,7 +2730,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
                     continue;
                 string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token:token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strLanguageName))

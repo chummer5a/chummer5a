@@ -628,7 +628,7 @@ namespace Chummer
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
             PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
-            if (_setPropertyChangedAsync.Count > 0)
+            if (!_setPropertyChangedAsync.IsEmpty)
                 Utils.RunWithoutThreadLock(_setPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
             if (PropertyChanged != null)
                 Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
@@ -640,7 +640,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
-            if (_setPropertyChangedAsync.Count > 0)
+            if (!_setPropertyChangedAsync.IsEmpty)
                 await ParallelExtensions.ForEachAsync(_setPropertyChangedAsync, (x, t) => x.Invoke(this, objArgs, t), token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (PropertyChanged != null)

@@ -188,7 +188,8 @@ namespace Chummer
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "frmAbout";
+            this.Tag = "Label_About";
+            this.Text = "About";
             this.Load += new System.EventHandler(this.About_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

@@ -856,51 +856,75 @@ namespace Chummer
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        if (await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is
-                            MasterIndexEntry objEntry)
+                        await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        try
                         {
-                            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            await objEntry.DisplaySource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
-                            string strNotes = await _dicCachedNotes.GetOrAdd(objEntry, x =>
+                            if (await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is
+                                MasterIndexEntry objEntry)
                             {
-                                if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                                                                    StringComparison.OrdinalIgnoreCase)
-                                    && (x.TranslatedNameOnPage != x.EnglishNameOnPage
-                                        || x.Source.Page != x.DisplaySource.Page))
+                                await objEntry.DisplaySource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
+                                bool blnEntryHasLinkedPdf = await objEntry.DisplaySource.HasLinkedPdfAsync(_objSelectedSetting, token).ConfigureAwait(false);
+                                string strNotes = string.Empty;
+                                if (blnEntryHasLinkedPdf)
                                 {
-                                    // don't check again it is not translated
-                                    return InnerReturn(token);
-                                    async Task<string> InnerReturn(CancellationToken innerToken)
+                                    if (await chkFetchNotesFromPdf.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                                     {
-                                        innerToken.ThrowIfCancellationRequested();
-                                        string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            await x.Source.ToStringAsync(innerToken).ConfigureAwait(false),
-                                            x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
-                                        if (string.IsNullOrEmpty(strReturn))
-                                            strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                                                 await x.DisplaySource.ToStringAsync(innerToken).ConfigureAwait(false),
-                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
-                                                                             .ConfigureAwait(false);
-                                        return strReturn;
+                                        strNotes = await _dicCachedNotes.GetOrAdd(objEntry, x =>
+                                        {
+                                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                                StringComparison.OrdinalIgnoreCase)
+                                                && (x.TranslatedNameOnPage != x.EnglishNameOnPage
+                                                    || x.Source.Page != x.DisplaySource.Page))
+                                            {
+                                                // don't check again it is not translated
+                                                return InnerReturn(token);
+                                                async Task<string> InnerReturn(CancellationToken innerToken)
+                                                {
+                                                    innerToken.ThrowIfCancellationRequested();
+                                                    string strReturn = await x.Source.GetTextFromPdfAsync(
+                                                        x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
+                                                    if (string.IsNullOrEmpty(strReturn))
+                                                        strReturn = await x.DisplaySource.GetTextFromPdfAsync(
+                                                                                             x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
+                                                                                         .ConfigureAwait(false);
+                                                    return strReturn;
+                                                }
+                                            }
+                                            return x.Source.GetTextFromPdfAsync(
+                                                                    x.EnglishNameOnPage, _objSelectedSetting, token);
+                                        }).ConfigureAwait(false);
+                                    }
+                                    // Fetch any notes we've already cached, but don't attempt to scrape any new ones
+                                    else if (_dicCachedNotes.TryGetValue(objEntry, out Task<string> tskNotes))
+                                    {
+                                        strNotes = await tskNotes.ConfigureAwait(false);
+                                    }
+                                    string strReminderText = await LanguageManager.GetStringAsync("Label_MasterIndex_SourceClickReminder", token: token).ConfigureAwait(false);
+                                    await lblSourceClickReminder.DoThreadSafeAsync(x => x.Text = strReminderText, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    string strReminderText = await LanguageManager.GetStringAsync("Label_MasterIndex_NoLinkedPdfFound", token: token).ConfigureAwait(false);
+                                    await lblSourceClickReminder.DoThreadSafeAsync(x => x.Text = strReminderText, token).ConfigureAwait(false);
+                                    // Do not attempt to set an entry in our cached notes, it will fail because we don't have a linked PDF
+                                    // Fetch any notes we've already cached, but don't attempt to scrape any new ones
+                                    if (_dicCachedNotes.TryGetValue(objEntry, out Task<string> tskNotes))
+                                    {
+                                        strNotes = await tskNotes.ConfigureAwait(false);
                                     }
                                 }
-                                return CommonFunctions.GetTextFromPdfAsync(
-                                                        x.Source.ToString(),
-                                                        x.EnglishNameOnPage, _objSelectedSetting, token);
-                            }).ConfigureAwait(false);
-                            await txtNotes.DoThreadSafeAsync(x =>
+                                
+                                await txtNotes.DoThreadSafeAsync(x => x.Text = strNotes, token).ConfigureAwait(false);
+                                await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            }
+                            else
                             {
-                                x.Text = strNotes;
-                                x.Visible = true;
-                            }, token).ConfigureAwait(false);
+                                await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            }
                         }
-                        else
+                        finally
                         {
-                            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await SourceString.Blank.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
-                            await txtNotes.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -912,6 +936,71 @@ namespace Chummer
                 {
                     //swallow this
                 }
+            }
+        }
+
+        private async void chkFetchNotesFromPdf_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_intSkipRefresh > 0)
+                return;
+            try
+            {
+                if (await chkFetchNotesFromPdf.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false)
+                    && string.IsNullOrEmpty(await txtNotes.DoThreadSafeFuncAsync(x => x.Text, _objGenericToken).ConfigureAwait(false))
+                    && await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is MasterIndexEntry objEntry
+                    && !_dicCachedNotes.ContainsKey(objEntry)
+                    // Do not attempt to set an entry in our cached notes, it will fail because we don't have a linked PDF
+                    && await objEntry.DisplaySource.HasLinkedPdfAsync(_objSelectedSetting, _objGenericToken).ConfigureAwait(false))
+                {
+                    CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
+                    CancellationToken objNewToken = objNewCancellationTokenSource.Token;
+                    CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objItemsSelectedIndexChangedCancellationTokenSource, objNewCancellationTokenSource);
+                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                    {
+                        objOldCancellationTokenSource.Cancel(false);
+                        objOldCancellationTokenSource.Dispose();
+                    }
+                    using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, objNewToken))
+                    {
+                        CancellationToken token = objJoinedCancellationTokenSource.Token;
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                        try
+                        {
+                            string strNotes = strNotes = await _dicCachedNotes.GetOrAdd(objEntry, x =>
+                            {
+                                if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                    StringComparison.OrdinalIgnoreCase)
+                                    && (x.TranslatedNameOnPage != x.EnglishNameOnPage
+                                        || x.Source.Page != x.DisplaySource.Page))
+                                {
+                                    // don't check again it is not translated
+                                    return InnerReturn(token);
+                                    async Task<string> InnerReturn(CancellationToken innerToken)
+                                    {
+                                        innerToken.ThrowIfCancellationRequested();
+                                        string strReturn = await x.Source.GetTextFromPdfAsync(
+                                            x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
+                                        if (string.IsNullOrEmpty(strReturn))
+                                            strReturn = await x.DisplaySource.GetTextFromPdfAsync(
+                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
+                                                                             .ConfigureAwait(false);
+                                        return strReturn;
+                                    }
+                                }
+                                return x.Source.GetTextFromPdfAsync(
+                                                        x.EnglishNameOnPage, _objSelectedSetting, token);
+                            }).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 

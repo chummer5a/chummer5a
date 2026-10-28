@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanBlackMarketDiscount, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId
+    public sealed class Drug : IHasName, IHasSourceId, IHasSource, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanBlackMarketDiscount, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -53,7 +53,10 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
+        private string _strAddictionType = string.Empty;
+        private string _strVectors = string.Empty;
         private const int _intSpeed = 9;
+        private int _intCatalogSpeed = int.MinValue;
         private decimal _decQty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
@@ -87,6 +90,8 @@ namespace Chummer.Backend.Equipment
             _intCachedInitiative = int.MinValue;
             _intCachedInitiativeDice = int.MinValue;
             _intCachedSpeed = int.MinValue;
+            _intCachedAddictionRating = int.MinValue;
+            _intCachedAddictionThreshold = int.MinValue;
             _blnCachedQualityFlag = false;
             _blnCachedLimitFlag = false;
             _blnCachedAttributeFlag = false;
@@ -110,6 +115,8 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
+            objXmlData.TryGetStringFieldQuickly("addictiontype", ref _strAddictionType);
+            objXmlData.TryGetStringFieldQuickly("vectors", ref _strVectors);
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
@@ -188,6 +195,21 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
             objXmlData.TryGetInt32FieldQuickly("rating", ref _intAddictionRating);
             objXmlData.TryGetInt32FieldQuickly("threshold", ref _intAddictionThreshold);
+            objXmlData.TryGetStringFieldQuickly("addictiontype", ref _strAddictionType);
+            objXmlData.TryGetStringFieldQuickly("vectors", ref _strVectors);
+            // ReSharper disable once MethodHasAsyncOverload
+            XPathNavigator objCatalogNode = blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+            if (objCatalogNode != null)
+            {
+                // Legacy shim: characters saved before drugs stored their addiction type and vectors get them from the catalog entry.
+                if (string.IsNullOrEmpty(_strAddictionType))
+                    objCatalogNode.TryGetStringFieldQuickly("addictiontype", ref _strAddictionType);
+                if (string.IsNullOrEmpty(_strVectors))
+                    objCatalogNode.TryGetStringFieldQuickly("vectors", ref _strVectors);
+                // Speed and duration are not saved, so they always come from the catalog entry.
+                objCatalogNode.TryGetInt32FieldQuickly("speed", ref _intCatalogSpeed);
+                objCatalogNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            }
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
@@ -235,6 +257,8 @@ namespace Chummer.Backend.Equipment
             objCatalogNode.TryGetDecFieldQuickly("cost", ref objDrug._decCost);
             objCatalogNode.TryGetInt32FieldQuickly("rating", ref objDrug._intAddictionRating);
             objCatalogNode.TryGetInt32FieldQuickly("threshold", ref objDrug._intAddictionThreshold);
+            objCatalogNode.TryGetStringFieldQuickly("addictiontype", ref objDrug._strAddictionType);
+            objCatalogNode.TryGetStringFieldQuickly("vectors", ref objDrug._strVectors);
             objCatalogNode.TryGetField("source", out objDrug._strSource);
             objCatalogNode.TryGetField("page", out objDrug._strPage);
             if (objCatalogNode.TryGetField("id", Guid.TryParse, out Guid guiCatalogId))
@@ -247,9 +271,7 @@ namespace Chummer.Backend.Equipment
                 objDrug._intAddictionRating = intRating;
 
             objCatalogNode.TryGetStringFieldQuickly("duration", ref objDrug._strDuration);
-            int intCatalogSpeed = 0;
-            if (objCatalogNode.TryGetInt32FieldQuickly("speed", ref intCatalogSpeed))
-                objDrug._intCachedSpeed = intCatalogSpeed;
+            objCatalogNode.TryGetInt32FieldQuickly("speed", ref objDrug._intCatalogSpeed);
 
             if (objDrug._guiSourceID != Guid.Empty)
             {
@@ -294,6 +316,10 @@ namespace Chummer.Backend.Equipment
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (_intAddictionThreshold != 0)
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString(GlobalSettings.InvariantCultureInfo));
+            if (!string.IsNullOrEmpty(_strAddictionType))
+                objXmlWriter.WriteElementString("addictiontype", _strAddictionType);
+            if (!string.IsNullOrEmpty(_strVectors))
+                objXmlWriter.WriteElementString("vectors", _strVectors);
             if (Grade != null)
                 objXmlWriter.WriteElementString("grade", Grade.Name);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
@@ -332,11 +358,18 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addictionthreshold", (await GetAddictionThresholdAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("addictionrating", (await GetAddictionRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("addictiontype", await DisplayAddictionTypeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("addictiontype_english", AddictionType, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("vectors", await DisplayVectorsAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("vectors_english", Vectors, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("initiative", (await GetInitiativeAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("initiativedice", (await GetInitiativeDiceAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("speed", (await GetSpeedAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed", await GetDisplaySpeedAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed_english", await GetDisplaySpeedAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed_raw", _intCatalogSpeed != int.MinValue ? _intCatalogSpeed.ToString(GlobalSettings.InvariantCultureInfo) : string.Empty, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("duration", await GetDisplayDurationAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("duration_english", await GetDisplayDurationAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("duration_raw", Components.Count == 0 ? _strDuration ?? string.Empty : string.Empty, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("crashdamage", (await GetCrashDamageAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
                     "avail", await TotalAvailAsync(GlobalSettings.CultureInfo, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -755,6 +788,25 @@ namespace Chummer.Backend.Equipment
             IsCustomDrugsCategory(Category)
             || string.Equals(Category, "BTLs", StringComparison.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// Whether the Drug has a Speed to show: always for custom drugs and BTLs, otherwise one from its catalog entry (where 0 is Immediate) or from its components.
+        /// </summary>
+        public bool HasSpeed => IncludeDefaultDurationAndSpeed || _intCatalogSpeed != int.MinValue || Components.Count > 0;
+
+        /// <summary>
+        /// Whether the Drug has a Duration to show: always for custom drugs and BTLs, otherwise when it is not 0.
+        /// </summary>
+        public bool HasDuration => IncludeDefaultDurationAndSpeed || Duration != 0;
+
+        /// <summary>
+        /// Whether the Drug has a Duration to show: always for custom drugs and BTLs, otherwise when it is not 0.
+        /// </summary>
+        public async Task<bool> GetHasDurationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return IncludeDefaultDurationAndSpeed || await GetDurationAsync(token).ConfigureAwait(false) != 0;
+        }
+
         private decimal _decCachedCost = decimal.MinValue;
 
         /// <summary>
@@ -979,7 +1031,9 @@ namespace Chummer.Backend.Equipment
             {
                 return _intCachedAddictionThreshold != int.MinValue
                     ? _intCachedAddictionThreshold
-                    : _intCachedAddictionThreshold = Components.Sum(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold);
+                    : _intCachedAddictionThreshold = Components.Count > 0
+                        ? Components.Sum(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold)
+                        : _intAddictionThreshold;
             }
         }
 
@@ -991,7 +1045,9 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             return _intCachedAddictionThreshold != int.MinValue
                     ? _intCachedAddictionThreshold
-                    : _intCachedAddictionThreshold = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold, token).ConfigureAwait(false);
+                    : _intCachedAddictionThreshold = Components.Count > 0
+                        ? await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold, token).ConfigureAwait(false)
+                        : _intAddictionThreshold;
         }
 
         private int _intCachedAddictionRating = int.MinValue;
@@ -1005,7 +1061,9 @@ namespace Chummer.Backend.Equipment
             {
                 return _intCachedAddictionRating != int.MinValue
                     ? _intCachedAddictionRating
-                    : _intCachedAddictionRating = Components.Sum(d => d.ActiveDrugEffect != null, d => d.AddictionRating);
+                    : _intCachedAddictionRating = Components.Count > 0
+                        ? Components.Sum(d => d.ActiveDrugEffect != null, d => d.AddictionRating)
+                        : _intAddictionRating;
             }
         }
 
@@ -1017,7 +1075,85 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             return _intCachedAddictionRating != int.MinValue
                     ? _intCachedAddictionRating
-                    : _intCachedAddictionRating = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionRating, token).ConfigureAwait(false);
+                    : _intCachedAddictionRating = Components.Count > 0
+                        ? await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionRating, token).ConfigureAwait(false)
+                        : _intAddictionRating;
+        }
+
+        /// <summary>
+        /// Addiction Type of the Drug (Physiological, Psychological or Both).
+        /// </summary>
+        public string AddictionType => _strAddictionType;
+
+        /// <summary>
+        /// Translated Addiction Type.
+        /// </summary>
+        public string DisplayAddictionType(string strLanguage)
+        {
+            return string.IsNullOrEmpty(_strAddictionType)
+                ? string.Empty
+                : LanguageManager.GetString("String_AddictionType_" + _strAddictionType, strLanguage);
+        }
+
+        /// <summary>
+        /// Translated Addiction Type.
+        /// </summary>
+        public Task<string> DisplayAddictionTypeAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return string.IsNullOrEmpty(_strAddictionType)
+                ? Task.FromResult(string.Empty)
+                : LanguageManager.GetStringAsync("String_AddictionType_" + _strAddictionType, strLanguage, token: token);
+        }
+
+        /// <summary>
+        /// Comma-separated Vectors of the Drug (Contact, Ingestion, Inhalation, Injection).
+        /// </summary>
+        public string Vectors => _strVectors;
+
+        /// <summary>
+        /// Translated Vectors.
+        /// </summary>
+        public string DisplayVectors(string strLanguage)
+        {
+            if (string.IsNullOrEmpty(_strVectors))
+                return string.Empty;
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdVectors))
+            {
+                foreach (string strVector in _strVectors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (sbdVectors.Length > 0)
+                        sbdVectors.Append(',', strSpace);
+                    sbdVectors.Append(LanguageManager.GetString("String_Vector_" + strVector.Trim(), strLanguage));
+                }
+
+                return sbdVectors.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Translated Vectors.
+        /// </summary>
+        public async Task<string> DisplayVectorsAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(_strVectors))
+                return string.Empty;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdVectors))
+            {
+                foreach (string strVector in _strVectors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (sbdVectors.Length > 0)
+                        sbdVectors.Append(',', strSpace);
+                    sbdVectors.Append(await LanguageManager.GetStringAsync("String_Vector_" + strVector.Trim(), strLanguage, token: token).ConfigureAwait(false));
+                }
+
+                return sbdVectors.ToString();
+            }
         }
 
         private bool _blnCachedLimitFlag;
@@ -1219,9 +1355,11 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _intCachedSpeed != int.MinValue
-                    ? _intCachedSpeed
-                    : _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Speed) + _intSpeed;
+                if (_intCachedSpeed != int.MinValue)
+                    return _intCachedSpeed;
+                return _intCachedSpeed = _intCatalogSpeed != int.MinValue
+                    ? _intCatalogSpeed
+                    : Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Speed) + _intSpeed;
             }
         }
 
@@ -1232,9 +1370,23 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetSpeedAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return _intCachedSpeed != int.MinValue
-                    ? _intCachedSpeed
-                    : _intCachedSpeed = await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Speed, token).ConfigureAwait(false) + _intSpeed;
+            if (_intCachedSpeed != int.MinValue)
+                return _intCachedSpeed;
+            return _intCachedSpeed = _intCatalogSpeed != int.MinValue
+                ? _intCatalogSpeed
+                : await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Speed, token).ConfigureAwait(false) + _intSpeed;
+        }
+
+        public string CurrentDisplaySpeed => GetDisplaySpeed(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplaySpeedAsync(CancellationToken token = default) => GetDisplaySpeedAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        public string GetDisplaySpeed(CultureInfo objCulture, string strLanguage) => GetDisplaySeconds(Speed, objCulture, strLanguage);
+
+        public async Task<string> GetDisplaySpeedAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await GetDisplaySecondsAsync(await GetSpeedAsync(token).ConfigureAwait(false), objCulture, strLanguage, token).ConfigureAwait(false);
         }
 
         private int _intCachedDuration = int.MinValue;
@@ -1320,6 +1472,12 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration) && blnDoCache)
                 return _strCachedDisplayDuration;
             int intDuration = Duration;
+            if (intDuration > 0 && IsDurationInSeconds)
+            {
+                if (blnDoCache)
+                    return _strCachedDisplayDuration = GetDisplaySeconds(intDuration, objCulture, strLanguage);
+                return GetDisplaySeconds(intDuration, objCulture, strLanguage);
+            }
             if (intDuration > 0)
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
@@ -1345,6 +1503,13 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration) && blnDoCache)
                 return _strCachedDisplayDuration;
             int intDuration = await GetDurationAsync(token).ConfigureAwait(false);
+            if (intDuration > 0 && IsDurationInSeconds)
+            {
+                string strReturn = await GetDisplaySecondsAsync(intDuration, objCulture, strLanguage, token).ConfigureAwait(false);
+                if (blnDoCache)
+                    _strCachedDisplayDuration = strReturn;
+                return strReturn;
+            }
             if (intDuration > 0)
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
@@ -1360,6 +1525,66 @@ namespace Chummer.Backend.Equipment
         }
 
         public int DurationDice { get => _intDurationDice; set => _intDurationDice = value; }
+
+        /// <summary>
+        /// Catalog drugs from drugs.xml give their duration as a plain number of seconds, with no timescale or dice.
+        /// </summary>
+        private bool IsDurationInSeconds =>
+            !string.IsNullOrEmpty(_strDuration) && DurationTimescale == CommonFunctions.Timescale.Instant && DurationDice == 0;
+
+        /// <summary>
+        /// Gets the largest unit (days, hours, minutes, Combat Turns or seconds) that divides a number of seconds evenly.
+        /// </summary>
+        private static CommonFunctions.Timescale GetSecondsTimescale(int intSeconds, out int intAmount)
+        {
+            if (intSeconds % 86400 == 0)
+            {
+                intAmount = intSeconds / 86400;
+                return CommonFunctions.Timescale.Days;
+            }
+            if (intSeconds % 3600 == 0)
+            {
+                intAmount = intSeconds / 3600;
+                return CommonFunctions.Timescale.Hours;
+            }
+            if (intSeconds % 60 == 0)
+            {
+                intAmount = intSeconds / 60;
+                return CommonFunctions.Timescale.Minutes;
+            }
+            if (intSeconds % 3 == 0)
+            {
+                intAmount = intSeconds / 3;
+                return CommonFunctions.Timescale.CombatTurns;
+            }
+            intAmount = intSeconds;
+            return CommonFunctions.Timescale.Seconds;
+        }
+
+        /// <summary>
+        /// Writes a number of seconds in the largest unit that divides it evenly, or Immediate when it is 0 or less.
+        /// </summary>
+        private static string GetDisplaySeconds(int intSeconds, CultureInfo objCulture, string strLanguage)
+        {
+            if (intSeconds <= 0)
+                return LanguageManager.GetString("String_Immediate", strLanguage);
+            CommonFunctions.Timescale eTimescale = GetSecondsTimescale(intSeconds, out int intAmount);
+            return intAmount.ToString(objCulture) + LanguageManager.GetString("String_Space", strLanguage)
+                   + CommonFunctions.GetTimescaleString(eTimescale, intAmount == 1, strLanguage);
+        }
+
+        /// <summary>
+        /// Writes a number of seconds in the largest unit that divides it evenly, or Immediate when it is 0 or less.
+        /// </summary>
+        private static async Task<string> GetDisplaySecondsAsync(int intSeconds, CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (intSeconds <= 0)
+                return await LanguageManager.GetStringAsync("String_Immediate", strLanguage, token: token).ConfigureAwait(false);
+            CommonFunctions.Timescale eTimescale = GetSecondsTimescale(intSeconds, out int intAmount);
+            return intAmount.ToString(objCulture) + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                   + await CommonFunctions.GetTimescaleStringAsync(eTimescale, intAmount == 1, strLanguage, token).ConfigureAwait(false);
+        }
 
         private int _intCachedCrashDamage = int.MinValue;
 
@@ -1597,6 +1822,91 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get => _strSource;
+            set => _strSource = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page
+        {
+            get => _strPage;
+            set => _strPage = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
+        }
+
+        private SourceString _objCachedSourceDetail;
+
+        public SourceString SourceDetail =>
+            _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                    DisplayPage(GlobalSettings.Language),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter)
+                : _objCachedSourceDetail;
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter, token).ConfigureAwait(false)
+                : _objCachedSourceDetail;
+        }
+
+        public void SetSourceDetail(Control sourceControl)
+        {
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                _objCachedSourceDetail = default;
+            SourceDetail.SetControl(sourceControl);
+        }
+
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        {
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                _objCachedSourceDetail = default;
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
         public Guid SourceID => _guiSourceID;
@@ -1753,23 +2063,23 @@ namespace Chummer.Backend.Equipment
                     foreach (string strInfo in Infos)
                         sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo, strLanguage));
 
-                    if (IncludeDefaultDurationAndSpeed || Duration != 0)
-                        sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage))
-                                      .AppendLine(GetDisplayDuration(objCulture, strLanguage));
-
-                    if (IncludeDefaultDurationAndSpeed || Speed != 0)
+                    // Catalog drugs apply their bonus through improvements instead of components.
+                    if (Components.Count == 0)
                     {
-                        sbdDescription.Append(LanguageManager.GetString("Label_Speed"))
-                                      .Append(LanguageManager.GetString("String_Colon", strLanguage)).Append(strSpace);
-                        if (Speed <= 0)
-                            sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
-                        else if (Speed <= 60)
-                            sbdDescription.Append((Speed / 3).ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                                          .AppendLine(LanguageManager.GetString("String_CombatTurns"));
-                        else
-                            sbdDescription.Append(Speed.ToString(GlobalSettings.CultureInfo))
-                                          .AppendLine(LanguageManager.GetString("String_Seconds"));
+                        foreach (Improvement objImprovement in _objCharacter.Improvements)
+                        {
+                            if (objImprovement.SourceName == InternalId)
+                                sbdDescription.AppendLine(GetDrugImprovementDescription(objImprovement, strLanguage));
+                        }
                     }
+
+                    if (!blnEffectsOnly && HasSpeed)
+                        sbdDescription.Append(LanguageManager.GetString("Label_Speed", strLanguage)).Append(strSpace)
+                                      .AppendLine(GetDisplaySeconds(Speed, objCulture, strLanguage));
+
+                    if (!blnEffectsOnly && HasDuration)
+                        sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).Append(strSpace)
+                                      .AppendLine(GetDisplayDuration(objCulture, strLanguage));
 
                     if (CrashDamage != 0)
                         sbdDescription.Append(LanguageManager.GetString("Label_CrashEffect", strLanguage))
@@ -1907,24 +2217,23 @@ namespace Chummer.Backend.Equipment
                     foreach (string strInfo in await GetInfosAsync(token).ConfigureAwait(false))
                         sbdDescription.AppendLine(await _objCharacter.TranslateExtraAsync(strInfo, strLanguage, token: token).ConfigureAwait(false));
 
-                    if (IncludeDefaultDurationAndSpeed || await GetDurationAsync(token).ConfigureAwait(false) != 0)
-                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", strLanguage, token: token).ConfigureAwait(false))
-                                      .AppendLine(await GetDisplayDurationAsync(objCulture, strLanguage, token).ConfigureAwait(false));
+                    // Catalog drugs apply their bonus through improvements instead of components.
+                    if (Components.Count == 0)
+                    {
+                        List<Improvement> lstImprovements = await _objCharacter.Improvements
+                            .ToListAsync(x => x.SourceName == InternalId, token: token).ConfigureAwait(false);
+                        foreach (Improvement objImprovement in lstImprovements)
+                            sbdDescription.AppendLine(await GetDrugImprovementDescriptionAsync(objImprovement, strLanguage, token).ConfigureAwait(false));
+                    }
 
                     int intSpeed = await GetSpeedAsync(token).ConfigureAwait(false);
-                    if (IncludeDefaultDurationAndSpeed || intSpeed != 0)
-                    {
-                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false))
-                                      .Append(await LanguageManager.GetStringAsync("String_Colon", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace);
-                        if (intSpeed <= 0)
-                            sbdDescription.AppendLine(await LanguageManager.GetStringAsync("String_Immediate", token: token).ConfigureAwait(false));
-                        else if (intSpeed <= 60)
-                            sbdDescription.Append((intSpeed / 3).ToString(GlobalSettings.CultureInfo)).Append(strSpace)
-                                          .AppendLine(await LanguageManager.GetStringAsync("String_CombatTurns", token: token).ConfigureAwait(false));
-                        else
-                            sbdDescription.Append(intSpeed.ToString(GlobalSettings.CultureInfo))
-                                          .AppendLine(await LanguageManager.GetStringAsync("String_Seconds", token: token).ConfigureAwait(false));
-                    }
+                    if (!blnEffectsOnly && HasSpeed)
+                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
+                                      .AppendLine(await GetDisplaySecondsAsync(intSpeed, objCulture, strLanguage, token).ConfigureAwait(false));
+
+                    if (!blnEffectsOnly && await GetHasDurationAsync(token).ConfigureAwait(false))
+                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
+                                      .AppendLine(await GetDisplayDurationAsync(objCulture, strLanguage, token).ConfigureAwait(false));
 
                     int intCrashDamage = await GetCrashDamageAsync(token).ConfigureAwait(false);
                     if (intCrashDamage != 0)
@@ -2041,6 +2350,9 @@ namespace Chummer.Backend.Equipment
             await AddDrugQualityImprovementsAsync(objCompileResult.QualityNodes, strDisplayName, token)
                 .ConfigureAwait(false);
             await FinalizeDrugImprovementsAsync(strGroupName, token).ConfigureAwait(false);
+            // The descriptions list catalog bonuses from these improvements, so rebuild them.
+            _strDescription = string.Empty;
+            _strEffectDescription = string.Empty;
         }
 
         private async Task AddDrugQualityImprovementsAsync(IReadOnlyList<XmlNode> lstQualities, string strDisplayName,
@@ -2140,7 +2452,18 @@ namespace Chummer.Backend.Equipment
             string strDisplayName, string strSpace, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            string strPrefix = strDisplayName + strSpace + "-" + strSpace;
+            return strDisplayName + strSpace + "-" + strSpace
+                   + await GetDrugImprovementDescriptionAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Short text for one of a drug's improvements, such as "AGI +1".
+        /// </summary>
+        /// <param name="objImprovement">Improvement created by the drug.</param>
+        /// <param name="strLanguage">Language in which to write the text.</param>
+        private static string GetDrugImprovementDescription(Improvement objImprovement, string strLanguage)
+        {
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             decimal decBonus = objImprovement.Augmented != 0 ? objImprovement.Augmented : objImprovement.Value;
             string strBonus = decBonus.ToString("+0;-0;0", GlobalSettings.CultureInfo);
 
@@ -2149,44 +2472,83 @@ namespace Chummer.Backend.Equipment
                 case Improvement.ImprovementType.Attribute:
                 {
                     string strAttrKey = "String_Attribute" + objImprovement.ImprovedName + "Short";
-                    string strAttr = await LanguageManager.GetStringAsync(strAttrKey, token: token)
+                    string strAttr = LanguageManager.GetString(strAttrKey, strLanguage);
+                    if (string.IsNullOrEmpty(strAttr) || string.Equals(strAttr, strAttrKey, StringComparison.Ordinal))
+                        strAttr = objImprovement.ImprovedName;
+                    return strAttr + strSpace + strBonus;
+                }
+                case Improvement.ImprovementType.PhysicalLimit:
+                    return LanguageManager.GetString("Node_Physical", strLanguage) + strSpace + strBonus;
+                case Improvement.ImprovementType.MentalLimit:
+                    return LanguageManager.GetString("Node_Mental", strLanguage) + strSpace + strBonus;
+                case Improvement.ImprovementType.SocialLimit:
+                    return LanguageManager.GetString("Node_Social", strLanguage) + strSpace + strBonus;
+                case Improvement.ImprovementType.Skill:
+                case Improvement.ImprovementType.SkillBase:
+                case Improvement.ImprovementType.SkillLevel:
+                    return objImprovement.ImprovedName + strSpace + strBonus;
+                case Improvement.ImprovementType.Initiative:
+                    return LanguageManager.GetString("String_Initiative", strLanguage) + strSpace + strBonus;
+                case Improvement.ImprovementType.InitiativeDice:
+                    return LanguageManager.GetString("String_InitiativeDice", strLanguage) + strSpace + strBonus;
+                case Improvement.ImprovementType.SpecificQuality:
+                    return LanguageManager.GetString("String_Quality", strLanguage) + strSpace + objImprovement.ImprovedName;
+                default:
+                    return objImprovement.ImproveType + strSpace + strBonus;
+            }
+        }
+
+        /// <summary>
+        /// Short text for one of a drug's improvements, such as "AGI +1".
+        /// </summary>
+        /// <param name="objImprovement">Improvement created by the drug.</param>
+        /// <param name="strLanguage">Language in which to write the text.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async Task<string> GetDrugImprovementDescriptionAsync(Improvement objImprovement, string strLanguage,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            decimal decBonus = objImprovement.Augmented != 0 ? objImprovement.Augmented : objImprovement.Value;
+            string strBonus = decBonus.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+
+            switch (objImprovement.ImproveType)
+            {
+                case Improvement.ImprovementType.Attribute:
+                {
+                    string strAttrKey = "String_Attribute" + objImprovement.ImprovedName + "Short";
+                    string strAttr = await LanguageManager.GetStringAsync(strAttrKey, strLanguage, token: token)
                         .ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strAttr) || string.Equals(strAttr, strAttrKey, StringComparison.Ordinal))
                         strAttr = objImprovement.ImprovedName;
-                    return strPrefix + strAttr + strSpace + strBonus;
+                    return strAttr + strSpace + strBonus;
                 }
                 case Improvement.ImprovementType.PhysicalLimit:
-                    return strPrefix
-                           + await LanguageManager.GetStringAsync("Node_Physical", token: token).ConfigureAwait(false)
+                    return await LanguageManager.GetStringAsync("Node_Physical", strLanguage, token: token).ConfigureAwait(false)
                            + strSpace + strBonus;
                 case Improvement.ImprovementType.MentalLimit:
-                    return strPrefix
-                           + await LanguageManager.GetStringAsync("Node_Mental", token: token).ConfigureAwait(false)
+                    return await LanguageManager.GetStringAsync("Node_Mental", strLanguage, token: token).ConfigureAwait(false)
                            + strSpace + strBonus;
                 case Improvement.ImprovementType.SocialLimit:
-                    return strPrefix
-                           + await LanguageManager.GetStringAsync("Node_Social", token: token).ConfigureAwait(false)
+                    return await LanguageManager.GetStringAsync("Node_Social", strLanguage, token: token).ConfigureAwait(false)
                            + strSpace + strBonus;
                 case Improvement.ImprovementType.Skill:
                 case Improvement.ImprovementType.SkillBase:
                 case Improvement.ImprovementType.SkillLevel:
-                    return strPrefix + objImprovement.ImprovedName + strSpace + strBonus;
+                    return objImprovement.ImprovedName + strSpace + strBonus;
                 case Improvement.ImprovementType.Initiative:
-                    return strPrefix
-                           + await LanguageManager.GetStringAsync("String_Initiative", token: token)
+                    return await LanguageManager.GetStringAsync("String_Initiative", strLanguage, token: token)
                                .ConfigureAwait(false)
                            + strSpace + strBonus;
                 case Improvement.ImprovementType.InitiativeDice:
-                    return strPrefix
-                           + await LanguageManager.GetStringAsync("String_InitiativeDice", token: token)
+                    return await LanguageManager.GetStringAsync("String_InitiativeDice", strLanguage, token: token)
                                .ConfigureAwait(false)
                            + strSpace + strBonus;
                 case Improvement.ImprovementType.SpecificQuality:
-                    return strPrefix
-                           + await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false)
+                    return await LanguageManager.GetStringAsync("String_Quality", strLanguage, token: token).ConfigureAwait(false)
                            + strSpace + objImprovement.ImprovedName;
                 default:
-                    return strPrefix + objImprovement.ImproveType + strSpace + strBonus;
+                    return objImprovement.ImproveType + strSpace + strBonus;
             }
         }
 
@@ -3129,7 +3491,7 @@ namespace Chummer.Backend.Equipment
                         sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo));
 
                     if (IncludeDefaultDurationAndSpeed || objDrugEffect.Duration != 0)
-                        sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColon)
+                        sbdDescription.Append(LanguageManager.GetString("Label_Duration"))
                                       .Append(strSpace)
                                       .Append("10 ⨯ ")
                                       .Append((objDrugEffect.Duration + 1).ToString(GlobalSettings.CultureInfo))
@@ -3138,7 +3500,7 @@ namespace Chummer.Backend.Equipment
 
                     if (IncludeDefaultDurationAndSpeed || objDrugEffect.Speed != 0)
                     {
-                        sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColon)
+                        sbdDescription.Append(LanguageManager.GetString("Label_Speed"))
                                       .Append(strSpace);
                         if (objDrugEffect.Speed <= 0)
                             sbdDescription.AppendLine(LanguageManager.GetString("String_Immediate"));
@@ -3276,7 +3638,7 @@ namespace Chummer.Backend.Equipment
                         sbdDescription.AppendLine(await _objCharacter.TranslateExtraAsync(strInfo, token: token).ConfigureAwait(false));
 
                     if (IncludeDefaultDurationAndSpeed || objDrugEffect.Duration != 0)
-                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", token: token).ConfigureAwait(false)).Append(strColon)
+                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", token: token).ConfigureAwait(false))
                                       .Append(strSpace)
                                       .Append("10 ⨯ ")
                                       .Append((objDrugEffect.Duration + 1).ToString(GlobalSettings.CultureInfo))
@@ -3285,7 +3647,7 @@ namespace Chummer.Backend.Equipment
 
                     if (IncludeDefaultDurationAndSpeed || objDrugEffect.Speed != 0)
                     {
-                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false)).Append(strColon)
+                        sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false))
                                       .Append(strSpace);
                         if (objDrugEffect.Speed <= 0)
                             sbdDescription.AppendLine(await LanguageManager.GetStringAsync("String_Immediate", token: token).ConfigureAwait(false));

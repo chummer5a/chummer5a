@@ -711,7 +711,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
                 objOpenCharacter = await Program.OpenCharacters
-                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal), token)
+                    .FirstOrDefaultAsync(async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFileName, Utils.PathStringComparison), token)
                     .ConfigureAwait(false);
                 if (objOpenCharacter == null)
                 {
@@ -801,9 +801,9 @@ namespace Chummer
 
                         XPathDocument LoadXPathDocument()
                         {
-                            if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            if (strFile.EndsWith(".chum5", Utils.PathStringComparison))
                                 return XPathDocumentExtensions.LoadStandardFromFilePatient(strFile, token: token);
-                            if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            if (strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                                 return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFilePatient(strFile, token: token);
                             Utils.BreakIfDebug();
                             throw new InvalidOperationException();
@@ -811,9 +811,9 @@ namespace Chummer
 
                         Task<XPathDocument> LoadXPathDocumentAsync()
                         {
-                            if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            if (strFile.EndsWith(".chum5", Utils.PathStringComparison))
                                 return XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFile, token: token);
-                            if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            if (strFile.EndsWith(".chum5lz", Utils.PathStringComparison))
                                 return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFilePatientAsync(
                                     strFile, token: token);
                             Utils.BreakIfDebug();
@@ -1005,16 +1005,16 @@ namespace Chummer
                         {
                             if (Program.MainForm.OpenCharacterEditorForms?.Any(
                                 x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
-                                    StringComparison.Ordinal)) == true)
+                                    Utils.PathStringComparison)) == true)
                                 sbdMarker.Append('*');
                             if (Program.MainForm.OpenCharacterSheetViewers?.Any(
                                     x => x.CharacterObjects.Any(y =>
                                         !y.IsDisposed && string.Equals(y.FileName, strFilePath,
-                                            StringComparison.Ordinal))) == true)
+                                            Utils.PathStringComparison))) == true)
                                 sbdMarker.Append('^');
                             if (Program.MainForm.OpenCharacterExportForms?.Any(
                                     x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
-                                        StringComparison.Ordinal)) == true)
+                                        Utils.PathStringComparison)) == true)
                                 sbdMarker.Append('\'');
                             if (sbdMarker.Length > 0)
                                 sbdReturn.Insert(0, sbdMarker.Append(strSpace).ToString());
@@ -1078,32 +1078,35 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMarker))
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess1
-                            = Program.MainForm.OpenCharacterEditorForms;
-                            if (lstToProcess1 != null && await lstToProcess1
+                                = Program.MainForm.OpenCharacterEditorForms;
+                            if (lstToProcess1 != null && await lstToProcess1.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess1
                                     .AnyAsync(
                                         async (x, t) => !x.CharacterObject.IsDisposed &&
                                                    string.Equals(
                                                        await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
-                                                       strFilePath, StringComparison.Ordinal), token)
+                                                       strFilePath, Utils.PathStringComparison), token)
                                     .ConfigureAwait(false))
                                 sbdMarker.Append('*');
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
                                 = Program.MainForm.OpenCharacterSheetViewers;
-                            if (lstToProcess2 != null && await lstToProcess2
+                            if (lstToProcess2 != null && await lstToProcess2.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess2
                                     .AnyAsync(
                                         (x, t1) => x.CharacterObjects.AnyAsync(
                                             async (y, t2) => !y.IsDisposed && string.Equals(
                                                 await y.GetFileNameAsync(t2).ConfigureAwait(false), strFilePath,
-                                                StringComparison.Ordinal), t1), token).ConfigureAwait(false))
+                                                Utils.PathStringComparison), t1), token).ConfigureAwait(false))
                                 sbdMarker.Append('^');
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                                 = Program.MainForm.OpenCharacterExportForms;
-                            if (lstToProcess3 != null && await lstToProcess3
+                            if (lstToProcess3 != null && await lstToProcess3.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess3
                                     .AnyAsync(
                                         async (x, t) => !x.CharacterObject.IsDisposed &&
                                                    string.Equals(
                                                        await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
-                                                       strFilePath, StringComparison.Ordinal), token)
+                                                       strFilePath, Utils.PathStringComparison), token)
                                     .ConfigureAwait(false))
                                 sbdMarker.Append('\'');
                             if (sbdMarker.Length > 0)

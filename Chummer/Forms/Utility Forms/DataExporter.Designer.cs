@@ -298,6 +298,11 @@ namespace Chummer
             this.nudMaxAvail.Name = "nudMaxAvail";
             this.nudMaxAvail.Size = new System.Drawing.Size(120, 20);
             this.nudMaxAvail.TabIndex = 0;
+            this.nudMaxAvail.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // cboGamePlay
             // 

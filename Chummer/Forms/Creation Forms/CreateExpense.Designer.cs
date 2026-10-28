@@ -153,6 +153,7 @@ namespace Chummer
             this.chkRefund.TabIndex = 8;
             this.chkRefund.Tag = "Checkbox_Expense_Refund";
             this.chkRefund.Text = "Refund (does not count towards Total Career Karma)";
+            this.chkRefund.ToolTipText = "";
             this.chkRefund.UseVisualStyleBackColor = true;
             // 
             // datDate
@@ -228,6 +229,7 @@ namespace Chummer
             this.chkKarmaNuyenExchange.TabIndex = 11;
             this.chkKarmaNuyenExchange.Tag = "String_WorkingForTheManPeople";
             this.chkKarmaNuyenExchange.Text = "Working for the Man/People";
+            this.chkKarmaNuyenExchange.ToolTipText = "";
             this.chkKarmaNuyenExchange.UseVisualStyleBackColor = true;
             this.chkKarmaNuyenExchange.CheckedChanged += new System.EventHandler(this.chkKarmaNuyenExchange_CheckedChanged);
             // 
@@ -286,6 +288,7 @@ namespace Chummer
             this.chkForceCareerVisible.TabIndex = 11;
             this.chkForceCareerVisible.Tag = "Checkbox_Expense_ForceCareerVisible";
             this.chkForceCareerVisible.Text = "Show in Career Karma/Nuyen";
+            this.chkForceCareerVisible.ToolTipText = "";
             this.chkForceCareerVisible.UseVisualStyleBackColor = true;
             // 
             // tlpButtons

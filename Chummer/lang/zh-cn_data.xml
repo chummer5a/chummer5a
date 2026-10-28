@@ -1541,7 +1541,7 @@
       </bioware>
       <bioware>
         <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
-        <name>Revitilization</name>
+        <name>Revitalization</name>
         <translate>新生</translate>
       </bioware>
       <bioware>
@@ -11377,7 +11377,7 @@
         <translate>时尚服装套件</translate>
       </pack>
       <pack>
-        <name>Tacticool Helmet Pack</name>
+        <name>Tactical Helmet Pack</name>
         <translate>战术头盔套件</translate>
       </pack>
       <pack>
@@ -11385,7 +11385,7 @@
         <translate>长牙硬皮套件</translate>
       </pack>
       <pack>
-        <name>Sim-Setional Pack</name>
+        <name>Sim-sational Pack</name>
         <translate>拟感套件</translate>
       </pack>
       <pack>
@@ -18768,7 +18768,7 @@
       </vehicle>
       <vehicle>
         <id>e0343c07-3a15-4596-bcc0-5a2d6d160a6b</id>
-        <name>Saeder-Krupp MK-170 Neptune (Large)</name>
+        <name>Saeder-Krupp MK-17D Neptune (Large)</name>
         <translate>赛达尔-克虏伯·MK-17D海王星(大型)</translate>
       </vehicle>
       <vehicle>
@@ -18838,7 +18838,7 @@
       </vehicle>
       <vehicle>
         <id>b448855b-57e7-435a-b523-174adb276674</id>
-        <name>NeoNET Juggernaut</name>
+        <name>NeoNET Juggernaught</name>
         <translate>新网·重装机甲</translate>
       </vehicle>
       <vehicle>
@@ -18988,7 +18988,7 @@
       </vehicle>
       <vehicle>
         <id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
-        <name>NeoNET Prarie Dog (Small)</name>
+        <name>NeoNET Prairie Dog (Small)</name>
         <translate>新网•草原犬鼠（小型）</translate>
       </vehicle>
       <vehicle>
@@ -20609,7 +20609,7 @@
       </weapon>
       <weapon>
         <id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
-        <name>Ultamax MMG</name>
+        <name>Ultimax MMG</name>
         <translate>超极限MMG</translate>
       </weapon>
       <weapon>
@@ -20664,7 +20664,7 @@
       </weapon>
       <weapon>
         <id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
-        <name>Nissan Optimum II</name>
+        <name>Nitama Optimum II</name>
         <translate>尼桑·优化II</translate>
       </weapon>
       <weapon>
@@ -20864,7 +20864,7 @@
       </weapon>
       <weapon>
         <id>c0857027-d3b2-4677-bc97-3f98bcc6f80f</id>
-        <name>Ultamax HMG-2</name>
+        <name>Ultimax HMG-2</name>
         <translate>超极限HMG-2</translate>
       </weapon>
       <weapon>
@@ -21259,7 +21259,7 @@
       </weapon>
       <weapon>
         <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-        <name>Nissan Optimum II Shotgun</name>
+        <name>Nitama Optimum II Shotgun</name>
         <translate>尼桑·优化II 霰弹枪</translate>
       </weapon>
       <weapon>

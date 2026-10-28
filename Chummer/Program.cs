@@ -324,7 +324,7 @@ namespace Chummer
                         foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,
-                                               StringComparison.OrdinalIgnoreCase))
+                                               Utils.PathStringComparison))
                                 lstToDelete.Add(strProfileFile);
                         }
                         foreach (string strProfileFile in lstToDelete)
@@ -1184,7 +1184,7 @@ namespace Chummer
             {
                 Form frmReturn;
                 ThreadSafeObservableCollection<CharacterShared> lstForms1 = MainForm.OpenCharacterEditorForms;
-                if (lstForms1 != null)
+                if (lstForms1 != null && await lstForms1.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
                         x => ReferenceEquals(x.CharacterObject, objCharacter), token: innerToken).ConfigureAwait(false);
@@ -1192,7 +1192,7 @@ namespace Chummer
                         return frmReturn;
                 }
                 ThreadSafeObservableCollection<CharacterSheetViewer> lstForms2 = MainForm.OpenCharacterSheetViewers;
-                if (lstForms2 != null)
+                if (lstForms2 != null && await lstForms2.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     frmReturn = await lstForms2.FirstOrDefaultAsync(
                         x => x.CharacterObjects.Contains(objCharacter), token: innerToken).ConfigureAwait(false);
@@ -1200,7 +1200,7 @@ namespace Chummer
                         return frmReturn;
                 }
                 ThreadSafeObservableCollection<ExportCharacter> lstForms3 = MainForm.OpenCharacterExportForms;
-                if (lstForms3 != null)
+                if (lstForms3 != null && await lstForms3.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
                         x => ReferenceEquals(x.CharacterObject, objCharacter), token: innerToken).ConfigureAwait(false);
@@ -1302,8 +1302,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strFileName))
                 return null;
             Character objCharacter = null;
-            if (File.Exists(strFileName) && (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                             || strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
+            if (File.Exists(strFileName) && (strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                                             || strFileName.EndsWith(".chum5lz", Utils.PathStringComparison)))
             {
                 //Timekeeper.Start("loading");
                 if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
@@ -1328,7 +1328,7 @@ namespace Chummer
                     string strAutosaveName = string.Empty;
                     if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                     {
-                        if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                        if (!strFileName.StartsWith(strAutosavesPath, Utils.PathStringComparison))
                         {
                             string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
                             if (!string.IsNullOrEmpty(strBaseFileName))
@@ -1445,14 +1445,28 @@ namespace Chummer
                     if (!blnLoaded)
                         return null;
 
-                    // If a new name is given, set the character's name to match (used in cloning).
-                    if (!string.IsNullOrEmpty(strNewName))
-                        objCharacter.Name = strNewName;
-                    // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                    if (blnClearFileName
-                        // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                        || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
-                        objCharacter.FileName = string.Empty;
+                    if (blnSync)
+                    {
+                        // If a new name is given, set the character's name to match (used in cloning).
+                        if (!string.IsNullOrEmpty(strNewName))
+                            objCharacter.Name = strNewName;
+                        // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                        if (blnClearFileName
+                            // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                            || objCharacter.FileName.StartsWith(strAutosavesPath, Utils.PathStringComparison))
+                            objCharacter.FileName = string.Empty;
+                    }
+                    else
+                    {
+                        // If a new name is given, set the character's name to match (used in cloning).
+                        if (!string.IsNullOrEmpty(strNewName))
+                            await objCharacter.SetNameAsync(strNewName, token).ConfigureAwait(false);
+                        // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                        if (blnClearFileName
+                            // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                            || (await objCharacter.GetFileNameAsync(token).ConfigureAwait(false)).StartsWith(strAutosavesPath, Utils.PathStringComparison))
+                            await objCharacter.SetFileNameAsync(string.Empty, token).ConfigureAwait(false);
+                    }
                 }
                 catch
                 {

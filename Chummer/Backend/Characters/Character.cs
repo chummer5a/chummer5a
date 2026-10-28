@@ -4322,20 +4322,20 @@ namespace Chummer
 
             if (string.IsNullOrWhiteSpace(strFileName))
             {
-                strFileName = FileName;
+                strFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(strFileName))
                 {
                     return false;
                 }
             }
-            else if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                     && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+            else if (!strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                     && !strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
             {
                 strFileName = Path.GetFileNameWithoutExtension(strFileName) + ".chum5";
-                string strExistingFileName = FileName;
+                string strExistingFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(strExistingFileName)
-                    && strExistingFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    && strExistingFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                     strFileName += "lz";
             }
 
@@ -5748,7 +5748,7 @@ namespace Chummer
                         using (FileStream objFileStream
                                = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
-                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            if (strFileName.EndsWith(".chum5", Utils.PathStringComparison))
                                 objDoc.Save(objFileStream);
                             else
                             {
@@ -6193,9 +6193,9 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strFileName))
-                strFileName = FileName;
-            if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                              && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
+                strFileName = blnSync ? FileName : await GetFileNameAsync(token).ConfigureAwait(false);
+            if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                                              && !strFileName.EndsWith(".chum5lz", Utils.PathStringComparison)))
                 return false;
 
             IDisposable objLocker = null;
@@ -6252,9 +6252,9 @@ namespace Chummer
                                     try
                                     {
                                         innerToken.ThrowIfCancellationRequested();
-                                        if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                        if (strFileName.EndsWith(".chum5", Utils.PathStringComparison))
                                             objXmlDocument.LoadStandardPatient(strFileName, !blnErrorCaught, token: innerToken);
-                                        else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                        else if (strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                                             objXmlDocument.LoadStandardFromLzmaCompressedPatient(
                                                 strFileName, !blnErrorCaught, token: innerToken);
                                         else
@@ -17789,17 +17789,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-                if (!(objNewParent.Tag is Location))
-                    intNewIndex = 0;
-            }
+            intNewIndex = GetLocationCollectionIndex(objDestination, intNewIndex);
             using (LockObject.EnterUpgradeableReadLock(token))
-                GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
+            {
+                int intOldIndex = GearLocations.IndexOf(objLocation);
+                if (TryGetBoundedMoveIndex(intOldIndex, GearLocations.Count, ref intNewIndex))
+                    GearLocations.Move(intOldIndex, intNewIndex);
+            }
         }
 
         /// <summary>
@@ -17814,20 +17810,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-                if (!(objNewParent.Tag is Location))
-                    intNewIndex = 0;
-            }
+            intNewIndex = GetLocationCollectionIndex(objDestination, intNewIndex);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await GearLocations.MoveAsync(await GearLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                int intOldIndex = await GearLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false);
+                int intCount = await GearLocations.GetCountAsync(token).ConfigureAwait(false);
+                if (TryGetBoundedMoveIndex(intOldIndex, intCount, ref intNewIndex))
+                    await GearLocations.MoveAsync(intOldIndex, intNewIndex, token).ConfigureAwait(false);
             }
             finally
             {
@@ -17999,17 +17990,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-                if (!(objNewParent.Tag is Location))
-                    intNewIndex = 0;
-            }
+            intNewIndex = GetLocationCollectionIndex(objDestination, intNewIndex);
             using (LockObject.EnterUpgradeableReadLock(token))
-                ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
+            {
+                int intOldIndex = ArmorLocations.IndexOf(objLocation);
+                if (TryGetBoundedMoveIndex(intOldIndex, ArmorLocations.Count, ref intNewIndex))
+                    ArmorLocations.Move(intOldIndex, intNewIndex);
+            }
         }
 
         /// <summary>
@@ -18024,20 +18011,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-                if (!(objNewParent.Tag is Location))
-                    intNewIndex = 0;
-            }
+            intNewIndex = GetLocationCollectionIndex(objDestination, intNewIndex);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await ArmorLocations.MoveAsync(await ArmorLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                int intOldIndex = await ArmorLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false);
+                int intCount = await ArmorLocations.GetCountAsync(token).ConfigureAwait(false);
+                if (TryGetBoundedMoveIndex(intOldIndex, intCount, ref intNewIndex))
+                    await ArmorLocations.MoveAsync(intOldIndex, intNewIndex, token).ConfigureAwait(false);
             }
             finally
             {
@@ -18149,17 +18131,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-                if (!(objNewParent.Tag is Location))
-                    intNewIndex = 0;
-            }
+            intNewIndex = GetLocationCollectionIndex(objDestination, intNewIndex);
             using (LockObject.EnterUpgradeableReadLock(token))
-                WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
+            {
+                int intOldIndex = WeaponLocations.IndexOf(objLocation);
+                if (TryGetBoundedMoveIndex(intOldIndex, WeaponLocations.Count, ref intNewIndex))
+                    WeaponLocations.Move(intOldIndex, intNewIndex);
+            }
         }
 
         /// <summary>
@@ -18174,20 +18152,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
-            if (objDestination != null)
-            {
-                TreeNode objNewParent = objDestination;
-                while (objNewParent.Level > 0)
-                    objNewParent = objNewParent.Parent;
-                intNewIndex = objNewParent.Index;
-                if (!(objNewParent.Tag is Location))
-                    intNewIndex = 0;
-            }
+            intNewIndex = GetLocationCollectionIndex(objDestination, intNewIndex);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await WeaponLocations.MoveAsync(await WeaponLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                int intOldIndex = await WeaponLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false);
+                int intCount = await WeaponLocations.GetCountAsync(token).ConfigureAwait(false);
+                if (TryGetBoundedMoveIndex(intOldIndex, intCount, ref intNewIndex))
+                    await WeaponLocations.MoveAsync(intOldIndex, intNewIndex, token).ConfigureAwait(false);
             }
             finally
             {
@@ -18597,6 +18570,48 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Maps a drag-and-drop target to an index in the matching locations collection.
+        /// Selected Gear, Selected Armor, and Selected Weapons occupy root rows beside locations, so only location siblings are counted.
+        /// </summary>
+        /// <param name="objDestination">Node dropped on. A nested node is resolved to its top-level parent.</param>
+        /// <param name="intFallbackIndex">Index used when <paramref name="objDestination"/> is null.</param>
+        /// <returns>Position of the destination among sibling location nodes, or 0 when the drop lands on a non-location root.</returns>
+        private static int GetLocationCollectionIndex(TreeNode objDestination, int intFallbackIndex)
+        {
+            if (objDestination == null)
+                return intFallbackIndex;
+
+            TreeNode objRoot = objDestination;
+            while (objRoot.Level > 0)
+                objRoot = objRoot.Parent;
+
+            if (!(objRoot.Tag is Location))
+                return 0;
+
+            TreeNodeCollection objSiblings = objRoot.Parent?.Nodes ?? objRoot.TreeView?.Nodes;
+            if (objSiblings == null)
+                return objRoot.Index;
+
+            int intLocationIndex = 0;
+            int intLimit = Math.Min(objRoot.Index, objSiblings.Count);
+            for (int i = 0; i < intLimit; ++i)
+            {
+                if (objSiblings[i].Tag is Location)
+                    ++intLocationIndex;
+            }
+
+            return intLocationIndex;
+        }
+
+        private static bool TryGetBoundedMoveIndex(int intOldIndex, int intCount, ref int intNewIndex)
+        {
+            if (intOldIndex < 0 || intCount <= 0)
+                return false;
+            intNewIndex = Math.Max(0, Math.Min(intNewIndex, intCount - 1));
+            return intOldIndex != intNewIndex;
         }
 
         #endregion Move TreeNodes
@@ -19518,14 +19533,14 @@ namespace Chummer
             set
             {
                 if (!string.IsNullOrWhiteSpace(value)
-                    && !value.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                    && !value.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    && !value.EndsWith(".chum5", Utils.PathStringComparison)
+                    && !value.EndsWith(".chum5lz", Utils.PathStringComparison))
                 {
                     value = Path.GetFileNameWithoutExtension(value) + ".chum5";
                     using (LockObject.EnterReadLock())
                     {
                         if (!string.IsNullOrWhiteSpace(_strFileName)
-                            && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            && _strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                             value += "lz";
                     }
                 }
@@ -19564,15 +19579,15 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrWhiteSpace(value)
-                && !value.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                && !value.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                && !value.EndsWith(".chum5", Utils.PathStringComparison)
+                && !value.EndsWith(".chum5lz", Utils.PathStringComparison))
             {
                 value = Path.GetFileNameWithoutExtension(value) + ".chum5";
                 IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (!string.IsNullOrWhiteSpace(_strFileName)
-                        && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        && _strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                         value += "lz";
                 }
                 finally
@@ -50763,7 +50778,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         RefreshAstralReputationImprovements();
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -50794,7 +50809,7 @@ namespace Chummer
                         });
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
@@ -51037,7 +51052,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         await RefreshAstralReputationImprovementsAsync(token).ConfigureAwait(false);
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -51063,7 +51078,7 @@ namespace Chummer
                         }, token: token).ConfigureAwait(false);
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();

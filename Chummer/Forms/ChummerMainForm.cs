@@ -232,7 +232,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -321,7 +321,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -389,7 +389,7 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -471,7 +471,7 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -552,7 +552,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -643,7 +643,7 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null)
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
                             {
                                 try
                                 {
@@ -776,7 +776,7 @@ namespace Chummer
                                                              "*.chum5*",
                                                              SearchOption.AllDirectories))
                                             {
-                                                if (!strAutosave.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strAutosave.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                                if (!strAutosave.EndsWith(".chum5", Utils.PathStringComparison) && !strAutosave.EndsWith(".chum5lz", Utils.PathStringComparison))
                                                     continue;
                                                 FileInfo objAutosave;
                                                 try
@@ -2042,33 +2042,61 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
+                    if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm)
+                    {
+                        string strTooManyHandles
+                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                               .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                   .ConfigureAwait(false);
+                        string strCharacterName
+                            = await LanguageManager.GetStringAsync("String_ANewCharacter", token: _objGenericToken)
+                                                   .ConfigureAwait(false);
+                        if (await Program.ShowScrollableMessageBoxAsync(
+                                                            StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                            strTooManyHandlesTitle,
+                                                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+
                     Character objCharacter = new Character();
                     try
                     {
-                        using (ThreadSafeForm<SelectBuildMethod> frmPickSetting
+                        IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            using (ThreadSafeForm<SelectBuildMethod> frmPickSetting
                                = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
                                    () => new SelectBuildMethod(objCharacter), _objGenericToken).ConfigureAwait(false))
-                        {
-                            if (await frmPickSetting.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
-                                return;
+                            {
+                                if (await frmPickSetting.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                                    return;
+                            }
+
+                            // Override the defaults for the setting.
+                            await objCharacter.SetIgnoreRulesAsync(true, _objGenericToken).ConfigureAwait(false);
+                            await objCharacter.SetIsCritterAsync(true, _objGenericToken).ConfigureAwait(false);
+                            await objCharacter.SetCreatedAsync(true, token: _objGenericToken).ConfigureAwait(false);
+
+                            // Show the Metatype selection window.
+                            using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
+                                   await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
+                                       new SelectMetatypeKarma(objCharacter), _objGenericToken).ConfigureAwait(false))
+                            {
+                                if (await frmSelectMetatype.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                                    return;
+                            }
+
+                            await Program.OpenCharacters.AddAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                            await OpenCharacter(objCharacter, false, _objGenericToken).ConfigureAwait(false);
                         }
-
-                        // Override the defaults for the setting.
-                        await objCharacter.SetIgnoreRulesAsync(true, _objGenericToken).ConfigureAwait(false);
-                        await objCharacter.SetIsCritterAsync(true, _objGenericToken).ConfigureAwait(false);
-                        await objCharacter.SetCreatedAsync(true, token: _objGenericToken).ConfigureAwait(false);
-
-                        // Show the Metatype selection window.
-                        using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
-                               await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
-                                   new SelectMetatypeKarma(objCharacter), _objGenericToken).ConfigureAwait(false))
+                        finally
                         {
-                            if (await frmSelectMetatype.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
-                                return;
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
-
-                        await Program.OpenCharacters.AddAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
-                        await OpenCharacter(objCharacter, false, _objGenericToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -2357,7 +2385,7 @@ namespace Chummer
                 if (Interlocked.Decrement(ref _intSkipReopenUntilAllClear) >= 0)
                 {
                     ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                    if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) != 0)
+                    if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
                     {
                         Interlocked.Increment(ref _intSkipReopenUntilAllClear);
                         return;
@@ -2396,7 +2424,7 @@ namespace Chummer
                     if (objCharacter == null)
                         return false;
                     ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                    if (lstToProcess == null)
+                    if (lstToProcess == null || await lstToProcess.GetCountAsync(token).ConfigureAwait(false) <= 0)
                         return false;
                     CharacterShared objCharacterForm
                         = await lstToProcess.FirstOrDefaultAsync(
@@ -2451,7 +2479,7 @@ namespace Chummer
                     if (objCharacter == null)
                         return false;
                     ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess = OpenCharacterSheetViewers;
-                    if (lstToProcess == null)
+                    if (lstToProcess == null || await lstToProcess.GetCountAsync(token).ConfigureAwait(false) <= 0)
                         return false;
                     CharacterSheetViewer objCharacterForm
                         = await lstToProcess.FirstOrDefaultAsync(
@@ -2520,7 +2548,7 @@ namespace Chummer
                     if (objCharacter == null)
                         return false;
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                    if (lstToProcess == null)
+                    if (lstToProcess == null || await lstToProcess.GetCountAsync(token).ConfigureAwait(false) <= 0)
                         return false;
                     ExportCharacter objCharacterForm
                         = await lstToProcess.FirstOrDefaultAsync(
@@ -3350,12 +3378,32 @@ namespace Chummer
         {
             try
             {
-                Character objCharacter = new Character();
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                    Character objCharacter = new Character();
                     try
                     {
+                        if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm)
+                        {
+                            string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                   .ConfigureAwait(false);
+                            string strTooManyHandlesTitle
+                                = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            string strCharacterName
+                                = await LanguageManager.GetStringAsync("String_ANewCharacter", token: _objGenericToken)
+                                                       .ConfigureAwait(false);
+                            if (await Program.ShowScrollableMessageBoxAsync(
+                                                                StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                                strTooManyHandlesTitle,
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
+                            {
+                                return;
+                            }
+                        }
+
                         // Show the BP selection window.
                         using (ThreadSafeForm<SelectBuildMethod> frmBP
                                = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
@@ -3366,7 +3414,7 @@ namespace Chummer
                         }
 
                         // Show the Metatype selection window.
-                        if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                        if (await objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(_objGenericToken).ConfigureAwait(false))
                         {
                             using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype
                                    = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(
@@ -3388,15 +3436,7 @@ namespace Chummer
                         }
 
                         await Program.OpenCharacters.AddAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
 
-                    objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                    try
-                    {
                         await this.DoThreadSafeAsync(x =>
                         {
                             CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
@@ -3432,12 +3472,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        await objCharacter.DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                     }
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -3466,7 +3506,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFile, token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -3562,12 +3602,7 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
-                        string strTooManyHandles
-                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
-                                                   .ConfigureAwait(false);
-                        string strTooManyHandlesTitle
-                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
-                                                   .ConfigureAwait(false);
+                        
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
                                               .ConfigureAwait(false))
@@ -3580,70 +3615,89 @@ namespace Chummer
                                                                             + ")", token: token)
                                                 .ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null && await lstToProcess.AnyAsync(
-                                    x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
+                                        x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
-                            if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
-                                && await Program.ShowScrollableMessageBoxAsync(
-                                    StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm)
                             {
-                                if (await Program.OpenCharacters
-                                        .AllAsync(
-                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
-                                            token).ConfigureAwait(false))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token)
-                                        .ConfigureAwait(false);
-                                return;
+                                string strTooManyHandles
+                                    = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
+                                string strTooManyHandlesTitle
+                                    = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
+                                if (await Program.ShowScrollableMessageBoxAsync(
+                                                                StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                                strTooManyHandlesTitle,
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                                {
+                                    if (await Program.OpenCharacters
+                                            .AllAsync(
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
+                                                token).ConfigureAwait(false))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                            .ConfigureAwait(false);
+                                    return;
+                                }
                             }
 
                             //Timekeeper.Start("load_event_time");
                             // Show the character forms.
-                            await this.DoThreadSafeAsync(y =>
+                            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
-                                CharacterShared frmNewCharacter = objCharacter.Created
-                                    ? (CharacterShared)new CharacterCareer(objCharacter)
-                                    : new CharacterCreate(objCharacter);
-                                frmNewCharacter.MdiParent = y;
-                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
-                                    || ReferenceEquals(MdiChildren[0], frmNewCharacter));
-                                Stack<Form> stkToMaximize = null;
-                                if (blnMaximizePreShow)
+                                bool blnCreated = await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                                await this.DoThreadSafeAsync(y =>
                                 {
-                                    if (blnMaximizeNewForm)
-                                        frmNewCharacter.WindowState = FormWindowState.Maximized;
-                                }
-                                else
-                                {
-                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
-                                    if (blnMaximizeNewForm)
-                                        stkToMaximize.Push(frmNewCharacter);
-                                    foreach (Form frmLoop in y.MdiChildren)
+                                    CharacterShared frmNewCharacter = blnCreated
+                                        ? (CharacterShared)new CharacterCareer(objCharacter)
+                                        : new CharacterCreate(objCharacter);
+                                    frmNewCharacter.MdiParent = y;
+                                    bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                        || ReferenceEquals(MdiChildren[0], frmNewCharacter));
+                                    Stack<Form> stkToMaximize = null;
+                                    if (blnMaximizePreShow)
                                     {
-                                        if (frmLoop.WindowState == FormWindowState.Maximized
-                                            && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                        if (blnMaximizeNewForm)
+                                            frmNewCharacter.WindowState = FormWindowState.Maximized;
+                                    }
+                                    else
+                                    {
+                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                        stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                        if (blnMaximizeNewForm)
+                                            stkToMaximize.Push(frmNewCharacter);
+                                        foreach (Form frmLoop in y.MdiChildren)
                                         {
-                                            frmLoop.WindowState = FormWindowState.Normal;
-                                            stkToMaximize.Push(frmLoop);
+                                            if (frmLoop.WindowState == FormWindowState.Maximized
+                                                && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                            {
+                                                frmLoop.WindowState = FormWindowState.Normal;
+                                                stkToMaximize.Push(frmLoop);
+                                            }
                                         }
                                     }
-                                }
 
-                                frmNewCharacter.Show();
-                                if (stkToMaximize?.Count > 0)
+                                    frmNewCharacter.Show();
+                                    if (stkToMaximize?.Count > 0)
+                                    {
+                                        while (stkToMaximize.Count > 0)
+                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    }
+                                }, token).ConfigureAwait(false);
+                                if (blnIncludeInMru)
                                 {
-                                    while (stkToMaximize.Count > 0)
-                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFileName, token).ConfigureAwait(false);
                                 }
-                            }, token).ConfigureAwait(false);
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
-                            //Timekeeper.Finish("load_event_time");
+                                //Timekeeper.Finish("load_event_time");
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
                     finally
@@ -3725,10 +3779,11 @@ namespace Chummer
                                 if (objCharacter == null)
                                     continue;
                                 ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                                if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
-                                if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 7500 : 7000)
+                                if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarningCharacterEditForm
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
@@ -3745,50 +3800,62 @@ namespace Chummer
 
                                 //Timekeeper.Start("load_event_time");
                                 // Show the character forms.
-                                await this.DoThreadSafeAsync(y =>
+                                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                                try
                                 {
-                                    CharacterShared frmNewCharacter = objCharacter.Created
-                                        ? (CharacterShared) new CharacterCareer(objCharacter)
-                                        : new CharacterCreate(objCharacter);
-                                    frmNewCharacter.MdiParent = y;
-                                    bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
-                                        || ReferenceEquals(MdiChildren[0], frmNewCharacter));
-                                    Stack<Form> stkToMaximize = null;
-                                    if (blnMaximizePreShow)
+                                    bool blnCreated = await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                                    await this.DoThreadSafeAsync(y =>
                                     {
-                                        if (blnMaximizeNewForm)
-                                            frmNewCharacter.WindowState = FormWindowState.Maximized;
-                                    }
-                                    else
-                                    {
-                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                        stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
-                                        if (blnMaximizeNewForm)
-                                            stkToMaximize.Push(frmNewCharacter);
-                                        foreach (Form frmLoop in y.MdiChildren)
+                                        CharacterShared frmNewCharacter = blnCreated
+                                            ? (CharacterShared)new CharacterCareer(objCharacter)
+                                            : new CharacterCreate(objCharacter);
+                                        frmNewCharacter.MdiParent = y;
+                                        bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                            || ReferenceEquals(MdiChildren[0], frmNewCharacter));
+                                        Stack<Form> stkToMaximize = null;
+                                        if (blnMaximizePreShow)
                                         {
-                                            if (frmLoop.WindowState == FormWindowState.Maximized
-                                                && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                            if (blnMaximizeNewForm)
+                                                frmNewCharacter.WindowState = FormWindowState.Maximized;
+                                        }
+                                        else
+                                        {
+                                            // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                            // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                            stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                            if (blnMaximizeNewForm)
+                                                stkToMaximize.Push(frmNewCharacter);
+                                            foreach (Form frmLoop in y.MdiChildren)
                                             {
-                                                frmLoop.WindowState = FormWindowState.Normal;
-                                                stkToMaximize.Push(frmLoop);
+                                                if (frmLoop.WindowState == FormWindowState.Maximized
+                                                    && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                                {
+                                                    frmLoop.WindowState = FormWindowState.Normal;
+                                                    stkToMaximize.Push(frmLoop);
+                                                }
                                             }
                                         }
-                                    }
 
-                                    frmNewCharacter.Show();
-                                    if (stkToMaximize?.Count > 0)
+                                        frmNewCharacter.Show();
+                                        if (stkToMaximize?.Count > 0)
+                                        {
+                                            while (stkToMaximize.Count > 0)
+                                                stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                    if (blnIncludeInMru)
                                     {
-                                        while (stkToMaximize.Count > 0)
-                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                        string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                                0, strFileName, token).ConfigureAwait(false);
                                     }
-                                }, token).ConfigureAwait(false);
-                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                    && File.Exists(objCharacter.FileName))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, objCharacter.FileName, token).ConfigureAwait(false);
-                                //Timekeeper.Finish("load_event_time");
+                                    //Timekeeper.Finish("load_event_time");
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -3825,7 +3892,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFile, token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenPrintCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -3919,11 +3986,12 @@ namespace Chummer
                                                .ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess.AnyAsync(
                                     x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                                 return;
 
-                            if (Program.MyProcess.HandleCount >= 9500
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                 && await Program.ShowScrollableMessageBoxAsync(
                                     StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                     strTooManyHandlesTitle,
@@ -3947,58 +4015,69 @@ namespace Chummer
                                     MdiParent = y
                                 };
                             }, token: token).ConfigureAwait(false);
-
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
                             //Timekeeper.Finish("load_event_time");
                         }
 
                         if (frmNewFormToProcess != null)
                         {
-                            await frmNewFormToProcess.SetCharacters(token, objCharacter).ConfigureAwait(false);
-
-                            await this.DoThreadSafeAsync(x =>
+                            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
-                                bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0
-                                    || ReferenceEquals(x.MdiChildren[0], objCharacter));
-                                Stack<Form> stkToMaximize = null;
-                                if (blnMaximizePreShow)
-                                {
-                                    if (blnMaximizeNewForm && frmNewFormToProcess != null)
-                                    {
-                                        frmNewFormToProcess.WindowState = FormWindowState.Maximized;
-                                    }
-                                }
-                                else
-                                {
-                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                    stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
-                                    if (blnMaximizeNewForm && frmNewFormToProcess != null)
-                                    {
-                                        stkToMaximize.Push(frmNewFormToProcess);
-                                    }
+                                await frmNewFormToProcess.SetCharacters(token, objCharacter).ConfigureAwait(false);
 
-                                    foreach (Form frmLoop in x.MdiChildren)
+                                await this.DoThreadSafeAsync(x =>
+                                {
+                                    bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0
+                                        || ReferenceEquals(x.MdiChildren[0], objCharacter));
+                                    Stack<Form> stkToMaximize = null;
+                                    if (blnMaximizePreShow)
                                     {
-                                        if (frmLoop.WindowState == FormWindowState.Maximized
-                                            && !ReferenceEquals(frmNewFormToProcess, frmLoop))
+                                        if (blnMaximizeNewForm && frmNewFormToProcess != null)
                                         {
-                                            frmLoop.WindowState = FormWindowState.Normal;
-                                            stkToMaximize.Push(frmLoop);
+                                            frmNewFormToProcess.WindowState = FormWindowState.Maximized;
                                         }
                                     }
-                                }
+                                    else
+                                    {
+                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                        stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
+                                        if (blnMaximizeNewForm && frmNewFormToProcess != null)
+                                        {
+                                            stkToMaximize.Push(frmNewFormToProcess);
+                                        }
 
-                                frmNewFormToProcess.Show();
-                                if (stkToMaximize?.Count > 0)
+                                        foreach (Form frmLoop in x.MdiChildren)
+                                        {
+                                            if (frmLoop.WindowState == FormWindowState.Maximized
+                                                && !ReferenceEquals(frmNewFormToProcess, frmLoop))
+                                            {
+                                                frmLoop.WindowState = FormWindowState.Normal;
+                                                stkToMaximize.Push(frmLoop);
+                                            }
+                                        }
+                                    }
+
+                                    frmNewFormToProcess.Show();
+                                    if (stkToMaximize?.Count > 0)
+                                    {
+                                        while (stkToMaximize.Count > 0)
+                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    }
+                                }, token).ConfigureAwait(false);
+
+                                if (blnIncludeInMru)
                                 {
-                                    while (stkToMaximize.Count > 0)
-                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFileName, token).ConfigureAwait(false);
                                 }
-                            }, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
                     finally
@@ -4083,11 +4162,12 @@ namespace Chummer
                                     continue;
                                 ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                     = OpenCharacterSheetViewers;
-                                if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
                                         x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                                     continue;
 
-                                if (Program.MyProcess.HandleCount >= 9500
+                                if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
@@ -4114,17 +4194,28 @@ namespace Chummer
                                         new ValueTuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
                                 }, token: token).ConfigureAwait(false);
 
-                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                    && File.Exists(objCharacter.FileName))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, objCharacter.FileName, token).ConfigureAwait(false);
                                 //Timekeeper.Finish("load_event_time");
                             }
                         }
 
                         foreach ((CharacterSheetViewer frmViewer, Character objCharacter) in lstNewFormsToProcess)
                         {
-                            await frmViewer.SetCharacters(token, objCharacter).ConfigureAwait(false);
+                            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                await frmViewer.SetCharacters(token, objCharacter).ConfigureAwait(false);
+                                if (blnIncludeInMru)
+                                {
+                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFileName, token).ConfigureAwait(false);
+                                }
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
 
                         await this.DoThreadSafeAsync(x =>
@@ -4208,7 +4299,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter
                             = await Program.OpenCharacters.FirstOrDefaultAsync(
-                                x => x.FileName == strFile, token: _objGenericToken).ConfigureAwait(false);
+                                async (x, t) => string.Equals(await x.GetFileNameAsync(t).ConfigureAwait(false), strFile, Utils.PathStringComparison), token: _objGenericToken).ConfigureAwait(false);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenExportCharacter(objLoopCharacter, _objGenericToken).ConfigureAwait(false))
@@ -4284,12 +4375,6 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
-                        string strTooManyHandles
-                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
-                                                   .ConfigureAwait(false);
-                        string strTooManyHandlesTitle
-                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
-                                                   .ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
                                               .ConfigureAwait(false))
@@ -4302,73 +4387,90 @@ namespace Chummer
                                                                             + ")", token: token)
                                                 .ConfigureAwait(false);
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null && await lstToProcess.AnyAsync(
+                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && await lstToProcess.AnyAsync(
                                     x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 return;
-                            if (Program.MyProcess.HandleCount >= 9500
-                                && await Program.ShowScrollableMessageBoxAsync(
-                                    StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                            if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning)
                             {
-                                if (await Program.OpenCharacters
-                                        .AllAsync(
-                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
-                                            token).ConfigureAwait(false))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token)
-                                        .ConfigureAwait(false);
-                                return;
+                                string strTooManyHandles
+                                    = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                           .ConfigureAwait(false);
+                                string strTooManyHandlesTitle
+                                    = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                           .ConfigureAwait(false);
+                                if (await Program.ShowScrollableMessageBoxAsync(
+                                                                StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
+                                                                strTooManyHandlesTitle,
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                                {
+                                    if (await Program.OpenCharacters
+                                            .AllAsync(
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
+                                                token).ConfigureAwait(false))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                            .ConfigureAwait(false);
+                                    return;
+                                }
                             }
 
                             //Timekeeper.Start("load_event_time");
                             // Show the character forms.
-                            await this.DoThreadSafeAsync(y =>
+                            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                            try
                             {
-                                ExportCharacter frmViewer = new ExportCharacter(objCharacter)
+                                await this.DoThreadSafeAsync(y =>
                                 {
-                                    MdiParent = y
-                                };
-                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
-                                    || ReferenceEquals(MdiChildren[0], frmViewer));
-                                Stack<Form> stkToMaximize = null;
-                                if (blnMaximizePreShow)
-                                {
-                                    if (blnMaximizeNewForm)
-                                        frmViewer.WindowState = FormWindowState.Maximized;
-                                }
-                                else
-                                {
-                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
-                                    if (blnMaximizeNewForm)
-                                        stkToMaximize.Push(frmViewer);
-                                    foreach (Form frmLoop in y.MdiChildren)
+                                    ExportCharacter frmViewer = new ExportCharacter(objCharacter)
                                     {
-                                        if (frmLoop.WindowState == FormWindowState.Maximized
-                                            && !ReferenceEquals(frmLoop, frmViewer))
+                                        MdiParent = y
+                                    };
+                                    bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                        || ReferenceEquals(MdiChildren[0], frmViewer));
+                                    Stack<Form> stkToMaximize = null;
+                                    if (blnMaximizePreShow)
+                                    {
+                                        if (blnMaximizeNewForm)
+                                            frmViewer.WindowState = FormWindowState.Maximized;
+                                    }
+                                    else
+                                    {
+                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                        stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                        if (blnMaximizeNewForm)
+                                            stkToMaximize.Push(frmViewer);
+                                        foreach (Form frmLoop in y.MdiChildren)
                                         {
-                                            frmLoop.WindowState = FormWindowState.Normal;
-                                            stkToMaximize.Push(frmLoop);
+                                            if (frmLoop.WindowState == FormWindowState.Maximized
+                                                && !ReferenceEquals(frmLoop, frmViewer))
+                                            {
+                                                frmLoop.WindowState = FormWindowState.Normal;
+                                                stkToMaximize.Push(frmLoop);
+                                            }
                                         }
                                     }
-                                }
 
-                                frmViewer.Show();
-                                if (stkToMaximize?.Count > 0)
+                                    frmViewer.Show();
+                                    if (stkToMaximize?.Count > 0)
+                                    {
+                                        while (stkToMaximize.Count > 0)
+                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    }
+                                }, token).ConfigureAwait(false);
+                                if (blnIncludeInMru)
                                 {
-                                    while (stkToMaximize.Count > 0)
-                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFile, token).ConfigureAwait(false);
                                 }
-                            }, token).ConfigureAwait(false);
-                            if (blnIncludeInMru)
-                            {
-                                string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, strFile, token).ConfigureAwait(false);
+                                //Timekeeper.Finish("load_event_time");
                             }
-                            //Timekeeper.Finish("load_event_time");
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
                     finally
@@ -4450,10 +4552,11 @@ namespace Chummer
                                 if (objCharacter == null)
                                     continue;
                                 ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                                if (lstToProcess != null && await lstToProcess.AnyAsync(
+                                if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
+                                    && await lstToProcess.AnyAsync(
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
-                                if (Program.MyProcess.HandleCount >= 9500
+                                if (Program.MyProcess.HandleCount >= Utils.HandleCountThresholdForWarning
                                     && await Program.ShowScrollableMessageBoxAsync(
                                         StringExtensions.FastFormat(strTooManyHandles, strCharacterName),
                                         strTooManyHandlesTitle,
@@ -4470,53 +4573,61 @@ namespace Chummer
 
                                 //Timekeeper.Start("load_event_time");
                                 // Show the character forms.
-                                await this.DoThreadSafeAsync(y =>
+                                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                                try
                                 {
-                                    ExportCharacter frmViewer = new ExportCharacter(objCharacter)
+                                    await this.DoThreadSafeAsync(y =>
                                     {
-                                        MdiParent = y
-                                    };
-                                    bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
-                                        || ReferenceEquals(MdiChildren[0], frmViewer));
-                                    Stack<Form> stkToMaximize = null;
-                                    if (blnMaximizePreShow)
-                                    {
-                                        if (blnMaximizeNewForm)
-                                            frmViewer.WindowState = FormWindowState.Maximized;
-                                    }
-                                    else
-                                    {
-                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                        stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
-                                        if (blnMaximizeNewForm)
-                                            stkToMaximize.Push(frmViewer);
-                                        foreach (Form frmLoop in y.MdiChildren)
+                                        ExportCharacter frmViewer = new ExportCharacter(objCharacter)
                                         {
-                                            if (frmLoop.WindowState == FormWindowState.Maximized
-                                                && !ReferenceEquals(frmLoop, frmViewer))
+                                            MdiParent = y
+                                        };
+                                        bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                            || ReferenceEquals(MdiChildren[0], frmViewer));
+                                        Stack<Form> stkToMaximize = null;
+                                        if (blnMaximizePreShow)
+                                        {
+                                            if (blnMaximizeNewForm)
+                                                frmViewer.WindowState = FormWindowState.Maximized;
+                                        }
+                                        else
+                                        {
+                                            // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                            // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                            stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                            if (blnMaximizeNewForm)
+                                                stkToMaximize.Push(frmViewer);
+                                            foreach (Form frmLoop in y.MdiChildren)
                                             {
-                                                frmLoop.WindowState = FormWindowState.Normal;
-                                                stkToMaximize.Push(frmLoop);
+                                                if (frmLoop.WindowState == FormWindowState.Maximized
+                                                    && !ReferenceEquals(frmLoop, frmViewer))
+                                                {
+                                                    frmLoop.WindowState = FormWindowState.Normal;
+                                                    stkToMaximize.Push(frmLoop);
+                                                }
                                             }
                                         }
-                                    }
 
-                                    frmViewer.Show();
-                                    if (stkToMaximize?.Count > 0)
+                                        frmViewer.Show();
+                                        if (stkToMaximize?.Count > 0)
+                                        {
+                                            while (stkToMaximize.Count > 0)
+                                                stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                    if (blnIncludeInMru)
                                     {
-                                        while (stkToMaximize.Count > 0)
-                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                        string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                                0, strFile, token).ConfigureAwait(false);
                                     }
-                                }, token).ConfigureAwait(false);
-                                if (blnIncludeInMru)
-                                {
-                                    string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
-                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                            0, strFile, token).ConfigureAwait(false);
+                                    //Timekeeper.Finish("load_event_time");
                                 }
-                                //Timekeeper.Finish("load_event_time");
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -4944,7 +5055,7 @@ namespace Chummer
                                                  "*.chum5*", SearchOption.AllDirectories))
                                     {
                                         _objGenericToken.ThrowIfCancellationRequested();
-                                        if (!strAutosave.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strAutosave.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                        if (!strAutosave.EndsWith(".chum5", Utils.PathStringComparison) && !strAutosave.EndsWith(".chum5lz", Utils.PathStringComparison))
                                             continue;
                                         FileInfo objAutosave;
                                         try
@@ -5073,7 +5184,7 @@ namespace Chummer
                 {
                     if (++intIndex >= intLength)
                         return objReturn;
-                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
+                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), Utils.PathStringComparison))
                         continue;
                     switch (strArg.ToUpperInvariant())
                     {
@@ -5111,13 +5222,13 @@ namespace Chummer
 
                                 string strExtension = Path.GetExtension(strArg);
                                 // This check is needed because applications in .NET 8 are .dlls, and .exe files just serve to launch the .dlls (presumably for cross-platform support)
-                                if (!string.Equals(strExtension, ".dll", StringComparison.OrdinalIgnoreCase)
+                                if (!string.Equals(strExtension, ".dll", Utils.PathStringComparison)
                                     || !string.Equals(Path.GetFileNameWithoutExtension(strArg),
                                         Path.GetFileNameWithoutExtension(Application.ExecutablePath),
-                                        StringComparison.OrdinalIgnoreCase))
+                                        Utils.PathStringComparison))
                                 {
-                                    if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
-                                        && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                    if (!string.Equals(strExtension, ".chum5", Utils.PathStringComparison)
+                                        && !string.Equals(strExtension, ".chum5lz", Utils.PathStringComparison))
                                         Utils.BreakIfDebug();
                                     setFilesToLoad.Add(strArg);
                                 }

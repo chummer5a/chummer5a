@@ -60,7 +60,7 @@ namespace Chummer.Tests
                             && x.ImprovedName == "REA");
                         Assert.IsNotNull(objRea, "Bliss should create a REA attribute improvement");
                         Assert.IsFalse(objRea.Enabled, "Drug improvements should start disabled");
-                        Assert.AreEqual(1m, objRea.Augmented);
+                        Assert.AreEqual(-1m, objRea.Augmented);
                         Assert.IsTrue(objRea.Custom);
                         Assert.AreEqual("Bliss", objRea.CustomGroup);
                         Assert.IsFalse(string.IsNullOrEmpty(objRea.CustomName),
@@ -393,7 +393,7 @@ namespace Chummer.Tests
                         decimal decReaBefore = await objCharacter.REA.GetTotalValueAsync(token).ConfigureAwait(false);
                         await ImprovementManager.EnableImprovementsAsync(objCharacter, lstDrugImprovements, token)
                             .ConfigureAwait(false);
-                        Assert.AreEqual(decReaBefore + 1m, await objCharacter.REA.GetTotalValueAsync(token).ConfigureAwait(false));
+                        Assert.AreEqual(decReaBefore - 1m, await objCharacter.REA.GetTotalValueAsync(token).ConfigureAwait(false));
 
                         await ImprovementManager.DisableImprovementsAsync(objCharacter, lstDrugImprovements, token)
                             .ConfigureAwait(false);

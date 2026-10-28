@@ -624,7 +624,7 @@
     <bioware>
       <id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
       <name>Chemical Gland (Exhalation Sprayer)</name>
-      <limit>False</limit>
+      <limit>1</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -929,6 +929,11 @@
           <value>1</value>
           <condition>LimitCondition_SkillsActiveSwimming</condition>
         </limitmodifier>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>-1</value>
+          <condition>LimitCondition_FineManipulationActive</condition>
+        </limitmodifier>
       </bonus>
       <pairbonus>
         <walkmultiplier>
@@ -973,6 +978,13 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>4000</cost>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
+        </specificskill>
+      </bonus>
       <source>CF</source>
       <page>113</page>
     </bioware>
@@ -1008,6 +1020,13 @@
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>35000</cost>
+      <bonus>
+        <specificskill>
+          <name>Free-Fall</name>
+          <bonus>3</bonus>
+          <condition>LimitCondition_Rappelling</condition>
+        </specificskill>
+      </bonus>
       <source>CF</source>
       <page>114</page>
     </bioware>
@@ -1033,6 +1052,13 @@
       <cost>8000</cost>
       <source>CF</source>
       <page>114</page>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_SkillsActivePerceptionTouch</condition>
+        </specificskill>
+      </bonus>
     </bioware>
     <bioware>
       <id>bac3eaa6-c1d3-457e-a319-1ce141baef37</id>
@@ -1162,6 +1188,11 @@
       <cost>Rating * 2000</cost>
       <bonus>
         <selecttext />
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>Rating * 2</bonus>
+          <condition>LimitCondition_SpeciesChosen</condition>
+        </specificskill>
       </bonus>
       <rating>3</rating>
       <source>CF</source>
@@ -1334,7 +1365,7 @@
       <ess>0.1*Rating</ess>
       <capacity>0</capacity>
       <avail>4R</avail>
-      <cost>500</cost>
+      <cost>Rating * 500</cost>
       <addweapon>Claws (Bio-Weapon)</addweapon>
       <notes>Rating is used to indicate number of claws.</notes>
       <rating>2</rating>
@@ -1367,7 +1398,7 @@
       <avail>2</avail>
       <cost>Rating*250</cost>
       <bonus>
-        <unarmeddv>Rating*0.5</unarmeddv>
+        <unarmeddv>floor(Rating div 2)</unarmeddv>
         <unarmeddvphysical />
       </bonus>
       <notes>Rating is used to represent hands and feet. Every 2 Rating will grant +1 Unarmed damage.</notes>
@@ -1398,7 +1429,7 @@
       <category>Bio-Weapons</category>
       <ess>0.1*Rating</ess>
       <capacity>0</capacity>
-      <avail>2</avail>
+      <avail>4</avail>
       <cost>Rating*500</cost>
       <addweapon>Medium Tusk(s)</addweapon>
       <notes>Rating is used to indicate number of tusks.</notes>
@@ -1437,7 +1468,7 @@
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
@@ -1566,6 +1597,12 @@
       <addweapon>Medium Tusk(s)</addweapon>
       <source>CF</source>
       <page>121</page>
+      <pairbonus>
+        <weaponaccuracy>
+          <name>Medium Tusk(s)</name>
+          <value>1</value>
+        </weaponaccuracy>
+      </pairbonus>
     </bioware>
     <bioware>
       <id>715d0e82-9fbf-42d6-94a6-efbb03540435</id>
@@ -1579,6 +1616,12 @@
       <addweapon>Large Tusk(s)</addweapon>
       <source>CF</source>
       <page>121</page>
+      <pairbonus>
+        <weaponaccuracy>
+          <name>Large Tusk(s)</name>
+          <value>1</value>
+        </weaponaccuracy>
+      </pairbonus>
     </bioware>
     <bioware>
       <id>1c919d10-72ae-4cd9-bad2-6b4a23ae48b0</id>
@@ -1614,6 +1657,12 @@
           <metatype>Ork</metatype>
         </allof>
       </required>
+      <pairbonus>
+        <weaponaccuracy>
+          <name>Medium Tusk(s)</name>
+          <value>1</value>
+        </weaponaccuracy>
+      </pairbonus>
     </bioware>
     <bioware>
       <id>787ff755-16f5-4dfa-9cf8-49b8399103e6</id>
@@ -1704,7 +1753,7 @@
       <ess>0.05</ess>
       <capacity>0</capacity>
       <avail>8</avail>
-      <cost>100</cost>
+      <cost>250</cost>
       <source>CF</source>
       <page>121</page>
     </bioware>
@@ -1747,6 +1796,11 @@
       <cost>FixedValues(500,1000,1500)</cost>
       <bonus>
         <selecttext />
+        <specificskill>
+          <name>Sneaking</name>
+          <bonus>-1</bonus>
+          <condition>LimitCondition_PerExposedBioTattoo</condition>
+        </specificskill>
       </bonus>
       <rating>3</rating>
       <source>CF</source>
@@ -1766,6 +1820,11 @@
           <value>1</value>
           <condition>LimitCondition_SkillGroupStealthNaked</condition>
         </limitmodifier>
+        <skillgroup>
+          <name>Stealth</name>
+          <bonus>1</bonus>
+          <condition>LimitCondition_NakedStationary</condition>
+        </skillgroup>
       </bonus>
       <source>CF</source>
       <page>109</page>
@@ -1784,6 +1843,11 @@
           <value>2</value>
           <condition>LimitCondition_SkillGroupStealthNaked</condition>
         </limitmodifier>
+        <skillgroup>
+          <name>Stealth</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_NakedStationary</condition>
+        </skillgroup>
       </bonus>
       <source>CF</source>
       <page>109</page>
@@ -1807,6 +1871,13 @@
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
+      <bonus>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>2</bonus>
+          <condition>LimitCondition_FindFood</condition>
+        </specificskill>
+      </bonus>
       <source>CF</source>
       <page>109</page>
     </bioware>
@@ -1895,7 +1966,7 @@
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
-      <avail>8</avail>
+      <avail>4</avail>
       <cost>200</cost>
       <bonus>
         <selecttext />
@@ -2216,7 +2287,7 @@
       <forcegrade>None</forcegrade>
       <isgeneware />
       <source>CF</source>
-      <page>159</page>
+      <page>158</page>
     </bioware>
     <bioware>
       <id>4a529d50-45cd-4f2d-8766-4ecd7c15f292</id>
@@ -2620,7 +2691,7 @@
         </specificskill>
       </bonus>
       <source>CF</source>
-      <page>161</page>
+      <page>162</page>
     </bioware>
     <bioware>
       <id>ae1d7612-7805-4962-8f9a-beb17619762d</id>
@@ -2633,7 +2704,7 @@
       <forcegrade>None</forcegrade>
       <isgeneware />
       <source>CF</source>
-      <page>161</page>
+      <page>162</page>
     </bioware>
     <bioware>
       <id>7aad79ff-7722-440d-a9c6-5b33b4ad7440</id>
@@ -3200,7 +3271,7 @@
       <forcegrade>None</forcegrade>
       <isgeneware />
       <source>CF</source>
-      <page>157</page>
+      <page>156</page>
     </bioware>
     <bioware>
       <id>11e5627e-aeff-4910-bf06-b8817b46f786</id>
@@ -3246,7 +3317,7 @@
     </bioware>
     <bioware>
       <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
-      <name>Revitilization</name>
+      <name>Revitalization</name>
       <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0</ess>
@@ -3428,7 +3499,7 @@
       <id>5b2c4c5d-a037-4970-8fcb-b6d47b9e819a</id>
       <name>Bone Spike (No Bone Density)</name>
       <limit>False</limit>
-      <category>Bio-Weapons</category>
+      <category>Cultured</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>14F</avail>
@@ -3446,7 +3517,7 @@
       <id>53d0d6b1-f5cd-4816-b772-7f50af81356a</id>
       <name>Bone Spike (Bone Density 2-3)</name>
       <limit>False</limit>
-      <category>Bio-Weapons</category>
+      <category>Cultured</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>14F</avail>
@@ -3464,7 +3535,7 @@
       <id>f994b8ac-0314-43ad-969a-f07d2d3fc0d8</id>
       <name>Bone Spike (Bone Density 4)</name>
       <limit>False</limit>
-      <category>Bio-Weapons</category>
+      <category>Cultured</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>14F</avail>

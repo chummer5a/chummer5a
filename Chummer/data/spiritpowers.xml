@@ -336,6 +336,11 @@
       <page>198</page>
     </power>
     <power>
+      <name>Restless</name>
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <power>
       <name>Sense Link</name>
       <source>SG</source>
       <page>198</page>
@@ -347,6 +352,11 @@
     </power>
     <power>
       <name>Silence</name>
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <power>
+      <name>Servile</name>
       <source>SG</source>
       <page>199</page>
     </power>

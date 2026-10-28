@@ -81,6 +81,18 @@ namespace Chummer
             return !decimal.TryParse(strTrimmedExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decExpressionAsNumber);
         }
 
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
+        {
+            '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+
+        private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
+
+        private static readonly int s_intXPathProcessingParallelizationThreshold = Utils.ThresholdToParallelizeForSmartMethods.DivAwayFromZero(s_setUppercaseLatinCharsAndOpenCurlyBracket.Count);
+
         /// <summary>
         /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
         /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
@@ -105,29 +117,20 @@ namespace Chummer
         /// <param name="blnIncludeLetters">If true, check for uppercase latin letters and opening curly brackets. Otherwise, only check for opening curly brackets.</param>
         public static bool HasValuesNeedingReplacementForXPathProcessing([NotNull] this StringBuilder sbdExpression, bool blnIncludeLetters = true)
         {
-            if (sbdExpression.Length == 0)
+            int intLength = sbdExpression.Length;
+            if (intLength == 0)
                 return false;
             if (blnIncludeLetters)
             {
                 // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
-                if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
-                    return sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
-                return sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
+                return intLength > s_intXPathProcessingParallelizationThreshold
+                    ? sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x))
+                    : sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
             }
-            if (sbdExpression.Length <= Utils.MaxParallelBatchSize)
-                return sbdExpression.Enumerate().Contains('{');
-            return sbdExpression.Enumerate().AsParallel().Contains('{');
+            return intLength > s_intXPathProcessingParallelizationThreshold
+                ? sbdExpression.Enumerate().AsParallel().Contains('{')
+                : sbdExpression.Enumerate().Contains('{');
         }
-
-        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
-        private static readonly char[] s_achrUppercaseLatinCharsAndOpenCurlyBracket = new[]
-        {
-            '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-        };
-
-        private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -1601,7 +1604,9 @@ namespace Chummer
 
             using (objSettings.LockObject.EnterReadLock(token))
             {
-                string strNotes = GetTextFromPdf(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token);
+                string strNotes = int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage)
+                    ? GetTextFromPdf(strSource, intPage, strEnglishNameOnPage, objSettings, token)
+                    : GetTextFromPdf(strSource + " " + strPage, strEnglishNameOnPage, objSettings, GlobalSettings.InvariantCultureInfo, token);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1618,8 +1623,11 @@ namespace Chummer
                     && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                     strTranslatedNameOnPage = strNameOnPage;
 
-                return GetTextFromPdf(strSource + " " + strDisplayPage,
-                                      strTranslatedNameOnPage, objSettings, token);
+                return int.TryParse(strDisplayPage, NumberStyles.Integer, GlobalSettings.CultureInfo, out int intDisplayPage)
+                    ? GetTextFromPdf(strSource, intDisplayPage,
+                                      strTranslatedNameOnPage, objSettings, token)
+                    : GetTextFromPdf(strSource + " " + strDisplayPage,
+                                      strTranslatedNameOnPage, objSettings, GlobalSettings.CultureInfo, token);
             }
         }
 
@@ -1649,7 +1657,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strNotes = await GetTextFromPdfAsync(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
+                string strNotes = int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage)
+                    ? await GetTextFromPdfAsync(strSource, intPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false)
+                    : await GetTextFromPdfAsync(strSource + " " + strPage, strEnglishNameOnPage, objSettings, GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1666,8 +1676,11 @@ namespace Chummer
                     && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                     strTranslatedNameOnPage = strNameOnPage;
 
-                return await GetTextFromPdfAsync(strSource + " " + strDisplayPage,
-                                                 strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false);
+                return int.TryParse(strDisplayPage, NumberStyles.Integer, GlobalSettings.CultureInfo, out int intDisplayPage)
+                    ? await GetTextFromPdfAsync(strSource, intDisplayPage,
+                                                 strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false)
+                    : await GetTextFromPdfAsync(strSource + " " + strDisplayPage,
+                                                 strTranslatedNameOnPage, objSettings, GlobalSettings.CultureInfo, token).ConfigureAwait(false);
             }
             finally
             {
@@ -2149,17 +2162,17 @@ namespace Chummer
                 return;
             Control objLoopControl = objControl;
             CharacterSettings objSettings = null;
-            while (objLoopControl != null)
+            for (; objLoopControl != null; objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false))
             {
-                if (objLoopControl is CharacterShared objShared)
+                if (objLoopControl is IHasCharacterObject objShared)
                 {
                     Character objCharacter = objShared.CharacterObject;
                     if (objCharacter != null)
+                    {
                         objSettings = await objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                    break;
+                        break;
+                    }
                 }
-
-                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false);
             }
             await OpenPdfFromControl(sender, objSettings, token).ConfigureAwait(false);
         }
@@ -2231,58 +2244,7 @@ namespace Chummer
                 }
             }
 
-            string strBook;
-            int intPage;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string[] astrSourceParts = null;
-            try
-            {
-                if (!string.IsNullOrEmpty(strSpace))
-                    astrSourceParts = strSource.SplitFixedSizePooledArray(strSpace, 2, StringSplitOptions.RemoveEmptyEntries);
-                else
-                {
-                    astrSourceParts = ArrayPool<string>.Shared.Rent(2);
-                    if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                    {
-                        astrSourceParts[0] = "SR5";
-                        astrSourceParts[1] = strSource.Substring(3);
-                    }
-                    else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                    {
-                        astrSourceParts[0] = "R5";
-                        astrSourceParts[1] = strSource.Substring(2);
-                    }
-                    else
-                    {
-                        int i = strSource.Length - 1;
-                        for (; i >= 0; --i)
-                        {
-                            if (!char.IsNumber(strSource, i))
-                            {
-                                break;
-                            }
-                        }
-
-                        astrSourceParts[0] = strSource.Substring(0, i);
-                        astrSourceParts[1] = strSource.Substring(i);
-                    }
-                }
-
-                if (string.IsNullOrEmpty(astrSourceParts[1]) || !int.TryParse(astrSourceParts[1], out intPage))
-                    return;
-
-                // Make sure the page is actually a number that we can use as well as being 1 or higher.
-                if (intPage < 1)
-                    return;
-
-                // Revert the sourcebook code to the one from the XML file if necessary.
-                strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objSettings, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (astrSourceParts != null)
-                    ArrayPool<string>.Shared.Return(astrSourceParts);
-            }
+            (string strBook, int intPage) = await SourceStringToBookPagePairAsync(strSource, true, objSettings, token: token).ConfigureAwait(false);
             // Retrieve the sourcebook information including page offset and PDF application name.
             if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
                     .TryGetValue(strBook, out SourcebookInfo objBookInfo) || objBookInfo == null)
@@ -2345,15 +2307,347 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="strSource">Book code and page number to check, can also be just the book code.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static bool HasLinkedPdf(string strSource, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strBook = SourceStringToBookPagePair(strSource, true, objSettings, blnSkipPageProcessing: true, token: token).Item1;
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!GlobalSettings.SourcebookInfos
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Checks if the book in the source string (or just the book itself) has a linked PDF.
+        /// </summary>
+        /// <param name="strSource">Book code and page number to check, can also be just the book code.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<bool> HasLinkedPdfAsync(string strSource, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strBook = (await SourceStringToBookPagePairAsync(strSource, true, objSettings, blnSkipPageProcessing: true, token: token).ConfigureAwait(false)).Item1;
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            if (!(await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false))
+                    .TryGetValue(strBook, out SourcebookInfo objBookInfo))
+                return false;
+
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            // Check if the file actually exists.
+            return File.Exists(uriPath.LocalPath);
+        }
+
+        /// <summary>
+        /// Convert a source string of a book code plus page number into a pair of the book code and the page number separated out.
+        /// </summary>
+        /// <param name="strSource">Source string to process</param>
+        /// <param name="blnRevertFromAltCode">If true, treat the resulting book code as a potential alt code that needs to be reverted back to its original code before processing. Alt codes are used by some non-English languages.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objCultureInfo">Format provider to use for interpreting page numbers before the invariant fallback. If null, will use the program's current culture info.</param>
+        /// <param name="blnSkipPageProcessing">If true, the code will only bother with extracting the book part and skip over trying to extract the page number.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static ValueTuple<string, int> SourceStringToBookPagePair(string strSource, bool blnRevertFromAltCode = false, CharacterSettings objSettings = null, IFormatProvider objCultureInfo = null, bool blnSkipPageProcessing = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strSource))
+                return default;
+            int intSourceLength = strSource.Length;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+
+            string strBook = string.Empty;
+            int intPage = 0;
+            int intWhitespaceIndex = strSource.IndexOf(' ');
+            if (intWhitespaceIndex != -1)
+            {
+                strBook = strSource.Substring(0, intWhitespaceIndex);
+                if (!blnSkipPageProcessing && intWhitespaceIndex + 1 < intSourceLength)
+                {
+                    string strPage = strSource.Substring(intWhitespaceIndex + 1);
+                    if (!int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out intPage))
+                        int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
+                }
+            }
+            else
+            {
+                string strSpace = LanguageManager.GetString("String_Space", false, token: token);
+                if (string.IsNullOrEmpty(strSpace))
+                    strSpace = " ";
+                int intSpaceIndex = strSource.IndexOf(strSource, StringComparison.Ordinal);
+                token.ThrowIfCancellationRequested();
+                if (blnSkipPageProcessing)
+                {
+                    if (intSpaceIndex >= 0) // Some space characters might not actually be spaces, so let's make sure we actually have it in the source string, too
+                    {
+                        strBook = strSource.Substring(0, intSpaceIndex);
+                    }
+                    else
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+                        {
+                            strBook = "SR5";
+                        }
+                        else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                        {
+                            strBook = "R5";
+                        }
+                        else
+                        {
+                            int i = intSourceLength - 1;
+                            for (; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!char.IsNumber(strSource, i))
+                                {
+                                    break;
+                                }
+                            }
+
+                            strBook = strSource.Substring(0, i);
+                        }
+                    }
+                }
+                else
+                {
+                    string strPage = string.Empty;
+                    if (intSpaceIndex >= 0) // Some space characters might not actually be spaces, so let's make sure we actually have it in the source string, too
+                    {
+                        strBook = strSource.Substring(0, intSpaceIndex);
+                        token.ThrowIfCancellationRequested();
+                        int intPageIndex = intSpaceIndex + strSpace.Length;
+                        if (intPageIndex < intSourceLength)
+                            strPage = strSource.Substring(intPageIndex);
+                    }
+                    else
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+                        {
+                            strBook = "SR5";
+                            strPage = strSource.Substring(3);
+                        }
+                        else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                        {
+                            strBook = "R5";
+                            strPage = strSource.Substring(2);
+                        }
+                        else
+                        {
+                            int i = intSourceLength - 1;
+                            for (; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!char.IsNumber(strSource, i))
+                                {
+                                    break;
+                                }
+                            }
+
+                            strBook = strSource.Substring(0, i);
+                            strPage = strSource.Substring(i);
+                        }
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strPage) && !int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out intPage))
+                        int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
+                }
+            }
+
+            token.ThrowIfCancellationRequested();
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            if (blnRevertFromAltCode)
+                strBook = LanguageBookCodeFromAltCode(strBook, string.Empty, objSettings, token);
+
+            return new ValueTuple<string, int>(strBook, intPage);
+        }
+
+        /// <summary>
+        /// Convert a source string of a book code plus page number into a pair of the book code and the page number separated out.
+        /// </summary>
+        /// <param name="strSource">Source string to process</param>
+        /// <param name="blnRevertFromAltCode">If true, treat the resulting book code as a potential alt code that needs to be reverted back to its original code before processing. Alt codes are used by some non-English languages.</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objCultureInfo">Format provider to use for interpreting page numbers before the invariant fallback. If null, will use the program's current culture info.</param>
+        /// <param name="blnSkipPageProcessing">If true, the code will only bother with extracting the book part and skip over trying to extract the page number.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<ValueTuple<string, int>> SourceStringToBookPagePairAsync(string strSource, bool blnRevertFromAltCode = false, CharacterSettings objSettings = null, IFormatProvider objCultureInfo = null, bool blnSkipPageProcessing = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strSource))
+                return default;
+            int intSourceLength = strSource.Length;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+
+            string strBook = string.Empty;
+            int intPage = 0;
+            int intWhitespaceIndex = strSource.IndexOf(' ');
+            if (intWhitespaceIndex != -1)
+            {
+                strBook = strSource.Substring(0, intWhitespaceIndex);
+                if (!blnSkipPageProcessing && intWhitespaceIndex + 1 < intSourceLength)
+                {
+                    string strPage = strSource.Substring(intWhitespaceIndex + 1);
+                    if (!int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out intPage))
+                        int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
+                }
+            }
+            else
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", false, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strSpace))
+                    strSpace = " ";
+                int intSpaceIndex = strSource.IndexOf(strSource, StringComparison.Ordinal);
+                token.ThrowIfCancellationRequested();
+                if (blnSkipPageProcessing)
+                {
+                    if (intSpaceIndex >= 0) // Some space characters might not actually be spaces, so let's make sure we actually have it in the source string, too
+                    {
+                        strBook = strSource.Substring(0, intSpaceIndex);
+                    }
+                    else
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+                        {
+                            strBook = "SR5";
+                        }
+                        else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                        {
+                            strBook = "R5";
+                        }
+                        else
+                        {
+                            int i = intSourceLength - 1;
+                            for (; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!char.IsNumber(strSource, i))
+                                {
+                                    break;
+                                }
+                            }
+
+                            strBook = strSource.Substring(0, i);
+                        }
+                    }
+                }
+                else
+                {
+                    string strPage = string.Empty;
+                    if (intSpaceIndex >= 0) // Some space characters might not actually be spaces, so let's make sure we actually have it in the source string, too
+                    {
+                        strBook = strSource.Substring(0, intSpaceIndex);
+                        token.ThrowIfCancellationRequested();
+                        int intPageIndex = intSpaceIndex + strSpace.Length;
+                        if (intPageIndex < intSourceLength)
+                            strPage = strSource.Substring(intPageIndex);
+                    }
+                    else
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (strSource.StartsWith("SR5", StringComparison.Ordinal))
+                        {
+                            strBook = "SR5";
+                            strPage = strSource.Substring(3);
+                        }
+                        else if (strSource.StartsWith("R5", StringComparison.Ordinal))
+                        {
+                            strBook = "R5";
+                            strPage = strSource.Substring(2);
+                        }
+                        else
+                        {
+                            int i = intSourceLength - 1;
+                            for (; i >= 0; --i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!char.IsNumber(strSource, i))
+                                {
+                                    break;
+                                }
+                            }
+
+                            strBook = strSource.Substring(0, i);
+                            strPage = strSource.Substring(i);
+                        }
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strPage) && !int.TryParse(strPage, NumberStyles.Integer, objCultureInfo, out intPage))
+                        int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
+                }
+            }
+
+            token.ThrowIfCancellationRequested();
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            if (blnRevertFromAltCode)
+                strBook = await LanguageBookCodeFromAltCodeAsync(strBook, objSettings: objSettings, token: token).ConfigureAwait(false);
+
+            return new ValueTuple<string, int>(strBook, intPage);
+        }
+
+        /// <summary>
         /// Gets a textblock from a given PDF document.
         /// </summary>
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objCultureInfo">Format provider to use for interpreting page numbers before the invariant fallback. If null, will use the program's current culture info.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static string GetTextFromPdf(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        public static string GetTextFromPdf(string strSource, string strText, CharacterSettings objSettings = null, IFormatProvider objCultureInfo = null, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, t), token);
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+            if (string.IsNullOrEmpty(strSource))
+                return string.Empty;
+
+            (string strBook, int intPage) = SourceStringToBookPagePair(strSource, true, objSettings, objCultureInfo, token: token);
+
+            return GetTextFromPdf(strBook, intPage, strText, objSettings, token);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strBook">Book code to search.</param>
+        /// <param name="intPage">Page to search.</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string GetTextFromPdf(string strBook, int intPage, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strBook, intPage, strText, objSettings, t), token);
         }
 
         /// <summary>
@@ -2362,10 +2656,32 @@ namespace Chummer
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="objCultureInfo">Format provider to use for interpreting page numbers before the invariant fallback. If null, will use the program's current culture info.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        public static async Task<string> GetTextFromPdfAsync(string strSource, string strText, CharacterSettings objSettings = null, IFormatProvider objCultureInfo = null, CancellationToken token = default)
         {
-            return GetTextFromPdfCoreAsync(false, strSource, strText, objSettings, token);
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+            if (string.IsNullOrEmpty(strSource))
+                return string.Empty;
+
+            (string strBook, int intPage) = await SourceStringToBookPagePairAsync(strSource, true, objSettings, objCultureInfo, token: token).ConfigureAwait(false);
+
+            return await GetTextFromPdfAsync(strBook, intPage, strText, objSettings, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strBook">Book code to search.</param>
+        /// <param name="intPage">Page to search.</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<string> GetTextFromPdfAsync(string strBook, int intPage, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        {
+            return GetTextFromPdfCoreAsync(false, strBook, intPage, strText, objSettings, token);
         }
 
         private static readonly ConcurrentHashSet<PdfDocument> _setDocumentsProcessing = new ConcurrentHashSet<PdfDocument>();
@@ -2432,37 +2748,15 @@ namespace Chummer
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, CharacterSettings objSettings, CancellationToken token = default)
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strBook, int intPage, string strText, CharacterSettings objSettings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
+            if (string.IsNullOrEmpty(strText))
                 return strText;
-
-            string strBook;
-            int intPage;
-            string[] strTemp = strSource.SplitFixedSizePooledArray(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            try
-            {
-                if (string.IsNullOrEmpty(strTemp[1]) || !int.TryParse(strTemp[1], out intPage))
-                    return string.Empty;
-                // Make sure the page is actually a number that we can use as well as being 1 or higher.
-                if (intPage < 1)
-                    return string.Empty;
-
-                token.ThrowIfCancellationRequested();
-
-                // Revert the sourcebook code to the one from the XML file if necessary.
-                strBook = blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objSettings, token)
-                    : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objSettings, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                ArrayPool<string>.Shared.Return(strTemp);
-            }
-
-            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strBook))
+                return string.Empty;
+            if (intPage < 1)
+                return string.Empty;
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             if (!(blnSync

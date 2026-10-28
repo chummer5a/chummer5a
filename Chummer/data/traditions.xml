@@ -596,6 +596,14 @@
       <drain>{WIL} + {MAG}</drain>
       <source>FA</source>
       <page>76</page>
+      <required>
+        <oneof>
+          <quality>Dracoform (Eastern Drake)</quality>
+          <quality>Dracoform (Feathered Drake)</quality>
+          <quality>Dracoform (Sea Drake)</quality>
+          <quality>Dracoform (Western Drake)</quality>
+        </oneof>
+      </required>
       <spirits>
         <spiritcombat>All</spiritcombat>
         <spiritdetection>All</spiritdetection>
@@ -1947,9 +1955,9 @@
       <dep>0</dep>
       <ess>F</ess>
       <skills>
-        <skill rating="F/2">Assensing</skill>
-        <skill rating="F/2">Astral Combat</skill>
-        <skill rating="F/2">Perception</skill>
+        <skill attr="int" rating="F/2">Assensing</skill>
+        <skill attr="wil" rating="F/2">Astral Combat</skill>
+        <skill attr="int" rating="F/2">Perception</skill>
       </skills>
       <powers>
         <power>Astral Form</power>
@@ -2173,10 +2181,10 @@
         <power>Sense Link</power>
       </powers>
       <skills>
-        <skill>Assensing</skill>
-        <skill>Astral Combat</skill>
-        <skill>Perception</skill>
-        <skill>Unarmed Combat</skill>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat</skill>
       </skills>
       <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SG</source>
@@ -3709,10 +3717,10 @@
         <optionalpower>Silence</optionalpower>
       </optionalpowers>
       <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Unarmed Combat</skill>
+        <skill attr="int" rating="F">Assensing</skill>
+        <skill attr="wil" rating="F">Astral Combat</skill>
+        <skill attr="int" rating="F">Perception</skill>
+        <skill attr="agi" rating="F">Unarmed Combat</skill>
       </skills>
       <source>SG</source>
       <page>93</page>
@@ -3776,13 +3784,13 @@
         <optionalpower>Silence</optionalpower>
       </optionalpowers>
       <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Gymnastics</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Spellcasting</skill>
-        <skill rating="F">Unarmed Combat</skill>
+        <skill attr="int" rating="F">Assensing</skill>
+        <skill attr="wil" rating="F">Astral Combat</skill>
+        <skill attr="mag" rating="F">Counterspelling</skill>
+        <skill attr="agi" rating="F">Gymnastics</skill>
+        <skill attr="int" rating="F">Perception</skill>
+        <skill attr="mag" rating="F">Spellcasting</skill>
+        <skill attr="agi" rating="F">Unarmed Combat</skill>
       </skills>
       <source>SG</source>
       <page>93</page>

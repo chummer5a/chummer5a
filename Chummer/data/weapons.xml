@@ -382,7 +382,7 @@
       <damage>10P</damage>
       <ap>-1</ap>
       <mode>SA/BF</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>35(c)</ammo>
       <avail>11R</avail>
       <cost>2250</cost>
@@ -520,7 +520,7 @@
       <damage>Grenade</damage>
       <ap>-</ap>
       <mode>SS</mode>
-      <rc>0</rc>
+      <rc>-1</rc>
       <ammo>6(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -684,7 +684,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA</mode>
-      <rc>2</rc>
+      <rc>0</rc>
       <ammo>10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -755,7 +755,7 @@
     </weapon>
     <weapon>
       <id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
-      <name>Nissan Optimum II</name>
+      <name>Nitama Optimum II</name>
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -764,7 +764,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>30(c)</ammo>
       <avail>10F</avail>
       <cost>2300</cost>
@@ -786,7 +786,7 @@
         <mount>Under</mount>
       </accessorymounts>
       <underbarrels>
-        <underbarrel>Nissan Optimum II Shotgun</underbarrel>
+        <underbarrel>Nitama Optimum II Shotgun</underbarrel>
       </underbarrels>
     </weapon>
     <weapon>
@@ -1089,6 +1089,8 @@
       <cost>0</cost>
       <source>SR5</source>
       <page>458</page>
+      <cyberware>True</cyberware>
+      <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
@@ -1595,7 +1597,7 @@
       <name>Sap</name>
       <category>Clubs</category>
       <type>Melee</type>
-      <conceal>0</conceal>
+      <conceal>-2</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>({STR}+2)P</damage>
@@ -1826,7 +1828,7 @@
       <avail>6R</avail>
       <cost>200</cost>
       <source>RG</source>
-      <page>22</page>
+      <page>23</page>
       <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <range>Harpoon Gun</range>
       <weapontype>harpoongun</weapontype>
@@ -3130,7 +3132,8 @@
       <page>20</page>
       <range>Shuriken</range>
       <spec>Blades</spec>
-      <useskill>Throwing Weapons</useskill>
+      <useskill>Exotic Melee Weapon</useskill>
+      <useskillspec>Chakram</useskillspec>
     </weapon>
     <weapon>
       <id>f096953c-1418-4dd3-887b-71c6a4436583</id>
@@ -3304,7 +3307,7 @@
     </weapon>
     <weapon>
       <id>c0857027-d3b2-4677-bc97-3f98bcc6f80f</id>
-      <name>Ultamax HMG-2</name>
+      <name>Ultimax HMG-2</name>
       <category>Heavy Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
@@ -4076,7 +4079,7 @@
       <ap>-4</ap>
       <mode>FA</mode>
       <rc>2</rc>
-      <ammo>200(belt)</ammo>
+      <ammo>100(belt)</ammo>
       <avail>24F</avail>
       <cost>6000</cost>
       <source>RG</source>
@@ -4905,7 +4908,7 @@
     </weapon>
     <weapon>
       <id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
-      <name>Ultamax MMG</name>
+      <name>Ultimax MMG</name>
       <category>Medium Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
@@ -5119,7 +5122,7 @@
       <reach>0</reach>
       <damage>10P</damage>
       <ap>-1</ap>
-      <mode>SA</mode>
+      <mode>SS</mode>
       <rc>0</rc>
       <ammo>4(m)/10(c)</ammo>
       <avail>0</avail>
@@ -5175,8 +5178,8 @@
       <mode>SS/SA</mode>
       <rc>0</rc>
       <ammo>5(m)</ammo>
-      <avail>3R</avail>
-      <cost>475</cost>
+      <avail>4R</avail>
+      <cost>450</cost>
       <source>SR5</source>
       <page>429</page>
       <accessorymounts>
@@ -5230,7 +5233,7 @@
       <damage>12P</damage>
       <ap>-1</ap>
       <mode>SA/BF</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>10(c)</ammo>
       <avail>12F</avail>
       <cost>1050</cost>
@@ -5605,7 +5608,7 @@
       <damage>12P</damage>
       <ap>-3</ap>
       <mode>SA/BF</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>25(c)</ammo>
       <avail>13F</avail>
       <cost>12500</cost>
@@ -5641,11 +5644,6 @@
       <cost>500</cost>
       <source>RG</source>
       <page>39</page>
-      <accessories>
-        <accessory>
-          <name>Shock Pad</name>
-        </accessory>
-      </accessories>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5769,6 +5767,12 @@
       <cost>800</cost>
       <source>AP</source>
       <page>11</page>
+      <accessories>
+        <accessory>
+          <name>Laser Sight</name>
+          <mount>Top</mount>
+        </accessory>
+      </accessories>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -5788,7 +5792,7 @@
       <damage>15P</damage>
       <ap>-4</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>18(c)</ammo>
       <avail>14F</avail>
       <cost>35000</cost>
@@ -6031,7 +6035,7 @@
       <avail>18F</avail>
       <cost>4000</cost>
       <source>RG</source>
-      <page>26</page>
+      <page>27</page>
       <range>Shuriken</range>
       <useskill>Exotic Ranged Weapon</useskill>
       <useskillspec>Monofilament Bola</useskillspec>
@@ -6128,7 +6132,7 @@
       <reach>0</reach>
       <damage>0</damage>
       <ap>0</ap>
-      <mode>SA</mode>
+      <mode>SS</mode>
       <rc>0</rc>
       <ammo>4(b)</ammo>
       <avail>9</avail>
@@ -6149,7 +6153,7 @@
       <reach>0</reach>
       <damage>0</damage>
       <ap>0</ap>
-      <mode>SA</mode>
+      <mode>SS</mode>
       <rc>0</rc>
       <ammo>2(b)</ammo>
       <avail>9</avail>
@@ -6498,6 +6502,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <ammocategory>Heavy Pistols</ammocategory>
       <range>Submachine Guns</range>
     </weapon>
     <weapon>
@@ -6969,7 +6974,7 @@
       <mode>SA</mode>
       <rc>0</rc>
       <ammo>3(m)</ammo>
-      <avail>0</avail>
+      <avail>2</avail>
       <cost>300</cost>
       <source>RG</source>
       <page>29</page>
@@ -7146,7 +7151,7 @@
       <category>Underbarrel Weapons</category>
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
       <ap>Grenade</ap>
@@ -7157,6 +7162,11 @@
       <cost>0</cost>
       <source>SR5</source>
       <page>428</page>
+      <accessories>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
       <mount>Under</mount>
       <ammocategory>Grenade Launchers</ammocategory>
       <hide />
@@ -7275,7 +7285,7 @@
     <!-- Region Run and Gun -->
     <weapon>
       <id>232dfc49-21ad-4b90-b05f-e5523b3ee142</id>
-      <name>Nissan Optimum II Shotgun</name>
+      <name>Nitama Optimum II Shotgun</name>
       <category>Underbarrel Weapons</category>
       <type>Ranged</type>
       <conceal>6</conceal>
@@ -7284,7 +7294,7 @@
       <damage>10P</damage>
       <ap>-1</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>5(m)</ammo>
       <avail>0</avail>
       <cost>0</cost>
@@ -7445,7 +7455,7 @@
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
-      <reach>0</reach>
+      <reach>-1</reach>
       <damage>({STR}+2)P</damage>
       <ap>-2</ap>
       <mode>0</mode>
@@ -7562,7 +7572,8 @@
       <page>117</page>
       <allowaccessory>False</allowaccessory>
       <hide />
-      <useskill>Unarmed Combat</useskill>
+      <useskill>Exotic Melee Weapon</useskill>
+      <useskillspec>Trunk</useskillspec>
     </weapon>
     <weapon>
       <id>e4124dde-69f2-4322-884a-620ba7792b82</id>
@@ -7750,7 +7761,7 @@
       <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage>6P</damage>
+      <damage>6P(fire)</damage>
       <ap>-6</ap>
       <mode>SA/BF</mode>
       <rc>0</rc>
@@ -7793,8 +7804,8 @@
       <category>Cyberweapon</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>Physical</accuracy>
-      <reach>0</reach>
+      <accuracy>Physical-1</accuracy>
+      <reach>1</reach>
       <damage>({STR}+5)P</damage>
       <ap>0</ap>
       <mode>0</mode>
@@ -7803,7 +7814,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>91</page>
+      <page>90</page>
       <allowaccessory>False</allowaccessory>
       <cyberware>True</cyberware>
       <hide />
@@ -7831,6 +7842,33 @@
       <hide />
       <useskill>Unarmed Combat</useskill>
     </weapon>
+    <weapon>
+      <id>e0745483-c245-4d5a-9039-41e6ec2b8794</id>
+      <name>Finger Pistol</name>
+      <category>Holdouts</category>
+      <type>Ranged</type>
+      <conceal>-4</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>6P</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>1(m)</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>CF</source>
+      <page>87</page>
+      <accessories>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+      </accessories>
+      <allowaccessory>False</allowaccessory>
+      <cyberware>True</cyberware>
+      <hide />
+      <spec>Semi-Automatics</spec>
+    </weapon>
     <!-- End Region -->
     <!--Region Chrome Flesh Bio-Weapons -->
     <weapon>
@@ -7849,7 +7887,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -7871,7 +7909,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -7915,7 +7953,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -7937,7 +7975,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -7959,7 +7997,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -7981,7 +8019,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -8003,7 +8041,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -8025,7 +8063,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -8047,7 +8085,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>121</page>
+      <page>122</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -8071,6 +8109,7 @@
       <source>CF</source>
       <page>88</page>
       <allowaccessory>False</allowaccessory>
+      <cyberware>True</cyberware>
       <hide />
       <useskill>Unarmed Combat</useskill>
     </weapon>
@@ -8092,6 +8131,7 @@
       <source>CF</source>
       <page>90</page>
       <allowaccessory>False</allowaccessory>
+      <cyberware>True</cyberware>
       <hide />
       <range>Light Crossbows</range>
       <spec>Grapple Gun</spec>
@@ -8322,14 +8362,14 @@
       <accuracy>Physical</accuracy>
       <reach>0</reach>
       <damage>({STR}-2)P</damage>
-      <ap>-1</ap>
+      <ap>-2</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
       <avail>6F</avail>
       <cost>40</cost>
       <source>HT</source>
-      <page>183</page>
+      <page>184</page>
       <range>Aerodynamic Grenade</range>
       <spec>Aerodynamic</spec>
       <useskill>Exotic Ranged Weapon</useskill>
@@ -9367,7 +9407,7 @@
       <avail>4F</avail>
       <cost>60</cost>
       <source>CA</source>
-      <page>134</page>
+      <page>135</page>
       <range>Spray Pen</range>
       <spec>Modified Spray Pen</spec>
       <!-- ReSharper disable once MarkupTextTypo -->
@@ -9428,7 +9468,7 @@
       <avail>14R</avail>
       <cost>0</cost>
       <source>CA</source>
-      <page>136</page>
+      <page>137</page>
       <hide />
       <spec>Shields</spec>
     </weapon>
@@ -9573,7 +9613,7 @@
       <conceal>-6</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage>7P</damage>
+      <damage>6P</damage>
       <ap>-</ap>
       <mode>SA/BF</mode>
       <rc>1</rc>
@@ -9926,8 +9966,8 @@
       <mode>SA/BF</mode>
       <rc>0</rc>
       <ammo>35(c)</ammo>
-      <avail>6R</avail>
-      <cost>270</cost>
+      <avail>5F</avail>
+      <cost>850</cost>
       <source>2050</source>
       <page>184</page>
       <accessories>
@@ -10582,7 +10622,7 @@
       <avail>10F</avail>
       <cost>4500</cost>
       <source>2050</source>
-      <page>184</page>
+      <page>185</page>
       <accessories>
         <accessory>
           <name>Gas-Vent 1 System</name>
@@ -10615,7 +10655,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>2050</source>
-      <page>184</page>
+      <page>185</page>
       <accessories>
         <accessory>
           <name>Gas-Vent 1 System</name>
@@ -10646,7 +10686,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>2050</source>
-      <page>184</page>
+      <page>185</page>
       <accessories>
         <accessory>
           <name>Gas-Vent 1 System</name>
@@ -10677,7 +10717,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>2050</source>
-      <page>184</page>
+      <page>185</page>
       <accessories>
         <accessory>
           <name>Gas-Vent 1 System</name>
@@ -10938,7 +10978,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>3R</avail>
+      <avail>8F</avail>
       <cost>60</cost>
       <source>2050</source>
       <page>191</page>
@@ -11061,7 +11101,7 @@
       <conceal>10</conceal>
       <accuracy>0</accuracy>
       <reach>0</reach>
-      <damage>13P</damage>
+      <damage>17P</damage>
       <ap>-6</ap>
       <mode>SS</mode>
       <rc>0</rc>
@@ -11069,7 +11109,7 @@
       <avail>12F</avail>
       <cost>12000</cost>
       <source>2050</source>
-      <page>196</page>
+      <page>212</page>
     </weapon>
     <weapon>
       <id>3e4c13e4-ae4a-4928-937f-6e0038514350</id>
@@ -11087,7 +11127,7 @@
       <avail>12F</avail>
       <cost>15000</cost>
       <source>2050</source>
-      <page>196</page>
+      <page>212</page>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -11111,7 +11151,7 @@
       <avail>15R</avail>
       <cost>20000</cost>
       <source>2050</source>
-      <page>196</page>
+      <page>212</page>
       <range>Submachine Guns</range>
     </weapon>
     <weapon>
@@ -12406,7 +12446,7 @@
       <avail>12R</avail>
       <cost>1500</cost>
       <source>SL</source>
-      <page>21</page>
+      <page>18</page>
     </weapon>
     <weapon>
       <id>acd7a37d-704e-402f-ab4e-0c2e195a6484</id>
@@ -12424,7 +12464,7 @@
       <avail>0</avail>
       <cost>300</cost>
       <source>SL</source>
-      <page>21</page>
+      <page>20</page>
       <addweapon>Krime Reaver Pick</addweapon>
       <addweapon>Krime Reaver Knob</addweapon>
       <spec>Axes</spec>
@@ -12445,7 +12485,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>SL</source>
-      <page>21</page>
+      <page>20</page>
       <hide />
     </weapon>
     <weapon>
@@ -12457,14 +12497,14 @@
       <accuracy>4</accuracy>
       <reach>1</reach>
       <damage>({STR}+3)P</damage>
-      <ap>-1</ap>
+      <ap>0</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
       <source>SL</source>
-      <page>21</page>
+      <page>20</page>
       <hide />
     </weapon>
     <weapon>
@@ -12483,7 +12523,7 @@
       <avail>6R</avail>
       <cost>550</cost>
       <source>SL</source>
-      <page>21</page>
+      <page>20</page>
     </weapon>
     <weapon>
       <id>ef24fa36-5887-4644-9ff0-39945679ff3c</id>
@@ -12586,15 +12626,15 @@
       <category>Clubs</category>
       <type>Melee</type>
       <conceal>0</conceal>
-      <accuracy>5</accuracy>
-      <reach>1</reach>
-      <damage>({STR}+3)P</damage>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>({STR}+2)P</damage>
       <ap>-1</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>10</avail>
-      <cost>200</cost>
+      <avail>0</avail>
+      <cost>0</cost>
       <source>SL</source>
       <page>22</page>
       <hide />
@@ -12979,12 +13019,12 @@
       <category>Light Pistols</category>
       <type>Ranged</type>
       <conceal>-2</conceal>
-      <accuracy>5</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>6P</damage>
       <ap>0</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>10(c)</ammo>
       <avail>10R</avail>
       <cost>1250</cost>
@@ -13001,6 +13041,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
+      <allowaccessory>False</allowaccessory>
       <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
@@ -13115,12 +13156,12 @@
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>4</accuracy>
+      <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
       <ap>-1</ap>
       <mode>SA</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>12(c)</ammo>
       <avail>12R</avail>
       <cost>1500</cost>
@@ -13137,6 +13178,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
       </accessories>
+      <allowaccessory>False</allowaccessory>
     </weapon>
     <weapon>
       <id>9cdf4a80-efc1-4c96-bc99-c67c880be39e</id>
@@ -13144,7 +13186,7 @@
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>6</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
       <ap>-2</ap>
@@ -13180,7 +13222,7 @@
       <damage>8P</damage>
       <ap>-1</ap>
       <mode>BF</mode>
-      <rc>3</rc>
+      <rc>1</rc>
       <ammo>12(c)</ammo>
       <avail>12F</avail>
       <cost>1150</cost>
@@ -13218,7 +13260,7 @@
       <avail>10R</avail>
       <cost>700</cost>
       <source>SL</source>
-      <page>29</page>
+      <page>31</page>
       <accessories>
         <accessory>
           <name>Custom Look</name>
@@ -13627,7 +13669,7 @@
       <avail>8F</avail>
       <cost>1800</cost>
       <source>SL</source>
-      <page>36</page>
+      <page>37</page>
       <accessories>
         <accessory>
           <name>Laser Sight</name>
@@ -13749,8 +13791,8 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
-      <ap>-2</ap>
-      <mode>FA</mode>
+      <ap>0</ap>
+      <mode>SA/BF/FA</mode>
       <rc>0</rc>
       <ammo>30(c)</ammo>
       <avail>6F</avail>
@@ -13784,7 +13826,7 @@
       <reach>0</reach>
       <damage>9P</damage>
       <ap>-2</ap>
-      <mode>FA</mode>
+      <mode>SA/BF/FA</mode>
       <rc>0</rc>
       <ammo>30(c)</ammo>
       <avail>6F</avail>
@@ -13955,7 +13997,7 @@
       <damage>12P</damage>
       <ap>-1</ap>
       <mode>SS</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>5(m)</ammo>
       <avail>12F</avail>
       <cost>2000</cost>
@@ -14003,7 +14045,7 @@
       <category>Light Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
-      <accuracy>3</accuracy>
+      <accuracy>2</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
       <ap>-4</ap>
@@ -14037,7 +14079,7 @@
       <category>Light Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
-      <accuracy>3</accuracy>
+      <accuracy>2</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
       <ap>-2</ap>
@@ -14063,6 +14105,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <ammocategory>Assault Rifles</ammocategory>
       <spec>Machine Guns</spec>
     </weapon>
     <weapon>
@@ -14071,7 +14114,7 @@
       <category>Light Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
-      <accuracy>3</accuracy>
+      <accuracy>2</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>0</ap>
@@ -14097,6 +14140,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <ammocategory>Submachine Guns</ammocategory>
       <spec>Machine Guns</spec>
     </weapon>
     <weapon>
@@ -14117,6 +14161,11 @@
       <weight>2.5</weight>
       <source>SL</source>
       <page>42</page>
+      <accessories>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
+      </accessories>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -14192,7 +14241,7 @@
       <damage>Grenade</damage>
       <ap>Grenade</ap>
       <mode>SS</mode>
-      <rc>1</rc>
+      <rc>0</rc>
       <ammo>6(cy)</ammo>
       <avail>8F</avail>
       <cost>2000</cost>
@@ -14434,7 +14483,7 @@
       <reach>0</reach>
       <damage>5P</damage>
       <ap>0</ap>
-      <mode>0</mode>
+      <mode>SS</mode>
       <rc>0</rc>
       <ammo>2(b)</ammo>
       <avail>10</avail>
@@ -15284,6 +15333,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <range>Medium/Heavy Machinegun</range>
       <underbarrels>
         <underbarrel>Ruhrmetall SFW-30 Tracker Weapon</underbarrel>
       </underbarrels>
@@ -15310,6 +15360,7 @@
       <page>14</page>
       <allowaccessory>False</allowaccessory>
       <hide />
+      <range>Medium/Heavy Machinegun</range>
       <spec>Machine Guns</spec>
       <weapontype>sfw-30 underbarrel weapon</weapontype>
     </weapon>
@@ -15435,7 +15486,7 @@
       <conceal>10</conceal>
       <accuracy>0</accuracy>
       <reach>0</reach>
-      <damage>6P (6m Radius)</damage>
+      <damage>6P (1m Radius)</damage>
       <ap>-4</ap>
       <mode>0</mode>
       <rc>0</rc>
@@ -15736,6 +15787,7 @@
         <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
+      <range>Submachine Guns</range>
       <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
@@ -16123,6 +16175,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <range>Medium/Heavy Machinegun</range>
     </weapon>
     <weapon>
       <id>7fffffff-f8d7-4f99-8c9d-7fffffff7d80</id>
@@ -16502,6 +16555,7 @@
       <page>431</page>
       <rating>0</rating>
       <rc>2</rc>
+      <rcdeployable>True</rcdeployable>
       <rcgroup>1</rcgroup>
     </accessory>
     <accessory>
@@ -16767,7 +16821,7 @@
       <name>Smart Firing Platform</name>
       <mount>Under</mount>
       <avail>12F</avail>
-      <cost>2000</cost>
+      <cost>2500</cost>
       <source>SR5</source>
       <page>433</page>
       <allowgear>
@@ -16911,13 +16965,13 @@
           <OR>
             <name>RPK HMG</name>
             <name>Ruhrmetall SF-20</name>
-            <name>Ultamax HMG-2</name>
+            <name>Ultimax HMG-2</name>
             <name>Ingram Valiant</name>
             <name>Krime Wave</name>
             <name>Shiawase Armaments Nemesis</name>
             <name>FN MAG-5</name>
             <name>Stoner-Ares M202</name>
-            <name>Ultamax MMG</name>
+            <name>Ultimax MMG</name>
           </OR>
         </weapondetails>
       </required>
@@ -17097,6 +17151,7 @@
       <cost>100</cost>
       <source>RG</source>
       <page>42</page>
+      <ammoreplace>200(belt)</ammoreplace>
       <ammoslots>1</ammoslots>
       <rating>0</rating>
       <required>
@@ -17982,7 +18037,7 @@
       <id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
       <name>Ceramic/Plasteel Components</name>
       <mount />
-      <avail>12 + Rating</avail>
+      <avail>(12 + Rating)F</avail>
       <cost>Weapon Cost * Rating</cost>
       <source>HT</source>
       <page>180</page>
@@ -18332,6 +18387,7 @@
         </oneof>
       </forbidden>
       <rating>0</rating>
+      <rc>-1</rc>
       <required>
         <weapondetails>
           <conceal operation="greaterthan">0</conceal>
@@ -18357,6 +18413,7 @@
         </oneof>
       </forbidden>
       <rating>0</rating>
+      <rc>-1</rc>
       <required>
         <weapondetails>
           <OR>
@@ -18980,7 +19037,7 @@
       <avail>10F</avail>
       <cost>100</cost>
       <source>SL</source>
-      <page>45</page>
+      <page>32</page>
       <ammoslots>1</ammoslots>
       <rating>0</rating>
       <required>
@@ -19128,6 +19185,18 @@
       <cost>75</cost>
       <source>SL</source>
       <page>47</page>
+      <accuracy>1</accuracy>
+      <forbidden>
+        <oneof>
+          <accessory>Smartgun System, Internal</accessory>
+          <accessory>Smartgun System, External</accessory>
+          <accessory>Krime Dual-Mode External Smartgun Link</accessory>
+          <accessory>Laser Sight</accessory>
+          <accessory>Holographic Sight</accessory>
+          <accessory>Imaging Scope</accessory>
+          <accessory>Vision Magnification</accessory>
+        </oneof>
+      </forbidden>
       <rating>0</rating>
     </accessory>
     <accessory>

@@ -246,9 +246,70 @@
       <page>163</page>
     </action>
     <action>
+      <id>6e3ae661-116d-4de5-88a2-1c7d4eb0b225</id>
+      <name>Push the Limit</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Add your Edge rating to the test, either before or after the roll. The Edge dice use the Rule of Six (all dice if Edge is added before the roll), and the test ignores its limit.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>56</page>
+    </action>
+    <action>
+      <id>43528533-384a-4f7c-88d4-95ddf1a103ad</id>
+      <name>Second Chance</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Re-roll all dice that did not score a hit. Cannot negate a glitch or critical glitch, does not use the Rule of Six, and has no effect on limits.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>56</page>
+    </action>
+    <action>
+      <id>2783a150-58c1-4976-bf42-c86a98253773</id>
+      <name>Seize the Initiative</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Move to the top of the initiative order for the rest of the Combat Turn. Characters who all do this go first in order of their Initiative Scores.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>56</page>
+    </action>
+    <action>
+      <id>3e4a22dc-d411-4308-ac1a-fcbf7d26b04d</id>
+      <name>Blitz</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Roll the maximum of 5 Initiative Dice for a single Combat Turn.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>56</page>
+    </action>
+    <action>
+      <id>4ab85d6a-5e13-4224-87fc-479233e96b58</id>
+      <name>Close Call</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Negate the effects of one glitch, or turn a critical glitch into a glitch.</bonusstring>
+      </test>
+      <source>SR5</source>
+      <page>56</page>
+    </action>
+    <action>
       <id>a632cacd-fb06-465d-b239-ed34bce7327c</id>
       <name>Dead Man's Trigger</name>
       <type>No</type>
+      <edgecost>1</edgecost>
       <test>
         <dice>{BOD} + {WIL} v. {Threshold: 3}</dice>
         <bonusstring>Requires an Initiative Score of at least 1 and spending 1 Edge. On success, perform one final action of any kind (no movement) before dying or falling unconscious.</bonusstring>
@@ -3112,6 +3173,66 @@
       </test>
       <source>RG</source>
       <page>125</page>
+    </action>
+    <action>
+      <id>ad5a6a54-5e52-4113-a996-4422bad4b9b4</id>
+      <name>Lucky Move</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Use one Martial Arts technique as if trained in it, even without knowing the technique or its style. Can only be used once per Combat Turn.</bonusstring>
+      </test>
+      <source>RG</source>
+      <page>126</page>
+    </action>
+    <action>
+      <id>987835b2-a2e4-4492-872c-1351efe81e58</id>
+      <name>Miracle Shot</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Remove up to 4 points of penalties from one {Action: Call a Shot}.</bonusstring>
+      </test>
+      <source>RG</source>
+      <page>126</page>
+    </action>
+    <action>
+      <id>016a67c9-7c09-40ab-bd93-90fa7f209bdb</id>
+      <name>Lucky Duck</name>
+      <type>No</type>
+      <edgecost>2</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>After an attack against a teammate is declared, spend your own Edge to make it miss. The teammate must be within range for you to see the attack coming and warn them, including by commlink or audio/video systems.</bonusstring>
+      </test>
+      <source>RG</source>
+      <page>126</page>
+    </action>
+    <action>
+      <id>13259b43-171c-49c0-9464-e9b5e2da4b39</id>
+      <name>Sixth Sense</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Make a Defense Test even when caught unaware.</bonusstring>
+      </test>
+      <source>RG</source>
+      <page>126</page>
+    </action>
+    <action>
+      <id>2d10afb2-3525-42a2-a168-734ebf3900cd</id>
+      <name>Lucky Cover</name>
+      <type>No</type>
+      <edgecost>1</edgecost>
+      <test>
+        <dice>None</dice>
+        <bonusstring>Find cover: a place to hide from {Action: Suppressive Fire}, including {Action: Enhanced Suppression} and {Action: Flechette Suppressive Fire}, or the cover bonus on the Defense Test against a regular attack.</bonusstring>
+      </test>
+      <source>RG</source>
+      <page>126</page>
     </action>
     <action>
       <id>5342ece8-8719-499f-bbef-b7aea95b0a28</id>

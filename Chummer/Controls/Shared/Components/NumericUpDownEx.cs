@@ -72,6 +72,9 @@ namespace Chummer
             _textbox.KeyDown += txt_KeyDown;
             _upDownButtons.MouseEnter += _mouseEnterLeave;
             _upDownButtons.MouseLeave += _mouseEnterLeave;
+            _intMinimum = Math.Min(Math.Max(base.Minimum, int.MinValue), int.MaxValue).ToInt32();
+            _intMaximum = Math.Min(Math.Max(base.Maximum, int.MinValue), int.MaxValue).ToInt32();
+            _intValue = Math.Min(Math.Max(base.Value, int.MinValue), int.MaxValue).ToInt32();
         }
 
         private int _intSkipOnMarginChanged;

@@ -21,6 +21,7 @@ Application:
 - Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier. Optional `category` attribute restricts the bonus to drugs with that category (`Custom Drugs`, `Drugs`, `BTLs`, etc.; `All` for every category). Narco uses `Custom Drugs` and `Drugs`.
 - Premade catalog drugs (including Chrome Flesh BTLs) can be added from the Drugs tab via Add Drug. Catalog effects live in `drugs.xml` as `<bonus>` nodes (same vocabulary as gear, with a compile step for drug-specific `<attribute>`/`<limit>`). Create Custom Drug is for Foundation/Block/Enhancer recipes only. Closes #5148.
 - Split premade drug catalog and grades into `drugs.xml`; `drugcomponents.xml` now holds only custom-drug design components.
+- Added clickable sourcebook and page references to drug Info panels in character creation and career mode.
 - Adding a catalog or custom drug creates its improvement group immediately (disabled). Enable the group on the Improvements tab to take the dose.
 - Fixed enabling custom drug improvements that use UniqueName (e.g. Cram's Initiative Dice) incorrectly caching a non-zero ValueOf with an empty used-improvements list.
 - Black Market Pipeline on drugs applies the 10% price discount (`DiscountCost`) instead of marking the dose Stolen. Stolen Gear remains a separate checkbox.
@@ -39,8 +40,17 @@ Application:
 - Implemented Required capabilities for vehicle mods. Allows for allowing purchase of an object only if a vehicle mod exists on the specified parent or any of the character's vehicles.
 - Traditions, streams, mentor spirits, and paragons have been moved out of the Magician- and Technomancer-specific tabs into the Common tab.
 - Fixed a rare potential deadlock around calculating adept power points currently being used.
+- The default file name offered when creating a critter file for a spirit no longer contains a colon and now closes its parenthesis (e.g. "Watcher (Force 6)"), so it can be saved as is.
+- The Master Index now has a checkbox that lets the user toggle if they want the program to scrape linked PDFs for notes.
+- The Master Index now displays a different message if there is no linked PDF found for the source of the currently selected item.
+- When saving changes to global settings, if the user only changes settings that are automatically applied without needing to restart the program (e.g., linked PDFs), the program no longer prompts them to restart.
+- When attempting to open a linked PDF from a source label within a form that is not part of the basic character editor forms, the program now properly respects custom dataset changes to book codes when it attempts to find the PDF it needs to open.
+- Fixed an issue where certain languages that did not use Latin space characters for their spaces could not properly deal with PDF-related code.
+- The program will now also warn about potential handle issues when attempting to create a new character, not just when opening an existing one.
 
 Critters:
+- Added 58 Parazoologie 2075 (PZG) critters, including alternate forms and book-specific profiles.
+- Added the Adaptive Camouflage, Pervasion, Hypnosis, and Taint critter powers from PZG.
 - Added the Ghost Hound (and its Astral Perception variant), Kokopelli, Chalcis (Great Hunter), Wild Hunt Hunter, Wild Hunt Hound, Woog, Engkanto, Chiron, Jabberwock, Lamia, Nibiinaabe, Manananggal (Whole, Torso, and Legs), Bunyip, and Sabgarifya (Farasi Bahari) critters.
 - Corrected the attributes, skills, powers, qualities, natural weapons, and page references of many existing critters to match their books.
 - Added the Agony, Corrosive Secretions, Sacrifice, and Secretion/Substance Extrusion (Silk/Webbing) critter powers, and the Coroutine, Freenet, Gatekeeper, Grep, Mangler, and Overdrive sprite powers from Kill Code.
@@ -48,21 +58,27 @@ Critters:
 - Fixed the Astral Gateaway spirit power typo. It is now Astral Gateway.
 - Corrected metatype and metavariant entries, including natural weapon damage, reach, and AP, page references, and Real World Naiveté now being listed as a negative quality for A.I.s. Existing characters with these metatypes will need to remove and re-add them to see any changes.
 - Added a Corrosive Spit (Critter) weapon and range for the critter power.
+- Added the Restless and Servile spirit powers from Street Grimoire.
 
 Attributes:
 - For AIs, the attribute maximum for EDG now correctly maps to the DEP value. Fixes an issue where the attribute would only update the Metatype Maximum for EDG but leave the Augmented Maximum set to 6, which prevented taking the attribute above 6.
 
 Bioware:
+- Corrected multiple bioware entries, including Tailored Critter Pheromones, Bio-Tattoos, Chameleon Skin, and Tusk(s). Revitilization has been renamed to Revitalization. Existing characters with these items will need to remove and re-add them to see any changes.
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
 - Chemical Glands and Expanded Reservoir accept Drugs, Custom Drugs, Toxins, and BTLs through Add Drug; Chemicals/Custom gear still use Add Gear.
 - Revitalization treatment now properly reduces a character's Essence hole by 0.1 instead of directly decreasing the character's bioware Essence usage. Fixes #5283.
 
 Vehicles:
+- Corrected the stats, mods, and page references of multiple vehicles and drones, including the Dodge Rhino, Evo Aquavida 2, GMC Riverine Military, Transys Steed, NeoNET Avenging Angel, and several Shadowrun 2050 vehicles. Existing characters with these vehicles will need to remove and re-add them to see any changes.
+- Fixed the names of the Ruhrmetall Wolf II, NeoNET Prairie Dog, Saeder-Krupp MK-17D Neptune, NeoNET Juggernaught, and Hughes WK-2 Stallion (2050).
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.
 - Optional Global Options setting to nest the Weapon Mounts folder under the Weapons vehicle-mod category when category grouping is enabled.
 - Fixed vehicle mod category display names looking up the wrong vehicles.xml path (`categories` instead of `modcategories`).
 
 Cyberware:
+- Corrected multiple cyberware entries, including Control Rig and Data Lock. Existing characters with these items will need to remove and re-add them to see any changes.
+- Cyberfinger (Pistol) now adds a Finger Pistol weapon.
 - Custom cyber implant weapons (Custom Heavy Pistol, Custom Grenade Launcher, etc.) now prompt the user to select a base weapon from the weapons catalog instead of failing when attempting to add gear. Conversion cost and base weapon cost are charged separately in Career mode; both count toward create-mode nuyen. Closes #727.
 - Added `weaponcategories` and `weaponfilter` XML support to cyberware entries for custom implant weapons.
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
@@ -73,6 +89,13 @@ Cyberware:
 - Fixed a crash when attempting to add a cyberware suite.
 
 Gear:
+- The STATscan now gives its +2 dice for Diagnosis Tests as a conditional First Aid and Medicine bonus.
+- Corrected the availability, cost, ratings, and bonuses of multiple gear and armor entries, including ammunition, explosives, Security and Hunter decks, autosofts, sensors, survival gear, and environmental armor. Existing characters with these items will need to remove and re-add them to see any changes.
+- Added the Quick-Access Medkit Pouch (used by the Generic CCOB armor), Betel Nut Gum (Piece), and the Atomizer Cartridge.
+- Corrected multiple drugs and added the Renfield and Amrita drugs. The Lighting drug component has been renamed to Lightning.
+- Added the Zubembie Powder toxin from Hard Targets.
+- The drug info now shows Speed, Duration, Vectors and Addiction Type (Physiological, Psychological or Both), and hides Components when there are none. Drugs bought from the drug list now show their Addiction Rating and Threshold instead of 0, their Speed and Duration in minutes, hours or days instead of raw seconds (including Immediate), keep their Speed and Duration after the character is reopened, and list their effects.
+- Fixed the names of the Tanake Tiger, MCT Sarari-Man Terminal (2050), Mini Mokele-Mbembe, Ikoyi, and The Squealer™.
 - Combat Individualized Spellcasting Foci (Partial and Complete) now exclude alchemical preparations, matching other Spellcasting Foci. Existing characters with these foci need to Reapply Improvements.
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
 - Implemented a purchasing control for the Custom Item object in Career mode to allow the user to purchase more of the item while supporting markup and cost modifiers from services like Black Market Pipeline, Free!, etc. Closes #1261
@@ -82,6 +105,7 @@ Gear:
 - Gear quantities for non-currencies now have an "×" symbol at their end to help with readability for gear whose name starts with a number.
 
 PACKs:
+- Fixed PACKs that referred to the DocWagon Contract, Basic and Rappelling Gloves by outdated names, and corrected the names of the Tactical Helmet Pack and the Sim-Sational Pack.
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
 - Fixed PACKs that add Gear objects not correctly adding items when the name is referred to by name, due to incorrectly cleaning the name of the gear object when checking for it in the data files. Closes #5266.
 
@@ -117,8 +141,12 @@ Magic:
 - Ally Spirits no longer count towards the Bound Spirit Limit.
 - Passenger now properly has a drain code of F-1 instead of F.
 - Fixed an issue with spellcasting foci incorrectly displaying twice in spell dicepools.
+- Elemental spells now list their elements (Acid, Cold, Electricity, Fire, Pollutant, Radiation or Water) in the spell data, and the spell info and the spell selection window show them.
+- Fixed the Free flag for spells only being available if the character didn't have enough karma available to purchase the spell, even if they had FreeSpell improvements applied that had not been consumed.
 
 Weapons:
+- Corrected the stats, ranges, and page references of multiple weapons, including bio-weapons, cyber-implant weapons, and Shadowrun 2050 weapons. Existing characters with these weapons will need to remove and re-add them to see any changes.
+- Fixed the names of the Nitama Optimum II, Nitama Optimum II Shotgun, Ultimax HMG-2, and Ultimax MMG.
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
 - Implemented a cap on the range modifier for weapons to prevent modifiers from reducing the range modifier above +0.
 - Fixed underbarrel weapons being blocked from being added to weapons.
@@ -134,8 +162,10 @@ Resonance:
 - Skill Autosoft and Skill Autosoft (Restricted) now only offer the skills allowed by Rigger 5.0.
 
 Traditions:
+- The Draconic tradition now lists its requirement of a Dracoform (Drake) quality.
 - Corrected multiple traditions and spirits, including Green Magic, Norse, Red Magic, Ancestor Shaman, the Homunculus spirits, Watcher, and several toxic spirits and shedim. Svetoid has been renamed to Svetovid.
 - Fixed Traditionalist Shaman not being able to be added due to incorrect bonus structure
+- Watcher and Master Shedim skill dice pools on printed sheets now use the linked attribute instead of Force. Shedim and Ally Spirit skills now also list their attribute.
 
 Life Modules:
 - Corrected the skills, knowledge skills, qualities, and page references of multiple life modules, including Trans-Polar Aleut Nation, the military service modules, and the Azania modules.
@@ -144,6 +174,7 @@ Life Modules:
 Actions:
 - Added the Call a Shot, Dead Man's Trigger, Load Program, Unload Program, Swap Two Programs, Switch Two Matrix Attributes, Transfer Data, Terminate Data Transfer, Binding, Stunt, Cut-Off, and Catch-Up/Break Away actions.
 - Corrected multiple actions, including Reckless Spellcasting, Cast Spell, Suppressive Fire, Ramming, Data Spike, Jam Signals, Confuse Pilot, and several martial arts technique actions.
+- Added the Push the Limit, Second Chance, Seize the Initiative, Blitz, and Close Call Edge uses from the core rulebook, and the Lucky Move, Miracle Shot, Lucky Duck, Sixth Sense, and Lucky Cover Combat Edge options from Run & Gun.
 
 Lifestyles:
 - Cleaning Service (Standard, Mage Sensitive, and Pollution Sensitive) and Safety Third now ask for a description, so multiple copies on the same lifestyle can be told apart.
@@ -162,6 +193,7 @@ Improvements:
 - The Block Skillgroup Defaulting custom improvement now uses the skill group picked in Create Improvement instead of asking a second time.
 
 Character Sheets and Export:
+- Drug speed is now exported as text, like duration, in the minutes, hours or days shown in the drug info, with "speed_english" for the English version. Both values from the drug list are also exported unprocessed as "speed_raw" and "duration_raw" (in seconds, before Body and dice are applied), so export processors can work out their own values. Drugs made from components leave these two fields empty.
 - Added the missing German, French, Japanese, Portuguese, and Chinese Fancy Fours sheets. Selecting Fancy Fours in those languages caused a "File not found" error. The Fancy Fours sheet files are now also included in the build output.
 - The full names of gear items excluding their quantity labels are now also exported as "fullname_noqty" and "fullname_noqty_english" for native and English versions, respectively. This can help sheets and other export data processors display full gear names separate from their quantities if/where that is needed.
 - Standardized the display of full names for gear, weapons, armor, cyberware, vehicles, spells, complex forms, critter powers, adept powers, AI programs, and qualities across all sheets. All full names will now be shown in the same format that they would be displayed in the program.
@@ -169,6 +201,24 @@ Character Sheets and Export:
 - Quantity fields for gear are now exported with potential non-numerical symbols included, like "×" or "¥", as "qty_text". This is kept separate from the old "qty" field so to allow numerical parsers that read that field to keep working while still allowing the quantity field to be made fancy for sheets and readers that read in that field as text instead of as a number.
 
 Changed/New Strings:
+- Label_AddictionType
+- String_AddictionType_Physiological
+- String_AddictionType_Psychological
+- String_AddictionType_Both
+- Label_Vectors
+- String_Vector_Contact
+- String_Vector_Ingestion
+- String_Vector_Inhalation
+- String_Vector_Injection
+- Label_Elements
+- String_Element_Acid
+- String_Element_Cold
+- String_Element_Electricity
+- String_Element_Fire
+- String_Element_Pollutant
+- String_Element_Radiation
+- String_Element_Water
+- LimitCondition_TestDiagnosis
 - String_Improvement_SelectSpiritType
 - String_Improvement_SelectSpiritTypeGeneric
 - String_GroupContactAbbrev
@@ -182,6 +232,40 @@ Changed/New Strings:
 - MessageTitle_CustomDataDirectory_UpdateAvailable
 - Message_CustomDataDirectory_AlreadyUpToDate
 - MessageTitle_CustomDataDirectory_AlreadyUpToDate
+- LimitCondition_AvoidUltrasound
+- LimitCondition_CalmAtEmergency
+- LimitCondition_DetectLies
+- LimitCondition_EscapeRestraints
+- LimitCondition_ExamineCloseActive
+- LimitCondition_FindFood
+- LimitCondition_FineManipulationActive
+- LimitCondition_Hiding
+- LimitCondition_IdentifyByImage
+- LimitCondition_IdentifySound
+- LimitCondition_JumpedIn
+- LimitCondition_Knockdown
+- LimitCondition_NakedStationary
+- LimitCondition_PerExposedBioTattoo
+- LimitCondition_Rappelling
+- LimitCondition_ReadEmotions
+- LimitCondition_SeductionVsMetahumans
+- LimitCondition_SkillsActivePerceptionScent
+- LimitCondition_SkillsActivePerceptionTaste
+- LimitCondition_SkillsActivePerceptionTouch
+- LimitCondition_SkillsKnowledgeRelated
+- LimitCondition_SpeciesChosen
+- LimitCondition_TerrainChosen
+- LimitCondition_TerrainCold
+- LimitCondition_TerrainDesert
+- LimitCondition_TerrainHot
+- LimitCondition_TestBuySellProduct
+- LimitCondition_TestMeleeCombat
+- LimitCondition_TrackedTargets
+- LimitCondition_UsingScent
+- LimitCondition_VsAnimals
+- LimitCondition_VsGeneticSampleSource
+- LimitCondition_VsMetahumans
+- LimitCondition_WearerTroll
 - Message_CustomDataDirectory_UpdateSuccess
 - MessageTitle_CustomDataDirectory_UpdateSuccess
 - Message_CustomDataDirectory_UpdateFailed
@@ -247,6 +331,10 @@ Changed/New Strings:
 - MessageTitle_CustomDrug_CannotMixBtl
 - Message_DuplicateBtlWarning
 - Checkbox_Options_UseImprovementGroupNameInTooltips
+- Label_MasterIndex_NoLinkedPdfFound
+- Checkbox_FetchNotesFromPdf
+- Message_Options_CloseForms
+- String_ANewCharacter
 - Node_SelectedSpirits
 - Node_SelectedSprites
 - Label_LinkedFile

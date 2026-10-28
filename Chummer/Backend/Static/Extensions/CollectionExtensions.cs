@@ -106,7 +106,7 @@ namespace Chummer
         public static int GetOrderInvariantEnsembleHashCodeSmart<T>(this IReadOnlyCollection<T> lstItems, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return lstItems.Count > ushort.MaxValue
+            return lstItems.Count > Utils.ThresholdToParallelizeForSmartMethods
                 ? lstItems.GetOrderInvariantEnsembleHashCodeParallel(token)
                 : lstItems.GetOrderInvariantEnsembleHashCode(token);
         }

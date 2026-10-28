@@ -930,46 +930,46 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         string strFileName = Path.GetFileName(strFileToDelete);
                         if (string.IsNullOrEmpty(strFileName)
-                            || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                            || strFileName.EndsWith(".old", Utils.PathStringComparison)
+                            || strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                            || strFileName.EndsWith(".chum5lz", Utils.PathStringComparison)
+                            || strFileName.StartsWith("custom_", Utils.PathStringComparison)
+                            || strFileName.StartsWith("override_", Utils.PathStringComparison)
+                            || strFileName.StartsWith("amend_", Utils.PathStringComparison))
                             continue;
                         string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
-                        if (!strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
+                        if (!strFilePath.StartsWith("data", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("export", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("lang", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("saves", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("sheets", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("Utils", Utils.PathStringComparison)
                             && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)))
                             continue;
                         int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                         string strTopLevelFolder = intSeparatorIndex != -1
                             ? strFilePath.Substring(intSeparatorIndex + 1)
                             : string.Empty;
-                        if (strFilePath.Contains("sheets", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strTopLevelFolder, "sheets", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strTopLevelFolder, "de-de", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strTopLevelFolder, "fr-fr", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strTopLevelFolder, "ja-jp", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strTopLevelFolder, "pt-br", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strTopLevelFolder, "zh-cn", StringComparison.OrdinalIgnoreCase))
+                        if (strFilePath.Contains("sheets", Utils.PathStringComparison)
+                            && !string.Equals(strTopLevelFolder, "sheets", Utils.PathStringComparison)
+                            && !string.Equals(strTopLevelFolder, "de-de", Utils.PathStringComparison)
+                            && !string.Equals(strTopLevelFolder, "fr-fr", Utils.PathStringComparison)
+                            && !string.Equals(strTopLevelFolder, "ja-jp", Utils.PathStringComparison)
+                            && !string.Equals(strTopLevelFolder, "pt-br", Utils.PathStringComparison)
+                            && !string.Equals(strTopLevelFolder, "zh-cn", Utils.PathStringComparison))
                             continue;
-                        if (string.Equals(strTopLevelFolder, "lang", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "en-us.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "de-de.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "fr-fr.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "ja-jp.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "pt-br.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "zh-cn.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "de-de_data.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "fr-fr_data.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "ja-jp_data.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "pt-br_data.xml", StringComparison.OrdinalIgnoreCase)
-                            && !string.Equals(strFileName, "zh-cn_data.xml", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(strTopLevelFolder, "lang", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "en-us.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "de-de.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "fr-fr.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "ja-jp.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "pt-br.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "zh-cn.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "de-de_data.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "fr-fr_data.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "ja-jp_data.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "pt-br_data.xml", Utils.PathStringComparison)
+                            && !string.Equals(strFileName, "zh-cn_data.xml", Utils.PathStringComparison))
                             continue;
                         lstFilesToDelete.Add(strFileToDelete);
                     }
@@ -1007,19 +1007,19 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         string strFileName = Path.GetFileName(strFileToDelete);
                         if (string.IsNullOrEmpty(strFileName)
-                            || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            || strFileName.EndsWith(".old", Utils.PathStringComparison)
+                            || strFileName.EndsWith(".chum5", Utils.PathStringComparison)
+                            || strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                             continue;
                         string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
-                        if (!strFilePath.StartsWith("customdata", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("settings", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
-                            && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
+                        if (!strFilePath.StartsWith("customdata", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("data", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("export", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("lang", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("saves", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("settings", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("sheets", Utils.PathStringComparison)
+                            && !strFilePath.StartsWith("Utils", Utils.PathStringComparison)
                             && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)))
                             continue;
                         lstFilesToDelete.Add(strFileToDelete);
@@ -1065,7 +1065,7 @@ namespace Chummer
                                 continue;
                             // Test to make sure we have no sneaky writes to outside our intended directory
                             strLoopPath = Path.GetFullPath(strLoopPath);
-                            if (!strLoopPath.StartsWith(Path.GetFullPath(_strAppPath + Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
+                            if (!strLoopPath.StartsWith(Path.GetFullPath(_strAppPath + Path.DirectorySeparatorChar), Utils.PathStringComparison))
                                 continue;
                             try
                             {

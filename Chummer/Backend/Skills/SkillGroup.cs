@@ -2687,7 +2687,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -2718,7 +2718,7 @@ namespace Chummer.Backend.Skills
                         });
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
@@ -2829,7 +2829,7 @@ namespace Chummer.Backend.Skills
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -2854,7 +2854,7 @@ namespace Chummer.Backend.Skills
                         }, token: token).ConfigureAwait(false);
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();

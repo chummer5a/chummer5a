@@ -138,6 +138,11 @@ namespace Chummer
         public static string DoubleNewLine { get; } = string.Concat(Environment.NewLine, Environment.NewLine);
 
         /// <summary>
+        /// String comparison to use for comparing paths. Potentially important for if/when native Linux support is added, since paths are case-insensitive in Windows but case-sensitive in Linux.
+        /// </summary>
+        public static StringComparison PathStringComparison { get; } = StringComparison.OrdinalIgnoreCase;
+
+        /// <summary>
         /// Cached latest version of Chummer from its GitHub page.
         /// </summary>
         public static Version CachedGitVersion { get; set; }
@@ -417,9 +422,9 @@ namespace Chummer
             foreach (string strFile in Directory.EnumerateFiles(GetDataFolderPath, "*.xml").Select(Path.GetFileName))
             {
                 if (string.IsNullOrEmpty(strFile)
-                    || strFile.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                    || strFile.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                    || strFile.StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                    || strFile.StartsWith("amend_", PathStringComparison)
+                    || strFile.StartsWith("custom_", PathStringComparison)
+                    || strFile.StartsWith("override_", PathStringComparison))
                     continue;
                 lstFiles.Add(strFile);
             }
@@ -443,9 +448,9 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strFile = Path.GetFileName(strFilePath);
-                if (strFile.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                    || strFile.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                    || strFile.StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                if (strFile.StartsWith("amend_", PathStringComparison)
+                    || strFile.StartsWith("custom_", PathStringComparison)
+                    || strFile.StartsWith("override_", PathStringComparison))
                 {
                     lstToMove.Add(strFilePath);
                 }
@@ -456,9 +461,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 string strFile = Path.GetFileName(strFilePath);
                 string strDestinationFolder;
-                if (strFile.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
+                if (strFile.EndsWith("_packs.xml", PathStringComparison))
                     strDestinationFolder = GetPacksFolderPath;
-                else if (strFile.EndsWith("_settings.xml", StringComparison.OrdinalIgnoreCase))
+                else if (strFile.EndsWith("_settings.xml", PathStringComparison))
                     strDestinationFolder = GetSettingsFolderPath;
                 else
                     strDestinationFolder = GetLiveCustomDataFolderPath;
@@ -653,7 +658,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+                    if (!strPath.StartsWith(GetStartupPath, PathStringComparison) && !strPath.StartsWith(GetTempPath(), PathStringComparison))
                     {
                         token.ThrowIfCancellationRequested();
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
@@ -807,8 +812,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath) || !Directory.Exists(strPath))
                 return true;
-            if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
-                && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+            if (!strPath.StartsWith(GetStartupPath, PathStringComparison)
+                && !strPath.StartsWith(GetTempPath(), PathStringComparison))
             {
                 // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                 if (blnShowUnauthorizedAccess)
@@ -980,7 +985,10 @@ namespace Chummer
                     {
                         foreach (CharacterShared objOpenCharacterForm in lstToProcess)
                         {
-                            string strLoopFileName = objOpenCharacterForm.CharacterObject?.FileName ?? string.Empty;
+                            Character objLoop = objOpenCharacterForm.CharacterObject;
+                            string strLoopFileName = objLoop != null
+                                ? await objLoop.GetFileNameAsync(token).ConfigureAwait(false)
+                                : string.Empty;
                             if (!string.IsNullOrEmpty(strLoopFileName))
                                 sbdArguments.Append('\"', strLoopFileName, "\" ");
                         }
@@ -3824,6 +3832,10 @@ namespace Chummer
             }
         }
 
+        public const int HandleCountThresholdForWarning = 9500;
+
+        public const int HandleCountThresholdForWarningCharacterEditForm = 7000;
+
         private static readonly XmlWriterSettings _objStandardXmlWriterSettings = new XmlWriterSettings
         { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t" };
 
@@ -3854,6 +3866,11 @@ namespace Chummer
                 Directory.CreateDirectory(s_strTempPath);
             return s_strTempPath;
         }
+
+        /// <summary>
+        /// Threshold to use for "smart" methods that only use parallelization if the call would be expensive enough that the overhead to set up and close down the parallelized runs would be worth it
+        /// </summary>
+        public const int ThresholdToParallelizeForSmartMethods = ushort.MaxValue;
 
         private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider
         {

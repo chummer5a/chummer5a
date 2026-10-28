@@ -308,11 +308,11 @@ namespace Chummer.Backend.Uniques
                     }
                 }
 
-                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(xmlTraditionNode, Name,
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(xmlTraditionNode, Name,
                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }
 
                 await RebuildSpiritListAsync(false, token).ConfigureAwait(false);
@@ -2254,12 +2254,72 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_strNotes == value)
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    if (_strNotes == value)
                         return;
-                    OnPropertyChanged();
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strNotes = value;
+                        OnPropertyChanged();
+                    }
                 }
+            }
+        }
+
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNotes == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _strNotes = value;
+                    await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2530,7 +2590,7 @@ namespace Chummer.Backend.Uniques
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -2561,7 +2621,7 @@ namespace Chummer.Backend.Uniques
                         });
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
                         List<Func<Task>> lstFuncs = new List<Func<Task>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
@@ -2638,7 +2698,7 @@ namespace Chummer.Backend.Uniques
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties);
@@ -2663,7 +2723,7 @@ namespace Chummer.Backend.Uniques
                         }, token: token).ConfigureAwait(false);
                     }
 
-                    if (_setPropertyChangedAsync.Count > 0)
+                    if (!_setPropertyChangedAsync.IsEmpty)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();

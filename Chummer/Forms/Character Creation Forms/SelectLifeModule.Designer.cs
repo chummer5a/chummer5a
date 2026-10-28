@@ -214,6 +214,7 @@ namespace Chummer
             this.chkLimitList.TabIndex = 26;
             this.chkLimitList.Tag = "Checkbox_SelectLifeModule_LimitList";
             this.chkLimitList.Text = "Show only Life Modules I can take";
+            this.chkLimitList.ToolTipText = "";
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.Click += new System.EventHandler(this.chkLimitList_Click);
             // 
