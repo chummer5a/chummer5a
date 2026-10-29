@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -10549,6 +10550,190 @@ namespace Chummer
 
         #region Additional Relationships Tab Control Events
 
+        protected async Task PopulateContactComboBoxValues(ElasticComboBox cboContactMetatype, ElasticComboBox cboPetMetatype, ElasticComboBox cboGender, ElasticComboBox cboAge, ElasticComboBox cboPersonalLife, ElasticComboBox cboType, ElasticComboBox cboPreferredPayment, ElasticComboBox cboHobbiesVice, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Read the list of Categories from the XML file.
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritterMetatypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
+            {
+                token.ThrowIfCancellationRequested();
+                lstMetatypes.Add(ListItem.Blank);
+                lstCritterMetatypes.Add(ListItem.Blank);
+                lstGenders.Add(ListItem.Blank);
+                lstAges.Add(ListItem.Blank);
+                lstPersonalLives.Add(ListItem.Blank);
+                lstTypes.Add(ListItem.Blank);
+                lstPreferredPayments.Add(ListItem.Blank);
+                lstHobbiesVices.Add(ListItem.Blank);
+
+                XPathNavigator xmlContactsBaseNode = (await CharacterObject.LoadDataXPathAsync("contacts.xml", token: token).ConfigureAwait(false))
+                                                           .SelectSingleNodeAndCacheExpression("/chummer", token);
+                if (xmlContactsBaseNode != null)
+                {
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("genders/gender", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strName = xmlNode.Value;
+                        lstGenders.Add(new ListItem(
+                                           strName,
+                                           xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("ages/age", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strName = xmlNode.Value;
+                        lstAges.Add(new ListItem(
+                                        strName,
+                                        xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "personallives/personallife", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strName = xmlNode.Value;
+                        lstPersonalLives.Add(new ListItem(
+                                                 strName,
+                                                 xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value
+                                                 ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("types/type", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strName = xmlNode.Value;
+                        lstTypes.Add(new ListItem(
+                                         strName,
+                                         xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "preferredpayments/preferredpayment", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strName = xmlNode.Value;
+                        lstPreferredPayments.Add(new ListItem(
+                                                     strName,
+                                                     xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value
+                                                     ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression(
+                                 "hobbiesvices/hobbyvice", token))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strName = xmlNode.Value;
+                        lstHobbiesVices.Add(new ListItem(
+                                                strName,
+                                                xmlNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value
+                                                ?? strName));
+                    }
+                }
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                foreach (XPathNavigator xmlMetatypeNode in (await CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectAndCacheExpression(
+                                                                     "/chummer/metatypes/metatype", token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                                ?? strName;
+                    lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                    XPathNodeIterator xmlMetavariantsList
+                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant", token);
+                    if (xmlMetavariantsList.Count > 0)
+                    {
+                        string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
+                        foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strMetavariantName
+                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
+                                  ?? string.Empty;
+                            if (!string.IsNullOrEmpty(strMetavariantName) &&
+                                (lstMetatypes.Count == 0 || lstMetatypes.TrueForAll(
+                                    x => !strMetavariantName.Equals(x.Value?.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase))))
+                                lstMetatypes.Add(new ListItem(strMetavariantName,
+                                                              StringExtensions.FastFormat(
+                                                                  strMetavariantFormat,
+                                                                  objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpression("translate", token)
+                                                                      ?.Value ?? strMetavariantName)));
+                        }
+                    }
+                }
+                foreach (XPathNavigator xmlMetatypeNode in (await CharacterObject.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectAndCacheExpression(
+                                                                     "/chummer/metatypes/metatype", token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                                ?? strName;
+                    lstCritterMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                    XPathNodeIterator xmlMetavariantsList
+                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant", token);
+                    if (xmlMetavariantsList.Count > 0)
+                    {
+                        string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
+                        foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strMetavariantName
+                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
+                                  ?? string.Empty;
+                            if (!string.IsNullOrEmpty(strMetavariantName) &&
+                                (lstCritterMetatypes.Count == 0 || lstCritterMetatypes.TrueForAll(
+                                    x => !strMetavariantName.Equals(x.Value?.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase))))
+                                lstCritterMetatypes.Add(new ListItem(strMetavariantName,
+                                                              StringExtensions.FastFormat(
+                                                                  strMetavariantFormat,
+                                                                  objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpression("translate", token)
+                                                                      ?.Value ?? strMetavariantName)));
+                        }
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                lstMetatypes.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstCritterMetatypes.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstGenders.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstAges.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstPersonalLives.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstTypes.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstHobbiesVices.Sort(CompareListItems.CompareNames);
+                token.ThrowIfCancellationRequested();
+                lstPreferredPayments.Sort(CompareListItems.CompareNames);
+
+                await cboContactMetatype.PopulateWithListItemsAsync(lstMetatypes, token).ConfigureAwait(false);
+                await cboPetMetatype.PopulateWithListItemsAsync(lstCritterMetatypes, token).ConfigureAwait(false);
+                await cboGender.PopulateWithListItemsAsync(lstGenders, token).ConfigureAwait(false);
+                await cboAge.PopulateWithListItemsAsync(lstAges, token).ConfigureAwait(false);
+                await cboPersonalLife.PopulateWithListItemsAsync(lstPersonalLives, token).ConfigureAwait(false);
+                await cboType.PopulateWithListItemsAsync(lstTypes, token).ConfigureAwait(false);
+                await cboPreferredPayment.PopulateWithListItemsAsync(lstPreferredPayments, token).ConfigureAwait(false);
+                await cboHobbiesVice.PopulateWithListItemsAsync(lstHobbiesVices, token).ConfigureAwait(false);
+            }
+        }
+
         protected async Task AddContact(ContactType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -10556,56 +10741,6 @@ namespace Chummer
             try
             {
                 await objContact.SetEntityTypeAsync(eType, token).ConfigureAwait(false);
-                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            }
-            catch
-            {
-                try
-                {
-                    await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    //swallow this
-                }
-                await objContact.DisposeAsync().ConfigureAwait(false);
-                throw;
-            }
-            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
-        }
-
-        protected async Task AddPet(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            Contact objContact = new Contact(CharacterObject);
-            try
-            {
-                await objContact.SetEntityTypeAsync(ContactType.Pet, token).ConfigureAwait(false);
-                await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            }
-            catch
-            {
-                try
-                {
-                    await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    //swallow this
-                }
-                await objContact.DisposeAsync().ConfigureAwait(false);
-                throw;
-            }
-            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
-        }
-
-        protected async Task AddEnemy(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            Contact objContact = new Contact(CharacterObject);
-            try
-            {
-                await objContact.SetEntityTypeAsync(ContactType.Enemy, token).ConfigureAwait(false);
                 await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
             }
             catch

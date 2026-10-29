@@ -63,6 +63,9 @@ namespace Chummer
         private readonly Timer _tmrSpiritName;
         private readonly Timer _tmrSpriteName;
 
+        private readonly Timer _tmrContactName;
+        private readonly Timer _tmrContactLocation;
+
         #region Form Events
 
         private void ConstructorCommon()
@@ -87,6 +90,14 @@ namespace Chummer
             {
                 Interval = 1000
             };
+            _tmrContactName = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactLocation = new Timer(components)
+            {
+                Interval = 1000
+            };
         }
 
         public CharacterCreate(Character objCharacter) : base(objCharacter)
@@ -99,6 +110,14 @@ namespace Chummer
                 Interval = 1000
             };
             _tmrSpriteName = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactName = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactLocation = new Timer(components)
             {
                 Interval = 1000
             };
@@ -176,6 +195,8 @@ namespace Chummer
             lmtControl.MakeDirty += MakeDirty;
             _tmrSpiritName.Tick += tmrSpiritName_Tick;
             _tmrSpriteName.Tick += tmrSpriteName_Tick;
+            _tmrContactName.Tick += tmrContactName_Tick;
+            _tmrContactLocation.Tick += tmrContactLocation_Tick;
         }
 
         private async void TreeView_KeyDown(object sender, KeyEventArgs e)
@@ -1358,7 +1379,22 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron("load_frm_create_miscstuff",
                                                op_load_frm_create))
                                     {
+                                        await cboContactRole.PopulateWithListItemsAsync(
+                                            await CharacterObject.ContactArchetypesAsync(token: GenericToken).ConfigureAwait(false),
+                                            token: GenericToken).ConfigureAwait(false);
+                                        await PopulateContactComboBoxValues(
+                                            cboContactMetatype,
+                                            cboPetMetatype,
+                                            cboContactGender,
+                                            cboContactAge,
+                                            cboContactPersonalLife,
+                                            cboContactType,
+                                            cboContactPreferredPayment,
+                                            cboContactHobbiesVice,
+                                            GenericToken).ConfigureAwait(false);
+                                        
                                         await SetTooltips(GenericToken).ConfigureAwait(false);
+
                                         await RefreshAttributes(pnlAttributes, null, lblAttributes,
                                             await lblAttributesBase
                                                 .DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken)
@@ -13450,6 +13486,8 @@ namespace Chummer
                         await cmdDeleteRelationship.DoThreadSafeAsync(x => x.Enabled = true, token)
                                             .ConfigureAwait(false);
 
+                        bool blnNoCharacterLinked = await objContact.GetNoLinkedCharacterAsync(token).ConfigureAwait(false);
+                        string strMetatype = await objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
                         if (await objContact.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
                         {
                             await tlpContactStats.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -13465,7 +13503,12 @@ namespace Chummer
                             await cboContactHobbiesVice.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
 
                             await cboContactMetatype.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await cboPetMetatype.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await cboPetMetatype.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strMetatype;
+                                x.Enabled = blnNoCharacterLinked;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -13541,10 +13584,13 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             await cboPetMetatype.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await cboContactMetatype.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await cboContactMetatype.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strMetatype;
+                                x.Enabled = blnNoCharacterLinked;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
                         }
-
-                        bool blnNoCharacterLinked = await objContact.GetNoLinkedCharacterAsync(token).ConfigureAwait(false);
 
                         string strName = await objContact.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await txtContactName.DoThreadSafeAsync(x =>
@@ -13555,13 +13601,6 @@ namespace Chummer
 
                         string strLocation = await objContact.GetLocationAsync(token).ConfigureAwait(false);
                         await txtContactLocation.DoThreadSafeAsync(x => x.Text = strLocation, token).ConfigureAwait(false);
-
-                        string strMetatype = await objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
-                        await cboContactMetatype.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = strMetatype;
-                            x.Enabled = blnNoCharacterLinked;
-                        }, token).ConfigureAwait(false);
 
                         string strGender = await objContact.GetDisplayGenderAsync(token).ConfigureAwait(false);
                         await cboContactGender.DoThreadSafeAsync(x =>
@@ -13960,6 +13999,90 @@ namespace Chummer
                 if (objContact != null)
                 {
                     await RemoveContactLinkedFile(objContact, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void txtContactName_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactName.Enabled)
+                _tmrContactName.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactName.Start();
+        }
+
+        private async void tmrContactName_Tick(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactName.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetNameAsync(await txtContactName.DoThreadSafeFuncAsync(x => x.Text, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void txtContactLocation_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactLocation.Enabled)
+                _tmrContactLocation.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactLocation.Start();
+        }
+
+        private async void tmrContactLocation_Tick(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactLocation.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetLocationAsync(await txtContactLocation.DoThreadSafeFuncAsync(x => x.Text, GenericToken).ConfigureAwait(false),
+                        GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

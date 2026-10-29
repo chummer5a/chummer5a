@@ -23006,6 +23006,7 @@ namespace Chummer
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(234, 20);
             this.txtContactName.TabIndex = 47;
+            this.txtContactName.TextAlignChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // lblContactNameLabel
             // 
@@ -23038,6 +23039,7 @@ namespace Chummer
             this.txtContactLocation.Name = "txtContactLocation";
             this.txtContactLocation.Size = new System.Drawing.Size(235, 20);
             this.txtContactLocation.TabIndex = 48;
+            this.txtContactLocation.TextChanged += new System.EventHandler(this.txtContactLocation_TextChanged);
             // 
             // lblContactPreferredPaymentLabel
             // 

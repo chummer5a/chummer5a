@@ -1072,10 +1072,6 @@ namespace Chummer
             this.nudContactConnection = new Chummer.NumericUpDownEx();
             this.lblContactConnectionLabel = new System.Windows.Forms.Label();
             this.lblContactLoyaltyLabel = new System.Windows.Forms.Label();
-            this.cboContactRole = new Chummer.ElasticComboBox();
-            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
-            this.lblContactMetatypeLabel = new System.Windows.Forms.Label();
-            this.cboContactMetatype = new Chummer.ElasticComboBox();
             this.lblContactGenderLabel = new System.Windows.Forms.Label();
             this.cboContactGender = new Chummer.ElasticComboBox();
             this.lblContactTypeLabel = new System.Windows.Forms.Label();
@@ -1084,6 +1080,11 @@ namespace Chummer
             this.lblContactAgeLabel = new System.Windows.Forms.Label();
             this.cboContactPersonalLife = new Chummer.ElasticComboBox();
             this.lblContactPersonalLifeLabel = new System.Windows.Forms.Label();
+            this.lblContactMetatypeLabel = new System.Windows.Forms.Label();
+            this.cboContactMetatype = new Chummer.ElasticComboBox();
+            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
+            this.cboContactRole = new Chummer.ElasticComboBox();
+            this.cboPetMetatype = new Chummer.ElasticComboBox();
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabBPSummary = new System.Windows.Forms.TabPage();
             this.tlpKarmaSummary = new System.Windows.Forms.TableLayoutPanel();
@@ -1191,7 +1192,6 @@ namespace Chummer
             this.tsAddPetFromFile = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsContactNotes = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.cboPetMetatype = new Chummer.ElasticComboBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -15597,6 +15597,7 @@ namespace Chummer
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(234, 20);
             this.txtContactName.TabIndex = 47;
+            this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // lblContactNameLabel
             // 
@@ -15629,6 +15630,7 @@ namespace Chummer
             this.txtContactLocation.Name = "txtContactLocation";
             this.txtContactLocation.Size = new System.Drawing.Size(235, 20);
             this.txtContactLocation.TabIndex = 48;
+            this.txtContactLocation.TextChanged += new System.EventHandler(this.txtContactLocation_TextChanged);
             // 
             // lblContactPreferredPaymentLabel
             // 
@@ -15845,49 +15847,6 @@ namespace Chummer
             this.lblContactLoyaltyLabel.Tag = "Label_Loyalty";
             this.lblContactLoyaltyLabel.Text = "Loyalty:";
             // 
-            // cboContactRole
-            // 
-            this.cboContactRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboContactRole.FormattingEnabled = true;
-            this.cboContactRole.Location = new System.Drawing.Point(80, 29);
-            this.cboContactRole.Name = "cboContactRole";
-            this.cboContactRole.Size = new System.Drawing.Size(234, 21);
-            this.cboContactRole.TabIndex = 50;
-            // 
-            // lblContactArchtypeLabel
-            // 
-            this.lblContactArchtypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblContactArchtypeLabel.AutoSize = true;
-            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(16, 33);
-            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
-            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(58, 13);
-            this.lblContactArchtypeLabel.TabIndex = 49;
-            this.lblContactArchtypeLabel.Tag = "Label_Archetype";
-            this.lblContactArchtypeLabel.Text = "Archetype:";
-            // 
-            // lblContactMetatypeLabel
-            // 
-            this.lblContactMetatypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblContactMetatypeLabel.AutoSize = true;
-            this.lblContactMetatypeLabel.Location = new System.Drawing.Point(20, 118);
-            this.lblContactMetatypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblContactMetatypeLabel.Name = "lblContactMetatypeLabel";
-            this.tlpContactsRight.SetRowSpan(this.lblContactMetatypeLabel, 2);
-            this.lblContactMetatypeLabel.Size = new System.Drawing.Size(54, 13);
-            this.lblContactMetatypeLabel.TabIndex = 52;
-            this.lblContactMetatypeLabel.Tag = "Label_Metatype";
-            this.lblContactMetatypeLabel.Text = "Metatype:";
-            // 
-            // cboContactMetatype
-            // 
-            this.cboContactMetatype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboContactMetatype.FormattingEnabled = true;
-            this.cboContactMetatype.Location = new System.Drawing.Point(80, 101);
-            this.cboContactMetatype.Name = "cboContactMetatype";
-            this.cboContactMetatype.Size = new System.Drawing.Size(234, 21);
-            this.cboContactMetatype.TabIndex = 62;
-            // 
             // lblContactGenderLabel
             // 
             this.lblContactGenderLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -15971,6 +15930,58 @@ namespace Chummer
             this.lblContactPersonalLifeLabel.TabIndex = 55;
             this.lblContactPersonalLifeLabel.Tag = "Label_Contact_PersonalLife";
             this.lblContactPersonalLifeLabel.Text = "Personal Life:";
+            // 
+            // lblContactMetatypeLabel
+            // 
+            this.lblContactMetatypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblContactMetatypeLabel.AutoSize = true;
+            this.lblContactMetatypeLabel.Location = new System.Drawing.Point(20, 118);
+            this.lblContactMetatypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblContactMetatypeLabel.Name = "lblContactMetatypeLabel";
+            this.tlpContactsRight.SetRowSpan(this.lblContactMetatypeLabel, 2);
+            this.lblContactMetatypeLabel.Size = new System.Drawing.Size(54, 13);
+            this.lblContactMetatypeLabel.TabIndex = 52;
+            this.lblContactMetatypeLabel.Tag = "Label_Metatype";
+            this.lblContactMetatypeLabel.Text = "Metatype:";
+            // 
+            // cboContactMetatype
+            // 
+            this.cboContactMetatype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboContactMetatype.FormattingEnabled = true;
+            this.cboContactMetatype.Location = new System.Drawing.Point(80, 101);
+            this.cboContactMetatype.Name = "cboContactMetatype";
+            this.cboContactMetatype.Size = new System.Drawing.Size(234, 21);
+            this.cboContactMetatype.TabIndex = 62;
+            // 
+            // lblContactArchtypeLabel
+            // 
+            this.lblContactArchtypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblContactArchtypeLabel.AutoSize = true;
+            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(16, 33);
+            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
+            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(58, 13);
+            this.lblContactArchtypeLabel.TabIndex = 49;
+            this.lblContactArchtypeLabel.Tag = "Label_Archetype";
+            this.lblContactArchtypeLabel.Text = "Archetype:";
+            // 
+            // cboContactRole
+            // 
+            this.cboContactRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboContactRole.FormattingEnabled = true;
+            this.cboContactRole.Location = new System.Drawing.Point(80, 29);
+            this.cboContactRole.Name = "cboContactRole";
+            this.cboContactRole.Size = new System.Drawing.Size(234, 21);
+            this.cboContactRole.TabIndex = 50;
+            // 
+            // cboPetMetatype
+            // 
+            this.cboPetMetatype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboPetMetatype.FormattingEnabled = true;
+            this.cboPetMetatype.Location = new System.Drawing.Point(80, 128);
+            this.cboPetMetatype.Name = "cboPetMetatype";
+            this.cboPetMetatype.Size = new System.Drawing.Size(234, 21);
+            this.cboPetMetatype.TabIndex = 197;
             // 
             // tabInfo
             // 
@@ -17430,15 +17441,6 @@ namespace Chummer
             this.tsContactNotes.Tag = "Menu_Notes";
             this.tsContactNotes.Text = "&Notes";
             this.tsContactNotes.Click += new System.EventHandler(this.tsContactNotes_Click);
-            // 
-            // cboPetMetatype
-            // 
-            this.cboPetMetatype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboPetMetatype.FormattingEnabled = true;
-            this.cboPetMetatype.Location = new System.Drawing.Point(80, 128);
-            this.cboPetMetatype.Name = "cboPetMetatype";
-            this.cboPetMetatype.Size = new System.Drawing.Size(234, 21);
-            this.cboPetMetatype.TabIndex = 197;
             // 
             // CharacterCreate
             // 
