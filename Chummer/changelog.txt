@@ -337,12 +337,20 @@ Changed/New Strings:
 - String_ANewCharacter
 - Node_SelectedSpirits
 - Node_SelectedSprites
+- Node_SelectedContacts
+- Node_SelectedEnemies
+- Node_SelectedPets
 - Label_LinkedFile
 - Button_LinkFile
 - Button_OpenLinkedFile
 - Button_RemoveLinkedFile
 - Label_Sprite_Level
 - Label_Sprite_Rating
+- Button_DeleteRelationship
+- Button_AddPet
+- Menu_CreateCritterPet
+- Button_AddContact
+- Message_DeletePet
 
 Build 226
 Application Changes:

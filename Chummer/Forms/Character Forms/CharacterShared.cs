@@ -9528,495 +9528,6 @@ namespace Chummer
             }
         }
 
-        public async Task RefreshContactsClearBindings(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies,
-            FlowLayoutPanel panPets, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
-            {
-                SkipUpdate = true;
-                try
-                {
-                    if (panContacts != null)
-                    {
-                        await panContacts.DoThreadSafeAsync((x, t) =>
-                        {
-                            x.SuspendLayout();
-                            try
-                            {
-                                for (int i = x.Controls.Count - 1; i >= 0; --i)
-                                {
-                                    t.ThrowIfCancellationRequested();
-                                    if (!(x.Controls[i] is ContactControl objContactControl))
-                                        continue;
-                                    objContactControl.ContactObject.PropertyChangedAsync -=
-                                        MakeDirtyWithCharacterUpdate;
-                                    objContactControl.DeleteContact -= DeleteContact;
-                                    objContactControl.MouseDown -= DragContactControl;
-                                }
-                            }
-                            finally
-                            {
-                                x.ResumeLayout();
-                            }
-                        }, token).ConfigureAwait(false);
-                    }
-
-                    if (panEnemies != null)
-                    {
-                        await panEnemies.DoThreadSafeAsync((x, t) =>
-                        {
-                            x.SuspendLayout();
-                            try
-                            {
-                                for (int i = x.Controls.Count - 1; i >= 0; --i)
-                                {
-                                    t.ThrowIfCancellationRequested();
-                                    if (!(x.Controls[i] is ContactControl objContactControl))
-                                        continue;
-                                    objContactControl.ContactObject.PropertyChangedAsync -=
-                                        MakeDirtyWithCharacterUpdate;
-                                    objContactControl.DeleteContact -= DeleteEnemy;
-                                    objContactControl.MouseDown -= DragContactControl;
-                                }
-                            }
-                            finally
-                            {
-                                x.ResumeLayout();
-                            }
-                        }, token).ConfigureAwait(false);
-                    }
-
-                    if (panPets != null)
-                    {
-                        await panPets.DoThreadSafeAsync((x, t) =>
-                        {
-                            x.SuspendLayout();
-                            try
-                            {
-                                for (int i = x.Controls.Count - 1; i >= 0; --i)
-                                {
-                                    t.ThrowIfCancellationRequested();
-                                    if (!(x.Controls[i] is PetControl objPetControl))
-                                        continue;
-                                    objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                    objPetControl.DeleteContact -= DeletePet;
-                                    objPetControl.MouseDown -= DragContactControl;
-                                }
-                            }
-                            finally
-                            {
-                                x.ResumeLayout();
-                            }
-                        }, token).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    SkipUpdate = false;
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        public async Task RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (panContacts == null && panEnemies == null && panPets == null)
-                return;
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
-            {
-                SkipUpdate = true;
-                try
-                {
-                    if (e == null ||
-                        e.Action == NotifyCollectionChangedAction.Reset)
-                    {
-                        if (panContacts != null)
-                            await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                        if (panEnemies != null)
-                            await panEnemies.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                        if (panPets != null)
-                            await panPets.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                        try
-                        {
-                            if (panContacts != null)
-                                await panContacts.DoThreadSafeAsync(x => x.Controls.Clear(), token)
-                                    .ConfigureAwait(false);
-                            if (panEnemies != null)
-                                await panEnemies.DoThreadSafeAsync(x => x.Controls.Clear(), token)
-                                    .ConfigureAwait(false);
-                            if (panPets != null)
-                                await panPets.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
-                            bool blnHasEnemyTracking = await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false);
-                            await CharacterObject.Contacts.ForEachAsync((objContact, t) =>
-                            {
-                                switch (objContact.EntityType)
-                                {
-                                    case ContactType.Contact:
-                                    {
-                                        if (panContacts == null)
-                                            break;
-                                        return this.DoThreadSafeAsync(() =>
-                                        {
-                                            ContactControl objContactControl =
-                                                new ContactControl(objContact, GenericToken);
-                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactObject.PropertyChangedAsync +=
-                                                MakeDirtyWithCharacterUpdate;
-                                            objContactControl.DeleteContact += DeleteContact;
-                                            objContactControl.MouseDown += DragContactControl;
-
-                                            panContacts.Controls.Add(objContactControl);
-                                        }, t);
-                                    }
-
-                                    case ContactType.Enemy:
-                                    {
-                                        if (panEnemies == null || !blnHasEnemyTracking)
-                                            break;
-                                        return this.DoThreadSafeAsync(() =>
-                                        {
-                                            ContactControl objContactControl =
-                                                new ContactControl(objContact, GenericToken);
-                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactObject.PropertyChangedAsync +=
-                                                MakeDirtyWithCharacterUpdate;
-                                            objContactControl.DeleteContact += DeleteEnemy;
-                                            objContactControl.MouseDown += DragContactControl;
-
-                                            panEnemies.Controls.Add(objContactControl);
-                                        }, t);
-                                    }
-
-                                    case ContactType.Pet:
-                                    {
-                                        if (panPets == null)
-                                            break;
-                                        return this.DoThreadSafeAsync(() =>
-                                        {
-                                            PetControl objContactControl = new PetControl(objContact, GenericToken);
-                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-                                            objContactControl.DeleteContact += DeletePet;
-                                            objContactControl.MouseDown += DragContactControl;
-
-                                            panPets.Controls.Add(objContactControl);
-                                        }, t);
-                                    }
-                                }
-
-                                return Task.CompletedTask;
-                            }, token).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            if (panContacts != null)
-                                await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
-                                    .ConfigureAwait(false);
-                            if (panEnemies != null)
-                                await panEnemies.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
-                                    .ConfigureAwait(false);
-                            if (panPets != null)
-                                await panPets.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
-                                    .ConfigureAwait(false);
-                        }
-                    }
-                    else
-                    {
-                        switch (e.Action)
-                        {
-                            case NotifyCollectionChangedAction.Add:
-                            {
-                                foreach (Contact objContact in e.NewItems)
-                                {
-                                    switch (objContact.EntityType)
-                                    {
-                                        case ContactType.Contact:
-                                        {
-                                            if (panContacts == null)
-                                                break;
-                                            await panContacts.DoThreadSafeAsync(x =>
-                                            {
-                                                ContactControl objContactControl =
-                                                    new ContactControl(objContact, GenericToken);
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactObject.PropertyChangedAsync +=
-                                                    MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteContact;
-                                                objContactControl.MouseDown += DragContactControl;
-
-                                                x.Controls.Add(objContactControl);
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Enemy:
-                                        {
-                                            if (panEnemies == null || !await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false))
-                                                break;
-                                            await panEnemies.DoThreadSafeAsync(x =>
-                                            {
-                                                ContactControl objContactControl =
-                                                    new ContactControl(objContact, GenericToken);
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactObject.PropertyChangedAsync +=
-                                                    MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteEnemy;
-                                                objContactControl.MouseDown += DragContactControl;
-
-                                                x.Controls.Add(objContactControl);
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Pet:
-                                        {
-                                            if (panPets == null)
-                                                break;
-                                            await panPets.DoThreadSafeAsync(x =>
-                                            {
-                                                PetControl objContactControl = new PetControl(objContact, GenericToken);
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeletePet;
-                                                objContactControl.MouseDown += DragContactControl;
-
-                                                x.Controls.Add(objContactControl);
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-                                    }
-                                }
-                            }
-                                break;
-
-                            case NotifyCollectionChangedAction.Remove:
-                            {
-                                foreach (Contact objContact in e.OldItems)
-                                {
-                                    switch (objContact.EntityType)
-                                    {
-                                        case ContactType.Contact:
-                                        {
-                                            if (panContacts == null)
-                                                break;
-                                            await panContacts.DoThreadSafeAsync(x =>
-                                            {
-                                                for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (x.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objContact)
-                                                    {
-                                                        objContactControl.ContactObject.PropertyChangedAsync -=
-                                                            MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteContact;
-                                                        objContactControl.MouseDown -= DragContactControl;
-                                                        x.Controls.RemoveAt(i);
-                                                    }
-                                                }
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Enemy:
-                                        {
-                                            if (panEnemies == null)
-                                                break;
-                                            await panEnemies.DoThreadSafeAsync(x =>
-                                            {
-                                                for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (x.Controls[i] is ContactControl objContactControl
-                                                        && objContactControl.ContactObject == objContact)
-                                                    {
-                                                        objContactControl.ContactObject.PropertyChangedAsync -=
-                                                            MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteEnemy;
-                                                        x.Controls.RemoveAt(i);
-                                                    }
-                                                }
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Pet:
-                                        {
-                                            if (panPets == null)
-                                                break;
-                                            await panPets.DoThreadSafeAsync(x =>
-                                            {
-                                                for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (x.Controls[i] is PetControl objPetControl &&
-                                                        objPetControl.ContactObject == objContact)
-                                                    {
-                                                        objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                                        objPetControl.DeleteContact -= DeletePet;
-                                                        x.Controls.RemoveAt(i);
-                                                    }
-                                                }
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-                                    }
-                                }
-                            }
-                                break;
-
-                            case NotifyCollectionChangedAction.Replace:
-                            {
-                                foreach (Contact objContact in e.OldItems)
-                                {
-                                    switch (objContact.EntityType)
-                                    {
-                                        case ContactType.Contact:
-                                        {
-                                            if (panContacts == null)
-                                                break;
-                                            await panContacts.DoThreadSafeAsync(x =>
-                                            {
-                                                for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (x.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objContact)
-                                                    {
-                                                        objContactControl.ContactObject.PropertyChangedAsync -=
-                                                            MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteContact;
-                                                        objContactControl.MouseDown -= DragContactControl;
-                                                        x.Controls.RemoveAt(i);
-                                                    }
-                                                }
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Enemy:
-                                        {
-                                            if (panEnemies == null)
-                                                break;
-                                            await panEnemies.DoThreadSafeAsync(x =>
-                                            {
-                                                for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (x.Controls[i] is ContactControl objContactControl
-                                                        && objContactControl.ContactObject == objContact)
-                                                    {
-                                                        objContactControl.ContactObject.PropertyChangedAsync -=
-                                                            MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteEnemy;
-                                                        x.Controls.RemoveAt(i);
-                                                    }
-                                                }
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Pet:
-                                        {
-                                            if (panPets == null)
-                                                break;
-                                            await panPets.DoThreadSafeAsync(x =>
-                                            {
-                                                for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (x.Controls[i] is PetControl objPetControl &&
-                                                        objPetControl.ContactObject == objContact)
-                                                    {
-                                                        objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                                                        objPetControl.DeleteContact -= DeletePet;
-                                                        x.Controls.RemoveAt(i);
-                                                    }
-                                                }
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-                                    }
-                                }
-
-                                foreach (Contact objContact in e.NewItems)
-                                {
-                                    switch (objContact.EntityType)
-                                    {
-                                        case ContactType.Contact:
-                                        {
-                                            if (panContacts == null)
-                                                break;
-                                            await panContacts.DoThreadSafeAsync(x =>
-                                            {
-                                                ContactControl objContactControl =
-                                                    new ContactControl(objContact, GenericToken);
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactObject.PropertyChangedAsync +=
-                                                    MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteContact;
-                                                objContactControl.MouseDown += DragContactControl;
-
-                                                x.Controls.Add(objContactControl);
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Enemy:
-                                        {
-                                            if (panEnemies == null || !await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false))
-                                                break;
-                                            await panEnemies.DoThreadSafeAsync(x =>
-                                            {
-                                                ContactControl objContactControl =
-                                                    new ContactControl(objContact, GenericToken);
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactObject.PropertyChangedAsync +=
-                                                    MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteEnemy;
-                                                objContactControl.MouseDown += DragContactControl;
-
-                                                x.Controls.Add(objContactControl);
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-
-                                        case ContactType.Pet:
-                                        {
-                                            if (panPets == null)
-                                                break;
-                                            await panPets.DoThreadSafeAsync(x =>
-                                            {
-                                                PetControl objContactControl = new PetControl(objContact, GenericToken);
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeletePet;
-                                                objContactControl.MouseDown += DragContactControl;
-
-                                                x.Controls.Add(objContactControl);
-                                            }, token).ConfigureAwait(false);
-                                        }
-                                            break;
-                                    }
-                                }
-                            }
-                                break;
-                        }
-                    }
-                }
-                finally
-                {
-                    SkipUpdate = false;
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
         public async Task RefreshSustainedSpellsClearBindings(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -11036,21 +10547,15 @@ namespace Chummer
             }
         }
 
-        #region ContactControl Events
+        #region Additional Relationships Tab Control Events
 
-        protected void DragContactControl(object sender, MouseEventArgs e)
-        {
-            if (sender is Control source)
-                source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
-        }
-
-        protected async Task AddContact(CancellationToken token = default)
+        protected async Task AddContact(ContactType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             Contact objContact = new Contact(CharacterObject);
             try
             {
-                await objContact.SetEntityTypeAsync(ContactType.Contact, token).ConfigureAwait(false);
+                await objContact.SetEntityTypeAsync(eType, token).ConfigureAwait(false);
                 await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
             }
             catch
@@ -11068,45 +10573,6 @@ namespace Chummer
             }
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
-
-        protected async Task DeleteContact(object sender, EventArgs e, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
-                return;
-            if (!(sender is ContactControl objSender))
-                return;
-            CancellationTokenSource objSource = null;
-            if (token != GenericToken)
-            {
-                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
-                token = objSource.Token;
-            }
-
-            try
-            {
-                if (!await CommonFunctions
-                        .ConfirmDeleteAsync(
-                            await LanguageManager.GetStringAsync("Message_DeleteContact", token: token)
-                                .ConfigureAwait(false), token).ConfigureAwait(false))
-                    return;
-
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
-                    .ConfigureAwait(false);
-                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-            finally
-            {
-                objSource?.Dispose();
-            }
-        }
-
-        #endregion ContactControl Events
-
-        #region PetControl Events
 
         protected async Task AddPet(CancellationToken token = default)
         {
@@ -11133,45 +10599,6 @@ namespace Chummer
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
-        protected async Task DeletePet(object sender, EventArgs e, CancellationToken token = default)
-        {
-            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
-                return;
-            if (!(sender is PetControl objSender))
-                return;
-            CancellationTokenSource objSource = null;
-            if (token != GenericToken)
-            {
-                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
-                token = objSource.Token;
-            }
-
-            try
-            {
-                if (!await CommonFunctions
-                        .ConfirmDeleteAsync(
-                            await LanguageManager.GetStringAsync("Message_DeleteContact", token: token)
-                                .ConfigureAwait(false), token).ConfigureAwait(false))
-                    return;
-
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
-                    .ConfigureAwait(false);
-                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-            finally
-            {
-                objSource?.Dispose();
-            }
-        }
-
-        #endregion PetControl Events
-
-        #region EnemyControl Events
-
         protected async Task AddEnemy(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -11197,11 +10624,9 @@ namespace Chummer
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
-        protected async Task DeleteEnemy(object sender, EventArgs e, CancellationToken token = default)
+        protected async Task DeleteContact(Contact objContact, CancellationToken token = default)
         {
             if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
-                return;
-            if (!(sender is ContactControl objSender))
                 return;
             CancellationTokenSource objSource = null;
             if (token != GenericToken)
@@ -11212,13 +10637,29 @@ namespace Chummer
 
             try
             {
+                string strDeleteMessage;
+                switch (await objContact.GetEntityTypeAsync(token).ConfigureAwait(false))
+                {
+                    case ContactType.Enemy:
+                        strDeleteMessage = await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: token)
+                                .ConfigureAwait(false);
+                        break;
+                    case ContactType.Pet:
+                        strDeleteMessage = await LanguageManager.GetStringAsync("Message_DeletePet", token: token)
+                                .ConfigureAwait(false);
+                        break;
+                    default:
+                    case ContactType.Contact:
+                        strDeleteMessage = await LanguageManager.GetStringAsync("Message_DeleteContact", token: token)
+                                .ConfigureAwait(false);
+                        break;
+                }
                 if (!await CommonFunctions
                         .ConfirmDeleteAsync(
-                            await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: token)
-                                .ConfigureAwait(false), token).ConfigureAwait(false))
+                            strDeleteMessage, token).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
+                await CharacterObject.Contacts.RemoveAsync(objContact, token: token)
                     .ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
@@ -11232,80 +10673,254 @@ namespace Chummer
             }
         }
 
-        #endregion EnemyControl Events
+        protected async Task AddContactFromFile(ContactType eType, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
 
-        #region Additional Relationships Tab Control Events
+            try
+            {
+                string strFileName = string.Empty;
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                {
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                    {
+                        dlgOpenFile.Filter = strFilter;
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
+                    }
+                }, token: token).ConfigureAwait(false);
 
-        protected async Task AddContactsFromFile(CancellationToken token = default)
+                if (eResult != DialogResult.OK)
+                    return;
+                Contact objContact = new Contact(CharacterObject);
+                try
+                {
+                    await objContact.SetEntityTypeAsync(eType, token).ConfigureAwait(false);
+                    await objContact.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
+                    await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    try
+                    {
+                        await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        //swallow this
+                    }
+                    await objContact.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
+                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        protected async Task LinkContactToFile(Contact objContact, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                string strFileName = string.Empty;
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token).ConfigureAwait(false) +
+                                   "|" +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                // Prompt the user to select a save file to associate with this Contact.
+                string strOldFileName = await objContact.GetFileNameAsync(token).ConfigureAwait(false);
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                {
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                    {
+                        dlgOpenFile.Filter = strFilter;
+                        if (!string.IsNullOrEmpty(strOldFileName) && File.Exists(strOldFileName))
+                        {
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strOldFileName);
+                            dlgOpenFile.FileName = Path.GetFileName(strOldFileName);
+                        }
+
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
+                    }
+                }, token: token).ConfigureAwait(false);
+
+                if (eResult != DialogResult.OK)
+                    return;
+                await objContact.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        protected async Task OpenContactLinkedFile(Contact objContact, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                string strFileName;
+                Character objOpenCharacter = null;
+                Character objLinkedCharacter = await objContact.GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter == null)
+                {
+                    // Make sure the file still exists before attempting to load it.
+                    strFileName = await objContact.GetFileNameAsync(token).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
+                    {
+                        // If the file doesn't exist, use the relative path if one is available.
+                        string strRelativeFileName = await objContact.GetRelativeFileNameAsync(token).ConfigureAwait(false);
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                StringExtensions.FastFormat(
+                                    await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
+                                        .ConfigureAwait(false), strFileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
+                    }
+                }
+                else
+                {
+                    strFileName = await objLinkedCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                    if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, token).ConfigureAwait(false))
+                        objOpenCharacter = objLinkedCharacter;
+                }
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: token).ConfigureAwait(false);
+                try
+                {
+                    if (objOpenCharacter == null)
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                       strFileName, Character.NumLoadingSections, token)
+                                   .ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                    strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: token)
+                                .ConfigureAwait(false);
+                    }
+
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        protected async Task RemoveContactLinkedFile(Contact objContact, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested || GenericToken.IsCancellationRequested)
+                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                if (await Program.ShowScrollableMessageBoxAsync(
+                            await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation", token: token)
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation", token: token)
+                                .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false)
+                        == DialogResult.Yes)
+                {
+                    await objContact.SetFileNameAsync(string.Empty, token).ConfigureAwait(false);
+                    await objContact.SetRelativeFileNameAsync(string.Empty, token).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+        public async Task RefreshContactsClearBindings(TreeView treContacts, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (treContacts == null)
+                return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 SkipUpdate = true;
                 try
                 {
-                    XPathDocument xmlDoc;
-                    string strFileName = string.Empty;
-                    string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token)
-                                           .ConfigureAwait(false) + "|" +
-                                       await LanguageManager.GetStringAsync("DialogFilter_All", token: token)
-                                           .ConfigureAwait(false);
-                    // Displays an OpenFileDialog so the user can select the XML to read.
-                    DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                    foreach (TreeNode objParentNode in await treContacts.DoThreadSafeFuncAsync(x => x.Nodes, token).ConfigureAwait(false))
                     {
-                        using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                        foreach (TreeNode objNode in objParentNode.Nodes)
                         {
-                            dlgOpenFile.Filter = strFilter;
-                            // Show the Dialog.
-                            DialogResult eReturn = dlgOpenFile.ShowDialog(x);
-                            strFileName = dlgOpenFile.FileName;
-                            return eReturn;
-                        }
-                    }, token).ConfigureAwait(false);
-                    // If the user cancels out, return early.
-                    if (eResult != DialogResult.OK)
-                        return;
-                    try
-                    {
-                        xmlDoc = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName, token: token)
-                            .ConfigureAwait(false);
-                    }
-                    catch (IOException ex)
-                    {
-                        await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: token)
-                            .ConfigureAwait(false);
-                        return;
-                    }
-                    catch (XmlException ex)
-                    {
-                        await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: token)
-                            .ConfigureAwait(false);
-                        return;
-                    }
-
-                    foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator()
-                                 .SelectAndCacheExpression(
-                                     "/chummer/contacts/contact", token: token))
-                    {
-                        Contact objContact = new Contact(CharacterObject);
-                        try
-                        {
-                            await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
-                            await CharacterObject.Contacts.AddAsync(objContact, token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            try
-                            {
-                                await CharacterObject.Contacts.RemoveAsync(objContact, token: token).ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                //swallow this
-                            }
-                            await objContact.DisposeAsync().ConfigureAwait(false);
-                            throw;
+                            if (objNode.Tag is Contact objContact)
+                                objContact.StopTrackingTreeNodeForUpdates(objNode);
                         }
                     }
                 }
@@ -11317,6 +10932,218 @@ namespace Chummer
             finally
             {
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        protected async Task RefreshContacts(TreeView treContacts, ContextMenuStrip cmsContact, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
+        {
+            if (treContacts == null)
+                return;
+            TreeNode objContactsRoot = null;
+            TreeNode objEnemiesRoot = null;
+            TreeNode objPetsRoot = null;
+
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
+            try
+            {
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
+                {
+                    string strSelectedContactId = string.Empty;
+                    for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                              .ConfigureAwait(false);
+                                                              objSelectedNode != null;
+                                                              objSelectedNode = objSelectedNode.Parent)
+                    {
+                        if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
+                        {
+                            strSelectedContactId = objSelectedId.InternalId;
+                            break;
+                        }
+                    }
+
+                    await treContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                    try
+                    {
+                        await treContacts.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+
+                        await CharacterObject.Contacts.ForEachWithSideEffectsAsync((objContact, t) => AddToTree(objContact, false, t), token).ConfigureAwait(false);
+
+                        if (!string.IsNullOrEmpty(strSelectedContactId))
+                        {
+                            TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedContactId), token).ConfigureAwait(false);
+                            if (objSelectedNode != null)
+                                await treContacts.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await treContacts.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    await treContacts.DoThreadSafeAsync(x =>
+                    {
+                        objContactsRoot = x.FindNodeByTag("Node_SelectedContacts", false);
+                        objEnemiesRoot = x.FindNodeByTag("Node_SelectedEnemies", false);
+                        objPetsRoot = x.FindNodeByTag("Node_SelectedPets", false);
+                    }, token).ConfigureAwait(false);
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            {
+                                foreach (Contact objContact in e.NewItems)
+                                {
+                                    await AddToTree(objContact, innerToken: token).ConfigureAwait(false);
+                                }
+
+                                break;
+                            }
+                        case NotifyCollectionChangedAction.Remove:
+                            {
+                                foreach (Contact objContact in e.OldItems)
+                                {
+                                    TreeNode objRemoved = await treContacts.DoThreadSafeFuncAsync(x =>
+                                    {
+                                        TreeNode objNode = x.FindNodeByTag(objContact);
+                                        if (objNode != null)
+                                        {
+                                            TreeNode objParent = objNode.Parent;
+                                            objNode.Remove();
+                                            if (objParent.Nodes.Count == 0)
+                                                objParent.Remove();
+                                            return objNode;
+                                        }
+                                        return null;
+                                    }, token).ConfigureAwait(false);
+                                    if (objRemoved != null)
+                                        objContact.StopTrackingTreeNodeForUpdates(objRemoved);
+                                }
+
+                                break;
+                            }
+                        case NotifyCollectionChangedAction.Replace:
+                            {
+                                List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                foreach (Contact objContact in e.OldItems)
+                                {
+                                    TreeNode objRemoved = await treContacts.DoThreadSafeFuncAsync(x =>
+                                    {
+                                        TreeNode objNode = x.FindNodeByTag(objContact);
+                                        if (objNode != null)
+                                        {
+                                            objNode.Remove();
+                                            lstOldParents.Add(objNode.Parent);
+                                            return objNode;
+                                        }
+                                        return null;
+                                    }, token).ConfigureAwait(false);
+                                    if (objRemoved != null)
+                                        objContact.StopTrackingTreeNodeForUpdates(objRemoved);
+                                }
+
+                                foreach (Contact objContact in e.NewItems)
+                                {
+                                    await AddToTree(objContact, innerToken: token).ConfigureAwait(false);
+                                }
+
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Nodes.Count == 0 && objOldParent.TreeView != null)
+                                    {
+                                        await objOldParent.TreeView.DoThreadSafeAsync(() => objOldParent.Remove(), token).ConfigureAwait(false);
+                                    }
+                                }
+
+                                break;
+                            }
+                    }
+                }
+            }
+            finally
+            {
+                SkipUpdate = false;
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+
+            async Task AddToTree(Contact objContact, bool blnSingleAdd = true, CancellationToken innerToken = default)
+            {
+                TreeNode objNode = await objContact.CreateTreeNode(cmsContact, innerToken).ConfigureAwait(false);
+                if (objNode == null)
+                    return;
+                TreeNode objParentNode = null;
+                switch (await objContact.GetEntityTypeAsync(token).ConfigureAwait(false))
+                {
+                    case ContactType.Contact:
+                        if (objContactsRoot == null)
+                        {
+                            objContactsRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedContacts",
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedContacts", token: innerToken).ConfigureAwait(false)
+                            };
+                            await treContacts.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objContactsRoot);
+                                objContactsRoot.Expand();
+                            }, innerToken).ConfigureAwait(false);
+                        }
+                        objParentNode = objContactsRoot;
+                        break;
+
+                    case ContactType.Enemy:
+                        if (objEnemiesRoot == null)
+                        {
+                            objEnemiesRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedEnemies",
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnemies", token: innerToken).ConfigureAwait(false)
+                            };
+                            await treContacts.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Insert((objContactsRoot == null || objPetsRoot != null).ToInt32(),
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    objEnemiesRoot);
+                                objEnemiesRoot.Expand();
+                            }, innerToken).ConfigureAwait(false);
+                        }
+                        objParentNode = objEnemiesRoot;
+                        break;
+
+                    case ContactType.Pet:
+                        if (objPetsRoot == null)
+                        {
+                            objPetsRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedPets",
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedPets", token: innerToken).ConfigureAwait(false)
+                            };
+                            await treContacts.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Add(objPetsRoot);
+                                objPetsRoot.Expand();
+                            }, innerToken).ConfigureAwait(false);
+                        }
+                        objParentNode = objPetsRoot;
+                        break;
+                }
+
+                if (objParentNode != null)
+                {
+                    objContact.StartTrackingTreeNodeForUpdates(objNode);
+                    await treContacts.DoThreadSafeAsync(x =>
+                    {
+                        objParentNode.Nodes.Add(objNode);
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                        objParentNode.Expand();
+                    }, innerToken).ConfigureAwait(false);
+                }
             }
         }
 

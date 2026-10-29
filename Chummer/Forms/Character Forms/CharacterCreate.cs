@@ -171,7 +171,6 @@ namespace Chummer
             tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -674,13 +673,6 @@ namespace Chummer
                                             await lblAstralReputationTotal.DoThreadSafeAsync(
                                                 x => x.Visible = false, GenericToken).ConfigureAwait(false);
                                         }
-                                    }
-
-                                    if (!await CharacterObjectSettings.GetEnableEnemyTrackingAsync(GenericToken).ConfigureAwait(false))
-                                    {
-                                        await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies),
-                                                GenericToken)
-                                            .ConfigureAwait(false);
                                     }
 
                                     await splitMagician.DoThreadSafeAsync(x => x.SplitterDistance
@@ -1474,8 +1466,6 @@ namespace Chummer
 
                                         if (!await CharacterObjectSettings.GetEnableEnemyTrackingAsync(GenericToken).ConfigureAwait(false))
                                         {
-                                            await tabPeople.DoThreadSafeAsync(
-                                                x => x.TabPages.Remove(tabEnemies), GenericToken).ConfigureAwait(false);
                                             await lblEnemiesBP.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                                 .ConfigureAwait(false);
                                             await lblBuildEnemies
@@ -1506,7 +1496,7 @@ namespace Chummer
                                             token: GenericToken).ConfigureAwait(false);
                                         await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
                                             token: GenericToken).ConfigureAwait(false);
-                                        await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken)
+                                        await RefreshContacts(treContacts, cmsContact, token: GenericToken)
                                             .ConfigureAwait(false);
 
                                         await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod,
@@ -1865,7 +1855,7 @@ namespace Chummer
                                     RefreshGearsClearBindings(treGear, CancellationToken.None),
                                     RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
                                     RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
-                                    RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                    RefreshContactsClearBindings(treContacts,
                                         CancellationToken.None),
                                     RefreshSpiritsClearBindings(treSpirits, treSprites,
                                         CancellationToken.None)).ConfigureAwait(false);
@@ -2768,7 +2758,7 @@ namespace Chummer
                                 token: token).ConfigureAwait(false);
                             await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
                                 token: token).ConfigureAwait(false);
-                            await RefreshContacts(panContacts, panEnemies, panPets, token: token)
+                            await RefreshContacts(treContacts, cmsContact, token: token)
                                 .ConfigureAwait(false);
 
                             await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear,
@@ -2830,16 +2820,13 @@ namespace Chummer
                                 {
                                     lblEnemiesBP.Visible = true;
                                     lblBuildEnemies.Visible = true;
-                                    if (!tabPeople.TabPages.Contains(tabEnemies))
-                                        tabPeople.TabPages.Insert(
-                                            tabPeople.TabPages.IndexOf(tabContacts) + 1,
-                                            tabEnemies);
+                                    cmdAddEnemy.Visible = true;
                                 }
                                 else
                                 {
-                                    tabPeople.TabPages.Remove(tabEnemies);
                                     lblEnemiesBP.Visible = false;
                                     lblBuildEnemies.Visible = false;
+                                    cmdAddEnemy.Visible = false;
                                 }
                             }
                             finally
@@ -2847,8 +2834,6 @@ namespace Chummer
                                 x.ResumeLayout();
                             }
                         }, token).ConfigureAwait(false);
-                        await RefreshContacts(panContacts, panEnemies, panPets, token: token)
-                            .ConfigureAwait(false);
                     }
                 }
                 finally
@@ -4806,7 +4791,7 @@ namespace Chummer
         {
             try
             {
-                await AddContact(GenericToken).ConfigureAwait(false);
+                await AddContact(ContactType.Contact, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -4818,7 +4803,7 @@ namespace Chummer
         {
             try
             {
-                await AddEnemy(GenericToken).ConfigureAwait(false);
+                await AddContact(ContactType.Enemy, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -4830,19 +4815,7 @@ namespace Chummer
         {
             try
             {
-                await AddPet(GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private async void tsAddFromFile_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await AddContactsFromFile(GenericToken).ConfigureAwait(false);
+                await AddContact(ContactType.Pet, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -13429,6 +13402,574 @@ namespace Chummer
 
         #endregion Additional Critter Powers Tab Control Events
 
+        #region Additional Relationships Tab Control Events
+
+        private async void treContacts_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                await RefreshSelectedContact(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        /// <summary>
+        /// Refresh the information for the currently selected Contact or Enemy
+        /// </summary>
+        private async Task RefreshSelectedContact(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IsRefreshing = true;
+            try
+            {
+                await tlpContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                try
+                {
+                    object objSelectedNodeTag = null;
+                    Contact objContact = null;
+                    for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                              .ConfigureAwait(false);
+                                                              objSelectedNode != null;
+                                                              objSelectedNode = objSelectedNode.Parent)
+                    {
+                        objSelectedNodeTag = objSelectedNode?.Tag;
+                        if (objSelectedNodeTag is Contact objSelectedContact)
+                        {
+                            objContact = objSelectedContact;
+                            break;
+                        }
+                    }
+                    if (objContact != null)
+                    {
+                        await tlpContacts.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        await cmdDeleteRelationship.DoThreadSafeAsync(x => x.Enabled = true, token)
+                                            .ConfigureAwait(false);
+
+                        if (await objContact.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+                        {
+                            await tlpContactStats.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblContactArchtypeLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblContactPersonalLifeLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblContactPreferredPaymentLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblContactTypeLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblContactHobbiesViceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboContactRole.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboContactPersonalLife.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboContactPreferredPayment.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboContactType.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboContactHobbiesVice.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+
+                            await cboContactMetatype.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboPetMetatype.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            int intConnection = await objContact.GetConnectionAsync(token).ConfigureAwait(false);
+                            await nudContactConnection.DoThreadSafeAsync(x => x.ValueAsInt = intConnection, token).ConfigureAwait(false);
+
+                            int intLoyalty = await objContact.GetLoyaltyAsync(token).ConfigureAwait(false);
+                            bool blnLoyaltyEnabled = await objContact.GetLoyaltyEnabledAsync(token).ConfigureAwait(false);
+                            await nudContactLoyalty.DoThreadSafeAsync(x =>
+                            {
+                                x.ValueAsInt = intLoyalty;
+                                x.Enabled = blnLoyaltyEnabled;
+                            }, token).ConfigureAwait(false);
+
+                            bool blnFree = await objContact.GetFreeAsync(token).ConfigureAwait(false);
+                            bool blnFreeEnabled = await objContact.GetFreeEnabledAsync(token).ConfigureAwait(false);
+                            await chkContactFree.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnFree;
+                                x.Enabled = blnFreeEnabled;
+                            }, token).ConfigureAwait(false);
+
+                            bool blnGroup = await objContact.GetIsGroupAsync(token).ConfigureAwait(false);
+                            bool blnGroupEnabled = await objContact.GetGroupEnabledAsync(token).ConfigureAwait(false);
+                            await chkContactGroup.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = blnGroup;
+                                x.Enabled = blnGroupEnabled;
+                            }, token).ConfigureAwait(false);
+
+                            bool blnBlackmail = await objContact.GetBlackmailAsync(token).ConfigureAwait(false);
+                            await chkContactBlackmail.DoThreadSafeAsync(x => x.Checked = blnBlackmail, token).ConfigureAwait(false);
+
+                            bool blnFamily = await objContact.GetFamilyAsync(token).ConfigureAwait(false);
+                            await chkContactFamily.DoThreadSafeAsync(x => x.Checked = blnFamily, token).ConfigureAwait(false);
+
+                            string strRole = await objContact.GetDisplayRoleAsync(token).ConfigureAwait(false);
+                            string strType = await objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
+                            string strPersonalLife = await objContact.GetDisplayPersonalLifeAsync(token).ConfigureAwait(false);
+                            string strPreferredPayment = await objContact.GetDisplayPreferredPaymentAsync(token).ConfigureAwait(false);
+                            string strHobbiesVice = await objContact.GetDisplayHobbiesViceAsync(token).ConfigureAwait(false);
+
+                            await tlpContactStats.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await lblContactArchtypeLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await lblContactPersonalLifeLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await lblContactPreferredPaymentLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await lblContactTypeLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await lblContactHobbiesViceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await cboContactRole.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = strRole;
+                            }, token).ConfigureAwait(false);
+                            await cboContactPersonalLife.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = strPersonalLife;
+                            }, token).ConfigureAwait(false);
+                            await cboContactPreferredPayment.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = strPreferredPayment;
+                            }, token).ConfigureAwait(false);
+                            await cboContactType.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = strType;
+                            }, token).ConfigureAwait(false);
+                            await cboContactHobbiesVice.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = strHobbiesVice;
+                            }, token).ConfigureAwait(false);
+
+                            await cboPetMetatype.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await cboContactMetatype.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        }
+
+                        bool blnNoCharacterLinked = await objContact.GetNoLinkedCharacterAsync(token).ConfigureAwait(false);
+
+                        string strName = await objContact.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await txtContactName.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strName;
+                            x.Enabled = blnNoCharacterLinked;
+                        }, token).ConfigureAwait(false);
+
+                        string strLocation = await objContact.GetLocationAsync(token).ConfigureAwait(false);
+                        await txtContactLocation.DoThreadSafeAsync(x => x.Text = strLocation, token).ConfigureAwait(false);
+
+                        string strMetatype = await objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+                        await cboContactMetatype.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strMetatype;
+                            x.Enabled = blnNoCharacterLinked;
+                        }, token).ConfigureAwait(false);
+
+                        string strGender = await objContact.GetDisplayGenderAsync(token).ConfigureAwait(false);
+                        await cboContactGender.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strGender;
+                            x.Enabled = blnNoCharacterLinked;
+                        }, token).ConfigureAwait(false);
+
+                        string strAge = await objContact.GetDisplayAgeAsync(token).ConfigureAwait(false);
+                        await cboContactAge.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strAge;
+                            x.Enabled = blnNoCharacterLinked;
+                        }, token).ConfigureAwait(false);
+
+                        string strFile = await objContact.GetDisplayFileNameAsync(token).ConfigureAwait(false);
+                        await txtContactLinkedFile.DoThreadSafeAsync(x => x.Text = strFile, token).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strFile))
+                        {
+                            await cmdContactOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                            await cmdContactRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await cmdContactOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                            await cmdContactRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        await tlpContacts.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await cmdDeleteRelationship.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token)
+                                            .ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await tlpContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async void tsContactNotes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await WriteNotes(
+                    await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false),
+                    GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsAddContactFromFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await AddContactFromFile(ContactType.Contact, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsAddEnemyFromFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await AddContactFromFile(ContactType.Enemy, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsAddPetFromFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await AddContactFromFile(ContactType.Pet, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdDeleteRelationship_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await DeleteContact(objContact, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void nudContactConnection_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetConnectionAsync(await nudContactConnection.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void nudContactLoyalty_ValueChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetLoyaltyAsync(await nudContactLoyalty.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkContactFree_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetFreeAsync(await chkContactFree.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkContactGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetIsGroupAsync(await chkContactGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkContactBlackmail_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetBlackmailAsync(await chkContactBlackmail.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkContactFamily_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await objContact.SetFamilyAsync(await chkContactFamily.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdContactLinkToFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await LinkContactToFile(objContact, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdContactOpenLinkedFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await OpenContactLinkedFile(objContact, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdContactRemoveLinkedFile_Click(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    await RemoveContactLinkedFile(objContact, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        #endregion
+
         #region Tree KeyDown Events
 
         private async void treQualities_KeyDown(object sender, KeyEventArgs e)
@@ -14525,7 +15066,7 @@ namespace Chummer
 
                     string strContactPoints = sbdContactPoints.ToString();
                     await lblContactsBP.DoThreadSafeAsync(x => x.Text = strContactPoints, token).ConfigureAwait(false);
-                    await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints, token)
+                    await lblContactPointsRemaining.DoThreadSafeAsync(x => x.Text = strContactPoints, token)
                         .ConfigureAwait(false);
                 }
 
@@ -14963,6 +15504,7 @@ namespace Chummer
                                     RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
                                     RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                     RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                    RefreshSelectedContact(token),
                                     UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
                                     CalculateBPandRefreshBPDisplays(true, token), RefreshPasteStatus(token))
                                 .ConfigureAwait(false);
@@ -24599,63 +25141,6 @@ namespace Chummer
             }
         }
 
-        private void panContacts_Click(object sender, EventArgs e)
-        {
-            panContacts.Focus();
-        }
-
-        private void panContacts_DragDrop(object sender, DragEventArgs e)
-        {
-            Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
-            Control destination = panContacts.GetChildAtPoint(mousePosition);
-
-            if (destination != null)
-            {
-                TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
-                Control source = wrapper.Control;
-
-                int indexDestination = panContacts.Controls.IndexOf(destination);
-                if (panContacts.Controls.IndexOf(source) < indexDestination)
-                    indexDestination--;
-
-                panContacts.Controls.SetChildIndex(source, indexDestination);
-            }
-
-            foreach (ContactControl objControl in panContacts.Controls)
-            {
-                objControl.BackColor = ColorManager.Control;
-            }
-        }
-
-        private void panContacts_DragOver(object sender, DragEventArgs e)
-        {
-            Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
-            Control destination = panContacts.GetChildAtPoint(mousePosition);
-
-            if (destination == null)
-                return;
-
-            destination.BackColor = ColorManager.ControlDarker;
-            foreach (ContactControl objControl in panContacts.Controls)
-            {
-                if (objControl != destination as ContactControl)
-                {
-                    objControl.BackColor = ColorManager.Control;
-                }
-            }
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-        }
-
-        private void panContacts_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private void panEnemies_Click(object sender, EventArgs e)
-        {
-            panEnemies.Focus();
-        }
-
         private async void tsAddTechniqueNotes_Click(object sender, EventArgs e)
         {
             try
@@ -24957,7 +25442,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshContactsClearBindings(panContacts, panEnemies, panPets, token).ConfigureAwait(false);
+                await RefreshContactsClearBindings(treContacts, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -24969,7 +25454,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshContacts(panContacts, panEnemies, panPets, e, token).ConfigureAwait(false);
+                await RefreshContacts(treContacts, cmsContact, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -25283,43 +25768,6 @@ namespace Chummer
             {
                 // Swallow this
             }
-        }
-
-        private async void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Control.ControlCollection lstControls
-                    = await panContacts.DoThreadSafeFuncAsync(x => x.Controls, GenericToken).ConfigureAwait(false);
-                if (lstControls.Count == 0)
-                    return;
-                await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken).ConfigureAwait(false);
-                try
-                {
-                    bool toggle = await ((ContactControl)lstControls[0]).GetExpandedAsync(GenericToken)
-                                                                         .ConfigureAwait(false);
-
-                    foreach (ContactControl c in lstControls)
-                    {
-                        await c.SetExpandedAsync(!toggle, GenericToken).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void cmdSwapContactOrder_Click(object sender, EventArgs e)
-        {
-            panContacts.FlowDirection = panContacts.FlowDirection == FlowDirection.LeftToRight
-                ? FlowDirection.TopDown
-                : FlowDirection.LeftToRight;
         }
 
         private async void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)

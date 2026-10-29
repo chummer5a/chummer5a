@@ -448,6 +448,10 @@ namespace Chummer
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
                 ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayFileName),
+                    new DependencyGraphNode<string, Contact>(nameof(FileName)),
+                    new DependencyGraphNode<string, Contact>(nameof(RelativeFileName))
+                ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayGender),
                     new DependencyGraphNode<string, Contact>(nameof(Gender),
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
@@ -2515,6 +2519,46 @@ namespace Chummer
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string DisplayFileName
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    string strReturn = FileName;
+                    if (!File.Exists(strReturn))
+                    {
+                        strReturn = RelativeFileName;
+                        if (!string.IsNullOrEmpty(strReturn))
+                            strReturn = Path.GetFullPath(strReturn);
+                    }
+                    return strReturn;
+                }
+            }
+        }
+
+        public async Task<string> GetDisplayFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strReturn = await GetFileNameAsync(token).ConfigureAwait(false);
+                if (!File.Exists(strReturn))
+                {
+                    strReturn = await GetRelativeFileNameAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn = Path.GetFullPath(strReturn);
+                }
+                return strReturn;
             }
             finally
             {
