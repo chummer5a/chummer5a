@@ -67,6 +67,14 @@ namespace Chummer
 
         private readonly Timer _tmrContactName;
         private readonly Timer _tmrContactLocation;
+        private readonly Timer _tmrContactRole;
+        private readonly Timer _tmrContactMetatype;
+        private readonly Timer _tmrContactGender;
+        private readonly Timer _tmrContactAge;
+        private readonly Timer _tmrContactType;
+        private readonly Timer _tmrContactPersonalLife;
+        private readonly Timer _tmrContactPreferredPayment;
+        private readonly Timer _tmrContactHobbiesVice;
 
         #region Form Events
 
@@ -100,6 +108,38 @@ namespace Chummer
             {
                 Interval = 1000
             };
+            _tmrContactRole = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactMetatype = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactGender = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactAge = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactType = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactPersonalLife = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactPreferredPayment = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactHobbiesVice = new Timer(components)
+            {
+                Interval = 1000
+            };
         }
 
         public CharacterCareer(Character objCharacter) : base(objCharacter)
@@ -120,6 +160,38 @@ namespace Chummer
                 Interval = 1000
             };
             _tmrContactLocation = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactRole = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactMetatype = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactGender = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactAge = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactType = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactPersonalLife = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactPreferredPayment = new Timer(components)
+            {
+                Interval = 1000
+            };
+            _tmrContactHobbiesVice = new Timer(components)
             {
                 Interval = 1000
             };
@@ -221,10 +293,18 @@ namespace Chummer
             tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
-            _tmrSpiritName.Tick += tmrSpiritName_Tick;
-            _tmrSpriteName.Tick += tmrSpriteName_Tick;
-            _tmrContactName.Tick += tmrContactName_Tick;
-            _tmrContactLocation.Tick += tmrContactLocation_Tick;
+            _tmrSpiritName.Tick += UpdateSpiritName;
+            _tmrSpriteName.Tick += UpdateSpriteName;
+            _tmrContactName.Tick += UpdateContactName;
+            _tmrContactLocation.Tick += UpdateContactLocation;
+            _tmrContactRole.Tick += UpdateContactRole;
+            _tmrContactMetatype.Tick += UpdateContactMetatype;
+            _tmrContactGender.Tick += UpdateContactGender;
+            _tmrContactAge.Tick += UpdateContactAge;
+            _tmrContactType.Tick += UpdateContactType;
+            _tmrContactPersonalLife.Tick += UpdateContactPersonalLife;
+            _tmrContactPreferredPayment.Tick += UpdateContactPreferredPayment;
+            _tmrContactHobbiesVice.Tick += UpdateContactHobbiesVice;
         }
 
         private async void TreeView_KeyDown(object sender, KeyEventArgs e)
@@ -17160,7 +17240,7 @@ namespace Chummer
             _tmrSpiritName.Start();
         }
 
-        private async void tmrSpiritName_Tick(object sender, EventArgs e)
+        private async void UpdateSpiritName(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18542,7 +18622,7 @@ namespace Chummer
             _tmrSpriteName.Start();
         }
 
-        private async void tmrSpriteName_Tick(object sender, EventArgs e)
+        private async void UpdateSpriteName(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19743,7 +19823,7 @@ namespace Chummer
             _tmrContactName.Start();
         }
 
-        private async void tmrContactName_Tick(object sender, EventArgs e)
+        private async void UpdateContactName(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19785,7 +19865,7 @@ namespace Chummer
             _tmrContactLocation.Start();
         }
 
-        private async void tmrContactLocation_Tick(object sender, EventArgs e)
+        private async void UpdateContactLocation(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19815,6 +19895,487 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+        }
+
+        private async void cboContactMetatype_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactMetatype.Enabled)
+                _tmrContactMetatype.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactMetatype.Start();
+        }
+
+        private async void UpdateContactMetatype(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactMetatype.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    ElasticComboBox cboToProcess = await objContact.GetEntityTypeAsync(GenericToken).ConfigureAwait(false) == ContactType.Pet
+                        ? cboPetMetatype
+                        : cboContactMetatype;
+                    string strNew = await cboToProcess.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayMetatypeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayMetatypeAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayMetatypeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboToProcess.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactGender_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactGender.Enabled)
+                _tmrContactGender.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactGender.Start();
+        }
+
+        private async void UpdateContactGender(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactGender.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactGender.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayGenderAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayGenderAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayGenderAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactGender.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactAge_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactAge.Enabled)
+                _tmrContactAge.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactAge.Start();
+        }
+
+        private async void UpdateContactAge(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactAge.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactAge.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayAgeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayAgeAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayAgeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactAge.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactPersonalLife_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactPersonalLife.Enabled)
+                _tmrContactPersonalLife.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactPersonalLife.Start();
+        }
+
+        private async void UpdateContactPersonalLife(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactPersonalLife.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactPersonalLife.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayPersonalLifeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayPersonalLifeAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayPersonalLifeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactPersonalLife.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactType_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactType.Enabled)
+                _tmrContactType.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactType.Start();
+        }
+
+        private async void UpdateContactType(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactType.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactType.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayTypeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayTypeAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayTypeAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactType.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactPreferredPayment_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactPreferredPayment.Enabled)
+                _tmrContactPreferredPayment.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactPreferredPayment.Start();
+        }
+
+        private async void UpdateContactPreferredPayment(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactPreferredPayment.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactPreferredPayment.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayPreferredPaymentAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayPreferredPaymentAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayPreferredPaymentAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactHobbiesVice_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactHobbiesVice.Enabled)
+                _tmrContactHobbiesVice.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactHobbiesVice.Start();
+        }
+
+        private async void UpdateContactHobbiesVice(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactHobbiesVice.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactHobbiesVice.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayHobbiesViceAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayHobbiesViceAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayHobbiesViceAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboContactRole_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrContactRole.Enabled)
+                _tmrContactRole.Stop();
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactRole.Start();
+        }
+
+        private async void UpdateContactRole(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            _tmrContactRole.Stop();
+            try
+            {
+                object objSelectedNodeTag = null;
+                Contact objContact = null;
+                for (TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                          .ConfigureAwait(false);
+                                                          objSelectedNode != null;
+                                                          objSelectedNode = objSelectedNode.Parent)
+                {
+                    objSelectedNodeTag = objSelectedNode?.Tag;
+                    if (objSelectedNodeTag is Contact objSelectedContact)
+                    {
+                        objContact = objSelectedContact;
+                        break;
+                    }
+                }
+                if (objContact != null)
+                {
+                    string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text, token: GenericToken)
+                        .ConfigureAwait(false);
+                    string strOld = await objContact.GetDisplayRoleAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld == strNew)
+                        return;
+                    await objContact.SetDisplayRoleAsync(strNew, GenericToken).ConfigureAwait(false);
+                    strOld = await objContact.GetDisplayRoleAsync(GenericToken).ConfigureAwait(false);
+                    if (strOld != strNew)
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld, token: GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
         }
 

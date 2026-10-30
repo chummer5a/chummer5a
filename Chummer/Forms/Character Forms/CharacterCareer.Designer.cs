@@ -23061,6 +23061,7 @@ namespace Chummer
             this.cboContactPreferredPayment.Name = "cboContactPreferredPayment";
             this.cboContactPreferredPayment.Size = new System.Drawing.Size(235, 21);
             this.cboContactPreferredPayment.TabIndex = 64;
+            this.cboContactPreferredPayment.TextChanged += new System.EventHandler(this.cboContactPreferredPayment_TextChanged);
             // 
             // lblContactHobbiesViceLabel
             // 
@@ -23082,6 +23083,7 @@ namespace Chummer
             this.cboContactHobbiesVice.Name = "cboContactHobbiesVice";
             this.cboContactHobbiesVice.Size = new System.Drawing.Size(235, 21);
             this.cboContactHobbiesVice.TabIndex = 61;
+            this.cboContactHobbiesVice.TextChanged += new System.EventHandler(this.cboContactHobbiesVice_TextChanged);
             // 
             // tlpContactStats
             // 
@@ -23276,6 +23278,7 @@ namespace Chummer
             this.cboContactGender.Name = "cboContactGender";
             this.cboContactGender.Size = new System.Drawing.Size(234, 21);
             this.cboContactGender.TabIndex = 59;
+            this.cboContactGender.TextChanged += new System.EventHandler(this.cboContactGender_TextChanged);
             // 
             // lblContactTypeLabel
             // 
@@ -23297,6 +23300,7 @@ namespace Chummer
             this.cboContactType.Name = "cboContactType";
             this.cboContactType.Size = new System.Drawing.Size(234, 21);
             this.cboContactType.TabIndex = 58;
+            this.cboContactType.TextChanged += new System.EventHandler(this.cboContactType_TextChanged);
             // 
             // cboContactAge
             // 
@@ -23306,6 +23310,7 @@ namespace Chummer
             this.cboContactAge.Name = "cboContactAge";
             this.cboContactAge.Size = new System.Drawing.Size(235, 21);
             this.cboContactAge.TabIndex = 63;
+            this.cboContactAge.TextChanged += new System.EventHandler(this.cboContactAge_TextChanged);
             // 
             // lblContactAgeLabel
             // 
@@ -23327,6 +23332,7 @@ namespace Chummer
             this.cboContactPersonalLife.Name = "cboContactPersonalLife";
             this.cboContactPersonalLife.Size = new System.Drawing.Size(234, 21);
             this.cboContactPersonalLife.TabIndex = 60;
+            this.cboContactPersonalLife.TextChanged += new System.EventHandler(this.cboContactPersonalLife_TextChanged);
             // 
             // lblContactPersonalLifeLabel
             // 
@@ -23361,6 +23367,7 @@ namespace Chummer
             this.cboContactMetatype.Name = "cboContactMetatype";
             this.cboContactMetatype.Size = new System.Drawing.Size(234, 21);
             this.cboContactMetatype.TabIndex = 62;
+            this.cboContactMetatype.TextChanged += new System.EventHandler(this.cboContactMetatype_TextChanged);
             // 
             // lblContactArchtypeLabel
             // 
@@ -23382,6 +23389,7 @@ namespace Chummer
             this.cboContactRole.Name = "cboContactRole";
             this.cboContactRole.Size = new System.Drawing.Size(234, 21);
             this.cboContactRole.TabIndex = 50;
+            this.cboContactRole.TextChanged += new System.EventHandler(this.cboContactRole_TextChanged);
             // 
             // cboPetMetatype
             // 
@@ -23391,6 +23399,7 @@ namespace Chummer
             this.cboPetMetatype.Name = "cboPetMetatype";
             this.cboPetMetatype.Size = new System.Drawing.Size(234, 21);
             this.cboPetMetatype.TabIndex = 197;
+            this.cboPetMetatype.TextChanged += new System.EventHandler(this.cboContactMetatype_TextChanged);
             // 
             // cmsInitiationNotes
             // 
