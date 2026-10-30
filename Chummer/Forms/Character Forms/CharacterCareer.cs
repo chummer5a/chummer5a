@@ -3717,6 +3717,19 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             await RegenerateTraditionsBlock(token).ConfigureAwait(false);
+                            await cboContactRole.PopulateWithListItemsAsync(
+                                            await CharacterObject.ContactArchetypesAsync(token: GenericToken).ConfigureAwait(false),
+                                            token: GenericToken).ConfigureAwait(false);
+                            await PopulateContactComboBoxValues(
+                                cboContactMetatype,
+                                cboPetMetatype,
+                                cboContactGender,
+                                cboContactAge,
+                                cboContactPersonalLife,
+                                cboContactType,
+                                cboContactPreferredPayment,
+                                cboContactHobbiesVice,
+                                GenericToken).ConfigureAwait(false);
                         }
                         finally
                         {
