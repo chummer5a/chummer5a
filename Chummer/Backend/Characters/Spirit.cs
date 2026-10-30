@@ -2416,12 +2416,17 @@ namespace Chummer
             };
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            objNode.Nodes.Add("TypeData", await GetNameAsync(token).ConfigureAwait(false) + "," + strSpace
-                + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
-                + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+            string strTypeData = await GetNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strTypeData))
+                strTypeData = await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            else
+                strTypeData += "," + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            objNode.Nodes.Add("TypeData", strTypeData);
             objNode.Nodes.Add("Services", await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token)
                 + strSpace + (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
-
+            objNode.Expand();
             return objNode;
         }
 
@@ -2487,9 +2492,14 @@ namespace Chummer
             if (_setNodesToTrackForUpdates.IsEmpty)
                 return;
             string strSpace = LanguageManager.GetString("String_Space", token: token);
-            string strText = Name + "," + strSpace
-                + LanguageManager.GetString(RatingLabel, token: token)
-                + strSpace + Force.ToString(GlobalSettings.CultureInfo);
+            string strText = Name;
+            if (string.IsNullOrEmpty(strText))
+                strText = LanguageManager.GetString(RatingLabel, token: token)
+                    + strSpace + Force.ToString(GlobalSettings.CultureInfo);
+            else
+                strText += "," + strSpace
+                    + LanguageManager.GetString(RatingLabel, token: token)
+                    + strSpace + Force.ToString(GlobalSettings.CultureInfo);
             Utils.RunOnMainThread(t =>
             {
                 foreach (TreeNode objNode in _setNodesToTrackForUpdates)
@@ -2585,9 +2595,13 @@ namespace Chummer
             if (_setNodesToTrackForUpdates.IsEmpty)
                 return;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strText = await GetNameAsync(token).ConfigureAwait(false) + "," + strSpace
-                + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
-                + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            string strText = await GetNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strText))
+                strText = await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            else
+                strText += "," + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             await Utils.RunOnMainThreadAsync(t =>
             {
                 foreach (TreeNode objNode in _setNodesToTrackForUpdates)

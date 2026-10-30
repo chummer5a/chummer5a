@@ -13556,7 +13556,7 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                await tlpContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                await tlpContactsRight.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
                 {
                     object objSelectedNodeTag = null;
@@ -13575,7 +13575,7 @@ namespace Chummer
                     }
                     if (objContact != null)
                     {
-                        await tlpContacts.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        await tlpContactsRight.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await cmdDeleteRelationship.DoThreadSafeAsync(x => x.Enabled = true, token)
                                             .ConfigureAwait(false);
 
@@ -13724,14 +13724,14 @@ namespace Chummer
                     }
                     else
                     {
-                        await tlpContacts.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await tlpContactsRight.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await cmdDeleteRelationship.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token)
                                             .ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await tlpContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                    await tlpContactsRight.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally

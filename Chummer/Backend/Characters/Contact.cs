@@ -4212,15 +4212,25 @@ namespace Chummer
             };
 
             if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
-                objNode.Nodes.Add("TypeData", await GetDisplayMetatypeAsync(token).ConfigureAwait(false));
+            {
+                string strMetatype = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strMetatype))
+                    objNode.Nodes.Add("TypeData", strMetatype);
+            }
             else
             {
-                objNode.Nodes.Add("TypeData", await GetDisplayTypeAsync(token).ConfigureAwait(false)
-                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                    + await GetQuickTextAsync(token).ConfigureAwait(false));
-                objNode.Nodes.Add("Location", await GetLocationAsync(token).ConfigureAwait(false));
+                string strType = await GetDisplayTypeAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strType))
+                    objNode.Nodes.Add("TypeData", await GetQuickTextAsync(token).ConfigureAwait(false));
+                else
+                    objNode.Nodes.Add("TypeData", strType
+                        + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await GetQuickTextAsync(token).ConfigureAwait(false));
+                string strLocation = await GetLocationAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strLocation))
+                    objNode.Nodes.Add("Location", strLocation);
             }
-
+            objNode.Expand();
             return objNode;
         }
 
@@ -4285,9 +4295,18 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_setNodesToTrackForUpdates.IsEmpty)
                 return;
-            string strText = EntityType == ContactType.Pet
-                ? DisplayMetatype
-                : DisplayType + LanguageManager.GetString("String_Space", token: token) + QuickText;
+            string strText;
+            if (EntityType == ContactType.Pet)
+                strText = DisplayMetatype;
+            else
+            {
+                strText = DisplayType;
+                if (string.IsNullOrEmpty(strText))
+                    strText = QuickText;
+                else
+                    strText += LanguageManager.GetString("String_Space", token: token) + QuickText;
+            }
+
             Utils.RunOnMainThread(t =>
             {
                 foreach (TreeNode objNode in _setNodesToTrackForUpdates)
@@ -4295,8 +4314,15 @@ namespace Chummer
                     t.ThrowIfCancellationRequested();
                     if (objNode.Tag != this) // Sanity check
                         continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
-                        objInnerNode.Text = strText;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("TypeData");
+                    else if (objNode.Nodes.ContainsKey("TypeData"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("TypeData", strText);
                 }
             }, token: token);
         }
@@ -4328,8 +4354,15 @@ namespace Chummer
                     t.ThrowIfCancellationRequested();
                     if (objNode.Tag != this) // Sanity check
                         continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
-                        objInnerNode.Text = strText;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("Location");
+                    else if (objNode.Nodes.ContainsKey("Location"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("Location", strText);
                 }
             }, token: token);
         }
@@ -4395,11 +4428,19 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_setNodesToTrackForUpdates.IsEmpty)
                 return;
-            string strText = await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet
-                ? await GetDisplayMetatypeAsync(token).ConfigureAwait(false)
-                : await GetDisplayTypeAsync(token).ConfigureAwait(false)
-                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                    + await GetQuickTextAsync(token).ConfigureAwait(false);
+            string strText;
+            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+                strText = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+            else
+            {
+                strText = await GetDisplayTypeAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strText))
+                    strText = await GetQuickTextAsync(token).ConfigureAwait(false);
+                else
+                    strText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await GetQuickTextAsync(token).ConfigureAwait(false);
+            }
+
             await Utils.RunOnMainThreadAsync(t =>
             {
                 foreach (TreeNode objNode in _setNodesToTrackForUpdates)
@@ -4407,8 +4448,15 @@ namespace Chummer
                     t.ThrowIfCancellationRequested();
                     if (objNode.Tag != this) // Sanity check
                         continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
-                        objInnerNode.Text = strText;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("TypeData");
+                    else if (objNode.Nodes.ContainsKey("TypeData"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("TypeData", strText);
                 }
             }, token: token).ConfigureAwait(false);
         }
@@ -4440,8 +4488,15 @@ namespace Chummer
                     t.ThrowIfCancellationRequested();
                     if (objNode.Tag != this) // Sanity check
                         continue;
-                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
-                        objInnerNode.Text = strText;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("Location");
+                    else if (objNode.Nodes.ContainsKey("Location"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("Location", strText);
                 }
             }, token: token).ConfigureAwait(false);
         }
