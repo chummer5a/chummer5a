@@ -317,7 +317,7 @@ namespace Chummer
                         await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
                         await UpdateTrackedNodes_LocationAsync(token).ConfigureAwait(false);
                     }
-                    else if (EntityType == ContactType.Pet)
+                    else if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(DisplayMetatype)))
                             await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
@@ -466,6 +466,21 @@ namespace Chummer
                     new DependencyGraphNode<string, Contact>(nameof(Age),
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayType),
+                    new DependencyGraphNode<string, Contact>(nameof(Type))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayHobbiesVice),
+                    new DependencyGraphNode<string, Contact>(nameof(HobbiesVice))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayPreferredPayment),
+                    new DependencyGraphNode<string, Contact>(nameof(PreferredPayment))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayPersonalLife),
+                    new DependencyGraphNode<string, Contact>(nameof(PersonalLife))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayRole),
+                    new DependencyGraphNode<string, Contact>(nameof(Role))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(MainMugshot),
                     new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter)),

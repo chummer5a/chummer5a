@@ -15501,6 +15501,7 @@ namespace Chummer
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpContactsRight.Size = new System.Drawing.Size(661, 282);
             this.tlpContactsRight.TabIndex = 73;
+            this.tlpContactsRight.Visible = false;
             // 
             // tlpContactFile
             // 
@@ -15712,7 +15713,6 @@ namespace Chummer
             this.chkContactFamily.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkContactFamily.AutoSize = true;
             this.chkContactFamily.DefaultColorScheme = true;
-            this.chkContactFamily.Enabled = false;
             this.chkContactFamily.Location = new System.Drawing.Point(389, 4);
             this.chkContactFamily.Name = "chkContactFamily";
             this.chkContactFamily.Size = new System.Drawing.Size(55, 17);
@@ -15728,7 +15728,6 @@ namespace Chummer
             this.chkContactBlackmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkContactBlackmail.AutoSize = true;
             this.chkContactBlackmail.DefaultColorScheme = true;
-            this.chkContactBlackmail.Enabled = false;
             this.chkContactBlackmail.Location = new System.Drawing.Point(312, 4);
             this.chkContactBlackmail.Name = "chkContactBlackmail";
             this.chkContactBlackmail.Size = new System.Drawing.Size(71, 17);
@@ -15802,7 +15801,6 @@ namespace Chummer
             // 
             this.nudContactConnection.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudContactConnection.AutoSize = true;
-            this.nudContactConnection.Enabled = false;
             this.nudContactConnection.Location = new System.Drawing.Point(73, 2);
             this.nudContactConnection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudContactConnection.Maximum = new decimal(new int[] {
@@ -15834,7 +15832,7 @@ namespace Chummer
             this.lblContactConnectionLabel.Name = "lblContactConnectionLabel";
             this.lblContactConnectionLabel.Size = new System.Drawing.Size(64, 13);
             this.lblContactConnectionLabel.TabIndex = 45;
-            this.lblContactConnectionLabel.Tag = "Label_Connection";
+            this.lblContactConnectionLabel.Tag = "Label_Contact_Connection";
             this.lblContactConnectionLabel.Text = "Connection:";
             // 
             // lblContactLoyaltyLabel
@@ -15846,7 +15844,7 @@ namespace Chummer
             this.lblContactLoyaltyLabel.Name = "lblContactLoyaltyLabel";
             this.lblContactLoyaltyLabel.Size = new System.Drawing.Size(43, 13);
             this.lblContactLoyaltyLabel.TabIndex = 46;
-            this.lblContactLoyaltyLabel.Tag = "Label_Loyalty";
+            this.lblContactLoyaltyLabel.Tag = "Label_Contact_Loyalty";
             this.lblContactLoyaltyLabel.Text = "Loyalty:";
             // 
             // lblContactGenderLabel

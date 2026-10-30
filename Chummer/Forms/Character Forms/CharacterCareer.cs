@@ -723,6 +723,8 @@ namespace Chummer
                                         await cmdAddLifestyle
                                             .DoThreadSafeAsync(x => x.SplitMenuStrip = null, GenericToken)
                                             .ConfigureAwait(false);
+                                        await chkContactGroup.DoThreadSafeAsync(x => x.Enabled = false, GenericToken)
+                                    .ConfigureAwait(false);
                                     }
 
                                     if (!await CharacterObjectSettings.BookEnabledAsync("FA", GenericToken)
@@ -1637,6 +1639,12 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron(
                                                "load_frm_career_refresh", op_load_frm_career))
                                     {
+                                        if (!await CharacterObjectSettings.GetEnableEnemyTrackingAsync(GenericToken).ConfigureAwait(false))
+                                        {
+                                            await cmdAddEnemy
+                                                .DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                .ConfigureAwait(false);
+                                        }
                                         await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
                                             token: GenericToken).ConfigureAwait(false);
                                         await RefreshSpirits(treSpirits, treSprites, cmsSpirit, cmsSprite, token: GenericToken)
@@ -3601,12 +3609,16 @@ namespace Chummer
                                     .DoThreadSafeAsync(x => x.SplitMenuStrip = cmsAdvancedLifestyle,
                                         token)
                                     .ConfigureAwait(false);
+                                await chkContactGroup.DoThreadSafeAsync(x => x.Enabled = true, token)
+                                    .ConfigureAwait(false);
                             }
                             else
                             {
                                 await cmdAddLifestyle
                                     .DoThreadSafeAsync(x => x.SplitMenuStrip = null,
                                         token)
+                                    .ConfigureAwait(false);
+                                await chkContactGroup.DoThreadSafeAsync(x => x.Enabled = false, token)
                                     .ConfigureAwait(false);
                             }
 
@@ -19359,11 +19371,27 @@ namespace Chummer
                                 x.Enabled = blnGroupEnabled;
                             }, token).ConfigureAwait(false);
 
-                            bool blnBlackmail = await objContact.GetBlackmailAsync(token).ConfigureAwait(false);
-                            await chkContactBlackmail.DoThreadSafeAsync(x => x.Checked = blnBlackmail, token).ConfigureAwait(false);
+                            if (eType == ContactType.Enemy || !await CharacterObjectSettings.BookEnabledAsync("RF", token).ConfigureAwait(false))
+                            {
+                                await chkContactBlackmail.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                                await chkContactFamily.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                bool blnBlackmail = await objContact.GetBlackmailAsync(token).ConfigureAwait(false);
+                                await chkContactBlackmail.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = blnBlackmail;
+                                }, token).ConfigureAwait(false);
 
-                            bool blnFamily = await objContact.GetFamilyAsync(token).ConfigureAwait(false);
-                            await chkContactFamily.DoThreadSafeAsync(x => x.Checked = blnFamily, token).ConfigureAwait(false);
+                                bool blnFamily = await objContact.GetFamilyAsync(token).ConfigureAwait(false);
+                                await chkContactFamily.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = blnFamily;
+                                }, token).ConfigureAwait(false);
+                            }
 
                             string strRole = await objContact.GetDisplayRoleAsync(token).ConfigureAwait(false);
                             string strType = await objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
