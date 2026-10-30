@@ -19320,7 +19320,8 @@ namespace Chummer
 
                         bool blnNoCharacterLinked = await objContact.GetNoLinkedCharacterAsync(token).ConfigureAwait(false);
                         string strMetatype = await objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
-                        if (await objContact.GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+                        ContactType eType = await objContact.GetEntityTypeAsync(token).ConfigureAwait(false);
+                        if (eType == ContactType.Pet)
                         {
                             await tlpContactStats.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                             await lblContactArchtypeLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
