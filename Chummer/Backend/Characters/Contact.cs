@@ -146,6 +146,31 @@ namespace Chummer
                             _intCachedFreeFromImprovement = -1;
                     }
 
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        UpdateTrackedNodes_Text();
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        UpdateTrackedNodes_Color();
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        UpdateTrackedNodes_ToolTipText();
+                    if (setNamesOfChangedProperties.Contains(nameof(EntityType)))
+                    {
+                        UpdateTrackedNodes_TypeData();
+                        UpdateTrackedNodes_Location();
+                    }
+                    else if (EntityType == ContactType.Pet)
+                    {
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayMetatype)))
+                            UpdateTrackedNodes_TypeData();
+                    }
+                    else
+                    {
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayType))
+                            || setNamesOfChangedProperties.Contains(nameof(QuickText)))
+                            UpdateTrackedNodes_TypeData();
+                        if (setNamesOfChangedProperties.Contains(nameof(Location)))
+                            UpdateTrackedNodes_Location();
+                    }
+
                     if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
@@ -287,6 +312,31 @@ namespace Chummer
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        await UpdateTrackedNodes_TextAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        await UpdateTrackedNodes_ColorAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        await UpdateTrackedNodes_ToolTipTextAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(EntityType)))
+                    {
+                        await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
+                        await UpdateTrackedNodes_LocationAsync(token).ConfigureAwait(false);
+                    }
+                    else if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+                    {
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayMetatype)))
+                            await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayType))
+                            || setNamesOfChangedProperties.Contains(nameof(QuickText)))
+                            await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
+                        if (setNamesOfChangedProperties.Contains(nameof(Location)))
+                            await UpdateTrackedNodes_LocationAsync(token).ConfigureAwait(false);
+                    }
+
                     if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
@@ -404,6 +454,10 @@ namespace Chummer
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
                 ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayFileName),
+                    new DependencyGraphNode<string, Contact>(nameof(FileName)),
+                    new DependencyGraphNode<string, Contact>(nameof(RelativeFileName))
+                ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayGender),
                     new DependencyGraphNode<string, Contact>(nameof(Gender),
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
@@ -418,6 +472,21 @@ namespace Chummer
                     new DependencyGraphNode<string, Contact>(nameof(Age),
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayType),
+                    new DependencyGraphNode<string, Contact>(nameof(Type))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayHobbiesVice),
+                    new DependencyGraphNode<string, Contact>(nameof(HobbiesVice))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayPreferredPayment),
+                    new DependencyGraphNode<string, Contact>(nameof(PreferredPayment))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayPersonalLife),
+                    new DependencyGraphNode<string, Contact>(nameof(PersonalLife))
+                ),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayRole),
+                    new DependencyGraphNode<string, Contact>(nameof(Role))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(MainMugshot),
                     new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter)),
@@ -2478,6 +2547,46 @@ namespace Chummer
             }
         }
 
+        public string DisplayFileName
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    string strReturn = FileName;
+                    if (!File.Exists(strReturn))
+                    {
+                        strReturn = RelativeFileName;
+                        if (!string.IsNullOrEmpty(strReturn))
+                            strReturn = Path.GetFullPath(strReturn);
+                    }
+                    return strReturn;
+                }
+            }
+        }
+
+        public async Task<string> GetDisplayFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strReturn = await GetFileNameAsync(token).ConfigureAwait(false);
+                if (!File.Exists(strReturn))
+                {
+                    strReturn = await GetRelativeFileNameAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn = Path.GetFullPath(strReturn);
+                }
+                return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Notes.
         /// </summary>
@@ -4088,6 +4197,331 @@ namespace Chummer
         }
 
         #endregion IHasMugshots
+
+        #region UI Methods
+        private readonly ConcurrentHashSet<TreeNode> _setNodesToTrackForUpdates = new ConcurrentHashSet<TreeNode>();
+        public bool StartTrackingTreeNodeForUpdates(TreeNode objNode)
+        {
+            return _setNodesToTrackForUpdates.TryAdd(objNode);
+        }
+
+        public bool StopTrackingTreeNodeForUpdates(TreeNode objNode)
+        {
+            return _setNodesToTrackForUpdates.Remove(objNode);
+        }
+
+        /// <summary>
+        /// Build up the Tree for the current contact, enemy, or pet.
+        /// </summary>
+        /// <param name="cmsContact">ContextMenuStrip for the contact, enemy, or pet to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsContact, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            string strNodeText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strNodeText))
+                strNodeText = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            TreeNode objNode = new TreeNode
+            {
+                Name = InternalId,
+                Text = strNodeText,
+                Tag = this,
+                ContextMenuStrip = cmsContact,
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
+            };
+
+            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+            {
+                string strMetatype = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strMetatype))
+                    objNode.Nodes.Add("TypeData", strMetatype);
+            }
+            else
+            {
+                string strType = await GetDisplayTypeAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strType))
+                    objNode.Nodes.Add("TypeData", await GetQuickTextAsync(token).ConfigureAwait(false));
+                else
+                    objNode.Nodes.Add("TypeData", strType
+                        + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await GetQuickTextAsync(token).ConfigureAwait(false));
+                string strLocation = await GetLocationAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strLocation))
+                    objNode.Nodes.Add("Location", strLocation);
+            }
+            objNode.Expand();
+            return objNode;
+        }
+
+        public void UpdateTrackedNodes_Text(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = CurrentDisplayName;
+            if (string.IsNullOrEmpty(strText))
+                strText = LanguageManager.GetString("String_Unknown", token: token);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.Text = strText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_Color(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            Color objColor = PreferredColor;
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ForeColor = objColor;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_ToolTipText(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strToolTipText = Notes.WordWrap();
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ToolTipText = strToolTipText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_TypeData(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText;
+            if (EntityType == ContactType.Pet)
+                strText = DisplayMetatype;
+            else
+            {
+                strText = DisplayType;
+                if (string.IsNullOrEmpty(strText))
+                    strText = QuickText;
+                else
+                    strText += LanguageManager.GetString("String_Space", token: token) + QuickText;
+            }
+
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("TypeData");
+                    else if (objNode.Nodes.ContainsKey("TypeData"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("TypeData", strText);
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_Location(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            if (EntityType == ContactType.Pet)
+            {
+                Utils.RunOnMainThread(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (objNode.Tag != this) // Sanity check
+                            continue;
+                        objNode.Nodes.RemoveByKey("Location");
+                    }
+                }, token: token);
+                return;
+            }
+            string strText = Location;
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("Location");
+                    else if (objNode.Nodes.ContainsKey("Location"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("Location", strText);
+                }
+            }, token: token);
+        }
+
+        public async Task UpdateTrackedNodes_TextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strText))
+                strText = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            Color objColor = await GetPreferredColorAsync(token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ForeColor = objColor;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ToolTipTextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ToolTipText = strToolTipText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_TypeDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText;
+            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+                strText = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+            else
+            {
+                strText = await GetDisplayTypeAsync(token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strText))
+                    strText = await GetQuickTextAsync(token).ConfigureAwait(false);
+                else
+                    strText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await GetQuickTextAsync(token).ConfigureAwait(false);
+            }
+
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("TypeData");
+                    else if (objNode.Nodes.ContainsKey("TypeData"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("TypeData", strText);
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_LocationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
+            {
+                await Utils.RunOnMainThreadAsync(t =>
+                {
+                    foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                    {
+                        t.ThrowIfCancellationRequested();
+                        if (objNode.Tag != this) // Sanity check
+                            continue;
+                        objNode.Nodes.RemoveByKey("Location");
+                    }
+                }, token: token).ConfigureAwait(false);
+                return;
+            }
+            string strText = await GetLocationAsync(token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    if (string.IsNullOrEmpty(strText))
+                        objNode.Nodes.RemoveByKey("Location");
+                    else if (objNode.Nodes.ContainsKey("Location"))
+                    {
+                        foreach (TreeNode objInnerNode in objNode.Nodes.Find("Location", true))
+                            objInnerNode.Text = strText;
+                    }
+                    else
+                        objNode.Nodes.Add("Location", strText);
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+        #endregion
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }

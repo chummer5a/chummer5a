@@ -1,5 +1,6 @@
 Future Build 227
 Application:
+- Overhauled the UI sections for spirits, sprites, contacts, enemies, and pets. The new versions are more sparse-looking, but have an easier time with notes and do not cause characters to load in more slowly from having more entries of those types.
 - Fixed the text-match page numbers for Lockdown, Forbidden Arcana, The Complete Trog, Dark Terrors, Street Lethal, Kill Code, and Better Than Bad, which could stop these books from being detected.
 - Corrected the SR5 page references for "Another Night, Another Run" and "Introduction".
 - The Boosted Reflexes tip now shows up, since Boosted Reflexes is bioware, not cyberware.
@@ -335,6 +336,22 @@ Changed/New Strings:
 - Checkbox_FetchNotesFromPdf
 - Message_Options_CloseForms
 - String_ANewCharacter
+- Node_SelectedSpirits
+- Node_SelectedSprites
+- Node_SelectedContacts
+- Node_SelectedEnemies
+- Node_SelectedPets
+- Label_LinkedFile
+- Button_LinkFile
+- Button_OpenLinkedFile
+- Button_RemoveLinkedFile
+- Label_Sprite_Level
+- Label_Sprite_Rating
+- Button_DeleteRelationship
+- Button_AddPet
+- Menu_CreateCritterPet
+- Button_AddContact
+- Message_DeletePet
 
 Build 226
 Application Changes:

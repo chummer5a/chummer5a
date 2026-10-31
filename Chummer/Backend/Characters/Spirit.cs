@@ -63,6 +63,9 @@ namespace Chummer
         private readonly ThreadSafeList<Image> _lstMugshots;
         private int _intMainMugshotIndex = -1;
 
+        private string _strSource;
+        private string _strPage;
+
         #region Helper Methods
 
         /// <summary>
@@ -886,33 +889,56 @@ namespace Chummer
 
         private void RefreshIgnoreBoundSpiritLimitFromData(CancellationToken token = default)
         {
-            // Avoid GetNode() here: callers often already hold LockObject write lock.
-            bool blnIgnore = false;
-            if (!string.IsNullOrEmpty(_strName))
+            token.ThrowIfCancellationRequested();
+            // Avoid GetNode() here: callers often already hold LockObject write lock, but we should still set locks, just in case.
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                XPathNavigator objNode = CharacterObject
-                    .LoadDataXPath(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
-                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
-                objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                bool blnIgnore = false;
+                if (!string.IsNullOrEmpty(_strName))
+                {
+                    XPathNavigator objNode = CharacterObject
+                        .LoadDataXPath(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
+                        .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
+                    objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                }
+                using (LockObject.EnterWriteLock(token))
+                    _blnIgnoreBoundSpiritLimit = blnIgnore;
             }
-            _blnIgnoreBoundSpiritLimit = blnIgnore;
         }
 
         private async Task RefreshIgnoreBoundSpiritLimitFromDataAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Avoid GetNodeAsync() here: callers often already hold LockObject write lock.
-            bool blnIgnore = false;
-            if (!string.IsNullOrEmpty(_strName))
+            // Avoid GetNodeAsync() here: callers often already hold LockObject write lock, but we should still set locks, just in case.
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                SpiritType eType = _eEntityType;
-                XPathNavigator objNode = (await CharacterObject
-                        .LoadDataXPathAsync(eType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
-                        .ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
-                objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                token.ThrowIfCancellationRequested();
+                bool blnIgnore = false;
+                if (!string.IsNullOrEmpty(_strName))
+                {
+                    SpiritType eType = _eEntityType;
+                    XPathNavigator objNode = (await CharacterObject
+                            .LoadDataXPathAsync(eType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
+                            .ConfigureAwait(false))
+                        .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
+                    objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+                }
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnIgnoreBoundSpiritLimit = blnIgnore;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
-            _blnIgnoreBoundSpiritLimit = blnIgnore;
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1623,6 +1649,46 @@ namespace Chummer
             }
         }
 
+        public string DisplayFileName
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    string strReturn = FileName;
+                    if (!File.Exists(strReturn))
+                    {
+                        strReturn = RelativeFileName;
+                        if (!string.IsNullOrEmpty(strReturn))
+                            strReturn = Path.GetFullPath(strReturn);
+                    }
+                    return strReturn;
+                }
+            }
+        }
+
+        public async Task<string> GetDisplayFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strReturn = await GetFileNameAsync(token).ConfigureAwait(false);
+                if (!File.Exists(strReturn))
+                {
+                    strReturn = await GetRelativeFileNameAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn = Path.GetFullPath(strReturn);
+                }
+                return strReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Name of the save file for this Spirit/Sprite.
         /// </summary>
@@ -2316,6 +2382,260 @@ namespace Chummer
             }
         }
 
+        private readonly ConcurrentHashSet<TreeNode> _setNodesToTrackForUpdates = new ConcurrentHashSet<TreeNode>();
+        public bool StartTrackingTreeNodeForUpdates(TreeNode objNode)
+        {
+            return _setNodesToTrackForUpdates.TryAdd(objNode);
+        }
+
+        public bool StopTrackingTreeNodeForUpdates(TreeNode objNode)
+        {
+            return _setNodesToTrackForUpdates.Remove(objNode);
+        }
+
+        /// <summary>
+        /// Build up the Tree for the current spirit.
+        /// </summary>
+        /// <param name="cmsSpirit">ContextMenuStrip for the Spirit to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsSpirit, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+
+            string strNodeText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strNodeText))
+                strNodeText = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            TreeNode objNode = new TreeNode
+            {
+                Name = InternalId,
+                Text = strNodeText,
+                Tag = this,
+                ContextMenuStrip = cmsSpirit,
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
+            };
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strTypeData = await GetNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strTypeData))
+                strTypeData = await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            else
+                strTypeData += "," + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            objNode.Nodes.Add("TypeData", strTypeData);
+            objNode.Nodes.Add("Services", await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token)
+                + strSpace + (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+            objNode.Expand();
+            return objNode;
+        }
+
+        public void UpdateTrackedNodes_Text(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = CurrentDisplayName;
+            if (string.IsNullOrEmpty(strText))
+                strText = LanguageManager.GetString("String_Unknown", token: token);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.Text = strText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_Color(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            Color objColor = PreferredColor;
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ForeColor = objColor;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_ToolTipText(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strToolTipText = Notes.WordWrap();
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ToolTipText = strToolTipText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_TypeData(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strSpace = LanguageManager.GetString("String_Space", token: token);
+            string strText = Name;
+            if (string.IsNullOrEmpty(strText))
+                strText = LanguageManager.GetString(RatingLabel, token: token)
+                    + strSpace + Force.ToString(GlobalSettings.CultureInfo);
+            else
+                strText += "," + strSpace
+                    + LanguageManager.GetString(RatingLabel, token: token)
+                    + strSpace + Force.ToString(GlobalSettings.CultureInfo);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token);
+        }
+
+        public void UpdateTrackedNodes_ServicesOwed(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = LanguageManager.GetString("Label_Spirit_ServicesOwed", token: token)
+                + LanguageManager.GetString("String_Space", token: token)
+                + ServicesOwed.ToString(GlobalSettings.CultureInfo);
+            Utils.RunOnMainThread(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Services", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token);
+        }
+        public async Task UpdateTrackedNodes_TextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strText))
+                strText = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            Color objColor = await GetPreferredColorAsync(token).ConfigureAwait(false);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ForeColor = objColor;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ToolTipTextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    objNode.ToolTipText = strToolTipText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_TypeDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strText = await GetNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strText))
+                strText = await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            else
+                strText += "," + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("TypeData", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
+        public async Task UpdateTrackedNodes_ServicesOwedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_setNodesToTrackForUpdates.IsEmpty)
+                return;
+            string strText = await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                + (await GetServicesOwedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            await Utils.RunOnMainThreadAsync(t =>
+            {
+                foreach (TreeNode objNode in _setNodesToTrackForUpdates)
+                {
+                    t.ThrowIfCancellationRequested();
+                    if (objNode.Tag != this) // Sanity check
+                        continue;
+                    foreach (TreeNode objInnerNode in objNode.Nodes.Find("Services", true))
+                        objInnerNode.Text = strText;
+                }
+            }, token: token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Color used by the Spirit's control in UI.
         /// Placeholder to prevent me having to deal with multiple interfaces.
@@ -2420,6 +2740,19 @@ namespace Chummer
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        UpdateTrackedNodes_Text();
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        UpdateTrackedNodes_Color();
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        UpdateTrackedNodes_ToolTipText();
+                    if (setNamesOfChangedProperties.Contains(nameof(Name))
+                        || setNamesOfChangedProperties.Contains(nameof(RatingLabel))
+                        || setNamesOfChangedProperties.Contains(nameof(Force)))
+                        UpdateTrackedNodes_TypeData();
+                    if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
+                        UpdateTrackedNodes_ServicesOwed();
 
                     if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
@@ -2528,6 +2861,19 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        await UpdateTrackedNodes_TextAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        await UpdateTrackedNodes_ColorAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        await UpdateTrackedNodes_ToolTipTextAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(Name))
+                        || setNamesOfChangedProperties.Contains(nameof(RatingLabel))
+                        || setNamesOfChangedProperties.Contains(nameof(Force)))
+                        await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(ServicesOwed)))
+                        await UpdateTrackedNodes_ServicesOwedAsync(token).ConfigureAwait(false);
+
                     if (!_setMultiplePropertiesChangedAsync.IsEmpty)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
@@ -2619,6 +2965,10 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
+                ),
+                new DependencyGraphNode<string, Spirit>(nameof(DisplayFileName),
+                    new DependencyGraphNode<string, Spirit>(nameof(FileName)),
+                    new DependencyGraphNode<string, Spirit>(nameof(RelativeFileName))
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, Spirit>(nameof(CritterName),
@@ -3617,6 +3967,7 @@ namespace Chummer
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
+                _objCachedSourceDetailLock.Dispose();
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -3653,6 +4004,12 @@ namespace Chummer
                 }
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstMugshots.DisposeAsync().ConfigureAwait(false);
+                await _objCachedSourceDetailLock.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {
@@ -3661,6 +4018,180 @@ namespace Chummer
         }
 
         #endregion IHasMugshots
+
+        #region Source
+
+        private SourceString _objCachedSourceDetail;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedSourceDetailLock;
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                using (_objCachedSourceDetailLock.EnterReadLock())
+                {
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+                }
+
+                using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
+                {
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+                    using (_objCachedSourceDetailLock.EnterWriteLock())
+                    {
+                        return _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            CharacterObject);
+                    }
+                }
+            }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedSourceDetailLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                    return _objCachedSourceDetail;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker =
+                await _objCachedSourceDetailLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                    return _objCachedSourceDetail;
+                IAsyncDisposable objLocker2 =
+                    await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    return _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        CharacterObject, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's Sourcebook.
+        /// </summary>
+        public string Source
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strSource;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _strSource, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strPage;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _strPage, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns></returns>
+        public string DisplayPage(string strLanguage, CancellationToken token = default)
+        {
+            using (LockObject.EnterReadLock(token))
+            {
+                if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    return Page;
+                string s = this.GetNodeXPath(token)?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns></returns>
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    return Page;
+                string s = (await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Alias map for SourceDetail control text and tooltip assignation.
+        /// </summary>
+        /// <param name="sourceControl"></param>
+        public void SetSourceDetail(Control sourceControl)
+        {
+            SourceDetail.SetControl(sourceControl);
+        }
+
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        {
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
+        }
+
+        #endregion Source
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }

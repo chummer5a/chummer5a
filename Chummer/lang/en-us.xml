@@ -2027,6 +2027,10 @@
       <text>&amp;Add from File</text>
     </string>
     <string>
+      <key>Menu_CreateCritterPet</key>
+      <text>Create &amp;New Critter as Pet</text>
+    </string>
+    <string>
       <key>Tab_Common</key>
       <text>Common</text>
     </string>
@@ -2257,6 +2261,10 @@
     <string>
       <key>Message_DeleteEnemy</key>
       <text>Are you sure you want to delete this Enemy?</text>
+    </string>
+    <string>
+      <key>Message_DeletePet</key>
+      <text>Are you sure you want to delete this Pet?</text>
     </string>
     <string>
       <key>Message_DeleteSpirit</key>
@@ -4655,7 +4663,23 @@
     </string>
     <string>
       <key>Button_AddContact</key>
-      <text>&amp;Add Contact</text>
+      <text>Add &amp;Contact</text>
+    </string>
+    <string>
+      <key>Button_DeleteRelationship</key>
+      <text>&amp;Delete Relationship</text>
+    </string>
+    <string>
+      <key>Node_SelectedContacts</key>
+      <text>Contacts</text>
+    </string>
+    <string>
+      <key>Node_SelectedEnemies</key>
+      <text>Enemies</text>
+    </string>
+    <string>
+      <key>Node_SelectedPets</key>
+      <text>Pets</text>
     </string>
     <string>
       <key>Button_AddEnemy</key>
@@ -4663,7 +4687,7 @@
     </string>
     <string>
       <key>Button_AddPet</key>
-      <text>&amp;Add Pet</text>
+      <text>Add &amp;Pet</text>
     </string>
     <string>
       <key>Node_SelectedPositiveQualities</key>
@@ -5001,6 +5025,14 @@
     <string>
       <key>Node_SelectedEnchantments</key>
       <text>Enchantments</text>
+    </string>
+    <string>
+      <key>Node_SelectedSpirits</key>
+      <text>Spirits</text>
+    </string>
+    <string>
+      <key>Node_SelectedSprites</key>
+      <text>Sprites</text>
     </string>
     <string>
       <key>Tip_SpellsSelectedSpells</key>
@@ -6833,6 +6865,22 @@
       <text>Open the linked Contact save file.</text>
     </string>
     <string>
+      <key>Label_LinkedFile</key>
+      <text>Linked File:</text>
+    </string>
+    <string>
+      <key>Button_LinkFile</key>
+      <text>Link to File</text>
+    </string>
+    <string>
+      <key>Button_OpenLinkedFile</key>
+      <text>Open Linked File</text>
+    </string>
+    <string>
+      <key>Button_RemoveLinkedFile</key>
+      <text>Remove Linked File</text>
+    </string>
+    <string>
       <key>Tip_Contact_LinkContact</key>
       <text>Link this Contact to a Chummer save file.</text>
     </string>
@@ -6999,6 +7047,10 @@
       <text>Force:</text>
     </string>
     <string>
+      <key>Label_Sprite_Level</key>
+      <text>Level:</text>
+    </string>
+    <string>
       <key>Label_Spirit_ServicesOwed</key>
       <text>Services Owed:</text>
     </string>
@@ -7017,10 +7069,6 @@
     <string>
       <key>Checkbox_Sprite_Pet</key>
       <text>Sprite Pet</text>
-    </string>
-    <string>
-      <key>Label_Sprite_Rating</key>
-      <text>Rating:</text>
     </string>
     <string>
       <key>Label_Sprite_Registered</key>
