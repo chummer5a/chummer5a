@@ -21168,7 +21168,6 @@ namespace Chummer
             this.tlpCharacterInfo.Controls.Add(this.tabLongTexts, 0, 2);
             this.tlpCharacterInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCharacterInfo.Location = new System.Drawing.Point(3, 3);
-            this.tlpCharacterInfo.MinimumSize = new System.Drawing.Size(823, 613);
             this.tlpCharacterInfo.Name = "tlpCharacterInfo";
             this.tlpCharacterInfo.RowCount = 13;
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -21714,7 +21713,6 @@ namespace Chummer
             // 
             // tlpMugshotButtons
             // 
-            this.tlpMugshotButtons.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.tlpMugshotButtons.AutoSize = true;
             this.tlpMugshotButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMugshotButtons.ColumnCount = 2;
@@ -21723,12 +21721,13 @@ namespace Chummer
             this.tlpMugshotButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMugshotButtons.Controls.Add(this.cmdAddMugshot, 0, 0);
             this.tlpMugshotButtons.Controls.Add(this.cmdDeleteMugshot, 1, 0);
-            this.tlpMugshotButtons.Location = new System.Drawing.Point(761, 280);
+            this.tlpMugshotButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpMugshotButtons.Location = new System.Drawing.Point(724, 280);
             this.tlpMugshotButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpMugshotButtons.Name = "tlpMugshotButtons";
             this.tlpMugshotButtons.RowCount = 1;
             this.tlpMugshotButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMugshotButtons.Size = new System.Drawing.Size(172, 29);
+            this.tlpMugshotButtons.Size = new System.Drawing.Size(247, 29);
             this.tlpMugshotButtons.TabIndex = 110;
             // 
             // cmdAddMugshot
@@ -21737,9 +21736,8 @@ namespace Chummer
             this.cmdAddMugshot.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddMugshot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddMugshot.Location = new System.Drawing.Point(3, 3);
-            this.cmdAddMugshot.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddMugshot.Name = "cmdAddMugshot";
-            this.cmdAddMugshot.Size = new System.Drawing.Size(80, 23);
+            this.cmdAddMugshot.Size = new System.Drawing.Size(117, 23);
             this.cmdAddMugshot.TabIndex = 22;
             this.cmdAddMugshot.Tag = "Button_AddMugshot";
             this.cmdAddMugshot.Text = "Add";
@@ -21751,10 +21749,9 @@ namespace Chummer
             this.cmdDeleteMugshot.AutoSize = true;
             this.cmdDeleteMugshot.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteMugshot.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteMugshot.Location = new System.Drawing.Point(89, 3);
-            this.cmdDeleteMugshot.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdDeleteMugshot.Location = new System.Drawing.Point(126, 3);
             this.cmdDeleteMugshot.Name = "cmdDeleteMugshot";
-            this.cmdDeleteMugshot.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteMugshot.Size = new System.Drawing.Size(118, 23);
             this.cmdDeleteMugshot.TabIndex = 23;
             this.cmdDeleteMugshot.Tag = "String_Delete";
             this.cmdDeleteMugshot.Text = "Delete";
