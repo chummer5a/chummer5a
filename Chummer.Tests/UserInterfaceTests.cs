@@ -65,6 +65,10 @@ namespace Chummer.Tests
                     {
                         frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
                     }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
                     catch (Exception e)
                     {
                         e = e.Demystify();
@@ -177,6 +181,10 @@ namespace Chummer.Tests
                                             Utils.SafeSleep(TestContext.CancellationToken);
                                         }
                                     }
+                                    catch (OperationCanceledException)
+                                    {
+                                        //swallow this
+                                    }
                                     catch (ApplicationException e)
                                     {
                                         e = e.Demystify();
@@ -220,6 +228,10 @@ namespace Chummer.Tests
                     try
                     {
                         frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
                     }
                     catch (Exception e)
                     {
