@@ -3834,7 +3834,7 @@ namespace Chummer
 
         public const int HandleCountThresholdForWarning = 9500;
 
-        public const int HandleCountThresholdForWarningCharacterEditForm = 7000;
+        public const int HandleCountThresholdForWarningCharacterEditForm = 7500;
 
         private static readonly XmlWriterSettings _objStandardXmlWriterSettings = new XmlWriterSettings
         { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t" };
