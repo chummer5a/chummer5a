@@ -59,7 +59,7 @@ namespace Chummer
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             InitializeComponent();
-            tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabCharacterTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
@@ -1788,7 +1788,7 @@ namespace Chummer
                             {
                                 token.ThrowIfCancellationRequested();
                                 string strTemp1 = await (await objCache.GetDescriptionAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
-                                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strTemp1, token).ConfigureAwait(false);
+                                await txtCharacterDescription.DoThreadSafeAsync(x => x.Text = strTemp1, token).ConfigureAwait(false);
                                 string strTemp2 = await (await objCache.GetBackgroundAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
                                 await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strTemp2, token).ConfigureAwait(false);
                                 string strTemp3 = await (await objCache.GetCharacterNotesAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
@@ -1863,11 +1863,11 @@ namespace Chummer
                                     await lblMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
                                 }
 
-                                await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                                await tabCharacterTexts.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                                 string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
                                 if (!string.IsNullOrEmpty(strErrorText))
                                 {
-                                    await txtCharacterBio.DoThreadSafeAsync(x =>
+                                    await txtCharacterDescription.DoThreadSafeAsync(x =>
                                     {
                                         x.Text = strErrorText;
                                         x.ForeColor = ColorManager.ErrorColor;
@@ -1876,7 +1876,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
+                                    await txtCharacterDescription.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -1886,8 +1886,8 @@ namespace Chummer
                         }
                         else
                         {
-                            await tabCharacterText.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await txtCharacterBio.DoThreadSafeAsync(x => x.Clear(), token).ConfigureAwait(false);
+                            await tabCharacterTexts.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await txtCharacterDescription.DoThreadSafeAsync(x => x.Clear(), token).ConfigureAwait(false);
                             await txtCharacterBackground.DoThreadSafeAsync(x => x.Clear(), token).ConfigureAwait(false);
                             await txtCharacterNotes.DoThreadSafeAsync(x => x.Clear(), token).ConfigureAwait(false);
                             await txtGameNotes.DoThreadSafeAsync(x => x.Clear(), token).ConfigureAwait(false);
@@ -2542,7 +2542,7 @@ namespace Chummer
             const int ToolStripWidth = 180;
             const int ToolStripHeight = 22;
 
-            return this.DoThreadSafeFunc(x => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, x), token);
+            return this.DoThreadSafeFunc(t => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, t), token);
         }
 
         public Task<ContextMenuStrip> CreateContextMenuStripAsync(bool blnIncludeCloseOpenCharacter, CancellationToken token = default)
@@ -2550,7 +2550,7 @@ namespace Chummer
             const int ToolStripWidth = 180;
             const int ToolStripHeight = 22;
 
-            return this.DoThreadSafeFuncAsync(x => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, x), token);
+            return this.DoThreadSafeFuncAsync(t => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, t), token);
         }
 
         private ContextMenuStrip CreateContextMenuStripCore(bool blnIncludeCloseOpenCharacter, int intToolStripWidth, int intToolStripHeight, CancellationToken token = default)
