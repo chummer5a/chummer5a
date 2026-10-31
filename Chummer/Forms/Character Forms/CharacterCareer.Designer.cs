@@ -1501,6 +1501,18 @@ namespace Chummer
             this.tsAddEnemyFromFile = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsContactNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tabContactTexts = new System.Windows.Forms.TabControl();
+            this.tabContactDescription = new System.Windows.Forms.TabPage();
+            this.txtContactDescription = new System.Windows.Forms.TextBox();
+            this.tabContactConcept = new System.Windows.Forms.TabPage();
+            this.txtContactConcept = new System.Windows.Forms.TextBox();
+            this.tabContactBackground = new System.Windows.Forms.TabPage();
+            this.txtContactBackground = new System.Windows.Forms.TextBox();
+            this.tabContactNotes = new System.Windows.Forms.TabPage();
+            this.txtContactNotes = new System.Windows.Forms.TextBox();
+            this.tabContactGameNotes = new System.Windows.Forms.TabPage();
+            this.txtContactGameNotes = new System.Windows.Forms.TextBox();
+            this.picContactMugshot = new System.Windows.Forms.PictureBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1795,6 +1807,13 @@ namespace Chummer
             this.cmsAddPet.SuspendLayout();
             this.cmsAddEnemy.SuspendLayout();
             this.cmsContact.SuspendLayout();
+            this.tabContactTexts.SuspendLayout();
+            this.tabContactDescription.SuspendLayout();
+            this.tabContactConcept.SuspendLayout();
+            this.tabContactBackground.SuspendLayout();
+            this.tabContactNotes.SuspendLayout();
+            this.tabContactGameNotes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picContactMugshot)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPowerUc
@@ -22868,6 +22887,8 @@ namespace Chummer
             this.tlpContactsRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpContactsRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpContactsRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpContactsRight.Controls.Add(this.picContactMugshot, 4, 9);
+            this.tlpContactsRight.Controls.Add(this.tabContactTexts, 0, 9);
             this.tlpContactsRight.Controls.Add(this.tlpContactFile, 0, 8);
             this.tlpContactsRight.Controls.Add(this.txtContactName, 1, 0);
             this.tlpContactsRight.Controls.Add(this.lblContactNameLabel, 0, 0);
@@ -22891,11 +22912,12 @@ namespace Chummer
             this.tlpContactsRight.Controls.Add(this.lblContactArchtypeLabel, 0, 1);
             this.tlpContactsRight.Controls.Add(this.cboContactRole, 1, 1);
             this.tlpContactsRight.Controls.Add(this.cboPetMetatype, 1, 4);
-            this.tlpContactsRight.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpContactsRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContactsRight.Location = new System.Drawing.Point(310, 29);
             this.tlpContactsRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpContactsRight.Name = "tlpContactsRight";
-            this.tlpContactsRight.RowCount = 9;
+            this.tlpContactsRight.RowCount = 10;
+            this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -22905,7 +22927,7 @@ namespace Chummer
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpContactsRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpContactsRight.Size = new System.Drawing.Size(661, 282);
+            this.tlpContactsRight.Size = new System.Drawing.Size(661, 596);
             this.tlpContactsRight.TabIndex = 73;
             this.tlpContactsRight.Visible = false;
             // 
@@ -24224,6 +24246,146 @@ namespace Chummer
             this.tsContactNotes.Text = "&Notes";
             this.tsContactNotes.Click += new System.EventHandler(this.tsContactNotes_Click);
             // 
+            // tabContactTexts
+            // 
+            this.tlpContactsRight.SetColumnSpan(this.tabContactTexts, 3);
+            this.tabContactTexts.Controls.Add(this.tabContactDescription);
+            this.tabContactTexts.Controls.Add(this.tabContactConcept);
+            this.tabContactTexts.Controls.Add(this.tabContactBackground);
+            this.tabContactTexts.Controls.Add(this.tabContactNotes);
+            this.tabContactTexts.Controls.Add(this.tabContactGameNotes);
+            this.tabContactTexts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabContactTexts.Location = new System.Drawing.Point(3, 285);
+            this.tabContactTexts.Name = "tabContactTexts";
+            this.tabContactTexts.SelectedIndex = 0;
+            this.tabContactTexts.Size = new System.Drawing.Size(414, 308);
+            this.tabContactTexts.TabIndex = 199;
+            // 
+            // tabContactDescription
+            // 
+            this.tabContactDescription.Controls.Add(this.txtContactDescription);
+            this.tabContactDescription.Location = new System.Drawing.Point(4, 22);
+            this.tabContactDescription.Name = "tabContactDescription";
+            this.tabContactDescription.Padding = new System.Windows.Forms.Padding(3);
+            this.tabContactDescription.Size = new System.Drawing.Size(406, 282);
+            this.tabContactDescription.TabIndex = 0;
+            this.tabContactDescription.Tag = "Tab_Roster_Description";
+            this.tabContactDescription.Text = "Description";
+            this.tabContactDescription.UseVisualStyleBackColor = true;
+            // 
+            // txtContactDescription
+            // 
+            this.txtContactDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContactDescription.Location = new System.Drawing.Point(3, 3);
+            this.txtContactDescription.MaxLength = 2147483647;
+            this.txtContactDescription.Multiline = true;
+            this.txtContactDescription.Name = "txtContactDescription";
+            this.txtContactDescription.ReadOnly = true;
+            this.txtContactDescription.Size = new System.Drawing.Size(400, 276);
+            this.txtContactDescription.TabIndex = 0;
+            // 
+            // tabContactConcept
+            // 
+            this.tabContactConcept.Controls.Add(this.txtContactConcept);
+            this.tabContactConcept.Location = new System.Drawing.Point(4, 22);
+            this.tabContactConcept.Name = "tabContactConcept";
+            this.tabContactConcept.Padding = new System.Windows.Forms.Padding(3);
+            this.tabContactConcept.Size = new System.Drawing.Size(406, 282);
+            this.tabContactConcept.TabIndex = 1;
+            this.tabContactConcept.Tag = "Tab_Roster_Concept";
+            this.tabContactConcept.Text = "Concept";
+            this.tabContactConcept.UseVisualStyleBackColor = true;
+            // 
+            // txtContactConcept
+            // 
+            this.txtContactConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContactConcept.Location = new System.Drawing.Point(3, 3);
+            this.txtContactConcept.MaxLength = 2147483647;
+            this.txtContactConcept.Multiline = true;
+            this.txtContactConcept.Name = "txtContactConcept";
+            this.txtContactConcept.ReadOnly = true;
+            this.txtContactConcept.Size = new System.Drawing.Size(400, 276);
+            this.txtContactConcept.TabIndex = 0;
+            // 
+            // tabContactBackground
+            // 
+            this.tabContactBackground.Controls.Add(this.txtContactBackground);
+            this.tabContactBackground.Location = new System.Drawing.Point(4, 22);
+            this.tabContactBackground.Name = "tabContactBackground";
+            this.tabContactBackground.Padding = new System.Windows.Forms.Padding(3);
+            this.tabContactBackground.Size = new System.Drawing.Size(406, 282);
+            this.tabContactBackground.TabIndex = 2;
+            this.tabContactBackground.Tag = "Tab_Roster_Background";
+            this.tabContactBackground.Text = "Background";
+            this.tabContactBackground.UseVisualStyleBackColor = true;
+            // 
+            // txtContactBackground
+            // 
+            this.txtContactBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContactBackground.Location = new System.Drawing.Point(3, 3);
+            this.txtContactBackground.MaxLength = 2147483647;
+            this.txtContactBackground.Multiline = true;
+            this.txtContactBackground.Name = "txtContactBackground";
+            this.txtContactBackground.ReadOnly = true;
+            this.txtContactBackground.Size = new System.Drawing.Size(400, 276);
+            this.txtContactBackground.TabIndex = 0;
+            // 
+            // tabContactNotes
+            // 
+            this.tabContactNotes.Controls.Add(this.txtContactNotes);
+            this.tabContactNotes.Location = new System.Drawing.Point(4, 22);
+            this.tabContactNotes.Name = "tabContactNotes";
+            this.tabContactNotes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabContactNotes.Size = new System.Drawing.Size(406, 282);
+            this.tabContactNotes.TabIndex = 3;
+            this.tabContactNotes.Tag = "Tab_Roster_CharacterNotes";
+            this.tabContactNotes.Text = "Character Notes";
+            this.tabContactNotes.UseVisualStyleBackColor = true;
+            // 
+            // txtContactNotes
+            // 
+            this.txtContactNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContactNotes.Location = new System.Drawing.Point(3, 3);
+            this.txtContactNotes.MaxLength = 2147483647;
+            this.txtContactNotes.Multiline = true;
+            this.txtContactNotes.Name = "txtContactNotes";
+            this.txtContactNotes.ReadOnly = true;
+            this.txtContactNotes.Size = new System.Drawing.Size(400, 276);
+            this.txtContactNotes.TabIndex = 0;
+            // 
+            // tabContactGameNotes
+            // 
+            this.tabContactGameNotes.Controls.Add(this.txtContactGameNotes);
+            this.tabContactGameNotes.Location = new System.Drawing.Point(4, 22);
+            this.tabContactGameNotes.Name = "tabContactGameNotes";
+            this.tabContactGameNotes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabContactGameNotes.Size = new System.Drawing.Size(406, 282);
+            this.tabContactGameNotes.TabIndex = 4;
+            this.tabContactGameNotes.Tag = "Tab_Roster_GameNotes";
+            this.tabContactGameNotes.Text = "Game Notes";
+            this.tabContactGameNotes.UseVisualStyleBackColor = true;
+            // 
+            // txtContactGameNotes
+            // 
+            this.txtContactGameNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContactGameNotes.Location = new System.Drawing.Point(3, 3);
+            this.txtContactGameNotes.MaxLength = 2147483647;
+            this.txtContactGameNotes.Multiline = true;
+            this.txtContactGameNotes.Name = "txtContactGameNotes";
+            this.txtContactGameNotes.ReadOnly = true;
+            this.txtContactGameNotes.Size = new System.Drawing.Size(400, 276);
+            this.txtContactGameNotes.TabIndex = 0;
+            // 
+            // picContactMugshot
+            // 
+            this.picContactMugshot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picContactMugshot.Location = new System.Drawing.Point(423, 285);
+            this.picContactMugshot.Name = "picContactMugshot";
+            this.picContactMugshot.Size = new System.Drawing.Size(235, 308);
+            this.picContactMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picContactMugshot.TabIndex = 200;
+            this.picContactMugshot.TabStop = false;
+            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -24734,6 +24896,18 @@ namespace Chummer
             this.cmsAddPet.ResumeLayout(false);
             this.cmsAddEnemy.ResumeLayout(false);
             this.cmsContact.ResumeLayout(false);
+            this.tabContactTexts.ResumeLayout(false);
+            this.tabContactDescription.ResumeLayout(false);
+            this.tabContactDescription.PerformLayout();
+            this.tabContactConcept.ResumeLayout(false);
+            this.tabContactConcept.PerformLayout();
+            this.tabContactBackground.ResumeLayout(false);
+            this.tabContactBackground.PerformLayout();
+            this.tabContactNotes.ResumeLayout(false);
+            this.tabContactNotes.PerformLayout();
+            this.tabContactGameNotes.ResumeLayout(false);
+            this.tabContactGameNotes.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picContactMugshot)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -26159,5 +26333,17 @@ namespace Chummer
         private SplitButton cmdAddEnemy;
         private SplitButton cmdAddPet;
         private ElasticComboBox cboPetMetatype;
+        private TabControl tabContactTexts;
+        private TabPage tabContactDescription;
+        private TextBox txtContactDescription;
+        private TabPage tabContactConcept;
+        private TextBox txtContactConcept;
+        private TabPage tabContactBackground;
+        private TextBox txtContactBackground;
+        private TabPage tabContactNotes;
+        private TextBox txtContactNotes;
+        private TabPage tabContactGameNotes;
+        private TextBox txtContactGameNotes;
+        private PictureBox picContactMugshot;
     }
 }

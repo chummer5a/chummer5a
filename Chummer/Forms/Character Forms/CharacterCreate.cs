@@ -263,6 +263,7 @@ namespace Chummer
             tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabContactTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
             _tmrSpiritName.Tick += UpdateSpiritName;
@@ -13754,6 +13755,50 @@ namespace Chummer
                         {
                             await cmdContactOpenLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                             await cmdContactRemoveLinkedFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                        }
+
+                        Image imgMugshot = await objContact.GetMainMugshotAsync(token).ConfigureAwait(false);
+                        if (imgMugshot != null)
+                        {
+                            await picContactMugshot.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                try
+                                {
+                                    x.SizeMode = x.Height >= imgMugshot.Height && x.Width >= imgMugshot.Width
+                                        ? PictureBoxSizeMode.CenterImage
+                                        : PictureBoxSizeMode.Zoom;
+                                }
+                                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                                {
+                                    x.SizeMode = PictureBoxSizeMode.Zoom;
+                                }
+                                x.Image = imgMugshot;
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await picContactMugshot.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        }
+
+                        Character objLinkedCharacter = await objContact.GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                        if (objLinkedCharacter != null)
+                        {
+                            string strContactDescription = await objLinkedCharacter.GetDescriptionAsync(token).ConfigureAwait(false);
+                            string strContactConcept = await objLinkedCharacter.GetConceptAsync(token).ConfigureAwait(false);
+                            string strContactBackground = await objLinkedCharacter.GetBackgroundAsync(token).ConfigureAwait(false);
+                            string strContactNotes = await objLinkedCharacter.GetNotesAsync(token).ConfigureAwait(false);
+                            string strContactGameNotes = await objLinkedCharacter.GetGameNotesAsync(token).ConfigureAwait(false);
+                            await txtContactDescription.DoThreadSafeAsync(x => x.Text = strContactDescription, token).ConfigureAwait(false);
+                            await txtContactConcept.DoThreadSafeAsync(x => x.Text = strContactConcept, token).ConfigureAwait(false);
+                            await txtContactBackground.DoThreadSafeAsync(x => x.Text = strContactBackground, token).ConfigureAwait(false);
+                            await txtContactNotes.DoThreadSafeAsync(x => x.Text = strContactNotes, token).ConfigureAwait(false);
+                            await txtContactGameNotes.DoThreadSafeAsync(x => x.Text = strContactGameNotes, token).ConfigureAwait(false);
+                            await tabContactTexts.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await tabContactTexts.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         }
                     }
                     else
