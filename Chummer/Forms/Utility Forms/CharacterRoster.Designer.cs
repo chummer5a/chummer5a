@@ -88,6 +88,21 @@ namespace Chummer
             this.picMugshot = new System.Windows.Forms.PictureBox();
             this.tlpCharacterRoster = new System.Windows.Forms.TableLayoutPanel();
             this.treCharacterList = new System.Windows.Forms.TreeView();
+            this.cmsRoster = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsToggleFav = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsSort = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsOpen = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsOpenForPrinting = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsOpenForExport = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsDelete = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCloseOpenCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsRosterNoClose = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsToggleFavNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsSortNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsOpenNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsOpenForPrintingNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsOpenForExportNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsDeleteNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tabCharacterTexts.SuspendLayout();
             this.tabCharacterDescription.SuspendLayout();
             this.tabCharacterConcept.SuspendLayout();
@@ -97,6 +112,8 @@ namespace Chummer
             this.tlpRight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tlpCharacterRoster.SuspendLayout();
+            this.cmsRoster.SuspendLayout();
+            this.cmsRosterNoClose.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabCharacterTexts
@@ -519,6 +536,220 @@ namespace Chummer
             this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_OnDefaultKeyDown);
             this.treCharacterList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
+            // cmsRoster
+            // 
+            this.cmsRoster.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsToggleFav,
+            this.tsSort,
+            this.tsOpen,
+            this.tsOpenForPrinting,
+            this.tsOpenForExport,
+            this.tsDelete,
+            this.tsCloseOpenCharacter});
+            this.cmsRoster.Name = "cmsRoster";
+            this.cmsRoster.Size = new System.Drawing.Size(214, 158);
+            // 
+            // tsToggleFav
+            // 
+            this.tsToggleFav.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.tsToggleFav.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.tsToggleFav.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.tsToggleFav.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.tsToggleFav.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.tsToggleFav.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.tsToggleFav.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.tsToggleFav.Name = "tsToggleFav";
+            this.tsToggleFav.Size = new System.Drawing.Size(213, 22);
+            this.tsToggleFav.Tag = "Menu_ToggleFavorite";
+            this.tsToggleFav.Text = "&Toggle Favorite";
+            this.tsToggleFav.Click += new System.EventHandler(this.tsToggleFav_Click);
+            // 
+            // tsSort
+            // 
+            this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsSort.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsSort.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsSort.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsSort.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsSort.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsSort.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsSort.Name = "tsSort";
+            this.tsSort.Size = new System.Drawing.Size(213, 22);
+            this.tsSort.Tag = "Menu_Sort";
+            this.tsSort.Text = "&Sort this list Alphabetically";
+            this.tsSort.Click += new System.EventHandler(this.tsSort_Click);
+            // 
+            // tsOpen
+            // 
+            this.tsOpen.Image = global::Chummer.Properties.Resources.folder_page_16;
+            this.tsOpen.ImageDpi120 = global::Chummer.Properties.Resources.folder_page_20;
+            this.tsOpen.ImageDpi144 = global::Chummer.Properties.Resources.folder_page_24;
+            this.tsOpen.ImageDpi192 = global::Chummer.Properties.Resources.folder_page_32;
+            this.tsOpen.ImageDpi288 = global::Chummer.Properties.Resources.folder_page_48;
+            this.tsOpen.ImageDpi384 = global::Chummer.Properties.Resources.folder_page_64;
+            this.tsOpen.ImageDpi96 = global::Chummer.Properties.Resources.folder_page_16;
+            this.tsOpen.Name = "tsOpen";
+            this.tsOpen.Size = new System.Drawing.Size(213, 22);
+            this.tsOpen.Tag = "Menu_Main_Open";
+            this.tsOpen.Text = "&Open";
+            this.tsOpen.Click += new System.EventHandler(this.tsOpen_Click);
+            // 
+            // tsOpenForPrinting
+            // 
+            this.tsOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print_16;
+            this.tsOpenForPrinting.ImageDpi120 = global::Chummer.Properties.Resources.folder_print_20;
+            this.tsOpenForPrinting.ImageDpi144 = global::Chummer.Properties.Resources.folder_print_24;
+            this.tsOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print_32;
+            this.tsOpenForPrinting.ImageDpi288 = global::Chummer.Properties.Resources.folder_print_48;
+            this.tsOpenForPrinting.ImageDpi384 = global::Chummer.Properties.Resources.folder_print_64;
+            this.tsOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print_16;
+            this.tsOpenForPrinting.Name = "tsOpenForPrinting";
+            this.tsOpenForPrinting.Size = new System.Drawing.Size(213, 22);
+            this.tsOpenForPrinting.Tag = "Menu_Main_OpenForPrinting";
+            this.tsOpenForPrinting.Text = "Open for P&rinting";
+            this.tsOpenForPrinting.Click += new System.EventHandler(this.tsOpenForPrinting_Click);
+            // 
+            // tsOpenForExport
+            // 
+            this.tsOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go_16;
+            this.tsOpenForExport.ImageDpi120 = global::Chummer.Properties.Resources.folder_script_go_20;
+            this.tsOpenForExport.ImageDpi144 = global::Chummer.Properties.Resources.folder_script_go_24;
+            this.tsOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go_32;
+            this.tsOpenForExport.ImageDpi288 = global::Chummer.Properties.Resources.folder_script_go_48;
+            this.tsOpenForExport.ImageDpi384 = global::Chummer.Properties.Resources.folder_script_go_64;
+            this.tsOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go_16;
+            this.tsOpenForExport.Name = "tsOpenForExport";
+            this.tsOpenForExport.Size = new System.Drawing.Size(213, 22);
+            this.tsOpenForExport.Tag = "Menu_Main_OpenForExport";
+            this.tsOpenForExport.Text = "Open for E&xport";
+            this.tsOpenForExport.Click += new System.EventHandler(this.tsOpenForExport_Click);
+            // 
+            // tsDelete
+            // 
+            this.tsDelete.Image = global::Chummer.Properties.Resources.delete_16;
+            this.tsDelete.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.tsDelete.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.tsDelete.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.tsDelete.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.tsDelete.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.tsDelete.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
+            this.tsDelete.Name = "tsDelete";
+            this.tsDelete.Size = new System.Drawing.Size(213, 22);
+            this.tsDelete.Tag = "Menu_Delete";
+            this.tsDelete.Text = "&Delete from this list";
+            this.tsDelete.Click += new System.EventHandler(this.tsDelete_Click);
+            // 
+            // tsCloseOpenCharacter
+            // 
+            this.tsCloseOpenCharacter.Image = global::Chummer.Properties.Resources.door_out_16;
+            this.tsCloseOpenCharacter.ImageDpi120 = global::Chummer.Properties.Resources.door_out_20;
+            this.tsCloseOpenCharacter.ImageDpi144 = global::Chummer.Properties.Resources.door_out_24;
+            this.tsCloseOpenCharacter.ImageDpi192 = global::Chummer.Properties.Resources.door_out_32;
+            this.tsCloseOpenCharacter.ImageDpi288 = global::Chummer.Properties.Resources.door_out_48;
+            this.tsCloseOpenCharacter.ImageDpi384 = global::Chummer.Properties.Resources.door_out_64;
+            this.tsCloseOpenCharacter.ImageDpi96 = global::Chummer.Properties.Resources.door_out_16;
+            this.tsCloseOpenCharacter.Name = "tsCloseOpenCharacter";
+            this.tsCloseOpenCharacter.Size = new System.Drawing.Size(213, 22);
+            this.tsCloseOpenCharacter.Tag = "Menu_Close";
+            this.tsCloseOpenCharacter.Text = "&Close this character";
+            this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
+            // 
+            // cmsRosterNoClose
+            // 
+            this.cmsRosterNoClose.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsToggleFavNoClose,
+            this.tsSortNoClose,
+            this.tsOpenNoClose,
+            this.tsOpenForPrintingNoClose,
+            this.tsOpenForExportNoClose,
+            this.tsDeleteNoClose});
+            this.cmsRosterNoClose.Name = "cmsRoster";
+            this.cmsRosterNoClose.Size = new System.Drawing.Size(214, 136);
+            // 
+            // tsToggleFavNoClose
+            // 
+            this.tsToggleFavNoClose.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.tsToggleFavNoClose.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.tsToggleFavNoClose.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.tsToggleFavNoClose.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.tsToggleFavNoClose.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.tsToggleFavNoClose.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.tsToggleFavNoClose.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.tsToggleFavNoClose.Name = "tsToggleFavNoClose";
+            this.tsToggleFavNoClose.Size = new System.Drawing.Size(213, 22);
+            this.tsToggleFavNoClose.Tag = "Menu_ToggleFavorite";
+            this.tsToggleFavNoClose.Text = "&Toggle Favorite";
+            // 
+            // tsSortNoClose
+            // 
+            this.tsSortNoClose.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsSortNoClose.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsSortNoClose.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsSortNoClose.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsSortNoClose.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsSortNoClose.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsSortNoClose.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsSortNoClose.Name = "tsSortNoClose";
+            this.tsSortNoClose.Size = new System.Drawing.Size(213, 22);
+            this.tsSortNoClose.Tag = "Menu_Sort";
+            this.tsSortNoClose.Text = "&Sort this list Alphabetically";
+            // 
+            // tsOpenNoClose
+            // 
+            this.tsOpenNoClose.Image = global::Chummer.Properties.Resources.folder_page_16;
+            this.tsOpenNoClose.ImageDpi120 = global::Chummer.Properties.Resources.folder_page_20;
+            this.tsOpenNoClose.ImageDpi144 = global::Chummer.Properties.Resources.folder_page_24;
+            this.tsOpenNoClose.ImageDpi192 = global::Chummer.Properties.Resources.folder_page_32;
+            this.tsOpenNoClose.ImageDpi288 = global::Chummer.Properties.Resources.folder_page_48;
+            this.tsOpenNoClose.ImageDpi384 = global::Chummer.Properties.Resources.folder_page_64;
+            this.tsOpenNoClose.ImageDpi96 = global::Chummer.Properties.Resources.folder_page_16;
+            this.tsOpenNoClose.Name = "tsOpenNoClose";
+            this.tsOpenNoClose.Size = new System.Drawing.Size(213, 22);
+            this.tsOpenNoClose.Tag = "Menu_Main_Open";
+            this.tsOpenNoClose.Text = "&Open";
+            // 
+            // tsOpenForPrintingNoClose
+            // 
+            this.tsOpenForPrintingNoClose.Image = global::Chummer.Properties.Resources.folder_print_16;
+            this.tsOpenForPrintingNoClose.ImageDpi120 = global::Chummer.Properties.Resources.folder_print_20;
+            this.tsOpenForPrintingNoClose.ImageDpi144 = global::Chummer.Properties.Resources.folder_print_24;
+            this.tsOpenForPrintingNoClose.ImageDpi192 = global::Chummer.Properties.Resources.folder_print_32;
+            this.tsOpenForPrintingNoClose.ImageDpi288 = global::Chummer.Properties.Resources.folder_print_48;
+            this.tsOpenForPrintingNoClose.ImageDpi384 = global::Chummer.Properties.Resources.folder_print_64;
+            this.tsOpenForPrintingNoClose.ImageDpi96 = global::Chummer.Properties.Resources.folder_print_16;
+            this.tsOpenForPrintingNoClose.Name = "tsOpenForPrintingNoClose";
+            this.tsOpenForPrintingNoClose.Size = new System.Drawing.Size(213, 22);
+            this.tsOpenForPrintingNoClose.Tag = "Menu_Main_OpenForPrinting";
+            this.tsOpenForPrintingNoClose.Text = "Open for P&rinting";
+            // 
+            // tsOpenForExportNoClose
+            // 
+            this.tsOpenForExportNoClose.Image = global::Chummer.Properties.Resources.folder_script_go_16;
+            this.tsOpenForExportNoClose.ImageDpi120 = global::Chummer.Properties.Resources.folder_script_go_20;
+            this.tsOpenForExportNoClose.ImageDpi144 = global::Chummer.Properties.Resources.folder_script_go_24;
+            this.tsOpenForExportNoClose.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go_32;
+            this.tsOpenForExportNoClose.ImageDpi288 = global::Chummer.Properties.Resources.folder_script_go_48;
+            this.tsOpenForExportNoClose.ImageDpi384 = global::Chummer.Properties.Resources.folder_script_go_64;
+            this.tsOpenForExportNoClose.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go_16;
+            this.tsOpenForExportNoClose.Name = "tsOpenForExportNoClose";
+            this.tsOpenForExportNoClose.Size = new System.Drawing.Size(213, 22);
+            this.tsOpenForExportNoClose.Tag = "Menu_Main_OpenForExport";
+            this.tsOpenForExportNoClose.Text = "Open for E&xport";
+            // 
+            // tsDeleteNoClose
+            // 
+            this.tsDeleteNoClose.Image = global::Chummer.Properties.Resources.delete_16;
+            this.tsDeleteNoClose.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.tsDeleteNoClose.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.tsDeleteNoClose.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.tsDeleteNoClose.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.tsDeleteNoClose.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.tsDeleteNoClose.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
+            this.tsDeleteNoClose.Name = "tsDeleteNoClose";
+            this.tsDeleteNoClose.Size = new System.Drawing.Size(213, 22);
+            this.tsDeleteNoClose.Tag = "Menu_Delete";
+            this.tsDeleteNoClose.Text = "&Delete from this list";
+            // 
             // CharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -551,6 +782,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.tlpCharacterRoster.ResumeLayout(false);
             this.tlpCharacterRoster.PerformLayout();
+            this.cmsRoster.ResumeLayout(false);
+            this.cmsRosterNoClose.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -589,6 +822,21 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtGameNotes;
         private System.Windows.Forms.TableLayoutPanel tlpCharacterRoster;
         public System.Windows.Forms.TreeView treCharacterList;
+        private System.Windows.Forms.ContextMenuStrip cmsRoster;
+        private DpiFriendlyToolStripMenuItem tsToggleFav;
+        private DpiFriendlyToolStripMenuItem tsSort;
+        private DpiFriendlyToolStripMenuItem tsOpen;
+        private DpiFriendlyToolStripMenuItem tsOpenForPrinting;
+        private DpiFriendlyToolStripMenuItem tsOpenForExport;
+        private DpiFriendlyToolStripMenuItem tsDelete;
+        private DpiFriendlyToolStripMenuItem tsCloseOpenCharacter;
+        private System.Windows.Forms.ContextMenuStrip cmsRosterNoClose;
+        private DpiFriendlyToolStripMenuItem tsToggleFavNoClose;
+        private DpiFriendlyToolStripMenuItem tsSortNoClose;
+        private DpiFriendlyToolStripMenuItem tsOpenNoClose;
+        private DpiFriendlyToolStripMenuItem tsOpenForPrintingNoClose;
+        private DpiFriendlyToolStripMenuItem tsOpenForExportNoClose;
+        private DpiFriendlyToolStripMenuItem tsDeleteNoClose;
     }
 }
 

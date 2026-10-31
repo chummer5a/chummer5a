@@ -64,6 +64,17 @@ namespace Chummer
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
 
+            foreach (ToolStripMenuItem tssItem in cmsRoster.Items.OfType<ToolStripMenuItem>())
+            {
+                tssItem.UpdateLightDarkMode();
+                tssItem.TranslateToolStripItemsRecursively();
+            }
+            foreach (ToolStripMenuItem tssItem in cmsRosterNoClose.Items.OfType<ToolStripMenuItem>())
+            {
+                tssItem.UpdateLightDarkMode();
+                tssItem.TranslateToolStripItemsRecursively();
+            }
+
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 _objCharacterRosterFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
@@ -2498,30 +2509,32 @@ namespace Chummer
                                           .ConfigureAwait(false);
                 }
 
-                if (e.Node.Tag != null)
+                if (e.Node.Tag is CharacterCache objCache)
                 {
-                    string strTag = e.Node.Tag.ToString();
-                    if (!string.IsNullOrEmpty(strTag))
+                    string strFile = await objCache.GetFilePathAsync(_objGenericToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strFile))
                     {
-                        bool blnIncludeCloseOpenCharacter
-                            = (strTag.EndsWith(".chum5", Utils.PathStringComparison)
-                               || strTag.EndsWith(
+                        ContextMenuStrip cmsToUse =
+                            (strFile.EndsWith(".chum5", Utils.PathStringComparison)
+                               || strFile.EndsWith(
                                    ".chum5lz", Utils.PathStringComparison))
                               && await Program.MainForm.OpenFormsWithCharacters.AnyAsync(
-                                  (x, t1) => x.CharacterObjects.AnyAsync(async (y, t2) => string.Equals(await y.GetFileNameAsync(t2).ConfigureAwait(false), strTag, Utils.PathStringComparison), t1), _objGenericToken).ConfigureAwait(false);
-                        ContextMenuStrip objStrip =
-                            await CreateContextMenuStripAsync(blnIncludeCloseOpenCharacter, _objGenericToken)
-                                .ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = objStrip, token: _objGenericToken)
+                                  (x, t1) => x.CharacterObjects.AnyAsync(async (y, t2) => string.Equals(await y.GetFileNameAsync(t2).ConfigureAwait(false), strFile, Utils.PathStringComparison), t1), _objGenericToken).ConfigureAwait(false)
+                                  ? cmsRoster
+                                  : cmsRosterNoClose;
+                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = cmsToUse, token: _objGenericToken)
                             .ConfigureAwait(false);
                     }
                     else
                     {
-                        ContextMenuStrip objStrip = await CreateContextMenuStripAsync(false, _objGenericToken)
-                            .ConfigureAwait(false);
-                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = objStrip, token: _objGenericToken)
+                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = cmsRosterNoClose, token: _objGenericToken)
                             .ConfigureAwait(false);
                     }
+                }
+                else
+                {
+                    await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = null, token: _objGenericToken)
+                        .ConfigureAwait(false);
                 }
 
                 foreach (IPlugin plugin in await Program.PluginLoader.GetMyActivePluginsAsync(_objGenericToken)
@@ -2535,158 +2548,6 @@ namespace Chummer
             {
                 //swallow this
             }
-        }
-
-        public ContextMenuStrip CreateContextMenuStrip(bool blnIncludeCloseOpenCharacter, CancellationToken token = default)
-        {
-            const int ToolStripWidth = 180;
-            const int ToolStripHeight = 22;
-
-            return this.DoThreadSafeFunc(t => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, t), token);
-        }
-
-        public Task<ContextMenuStrip> CreateContextMenuStripAsync(bool blnIncludeCloseOpenCharacter, CancellationToken token = default)
-        {
-            const int ToolStripWidth = 180;
-            const int ToolStripHeight = 22;
-
-            return this.DoThreadSafeFuncAsync(t => CreateContextMenuStripCore(blnIncludeCloseOpenCharacter, ToolStripWidth, ToolStripHeight, t), token);
-        }
-
-        private ContextMenuStrip CreateContextMenuStripCore(bool blnIncludeCloseOpenCharacter, int intToolStripWidth, int intToolStripHeight, CancellationToken token = default)
-        {
-            using (Graphics g = CreateGraphics())
-            {
-                intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
-                intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
-            }
-            //
-            // tsToggleFav
-            //
-            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsToggleFav",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_ToggleFavorite"
-            };
-            tsToggleFav.BatchSetImages(Properties.Resources.asterisk_orange_16,
-                Properties.Resources.asterisk_orange_20, Properties.Resources.asterisk_orange_24,
-                Properties.Resources.asterisk_orange_32, Properties.Resources.asterisk_orange_48,
-                Properties.Resources.asterisk_orange_64);
-            tsToggleFav.Click += tsToggleFav_Click;
-            //
-            // tsSort
-            //
-            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsSort",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Sort"
-            };
-            tsSort.BatchSetImages(Properties.Resources.page_refresh_16,
-                Properties.Resources.page_refresh_20, Properties.Resources.page_refresh_24,
-                Properties.Resources.page_refresh_32, Properties.Resources.page_refresh_48,
-                Properties.Resources.page_refresh_64);
-            tsSort.Click += tsSort_Click;
-            //
-            // tsOpen
-            //
-            DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsOpen",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Main_Open"
-            };
-            tsOpen.BatchSetImages(Properties.Resources.folder_page_16,
-                Properties.Resources.folder_page_20, Properties.Resources.folder_page_24,
-                Properties.Resources.folder_page_32, Properties.Resources.folder_page_48,
-                Properties.Resources.folder_page_64);
-            tsOpen.Click += tsOpen_Click;
-            //
-            // tsOpenForPrinting
-            //
-            DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsOpenForPrinting",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Main_OpenForPrinting"
-            };
-            tsOpenForPrinting.BatchSetImages(Properties.Resources.folder_print_16,
-                Properties.Resources.folder_print_20, Properties.Resources.folder_print_24,
-                Properties.Resources.folder_print_32, Properties.Resources.folder_print_48,
-                Properties.Resources.folder_print_64);
-            tsOpenForPrinting.Click += tsOpenForPrinting_Click;
-            //
-            // tsOpenForExport
-            //
-            DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsOpenForExport",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Main_OpenForExport"
-            };
-            tsOpenForExport.BatchSetImages(Properties.Resources.folder_script_go_16,
-                Properties.Resources.folder_script_go_20, Properties.Resources.folder_script_go_24,
-                Properties.Resources.folder_script_go_32, Properties.Resources.folder_script_go_48,
-                Properties.Resources.folder_script_go_64);
-            tsOpenForExport.Click += tsOpenForExport_Click;
-            //
-            // tsDelete
-            //
-            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsDelete",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Delete"
-            };
-            tsDelete.BatchSetImages(Properties.Resources.delete_16,
-                Properties.Resources.delete_20, Properties.Resources.delete_24,
-                Properties.Resources.delete_32, Properties.Resources.delete_48,
-                Properties.Resources.delete_64);
-            tsDelete.Click += tsDelete_Click;
-            //
-            // cmsRoster
-            //
-            ContextMenuStrip cmsRoster = new ContextMenuStrip(components)
-            {
-                Name = "cmsRoster",
-                Size = new Size(intToolStripWidth, intToolStripHeight * 5)
-            };
-            cmsRoster.Items.Add(tsToggleFav);
-            cmsRoster.Items.Add(tsSort);
-            cmsRoster.Items.Add(tsOpen);
-            cmsRoster.Items.Add(tsOpenForPrinting);
-            cmsRoster.Items.Add(tsOpenForExport);
-            cmsRoster.Items.Add(tsDelete);
-            tsToggleFav.TranslateToolStripItemsRecursively(token: token);
-            tsSort.TranslateToolStripItemsRecursively(token: token);
-            tsOpen.TranslateToolStripItemsRecursively(token: token);
-            tsOpenForPrinting.TranslateToolStripItemsRecursively(token: token);
-            tsOpenForExport.TranslateToolStripItemsRecursively(token: token);
-            tsDelete.TranslateToolStripItemsRecursively(token: token);
-
-            if (blnIncludeCloseOpenCharacter)
-            {
-                //
-                // tsCloseOpenCharacter
-                //
-                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
-                {
-                    Name = "tsCloseOpenCharacter",
-                    Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Close"
-                };
-                tsCloseOpenCharacter.BatchSetImages(Properties.Resources.door_out_16,
-                    Properties.Resources.door_out_20, Properties.Resources.door_out_24,
-                    Properties.Resources.door_out_32, Properties.Resources.door_out_48,
-                    Properties.Resources.door_out_64);
-                tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
-                cmsRoster.Items.Add(tsCloseOpenCharacter);
-                tsCloseOpenCharacter.TranslateToolStripItemsRecursively(token: token);
-            }
-
-            cmsRoster.UpdateLightDarkMode(token);
-            return cmsRoster;
         }
 
         /// <summary>
