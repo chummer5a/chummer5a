@@ -312,6 +312,12 @@ namespace Chummer
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
+                    if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                        await UpdateTrackedNodes_TextAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(PreferredColor)))
+                        await UpdateTrackedNodes_ColorAsync(token).ConfigureAwait(false);
+                    if (setNamesOfChangedProperties.Contains(nameof(Notes)))
+                        await UpdateTrackedNodes_ToolTipTextAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(EntityType)))
                     {
                         await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
@@ -4229,7 +4235,7 @@ namespace Chummer
             if (await GetEntityTypeAsync(token).ConfigureAwait(false) == ContactType.Pet)
             {
                 string strMetatype = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(strMetatype))
+                if (!string.IsNullOrEmpty(strMetatype))
                     objNode.Nodes.Add("TypeData", strMetatype);
             }
             else

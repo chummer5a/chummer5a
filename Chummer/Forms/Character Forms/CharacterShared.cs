@@ -10756,7 +10756,6 @@ namespace Chummer
                 await objContact.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
-            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task DeleteContact(Contact objContact, CancellationToken token = default)
@@ -10796,7 +10795,6 @@ namespace Chummer
 
                 await CharacterObject.Contacts.RemoveAsync(objContact, token: token)
                     .ConfigureAwait(false);
-                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10862,7 +10860,6 @@ namespace Chummer
                     await objContact.DisposeAsync().ConfigureAwait(false);
                     throw;
                 }
-                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -11079,7 +11076,6 @@ namespace Chummer
             TreeNode objPetsRoot = null;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -11101,10 +11097,17 @@ namespace Chummer
                     await treContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treContacts.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+                        SkipUpdate = true;
+                        try
+                        {
+                            await treContacts.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
-                        await CharacterObject.Contacts.ForEachWithSideEffectsAsync((objContact, t) => AddToTree(objContact, false, t), token).ConfigureAwait(false);
-
+                            await CharacterObject.Contacts.ForEachWithSideEffectsAsync((objContact, t) => AddToTree(objContact, false, t), token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            SkipUpdate = false;
+                        }
                         if (!string.IsNullOrEmpty(strSelectedContactId))
                         {
                             TreeNode objSelectedNode = await treContacts.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedContactId), token).ConfigureAwait(false);
@@ -11200,7 +11203,6 @@ namespace Chummer
             }
             finally
             {
-                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -11337,259 +11339,261 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                SkipUpdate = true;
-                try
+                string strSelectedSpiritId = string.Empty;
+                string strSelectedSpriteId = string.Empty;
+                if (treSpirits != null)
                 {
-                    string strSelectedSpiritId = string.Empty;
-                    string strSelectedSpriteId = string.Empty;
+                    for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                            .ConfigureAwait(false);
+                                                            objSelectedNode != null;
+                                                            objSelectedNode = objSelectedNode.Parent)
+                    {
+                        if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
+                        {
+                            strSelectedSpiritId = objSelectedId.InternalId;
+                            break;
+                        }
+                    }
+                }
+                if (treSprites != null)
+                {
+                    for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
+                                                            .ConfigureAwait(false);
+                                                            objSelectedNode != null;
+                                                            objSelectedNode = objSelectedNode.Parent)
+                    {
+                        if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
+                        {
+                            strSelectedSpriteId = objSelectedId.InternalId;
+                            break;
+                        }
+                    }
+                }
+
+                TreeNode objSpiritsParentNode = null;
+                TreeNode objSpritesParentNode = null;
+
+                if (e == null ||
+                    e.Action == NotifyCollectionChangedAction.Reset)
+                {
                     if (treSpirits != null)
-                    {
-                        for (TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
-                                                              .ConfigureAwait(false);
-                                                              objSelectedNode != null;
-                                                              objSelectedNode = objSelectedNode.Parent)
-                        {
-                            if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
-                            {
-                                strSelectedSpiritId = objSelectedId.InternalId;
-                                break;
-                            }
-                        }
-                    }
+                        await treSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     if (treSprites != null)
+                        await treSprites.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                    try
                     {
-                        for (TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
-                                                              .ConfigureAwait(false);
-                                                              objSelectedNode != null;
-                                                              objSelectedNode = objSelectedNode.Parent)
-                        {
-                            if (objSelectedNode?.Tag is IHasInternalId objSelectedId)
-                            {
-                                strSelectedSpriteId = objSelectedId.InternalId;
-                                break;
-                            }
-                        }
-                    }
-
-                    TreeNode objSpiritsParentNode = null;
-                    TreeNode objSpritesParentNode = null;
-
-                    if (e == null ||
-                        e.Action == NotifyCollectionChangedAction.Reset)
-                    {
-                        if (treSpirits != null)
-                            await treSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                        if (treSprites != null)
-                            await treSprites.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        SkipUpdate = true;
                         try
                         {
-                            await treSpirits.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+                            if (treSpirits != null)
+                                await treSpirits.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+                            if (treSprites != null)
+                                await treSprites.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                             await CharacterObject.Spirits.ForEachWithSideEffectsAsync((objSpirit, t) => AddToTree(objSpirit, false, t), token).ConfigureAwait(false);
-
-                            if (treSpirits != null && !string.IsNullOrEmpty(strSelectedSpiritId))
-                            {
-                                TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedSpiritId), token).ConfigureAwait(false);
-                                if (objSelectedNode != null)
-                                    await treSpirits.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
-                            }
-                            if (treSprites != null && !string.IsNullOrEmpty(strSelectedSpriteId))
-                            {
-                                TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedSpriteId), token).ConfigureAwait(false);
-                                if (objSelectedNode != null)
-                                    await treSprites.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
-                            }
                         }
                         finally
                         {
-                            if (treSpirits != null)
-                                await treSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
-                            if (treSprites != null)
-                                await treSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            SkipUpdate = false;
                         }
+                        if (treSpirits != null && !string.IsNullOrEmpty(strSelectedSpiritId))
+                        {
+                            TreeNode objSelectedNode = await treSpirits.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedSpiritId), token).ConfigureAwait(false);
+                            if (objSelectedNode != null)
+                                await treSpirits.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
+                        }
+                        if (treSprites != null && !string.IsNullOrEmpty(strSelectedSpriteId))
+                        {
+                            TreeNode objSelectedNode = await treSprites.DoThreadSafeFuncAsync(x => x.FindNode(strSelectedSpriteId), token).ConfigureAwait(false);
+                            if (objSelectedNode != null)
+                                await treSprites.DoThreadSafeAsync(x => x.SelectedNode = objSelectedNode, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        if (treSpirits != null)
+                            await treSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        if (treSprites != null)
+                            await treSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    if (treSpirits != null)
+                    {
+                        objSpiritsParentNode
+                            = await treSpirits.DoThreadSafeFuncAsync(
+                                x => x.FindNode("Node_SelectedSpirits", false),
+                                token).ConfigureAwait(false);
+                    }
+                    if (treSpirits != null)
+                    {
+                        objSpritesParentNode
+                            = await treSprites.DoThreadSafeFuncAsync(
+                                x => x.FindNode("Node_SelectedSprites", false),
+                                token).ConfigureAwait(false);
+                    }
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            {
+                                foreach (Spirit objSpirit in e.NewItems)
+                                {
+                                    await AddToTree(objSpirit, innerToken: token).ConfigureAwait(false);
+                                }
+                            }
+                            break;
+
+                        case NotifyCollectionChangedAction.Remove:
+                            {
+                                foreach (Spirit objSpirit in e.OldItems)
+                                {
+                                    TreeView treToProcess = null;
+                                    switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
+                                    {
+                                        case SpiritType.Spirit:
+                                            treToProcess = treSpirits;
+                                            break;
+                                        case SpiritType.Sprite:
+                                            treToProcess = treSprites;
+                                            break;
+                                    }
+                                    if (treToProcess != null)
+                                    {
+                                        TreeNode objRemoved = await treToProcess.DoThreadSafeFuncAsync(x =>
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objSpirit);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                if (objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                                return objNode;
+                                            }
+                                            return null;
+                                        }, token).ConfigureAwait(false);
+                                        if (objRemoved != null)
+                                            objSpirit.StopTrackingTreeNodeForUpdates(objRemoved);
+                                    }
+                                }
+
+                                break;
+                            }
+                        case NotifyCollectionChangedAction.Replace:
+                            {
+                                List<TreeNode> lstOldParents =
+                                    new List<TreeNode>(e.OldItems.Count);
+                                foreach (Spirit objSpirit in e.OldItems)
+                                {
+                                    TreeView treToProcess = null;
+                                    switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
+                                    {
+                                        case SpiritType.Spirit:
+                                            treToProcess = treSpirits;
+                                            break;
+                                        case SpiritType.Sprite:
+                                            treToProcess = treSprites;
+                                            break;
+                                    }
+                                    if (treToProcess != null)
+                                    {
+                                        TreeNode objRemoved = await treToProcess.DoThreadSafeFuncAsync(x =>
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objSpirit);
+                                            if (objNode != null)
+                                            {
+                                                objNode.Remove();
+                                                lstOldParents.Add(objNode.Parent);
+                                                return objNode;
+                                            }
+                                            return null;
+                                        }, token).ConfigureAwait(false);
+                                        if (objRemoved != null)
+                                            objSpirit.StopTrackingTreeNodeForUpdates(objRemoved);
+                                    }
+                                }
+
+                                foreach (Spirit objSpirit in e.NewItems)
+                                {
+                                    await AddToTree(objSpirit, innerToken: token).ConfigureAwait(false);
+                                }
+
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Nodes.Count == 0 && objOldParent.TreeView != null)
+                                    {
+                                        await objOldParent.TreeView.DoThreadSafeAsync(() => objOldParent.Remove(), token).ConfigureAwait(false);
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                async Task AddToTree(Spirit objSpirit, bool blnSingleAdd = true, CancellationToken innerToken = default)
+                {
+                    bool blnIsSprite = await objSpirit.GetEntityTypeAsync(innerToken).ConfigureAwait(false) == SpiritType.Sprite;
+                    TreeView treToProcess = blnIsSprite ? treSprites : treSpirits;
+                    if (treToProcess == null)
+                        return;
+                    TreeNode objNode = await objSpirit.CreateTreeNode(blnIsSprite ? cmsSprite : cmsSpirit, innerToken);
+                    if (objNode == null)
+                        return;
+                        
+                    TreeNode objParentNode = null;
+                    if (blnIsSprite)
+                    {
+                        if (objSpritesParentNode == null)
+                        {
+                            objSpritesParentNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedSprites",
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedSprites", token: innerToken)
+                                    .ConfigureAwait(false)
+                            };
+                            await treToProcess.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objSpritesParentNode);
+                                objSpritesParentNode.Expand();
+                            }, innerToken).ConfigureAwait(false);
+                        }
+
+                        objParentNode = objSpritesParentNode;
                     }
                     else
                     {
-                        if (treSpirits != null)
+                        if (objSpiritsParentNode == null)
                         {
-                            objSpiritsParentNode
-                                = await treSpirits.DoThreadSafeFuncAsync(
-                                    x => x.FindNode("Node_SelectedSpirits", false),
-                                    token).ConfigureAwait(false);
+                            objSpiritsParentNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedSpirits",
+                                Text = await LanguageManager
+                                    .GetStringAsync("Node_SelectedSpirits", token: innerToken).ConfigureAwait(false)
+                            };
+                            await treToProcess.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objSpiritsParentNode);
+                                objSpiritsParentNode.Expand();
+                            }, innerToken).ConfigureAwait(false);
                         }
-                        if (treSpirits != null)
-                        {
-                            objSpritesParentNode
-                                = await treSprites.DoThreadSafeFuncAsync(
-                                    x => x.FindNode("Node_SelectedSprites", false),
-                                    token).ConfigureAwait(false);
-                        }
-                        switch (e.Action)
-                        {
-                            case NotifyCollectionChangedAction.Add:
-                                {
-                                    foreach (Spirit objSpirit in e.NewItems)
-                                    {
-                                        await AddToTree(objSpirit, innerToken: token).ConfigureAwait(false);
-                                    }
-                                }
-                                break;
 
-                            case NotifyCollectionChangedAction.Remove:
-                                {
-                                    foreach (Spirit objSpirit in e.OldItems)
-                                    {
-                                        TreeView treToProcess = null;
-                                        switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
-                                        {
-                                            case SpiritType.Spirit:
-                                                treToProcess = treSpirits;
-                                                break;
-                                            case SpiritType.Sprite:
-                                                treToProcess = treSprites;
-                                                break;
-                                        }
-                                        if (treToProcess != null)
-                                        {
-                                            TreeNode objRemoved = await treToProcess.DoThreadSafeFuncAsync(x =>
-                                            {
-                                                TreeNode objNode = x.FindNodeByTag(objSpirit);
-                                                if (objNode != null)
-                                                {
-                                                    TreeNode objParent = objNode.Parent;
-                                                    objNode.Remove();
-                                                    if (objParent.Nodes.Count == 0)
-                                                        objParent.Remove();
-                                                    return objNode;
-                                                }
-                                                return null;
-                                            }, token).ConfigureAwait(false);
-                                            if (objRemoved != null)
-                                                objSpirit.StopTrackingTreeNodeForUpdates(objRemoved);
-                                        }
-                                    }
-
-                                    break;
-                                }
-                            case NotifyCollectionChangedAction.Replace:
-                                {
-                                    List<TreeNode> lstOldParents =
-                                        new List<TreeNode>(e.OldItems.Count);
-                                    foreach (Spirit objSpirit in e.OldItems)
-                                    {
-                                        TreeView treToProcess = null;
-                                        switch (await objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false))
-                                        {
-                                            case SpiritType.Spirit:
-                                                treToProcess = treSpirits;
-                                                break;
-                                            case SpiritType.Sprite:
-                                                treToProcess = treSprites;
-                                                break;
-                                        }
-                                        if (treToProcess != null)
-                                        {
-                                            TreeNode objRemoved = await treToProcess.DoThreadSafeFuncAsync(x =>
-                                            {
-                                                TreeNode objNode = x.FindNodeByTag(objSpirit);
-                                                if (objNode != null)
-                                                {
-                                                    objNode.Remove();
-                                                    lstOldParents.Add(objNode.Parent);
-                                                    return objNode;
-                                                }
-                                                return null;
-                                            }, token).ConfigureAwait(false);
-                                            if (objRemoved != null)
-                                                objSpirit.StopTrackingTreeNodeForUpdates(objRemoved);
-                                        }
-                                    }
-
-                                    foreach (Spirit objSpirit in e.NewItems)
-                                    {
-                                        await AddToTree(objSpirit, innerToken: token).ConfigureAwait(false);
-                                    }
-
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Nodes.Count == 0 && objOldParent.TreeView != null)
-                                        {
-                                            await objOldParent.TreeView.DoThreadSafeAsync(() => objOldParent.Remove(), token).ConfigureAwait(false);
-                                        }
-                                    }
-                                }
-                                break;
-                        }
+                        objParentNode = objSpiritsParentNode;
                     }
 
-                    async Task AddToTree(Spirit objSpirit, bool blnSingleAdd = true, CancellationToken innerToken = default)
+                    if (objParentNode == null)
+                        return;
+
+                    objSpirit.StartTrackingTreeNodeForUpdates(objNode);
+                    await treToProcess.DoThreadSafeAsync(x =>
                     {
-                        bool blnIsSprite = await objSpirit.GetEntityTypeAsync(innerToken).ConfigureAwait(false) == SpiritType.Sprite;
-                        TreeView treToProcess = blnIsSprite ? treSprites : treSpirits;
-                        if (treToProcess == null)
-                            return;
-                        TreeNode objNode = await objSpirit.CreateTreeNode(blnIsSprite ? cmsSprite : cmsSpirit, innerToken);
-                        if (objNode == null)
-                            return;
-                        
-                        TreeNode objParentNode = null;
-                        if (blnIsSprite)
-                        {
-                            if (objSpritesParentNode == null)
-                            {
-                                objSpritesParentNode = new TreeNode
-                                {
-                                    Tag = "Node_SelectedSprites",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedSprites", token: innerToken)
-                                        .ConfigureAwait(false)
-                                };
-                                await treToProcess.DoThreadSafeAsync(x =>
-                                {
-                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                    x.Nodes.Insert(0, objSpritesParentNode);
-                                    objSpritesParentNode.Expand();
-                                }, innerToken).ConfigureAwait(false);
-                            }
-
-                            objParentNode = objSpritesParentNode;
-                        }
-                        else
-                        {
-                            if (objSpiritsParentNode == null)
-                            {
-                                objSpiritsParentNode = new TreeNode
-                                {
-                                    Tag = "Node_SelectedSpirits",
-                                    Text = await LanguageManager
-                                        .GetStringAsync("Node_SelectedSpirits", token: innerToken).ConfigureAwait(false)
-                                };
-                                await treToProcess.DoThreadSafeAsync(x =>
-                                {
-                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                    x.Nodes.Insert(0, objSpiritsParentNode);
-                                    objSpiritsParentNode.Expand();
-                                }, innerToken).ConfigureAwait(false);
-                            }
-
-                            objParentNode = objSpiritsParentNode;
-                        }
-
-                        if (objParentNode == null)
-                            return;
-
-                        objSpirit.StartTrackingTreeNodeForUpdates(objNode);
-                        await treToProcess.DoThreadSafeAsync(x =>
-                        {
-                            objParentNode.Nodes.Add(objNode);
-                            if (blnSingleAdd)
-                                x.SelectedNode = objNode;
-                            objParentNode.Expand();
-                        }, innerToken).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    SkipUpdate = false;
+                        objParentNode.Nodes.Add(objNode);
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                        objParentNode.Expand();
+                    }, innerToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -11640,7 +11644,6 @@ namespace Chummer
                 await objSpirit.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
-            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task AddSprite(CancellationToken token = default)
@@ -11689,7 +11692,6 @@ namespace Chummer
                 await objSprite.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
-            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task DeleteSpirit(Spirit objSpirit, CancellationToken token = default)
