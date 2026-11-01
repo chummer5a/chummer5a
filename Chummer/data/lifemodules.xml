@@ -5080,7 +5080,7 @@
               <val>5</val>
             </knowledgeskilllevel>
             <knowledgeskilllevel>
-              <name>Magical Theory</name>
+              <name>Magical Theory (Street)</name>
               <group>Street</group>
               <val>3</val>
             </knowledgeskilllevel>
@@ -9992,7 +9992,7 @@
               <addquality>Focused Concentration</addquality>
             </addqualities>
             <knowledgeskilllevel>
-              <name>Magical Theory</name>
+              <name>Magical Theory (Academic)</name>
               <group>Professional</group>
               <val>2</val>
             </knowledgeskilllevel>

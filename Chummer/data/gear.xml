@@ -6652,6 +6652,7 @@
       <page>127</page>
       <avail>(Rating * 2)R</avail>
       <bonus>
+        <!-- Lockpicking in source  -->
         <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Locksmith,Medicine" />
       </bonus>
       <cost>Rating * 500</cost>

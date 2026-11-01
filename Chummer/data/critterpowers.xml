@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
 
@@ -2378,19 +2378,6 @@
       <page>165</page>
     </power>
     <!-- End Region -->
-    <!-- Region Kill Code -->
-    <power>
-      <id>7a2d7ea2-7460-4d76-be08-dfbf5653ec7d</id>
-      <name>Resonance Hosting</name>
-      <category>Emergent</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <source>KC</source>
-      <page>168</page>
-    </power>
-    <!-- End Region -->
     <!-- Region Aetherology -->
     <power>
       <id>1dcf3b40-9846-44bf-93d5-f70fc47ea975</id>
@@ -2863,9 +2850,10 @@
       <range>Self</range>
       <duration>Sustained</duration>
       <required>
-        <oneof>
-          <quality>Infected: Chiron</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Chiron quality -->
+          <name>Chiron</name>
+        </parentdetails>
       </required>
       <karma>9</karma>
       <source>DTR</source>
@@ -2952,9 +2940,10 @@
       <range>Self</range>
       <duration>Always</duration>
       <required>
-        <oneof>
-          <quality>Infected: Lamia</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Lamia quality -->
+          <name>Lamia</name>
+        </parentdetails>
       </required>
       <karma>9</karma>
       <source>DTR</source>
@@ -2998,9 +2987,10 @@
       <range>Self</range>
       <duration>Always</duration>
       <required>
-        <oneof>
-          <quality>Infected: Nibiinaabe</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Nibiinaabe quality -->
+          <name>Nibiinaabe</name>
+        </parentdetails>
       </required>
       <karma>6</karma>
       <source>DTR</source>
@@ -3015,9 +3005,10 @@
       <range>Self</range>
       <duration>Always</duration>
       <required>
-        <oneof>
-          <quality>Infected: Chiron</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Chiron quality -->
+          <name>Chiron</name>
+        </parentdetails>
       </required>
       <karma>12</karma>
       <source>DTR</source>
@@ -3032,9 +3023,10 @@
       <range>LOS</range>
       <duration>Sustained</duration>
       <required>
-        <oneof>
-          <quality>Infected: Jabberwock</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Jabberwock quality -->
+          <name>Jabberwock</name>
+        </parentdetails>
       </required>
       <karma>9</karma>
       <source>DTR</source>
@@ -3121,9 +3113,10 @@
       <range>Self</range>
       <duration>Sustained</duration>
       <required>
-        <oneof>
-          <quality>Infected: Lamia</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Lamia quality -->
+          <name>Lamia</name>
+        </parentdetails>
       </required>
       <karma>12</karma>
       <source>DTR</source>
@@ -3150,9 +3143,10 @@
       <range>Self</range>
       <duration>Always</duration>
       <required>
-        <oneof>
-          <quality>Infected: Jabberwock</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Jabberwock quality -->
+          <name>Jabberwock</name>
+        </parentdetails>
       </required>
       <karma>9</karma>
       <source>DTR</source>
@@ -3369,9 +3363,10 @@
       <range>Self</range>
       <duration>Always</duration>
       <required>
-        <oneof>
-          <quality>Infected: Nibiinaabe</quality>
-        </oneof>
+        <parentdetails>
+          <!-- There is no Infected: Nibiinaabe quality -->
+          <name>Nibiinaabe</name>
+        </parentdetails>
       </required>
       <karma>6</karma>
       <bonus>
