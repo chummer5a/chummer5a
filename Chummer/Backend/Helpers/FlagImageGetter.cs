@@ -17,19 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Drawing;
+using Chummer.Backend.Enums;
+
 namespace Chummer
 {
-    public enum FlagImageSize
-    {
-        None = 0,
-        Dpi96 = 16,
-        Dpi120 = 20,
-        Dpi144 = 24,
-        Dpi192 = 32,
-        Dpi288 = 48,
-        Dpi384 = 64
-    }
-
     public static class FlagImageGetter
     {
         /// <summary>
@@ -38,20 +30,20 @@ namespace Chummer
         /// <param name="strCode">The ISO-3166 code of the country/region's flag.</param>
         /// <param name="intSize">Size of the image to get.</param>
         /// <returns>Image of the country/region's flag if available, null otherwise</returns>
-        public static System.Drawing.Bitmap GetFlagFromCountryCode(string strCode, int intSize = 16)
+        public static Bitmap GetFlagFromCountryCode(string strCode, int intSize = 16)
         {
             if (intSize <= 0)
                 return null;
-            FlagImageSize eSize = FlagImageSize.Dpi96;
+            ImageSizesByDpi eSize = ImageSizesByDpi.Dpi96;
             if (intSize >= 32)
             {
                 if (intSize >= 48)
-                    eSize = intSize >= 64 ? FlagImageSize.Dpi384 : FlagImageSize.Dpi288;
+                    eSize = intSize >= 64 ? ImageSizesByDpi.Dpi384 : ImageSizesByDpi.Dpi288;
                 else
-                    eSize = FlagImageSize.Dpi192;
+                    eSize = ImageSizesByDpi.Dpi192;
             }
             else if (intSize >= 20)
-                eSize = intSize >= 24 ? FlagImageSize.Dpi144 : FlagImageSize.Dpi120;
+                eSize = intSize >= 24 ? ImageSizesByDpi.Dpi144 : ImageSizesByDpi.Dpi120;
 
             return GetFlagFromCountryCode(strCode, eSize);
         }
@@ -62,17 +54,17 @@ namespace Chummer
         /// <param name="strCode">The ISO-3166 code of the country/region's flag.</param>
         /// <param name="eSize">Size of the image to get based on DPI numbers.</param>
         /// <returns>Image of the country/region's flag if available, null otherwise</returns>
-        public static System.Drawing.Bitmap GetFlagFromCountryCode(string strCode, FlagImageSize eSize)
+        public static Bitmap GetFlagFromCountryCode(string strCode, ImageSizesByDpi eSize)
         {
-            if (eSize == FlagImageSize.None)
+            if (eSize == ImageSizesByDpi.None)
                 return null;
-            System.Drawing.Bitmap objReturn;
+            Bitmap objReturn;
             if (string.IsNullOrEmpty(strCode))
                 strCode = string.Empty;
             strCode = strCode.ToUpperInvariant();
             switch (eSize)
             {
-                case FlagImageSize.Dpi96:
+                case ImageSizesByDpi.Dpi96:
                 {
                     switch (strCode)
                     {
@@ -1015,7 +1007,7 @@ namespace Chummer
 
                     break;
                 }
-                case FlagImageSize.Dpi120:
+                case ImageSizesByDpi.Dpi120:
                 {
                     switch (strCode)
                     {
@@ -1958,7 +1950,7 @@ namespace Chummer
 
                     break;
                 }
-                case FlagImageSize.Dpi144:
+                case ImageSizesByDpi.Dpi144:
                 {
                     switch (strCode)
                     {
@@ -2901,7 +2893,7 @@ namespace Chummer
 
                     break;
                 }
-                case FlagImageSize.Dpi192:
+                case ImageSizesByDpi.Dpi192:
                 {
                     switch (strCode)
                     {
@@ -3844,7 +3836,7 @@ namespace Chummer
 
                     break;
                 }
-                case FlagImageSize.Dpi288:
+                case ImageSizesByDpi.Dpi288:
                 {
                     switch (strCode)
                     {
@@ -4787,7 +4779,7 @@ namespace Chummer
 
                     break;
                 }
-                case FlagImageSize.Dpi384:
+                case ImageSizesByDpi.Dpi384:
                 {
                     switch (strCode)
                     {
