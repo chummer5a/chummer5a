@@ -1041,7 +1041,7 @@ namespace Chummer
                     {
                         TreeNode objParentNode = objSelectedNode.Parent;
                         objSelectedNode.Remove();
-                        if (objParentNode.Nodes.Count == 0)
+                        if (objParentNode.GetNodeCount(false) == 0)
                             objParentNode.Remove();
                     }, _objGenericToken).ConfigureAwait(false);
                 }

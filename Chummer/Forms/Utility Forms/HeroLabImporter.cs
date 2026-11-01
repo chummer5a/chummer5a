@@ -71,7 +71,7 @@ namespace Chummer
                     {
                         x.Nodes.Clear();
                         x.Nodes.Add(objNode);
-                        x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                        x.SelectedNode = objNode.FirstNode ?? objNode;
                     }).ConfigureAwait(false);
                 }
             }

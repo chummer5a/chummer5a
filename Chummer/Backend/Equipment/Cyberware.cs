@@ -13517,7 +13517,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }, token).ConfigureAwait(false);
 
-                if (lstChildNodes.Count > 0)
+                if (objNode.GetNodeCount(false) > 0)
                     objNode.Expand();
 
                 return objNode;
@@ -13792,7 +13792,7 @@ namespace Chummer.Backend.Equipment
                     {
                         await treCyberware.DoThreadSafeAsync(() =>
                         {
-                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            for (int i = nodParent.GetNodeCount(false) - 1; i >= 0; --i)
                             {
                                 TreeNode objNode = nodParent.Nodes[i];
                                 if (objNode.Tag is Drug)
@@ -13913,7 +13913,7 @@ namespace Chummer.Backend.Equipment
                     {
                         await treCyberware.DoThreadSafeAsync(() =>
                         {
-                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            for (int i = nodParent.GetNodeCount(false) - 1; i >= 0; --i)
                             {
                                 TreeNode objNode = nodParent.Nodes[i];
                                 if (objNode.Tag is Drug)
@@ -14034,7 +14034,7 @@ namespace Chummer.Backend.Equipment
                     {
                         await treCyberware.DoThreadSafeAsync(() =>
                         {
-                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            for (int i = nodParent.GetNodeCount(false) - 1; i >= 0; --i)
                             {
                                 TreeNode objNode = nodParent.Nodes[i];
                                 if (objNode.Tag is Drug)

@@ -2305,7 +2305,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                             objParent.Remove();
                                     }
                                 }, token).ConfigureAwait(false);
@@ -2351,7 +2351,7 @@ namespace Chummer
                             {
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                         objOldParent.Remove();
                                 }
                             }, token).ConfigureAwait(false);
@@ -2543,7 +2543,7 @@ namespace Chummer
                             await treMetamagic.DoThreadSafeAsync(x =>
                             {
                                 TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                                int intNodesCount = nodMetamagicParentChildren.Count;
+                                int intNodesCount = nodMetamagicParent.GetNodeCount(false);
                                 int intTargetIndex = 0;
                                 for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                 {
@@ -2570,7 +2570,7 @@ namespace Chummer
                     if (blnSingleAdd)
                     {
                         TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intNodesCount = objParentNode.GetNodeCount(false);
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
@@ -2641,7 +2641,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                             objParent.Remove();
                                     }
                                 }
@@ -2675,7 +2675,7 @@ namespace Chummer
                             {
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                         objOldParent.Remove();
                                 }
                             }, token).ConfigureAwait(false);
@@ -2720,7 +2720,7 @@ namespace Chummer
                     if (blnSingleAdd)
                     {
                         TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intNodesCount = objParentNode.GetNodeCount(false);
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
@@ -2807,7 +2807,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                             objParent.Remove();
                                     }
                                 }, token).ConfigureAwait(false);
@@ -2853,7 +2853,7 @@ namespace Chummer
                             {
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                         objOldParent.Remove();
                                 }
                             }, token).ConfigureAwait(false);
@@ -2902,7 +2902,7 @@ namespace Chummer
                             await treMetamagic.DoThreadSafeAsync(x =>
                             {
                                 TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                                int intNodesCount = nodMetamagicParentChildren.Count;
+                                int intNodesCount = nodMetamagicParent.GetNodeCount(false);
                                 int intTargetIndex = 0;
                                 for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                 {
@@ -2929,7 +2929,7 @@ namespace Chummer
                     if (blnSingleAdd)
                     {
                         TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intNodesCount = objParentNode.GetNodeCount(false);
                         int intTargetIndex = 0;
                         for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
@@ -3673,7 +3673,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                             objParent.Remove();
                                     }
                                 }
@@ -3707,7 +3707,7 @@ namespace Chummer
                             {
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                         objOldParent.Remove();
                                 }
                             }, token).ConfigureAwait(false);
@@ -3895,7 +3895,7 @@ namespace Chummer
                                         {
                                             TreeNode objParent = objNode.Parent;
                                             objNode.Remove();
-                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                                 objParent.Remove();
                                         }
                                     }, token).ConfigureAwait(false);
@@ -3947,7 +3947,7 @@ namespace Chummer
                             {
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                         objOldParent.Remove();
                                 }
                             }, token).ConfigureAwait(false);
@@ -4358,7 +4358,7 @@ namespace Chummer
                             if (objNode != null)
                             {
                                 await treImprovements.DoThreadSafeAsync(() => objNode.Remove(), token).ConfigureAwait(false);
-                                if (objNode.Nodes.Count > 0)
+                                if (objNode.GetNodeCount(false) > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -4375,7 +4375,7 @@ namespace Chummer
                                     TreeNode root2 = nodRoot;
                                     await treImprovements.DoThreadSafeAsync(() =>
                                     {
-                                        for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
+                                        for (int i = objNode.GetNodeCount(false) - 1; i >= 0; --i)
                                         {
                                             TreeNode nodImprovement = objNode.Nodes[i];
                                             nodImprovement.Remove();
@@ -4457,7 +4457,7 @@ namespace Chummer
                             {
                                 await treImprovements.DoThreadSafeAsync(() => objLocation.Remove(), t)
                                                      .ConfigureAwait(false);
-                                if (objLocation.Nodes.Count > 0)
+                                if (objLocation.GetNodeCount(false) > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -4476,7 +4476,7 @@ namespace Chummer
                                     TreeNode root2 = nodRoot;
                                     await treImprovements.DoThreadSafeAsync(() =>
                                     {
-                                        for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                        for (int i = objLocation.GetNodeCount(false) - 1; i >= 0; --i)
                                         {
                                             TreeNode nodImprovement = objLocation.Nodes[i];
                                             nodImprovement.Remove();
@@ -4559,7 +4559,7 @@ namespace Chummer
                                         x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                                 if (nodLocation == null)
                                     continue;
-                                if (nodLocation.Nodes.Count > 0)
+                                if (nodLocation.GetNodeCount(false) > 0)
                                 {
                                     if (nodRoot == null)
                                     {
@@ -4575,7 +4575,7 @@ namespace Chummer
                                     TreeNode root2 = nodRoot;
                                     await treSelected.DoThreadSafeAsync(() =>
                                     {
-                                        for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                        for (int i = nodLocation.GetNodeCount(false) - 1; i >= 0; --i)
                                         {
                                             TreeNode nodWeapon = nodLocation.Nodes[i];
                                             nodWeapon.Remove();
@@ -4655,7 +4655,7 @@ namespace Chummer
                             List<TreeNode> lstNodesNeedingProcessing = new List<TreeNode>(lstLocations.Count);
                             await treSelected.DoThreadSafeAsync(x =>
                             {
-                                for (int i = x.Nodes.Count - 1; i >= 0; --i)
+                                for (int i = x.GetNodeCount(false) - 1; i >= 0; --i)
                                 {
                                     TreeNode objLoop = x.Nodes[i];
                                     if (objLoop?.Tag is Location objLocation && !lstLocations.Contains(objLocation))
@@ -4744,7 +4744,7 @@ namespace Chummer
                                     x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                             if (nodLocation == null)
                                 continue;
-                            if (nodLocation.Nodes.Count > 0)
+                            if (nodLocation.GetNodeCount(false) > 0)
                             {
                                 if (nodRoot == null)
                                 {
@@ -4760,7 +4760,7 @@ namespace Chummer
                                 TreeNode root2 = nodRoot;
                                 await treSelected.DoThreadSafeAsync(() =>
                                 {
-                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                    for (int i = nodLocation.GetNodeCount(false) - 1; i >= 0; --i)
                                     {
                                         TreeNode nodWeapon = nodLocation.Nodes[i];
                                         nodWeapon.Remove();
@@ -4840,7 +4840,7 @@ namespace Chummer
                         List<TreeNode> lstNodesNeedingProcessing = new List<TreeNode>(lstLocations.Count);
                         await treSelected.DoThreadSafeAsync(x =>
                         {
-                            for (int i = x.Nodes.Count - 1; i >= 0; --i)
+                            for (int i = x.GetNodeCount(false) - 1; i >= 0; --i)
                             {
                                 TreeNode objLoop = x.Nodes[i];
                                 if (objLoop?.Tag is Location objLocation && !lstLocations.Contains(objLocation))
@@ -4996,7 +4996,7 @@ namespace Chummer
 
                             await treWeapons.DoThreadSafeAsync(() =>
                             {
-                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                if (nodRoot != null && nodRoot.GetNodeCount(false) == 0)
                                 {
                                     nodRoot.Remove();
                                 }
@@ -5024,7 +5024,7 @@ namespace Chummer
 
                             await treWeapons.DoThreadSafeAsync(x =>
                             {
-                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                if (nodRoot != null && nodRoot.GetNodeCount(false) == 0)
                                 {
                                     nodRoot.Remove();
                                 }
@@ -5053,7 +5053,7 @@ namespace Chummer
 
                             await treWeapons.DoThreadSafeAsync(x =>
                             {
-                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                if (nodRoot != null && nodRoot.GetNodeCount(false) == 0)
                                 {
                                     nodRoot.Remove();
                                 }
@@ -5405,7 +5405,7 @@ namespace Chummer
 
                                 await treArmor.DoThreadSafeAsync(() =>
                                 {
-                                    if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                    if (nodRoot != null && nodRoot.GetNodeCount(false) == 0)
                                     {
                                         nodRoot.Remove();
                                     }
@@ -5527,7 +5527,7 @@ namespace Chummer
 
                                 await treArmor.DoThreadSafeAsync(x =>
                                 {
-                                    if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                    if (nodRoot != null && nodRoot.GetNodeCount(false) == 0)
                                     {
                                         nodRoot.Remove();
                                     }
@@ -5555,7 +5555,7 @@ namespace Chummer
 
                                 await treArmor.DoThreadSafeAsync(x =>
                                 {
-                                    if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                    if (nodRoot != null && nodRoot.GetNodeCount(false) == 0)
                                     {
                                         nodRoot.Remove();
                                     }
@@ -5811,7 +5811,7 @@ namespace Chummer
                         {
                             await treArmor.DoThreadSafeAsync(() =>
                             {
-                                for (int i = nodArmor.Nodes.Count - 1; i >= 0; --i)
+                                for (int i = nodArmor.GetNodeCount(false) - 1; i >= 0; --i)
                                 {
                                     TreeNode objNode = nodArmor.Nodes[i];
                                     if (objNode.Tag is ArmorMod objNodeMod &&
@@ -6484,7 +6484,7 @@ namespace Chummer
                                         {
                                             TreeNode objParent = objNode.Parent;
                                             objNode.Remove();
-                                            if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            if (objParent != null && objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                                 objParent.Remove();
                                         }
                                     }, token).ConfigureAwait(false);
@@ -6527,7 +6527,7 @@ namespace Chummer
                                 {
                                     foreach (TreeNode objOldParent in lstOldParentNodes)
                                     {
-                                        if (objOldParent.Nodes.Count == 0)
+                                        if (objOldParent.GetNodeCount(false) == 0)
                                             objOldParent.Remove();
                                     }
 
@@ -8524,7 +8524,7 @@ namespace Chummer
                                         {
                                             TreeNode objParent = objNode.Parent;
                                             objNode.Remove();
-                                            if (objParent.Nodes.Count == 0)
+                                            if (objParent.GetNodeCount(false) == 0)
                                                 objParent.Remove();
                                         }
                                     }, token).ConfigureAwait(false);
@@ -8570,7 +8570,7 @@ namespace Chummer
                                 {
                                     foreach (TreeNode objOldParent in lstOldParents)
                                     {
-                                        if (objOldParent.Nodes.Count == 0)
+                                        if (objOldParent.GetNodeCount(false) == 0)
                                             objOldParent.Remove();
                                     }
                                 }, token).ConfigureAwait(false);
@@ -8886,7 +8886,7 @@ namespace Chummer
                                                 TreeNode objParent = objNode.Parent;
                                                 objNode.Remove();
                                                 if (objParent.Tag.ToString() == "Node_SelectedImprovements" &&
-                                                    objParent.Nodes.Count == 0)
+                                                    objParent.GetNodeCount(false) == 0)
                                                     objParent.Remove();
                                             }
 
@@ -8897,7 +8897,7 @@ namespace Chummer
                                                 {
                                                     TreeNode objParent = objNode.Parent;
                                                     objNode.Remove();
-                                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                                         objParent.Remove();
                                                 }
                                             }, t);
@@ -8952,7 +8952,7 @@ namespace Chummer
                                 {
                                     foreach (TreeNode objOldParent in lstOldParents)
                                     {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                             objOldParent.Remove();
                                     }
                                 }, token).ConfigureAwait(false);
@@ -9256,7 +9256,7 @@ namespace Chummer
                                         {
                                             TreeNode objParent = objNode.Parent;
                                             objNode.Remove();
-                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                                 objParent.Remove();
                                         }
                                     }
@@ -9289,7 +9289,7 @@ namespace Chummer
                                 {
                                     foreach (TreeNode nodOldParent in setOldParentNodes)
                                     {
-                                        if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
+                                        if (nodOldParent.Level == 0 && nodOldParent.GetNodeCount(false) == 0)
                                             nodOldParent.Remove();
                                     }
                                 }, token).ConfigureAwait(false);
@@ -11150,7 +11150,7 @@ namespace Chummer
                                         {
                                             TreeNode objParent = objNode.Parent;
                                             objNode.Remove();
-                                            if (objParent.Nodes.Count == 0)
+                                            if (objParent.GetNodeCount(false) == 0)
                                                 objParent.Remove();
                                             return objNode;
                                         }
@@ -11190,7 +11190,7 @@ namespace Chummer
 
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Nodes.Count == 0 && objOldParent.TreeView != null)
+                                    if (objOldParent.GetNodeCount(false) == 0 && objOldParent.TreeView != null)
                                     {
                                         await objOldParent.TreeView.DoThreadSafeAsync(() => objOldParent.Remove(), token).ConfigureAwait(false);
                                     }
@@ -11467,7 +11467,7 @@ namespace Chummer
                                             {
                                                 TreeNode objParent = objNode.Parent;
                                                 objNode.Remove();
-                                                if (objParent.Nodes.Count == 0)
+                                                if (objParent.GetNodeCount(false) == 0)
                                                     objParent.Remove();
                                                 return objNode;
                                             }
@@ -11521,7 +11521,7 @@ namespace Chummer
 
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
-                                    if (objOldParent.Nodes.Count == 0 && objOldParent.TreeView != null)
+                                    if (objOldParent.GetNodeCount(false) == 0 && objOldParent.TreeView != null)
                                     {
                                         await objOldParent.TreeView.DoThreadSafeAsync(() => objOldParent.Remove(), token).ConfigureAwait(false);
                                     }
@@ -12347,12 +12347,12 @@ namespace Chummer
             }
             else
             {
-                int intNodesCount = await treView.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false);
+                int intNodesCount = await treView.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token).ConfigureAwait(false);
                 if (intNodesCount > 0)
                 {
                     await treView.DoThreadSafeAsync(x =>
                     {
-                        intNewIndex = x.Nodes[intNodesCount - 1].Nodes.Count;
+                        intNewIndex = x.Nodes[intNodesCount - 1].GetNodeCount(false);
                         nodDestination = x.Nodes[intNodesCount - 1];
                     }, token).ConfigureAwait(false);
                 }

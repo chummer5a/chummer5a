@@ -11933,7 +11933,7 @@ namespace Chummer
 
                         List<string> lstActiveIds = await treViewToUse.DoThreadSafeFuncAsync(y =>
                         {
-                            List<string> lstInnerReturn = new List<string>(y.Nodes.Count);
+                            List<string> lstInnerReturn = new List<string>(y.GetNodeCount(false));
                             // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
                             foreach (TreeNode objNode in y.Nodes)
                             {

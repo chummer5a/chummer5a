@@ -113,7 +113,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (_rgxSearchExpression != null)
                     {
-                        if (_rgxSearchExpression.IsMatch(treNode.Text) || treNode.Nodes.Count != 0)
+                        if (_rgxSearchExpression.IsMatch(treNode.Text) || treNode.GetNodeCount(false) != 0)
                         {
                             lstTreeNodes.Add(treNode);
                         }
@@ -152,7 +152,7 @@ namespace Chummer
         private async void treModules_AfterSelect(object sender, TreeViewEventArgs e)
         {
             bool blnSelectable = true;
-            if (e.Node.Nodes.Count != 0)
+            if (e.Node.GetNodeCount(false) != 0)
             {
                 //Select any node that have an id node equal to tag
                 //if it contains >selectable>True</selectable>, yes or </selectable>

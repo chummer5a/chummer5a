@@ -4111,7 +4111,7 @@ namespace Chummer
         {
             if (objNode == null)
                 return 0;
-            if (objNode.Nodes.Count == 0)
+            if (objNode.GetNodeCount(false) == 0)
                 return objNode.Bounds.Right;
             int intReturn = 0;
             foreach (TreeNode objChild in objNode.Nodes)
@@ -4235,13 +4235,13 @@ namespace Chummer
                 return;
             if (string.IsNullOrEmpty(strSelectedNodeTag))
                 strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
-            for (int i = 0; i < lstTreeViewNodes.Count; ++i)
+            for (int i = 0; i < treView.GetNodeCount(false); ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
-                TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
-                int intChildrenCount = objLoopNodeChildren.Count;
+                int intChildrenCount = objLoopNode.GetNodeCount(false);
                 if (intChildrenCount > 0)
                 {
+                    TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
                     TreeNode[] aobjNodes = new TreeNode[intChildrenCount];
                     objLoopNodeChildren.CopyTo(aobjNodes, 0);
                     objLoopNodeChildren.Clear();
@@ -4269,13 +4269,13 @@ namespace Chummer
                 return;
             if (objSelectedNodeTag == null)
                 objSelectedNodeTag = treView.SelectedNode?.Tag;
-            for (int i = 0; i < lstTreeViewNodes.Count; ++i)
+            for (int i = 0; i < treView.GetNodeCount(false); ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
-                TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
-                int intChildrenCount = objLoopNodeChildren.Count;
+                int intChildrenCount = objLoopNode.GetNodeCount(false);
                 if (intChildrenCount > 0)
                 {
+                    TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
                     TreeNode[] aobjNodes = new TreeNode[intChildrenCount];
                     objLoopNodeChildren.CopyTo(aobjNodes, 0);
                     objLoopNodeChildren.Clear();
@@ -4307,7 +4307,7 @@ namespace Chummer
             List<TreeNode> lstOriginalTopLevelOrder = null;
             if (blnRetainTopLevelOrder)
             {
-                lstOriginalTopLevelOrder = new List<TreeNode>(treView.Nodes.Count);
+                lstOriginalTopLevelOrder = new List<TreeNode>(treView.GetNodeCount(false));
                 foreach (TreeNode objNode in treView.Nodes)
                     lstOriginalTopLevelOrder.Add(objNode);
             }
@@ -4528,7 +4528,7 @@ namespace Chummer
         {
             if (treTree == null)
                 return 0;
-            if (treTree.Nodes.Count == 0)
+            if (treTree.GetNodeCount(false) == 0)
                 return treTree.Bounds.Right;
             int intReturn = 0;
             foreach (TreeNode objChild in treTree.Nodes)

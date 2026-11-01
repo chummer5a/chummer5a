@@ -1961,9 +1961,7 @@ namespace Chummer.Backend.Equipment
                 ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
-            TreeNodeCollection lstChildNodes = objNode.Nodes;
-
-            if (lstChildNodes.Count > 0)
+            if (objNode.GetNodeCount(false) > 0)
                 objNode.Expand();
 
             return objNode;

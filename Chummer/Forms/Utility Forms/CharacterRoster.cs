@@ -1562,8 +1562,7 @@ namespace Chummer
                                         t.ThrowIfCancellationRequested();
                                     }
 
-                                    if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
-                                                             || objNodeTag != null)
+                                    if (node.GetNodeCount(false) > 0 || !string.IsNullOrEmpty(node.ToolTipText) || objNodeTag != null)
                                     {
                                         if (treList.Nodes.ContainsKey(node.Name))
                                             treList.Nodes.RemoveByKey(node.Name);

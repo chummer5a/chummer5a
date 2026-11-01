@@ -137,7 +137,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                             objParent.Remove();
                                     }
                                 }, token: token).ConfigureAwait(false);
@@ -173,7 +173,7 @@ namespace Chummer
                                 {
                                     foreach (TreeNode objOldParent in lstOldParents)
                                     {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        if (objOldParent.Level == 0 && objOldParent.GetNodeCount(false) == 0)
                                             objOldParent.Remove();
                                     }
                                 }, token: token).ConfigureAwait(false);
@@ -288,7 +288,7 @@ namespace Chummer
                             if (objParentNode == null)
                                 return;
                             TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intNodesCount = objParentNode.GetNodeCount(false);
                             int intTargetIndex = 0;
                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {

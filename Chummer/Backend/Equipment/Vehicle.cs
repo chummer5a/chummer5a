@@ -5369,7 +5369,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }, token).ConfigureAwait(false);
 
-                if (nodMountsNode.Nodes.Count > 0)
+                if (nodMountsNode.GetNodeCount(false) > 0)
                 {
                     if (VehicleMod.ShouldNestWeaponMountsUnderWeaponsCategory)
                     {
@@ -5393,8 +5393,9 @@ namespace Chummer.Backend.Equipment
                                     VehicleMod.WeaponsCategoryKey, _objCharacter, token).ConfigureAwait(false)
                             };
                             // Insert Weapons category in preferred order among existing category groups
-                            int intInsert = lstChildNodes.Count;
-                            for (int i = 0; i < lstChildNodes.Count; ++i)
+                            int intChildNodeCount = objNode.GetNodeCount(false);
+                            int intInsert = intChildNodeCount;
+                            for (int i = 0; i < intChildNodeCount; ++i)
                             {
                                 if (!VehicleMod.IsCategoryGroupTag(lstChildNodes[i].Tag))
                                 {
@@ -5471,7 +5472,7 @@ namespace Chummer.Backend.Equipment
                 }
             }, token).ConfigureAwait(false);
 
-            if (lstChildNodes.Count > 0)
+            if (objNode.GetNodeCount(false) > 0)
                 objNode.Expand();
 
             return objNode;

@@ -2639,7 +2639,7 @@ namespace Chummer.Backend.Equipment
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);
-            if (lstChildNodes.Count > 0)
+            if (objNode.GetNodeCount(false) > 0)
                 objNode.Expand();
 
             return objNode;

@@ -313,7 +313,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    int intNodesCount = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false);
+                    int intNodesCount = await treCharacters.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token).ConfigureAwait(false);
                     await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await prgProgress.DoThreadSafeAsync(objBar =>
                     {

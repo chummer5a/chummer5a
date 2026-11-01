@@ -477,7 +477,7 @@ namespace Chummer.UI.Shared
                                                                 : cmsLimitModifierNotesOnly, token).ConfigureAwait(false);
                                         await treLimit.DoThreadSafeAsync(x =>
                                         {
-                                            int intNodesCount = lstParentNodeChildren.Count;
+                                            int intNodesCount = objParentNode.GetNodeCount(false);
                                             int intTargetIndex = 0;
                                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                             {
@@ -510,7 +510,7 @@ namespace Chummer.UI.Shared
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        if (objParent.Level == 0 && objParent.GetNodeCount(false) == 0)
                                             objParent.Remove();
                                     }
                                 }
@@ -549,7 +549,7 @@ namespace Chummer.UI.Shared
                                                                 : cmsLimitModifierNotesOnly, token).ConfigureAwait(false);
                                         await treLimit.DoThreadSafeAsync(x =>
                                         {
-                                            int intNodesCount = lstParentNodeChildren.Count;
+                                            int intNodesCount = objParentNode.GetNodeCount(false);
                                             int intTargetIndex = 0;
                                             for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                             {
@@ -572,7 +572,7 @@ namespace Chummer.UI.Shared
                             {
                                 foreach (TreeNode objOldParentNode in lstOldParentNodes)
                                 {
-                                    if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
+                                    if (objOldParentNode.Level == 0 && objOldParentNode.GetNodeCount(false) == 0)
                                         objOldParentNode.Remove();
                                 }
                             }, token: token).ConfigureAwait(false);

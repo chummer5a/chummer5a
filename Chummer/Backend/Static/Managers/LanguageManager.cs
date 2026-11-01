@@ -676,7 +676,7 @@ namespace Chummer
 
                     case TreeView treTree:
                         {
-                            List<ValueTuple<TreeNode, string>> lstTagsToUse = new List<ValueTuple<TreeNode, string>>(await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false));
+                            List<ValueTuple<TreeNode, string>> lstTagsToUse = new List<ValueTuple<TreeNode, string>>(await treTree.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token).ConfigureAwait(false));
                             await treTree.DoThreadSafeAsync((x, t) =>
                             {
                                 foreach (TreeNode objNode in x.Nodes)

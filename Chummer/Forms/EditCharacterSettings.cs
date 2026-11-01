@@ -1277,7 +1277,7 @@ namespace Chummer
                     int intNewCount
                         = await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync(token).ConfigureAwait(false);
                     if (intNewCount != await treCustomDataDirectories
-                            .DoThreadSafeFuncAsync(x => x.Nodes.Count, token: token)
+                            .DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token: token)
                             .ConfigureAwait(false))
                     {
                         // Group by GUID to deduplicate and show only one entry per GUID
@@ -1457,7 +1457,7 @@ namespace Chummer
                         // If deduplication resulted in fewer entries, rebuild the tree
                         int intDeduplicatedCount = dicDeduplicatedByGuid.Count;
                         int intCurrentNodeCount = await treCustomDataDirectories
-                            .DoThreadSafeFuncAsync(x => x.Nodes.Count, token: token).ConfigureAwait(false);
+                            .DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token: token).ConfigureAwait(false);
                         if (intDeduplicatedCount != intCurrentNodeCount)
                         {
                             // Count changed, rebuild the tree
@@ -1562,7 +1562,7 @@ namespace Chummer
                                 TreeNode objNode = await treCustomDataDirectories
                                     .DoThreadSafeFuncAsync(x =>
                                     {
-                                        if (i1 >= x.Nodes.Count)
+                                        if (i1 >= x.GetNodeCount(false))
                                             return null;
                                         TreeNode objReturn = x.Nodes[i1];
                                         objReturn.Checked = kvpKeyAndEnabled.Value;
