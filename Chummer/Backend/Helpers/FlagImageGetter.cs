@@ -58,10 +58,11 @@ namespace Chummer
         {
             if (eSize == ImageSizesByDpi.None)
                 return null;
-            Bitmap objReturn;
             if (string.IsNullOrEmpty(strCode))
                 strCode = string.Empty;
-            strCode = strCode.ToUpperInvariant();
+            else
+                strCode = strCode.ToUpperInvariant();
+            Bitmap objReturn;
             switch (eSize)
             {
                 case ImageSizesByDpi.Dpi96:

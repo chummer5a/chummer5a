@@ -225,6 +225,7 @@ namespace Chummer
             this.imgSheetLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgSheetLanguageFlag.TabIndex = 105;
             this.imgSheetLanguageFlag.TabStop = false;
+            this.imgSheetLanguageFlag.DpiChangedAfterParent += new System.EventHandler(this.imgSheetLanguageFlag_DpiChangedAfterParent);
             // 
             // bufferedTableLayoutPanel1
             // 

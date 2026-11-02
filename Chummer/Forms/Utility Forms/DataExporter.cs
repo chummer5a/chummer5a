@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -197,7 +198,7 @@ namespace Chummer
                 await pgbExportProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                 string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
                 await imgSheetLanguageFlag.DoThreadSafeAsync(x => x.Image = FlagImageGetter.GetFlagFromCountryCode(
-                    strLanguage.Substring(3, 2),
+                    strLanguage?.Substring(3, 2),
                     Math.Min(x.Width, x.Height)), token: _objGenericToken).ConfigureAwait(false);
                 await ValidateIfExportPossible(_objGenericToken).ConfigureAwait(false);
             }
@@ -495,6 +496,25 @@ namespace Chummer
                     x.DialogResult = DialogResult.OK;
                     x.Close();
                 }, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            try
+            {
+                _objGenericToken.ThrowIfCancellationRequested();
+                string strLanguage = cboLanguage.SelectedValue?.ToString();
+                _objGenericToken.ThrowIfCancellationRequested();
+                Bitmap bmpFlag = FlagImageGetter.GetFlagFromCountryCode(
+                    strLanguage?.Substring(3, 2),
+                    Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height));
+                _objGenericToken.ThrowIfCancellationRequested();
+                imgSheetLanguageFlag.Image = bmpFlag;
             }
             catch (OperationCanceledException)
             {

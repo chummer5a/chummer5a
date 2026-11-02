@@ -3182,5 +3182,18 @@ namespace Chummer
                 }
             }
         }
+
+        private void imgLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2),
+                        Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height));
+        }
+
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
+            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2),
+                        Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height));
+        }
     }
 }

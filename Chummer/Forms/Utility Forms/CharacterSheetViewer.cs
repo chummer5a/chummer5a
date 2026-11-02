@@ -1526,5 +1526,22 @@ namespace Chummer
         }
 
         #endregion Methods
+
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            try
+            {
+                _objGenericToken.ThrowIfCancellationRequested();
+                Bitmap bmpFlag = FlagImageGetter.GetFlagFromCountryCode(
+                    _strPrintLanguage.Substring(3, 2),
+                    Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height));
+                _objGenericToken.ThrowIfCancellationRequested();
+                imgSheetLanguageFlag.Image = bmpFlag;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
     }
 }

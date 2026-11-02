@@ -769,6 +769,7 @@ namespace Chummer
             this.imgSheetLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgSheetLanguageFlag.TabIndex = 50;
             this.imgSheetLanguageFlag.TabStop = false;
+            this.imgSheetLanguageFlag.DpiChangedAfterParent += new System.EventHandler(this.imgSheetLanguageFlag_DpiChangedAfterParent);
             // 
             // imgLanguageFlag
             // 
@@ -779,6 +780,7 @@ namespace Chummer
             this.imgLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgLanguageFlag.TabIndex = 49;
             this.imgLanguageFlag.TabStop = false;
+            this.imgLanguageFlag.DpiChangedAfterParent += new System.EventHandler(this.imgLanguageFlag_DpiChangedAfterParent);
             // 
             // tlpLoggingOptions
             // 

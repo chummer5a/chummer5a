@@ -29,11 +29,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
-using Chummer.Backend.Enums;
 using Chummer.Plugins;
 using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json;
@@ -2592,5 +2590,19 @@ namespace Chummer
         /// Set to True at the end of the OnLoad method. Useful because the load method is executed asynchronously, so form might end up getting closed before it fully loads.
         /// </summary>
         public bool IsFinishedLoading { get; private set; }
+
+        private void treCharacterList_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            int intItemHeight = treCharacterList.ItemHeight;
+            if (intItemHeight >= 32)
+            {
+                if (intItemHeight >= 48)
+                    treCharacterList.ImageList = intItemHeight >= 64 ? lstRosterImages64 : lstRosterImages48;
+                else
+                    treCharacterList.ImageList = lstRosterImages32;
+            }
+            else if (intItemHeight >= 20)
+                treCharacterList.ImageList = intItemHeight >= 24 ? lstRosterImages24 : lstRosterImages20;
+        }
     }
 }

@@ -95,6 +95,8 @@ namespace Chummer
             this.lstRosterImages32 = new System.Windows.Forms.ImageList(this.components);
             this.lstRosterImages48 = new System.Windows.Forms.ImageList(this.components);
             this.lstRosterImages64 = new System.Windows.Forms.ImageList(this.components);
+            this.lblBuildMethodLabel = new System.Windows.Forms.Label();
+            this.lblBuildMethod = new System.Windows.Forms.Label();
             this.lblFilePath = new Chummer.LabelWithToolTip();
             this.tsToggleFav = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsSort = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -109,8 +111,6 @@ namespace Chummer
             this.tsOpenForPrintingNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsOpenForExportNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsDeleteNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.lblBuildMethodLabel = new System.Windows.Forms.Label();
-            this.lblBuildMethod = new System.Windows.Forms.Label();
             this.tabCharacterTexts.SuspendLayout();
             this.tabCharacterDescription.SuspendLayout();
             this.tabCharacterConcept.SuspendLayout();
@@ -535,6 +535,7 @@ namespace Chummer
             this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
             this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_OnDefaultKeyDown);
             this.treCharacterList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            this.treCharacterList.DpiChangedAfterParent += new System.EventHandler(this.treCharacterList_DpiChangedAfterParent);
             // 
             // cmsRoster
             // 
@@ -632,6 +633,31 @@ namespace Chummer
             this.lstRosterImages64.Images.SetKeyName(4, "clock_select_remain.png");
             this.lstRosterImages64.Images.SetKeyName(5, "folder_find.png");
             this.lstRosterImages64.Images.SetKeyName(6, "folder.png");
+            // 
+            // lblBuildMethodLabel
+            // 
+            this.lblBuildMethodLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblBuildMethodLabel.AutoSize = true;
+            this.lblBuildMethodLabel.Location = new System.Drawing.Point(18, 206);
+            this.lblBuildMethodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBuildMethodLabel.Name = "lblBuildMethodLabel";
+            this.lblBuildMethodLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblBuildMethodLabel.TabIndex = 41;
+            this.lblBuildMethodLabel.Tag = "Label_Roster_Build_Method";
+            this.lblBuildMethodLabel.Text = "Build Method:";
+            this.lblBuildMethodLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblBuildMethod
+            // 
+            this.lblBuildMethod.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblBuildMethod.AutoSize = true;
+            this.lblBuildMethod.Location = new System.Drawing.Point(96, 206);
+            this.lblBuildMethod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBuildMethod.Name = "lblBuildMethod";
+            this.lblBuildMethod.Size = new System.Drawing.Size(39, 13);
+            this.lblBuildMethod.TabIndex = 42;
+            this.lblBuildMethod.Text = "[None]";
+            this.lblBuildMethod.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblFilePath
             // 
@@ -834,31 +860,6 @@ namespace Chummer
             this.tsDeleteNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsDeleteNoClose.Tag = "Menu_Delete";
             this.tsDeleteNoClose.Text = "&Delete from this list";
-            // 
-            // lblBuildMethodLabel
-            // 
-            this.lblBuildMethodLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblBuildMethodLabel.AutoSize = true;
-            this.lblBuildMethodLabel.Location = new System.Drawing.Point(18, 206);
-            this.lblBuildMethodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBuildMethodLabel.Name = "lblBuildMethodLabel";
-            this.lblBuildMethodLabel.Size = new System.Drawing.Size(72, 13);
-            this.lblBuildMethodLabel.TabIndex = 41;
-            this.lblBuildMethodLabel.Tag = "Label_Roster_Build_Method";
-            this.lblBuildMethodLabel.Text = "Build Method:";
-            this.lblBuildMethodLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblBuildMethod
-            // 
-            this.lblBuildMethod.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblBuildMethod.AutoSize = true;
-            this.lblBuildMethod.Location = new System.Drawing.Point(96, 206);
-            this.lblBuildMethod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBuildMethod.Name = "lblBuildMethod";
-            this.lblBuildMethod.Size = new System.Drawing.Size(39, 13);
-            this.lblBuildMethod.TabIndex = 42;
-            this.lblBuildMethod.Text = "[None]";
-            this.lblBuildMethod.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // CharacterRoster
             // 
