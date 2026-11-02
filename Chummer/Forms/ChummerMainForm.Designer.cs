@@ -343,13 +343,13 @@ namespace Chummer
             // 
             // mnuStickyMRU0
             // 
-            this.mnuStickyMRU0.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU0.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU0.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU0.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU0.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU0.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU0.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU0.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU0.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU0.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU0.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU0.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU0.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU0.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU0.Name = "mnuStickyMRU0";
             this.mnuStickyMRU0.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU0.Text = "[StickyMRU0]";
@@ -359,13 +359,13 @@ namespace Chummer
             // 
             // mnuStickyMRU1
             // 
-            this.mnuStickyMRU1.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU1.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU1.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU1.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU1.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU1.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU1.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU1.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU1.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU1.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU1.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU1.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU1.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU1.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU1.Name = "mnuStickyMRU1";
             this.mnuStickyMRU1.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU1.Text = "[StickyMRU1]";
@@ -375,13 +375,13 @@ namespace Chummer
             // 
             // mnuStickyMRU2
             // 
-            this.mnuStickyMRU2.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU2.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU2.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU2.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU2.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU2.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU2.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU2.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU2.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU2.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU2.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU2.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU2.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU2.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU2.Name = "mnuStickyMRU2";
             this.mnuStickyMRU2.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU2.Text = "[StickyMRU2]";
@@ -391,13 +391,13 @@ namespace Chummer
             // 
             // mnuStickyMRU3
             // 
-            this.mnuStickyMRU3.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU3.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU3.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU3.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU3.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU3.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU3.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU3.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU3.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU3.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU3.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU3.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU3.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU3.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU3.Name = "mnuStickyMRU3";
             this.mnuStickyMRU3.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU3.Text = "[StickyMRU3]";
@@ -407,13 +407,13 @@ namespace Chummer
             // 
             // mnuStickyMRU4
             // 
-            this.mnuStickyMRU4.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU4.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU4.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU4.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU4.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU4.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU4.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU4.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU4.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU4.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU4.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU4.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU4.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU4.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU4.Name = "mnuStickyMRU4";
             this.mnuStickyMRU4.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU4.Text = "[StickyMRU4]";
@@ -423,13 +423,13 @@ namespace Chummer
             // 
             // mnuStickyMRU5
             // 
-            this.mnuStickyMRU5.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU5.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU5.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU5.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU5.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU5.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU5.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU5.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU5.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU5.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU5.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU5.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU5.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU5.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU5.Name = "mnuStickyMRU5";
             this.mnuStickyMRU5.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU5.Text = "[StickyMRU5]";
@@ -439,13 +439,13 @@ namespace Chummer
             // 
             // mnuStickyMRU6
             // 
-            this.mnuStickyMRU6.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU6.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU6.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU6.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU6.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU6.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU6.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU6.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU6.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU6.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU6.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU6.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU6.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU6.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU6.Name = "mnuStickyMRU6";
             this.mnuStickyMRU6.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU6.Text = "[StickyMRU6]";
@@ -455,13 +455,13 @@ namespace Chummer
             // 
             // mnuStickyMRU7
             // 
-            this.mnuStickyMRU7.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU7.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU7.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU7.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU7.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU7.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU7.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU7.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU7.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU7.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU7.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU7.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU7.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU7.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU7.Name = "mnuStickyMRU7";
             this.mnuStickyMRU7.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU7.Text = "[StickyMRU7]";
@@ -471,13 +471,13 @@ namespace Chummer
             // 
             // mnuStickyMRU8
             // 
-            this.mnuStickyMRU8.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU8.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU8.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU8.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU8.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU8.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU8.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU8.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU8.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU8.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU8.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU8.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU8.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU8.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU8.Name = "mnuStickyMRU8";
             this.mnuStickyMRU8.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU8.Text = "[StickyMRU8]";
@@ -487,13 +487,13 @@ namespace Chummer
             // 
             // mnuStickyMRU9
             // 
-            this.mnuStickyMRU9.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
-            this.mnuStickyMRU9.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
-            this.mnuStickyMRU9.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
-            this.mnuStickyMRU9.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
-            this.mnuStickyMRU9.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
-            this.mnuStickyMRU9.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
-            this.mnuStickyMRU9.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU9.Image = global::Chummer.Properties.Resources.heart_16;
+            this.mnuStickyMRU9.ImageDpi120 = global::Chummer.Properties.Resources.heart_20;
+            this.mnuStickyMRU9.ImageDpi144 = global::Chummer.Properties.Resources.heart_24;
+            this.mnuStickyMRU9.ImageDpi192 = global::Chummer.Properties.Resources.heart_32;
+            this.mnuStickyMRU9.ImageDpi288 = global::Chummer.Properties.Resources.heart_48;
+            this.mnuStickyMRU9.ImageDpi384 = global::Chummer.Properties.Resources.heart_64;
+            this.mnuStickyMRU9.ImageDpi96 = global::Chummer.Properties.Resources.heart_16;
             this.mnuStickyMRU9.Name = "mnuStickyMRU9";
             this.mnuStickyMRU9.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU9.Text = "[StickyMRU9]";
@@ -503,13 +503,13 @@ namespace Chummer
             // 
             // mnuMRU0
             // 
-            this.mnuMRU0.Image = null;
-            this.mnuMRU0.ImageDpi120 = null;
-            this.mnuMRU0.ImageDpi144 = null;
-            this.mnuMRU0.ImageDpi192 = null;
-            this.mnuMRU0.ImageDpi288 = null;
-            this.mnuMRU0.ImageDpi384 = null;
-            this.mnuMRU0.ImageDpi96 = null;
+            this.mnuMRU0.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU0.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU0.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU0.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU0.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU0.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU0.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU0.Name = "mnuMRU0";
             this.mnuMRU0.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU0.Text = "[MRU0]";
@@ -519,13 +519,13 @@ namespace Chummer
             // 
             // mnuMRU1
             // 
-            this.mnuMRU1.Image = null;
-            this.mnuMRU1.ImageDpi120 = null;
-            this.mnuMRU1.ImageDpi144 = null;
-            this.mnuMRU1.ImageDpi192 = null;
-            this.mnuMRU1.ImageDpi288 = null;
-            this.mnuMRU1.ImageDpi384 = null;
-            this.mnuMRU1.ImageDpi96 = null;
+            this.mnuMRU1.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU1.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU1.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU1.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU1.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU1.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU1.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU1.Name = "mnuMRU1";
             this.mnuMRU1.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU1.Text = "[MRU1]";
@@ -535,13 +535,13 @@ namespace Chummer
             // 
             // mnuMRU2
             // 
-            this.mnuMRU2.Image = null;
-            this.mnuMRU2.ImageDpi120 = null;
-            this.mnuMRU2.ImageDpi144 = null;
-            this.mnuMRU2.ImageDpi192 = null;
-            this.mnuMRU2.ImageDpi288 = null;
-            this.mnuMRU2.ImageDpi384 = null;
-            this.mnuMRU2.ImageDpi96 = null;
+            this.mnuMRU2.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU2.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU2.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU2.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU2.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU2.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU2.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU2.Name = "mnuMRU2";
             this.mnuMRU2.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU2.Text = "[MRU2]";
@@ -551,13 +551,13 @@ namespace Chummer
             // 
             // mnuMRU3
             // 
-            this.mnuMRU3.Image = null;
-            this.mnuMRU3.ImageDpi120 = null;
-            this.mnuMRU3.ImageDpi144 = null;
-            this.mnuMRU3.ImageDpi192 = null;
-            this.mnuMRU3.ImageDpi288 = null;
-            this.mnuMRU3.ImageDpi384 = null;
-            this.mnuMRU3.ImageDpi96 = null;
+            this.mnuMRU3.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU3.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU3.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU3.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU3.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU3.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU3.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU3.Name = "mnuMRU3";
             this.mnuMRU3.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU3.Text = "[MRU3]";
@@ -567,13 +567,13 @@ namespace Chummer
             // 
             // mnuMRU4
             // 
-            this.mnuMRU4.Image = null;
-            this.mnuMRU4.ImageDpi120 = null;
-            this.mnuMRU4.ImageDpi144 = null;
-            this.mnuMRU4.ImageDpi192 = null;
-            this.mnuMRU4.ImageDpi288 = null;
-            this.mnuMRU4.ImageDpi384 = null;
-            this.mnuMRU4.ImageDpi96 = null;
+            this.mnuMRU4.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU4.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU4.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU4.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU4.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU4.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU4.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU4.Name = "mnuMRU4";
             this.mnuMRU4.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU4.Text = "[MRU4]";
@@ -583,13 +583,13 @@ namespace Chummer
             // 
             // mnuMRU5
             // 
-            this.mnuMRU5.Image = null;
-            this.mnuMRU5.ImageDpi120 = null;
-            this.mnuMRU5.ImageDpi144 = null;
-            this.mnuMRU5.ImageDpi192 = null;
-            this.mnuMRU5.ImageDpi288 = null;
-            this.mnuMRU5.ImageDpi384 = null;
-            this.mnuMRU5.ImageDpi96 = null;
+            this.mnuMRU5.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU5.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU5.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU5.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU5.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU5.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU5.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU5.Name = "mnuMRU5";
             this.mnuMRU5.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU5.Text = "[MRU5]";
@@ -599,13 +599,13 @@ namespace Chummer
             // 
             // mnuMRU6
             // 
-            this.mnuMRU6.Image = null;
-            this.mnuMRU6.ImageDpi120 = null;
-            this.mnuMRU6.ImageDpi144 = null;
-            this.mnuMRU6.ImageDpi192 = null;
-            this.mnuMRU6.ImageDpi288 = null;
-            this.mnuMRU6.ImageDpi384 = null;
-            this.mnuMRU6.ImageDpi96 = null;
+            this.mnuMRU6.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU6.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU6.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU6.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU6.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU6.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU6.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU6.Name = "mnuMRU6";
             this.mnuMRU6.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU6.Text = "[MRU6]";
@@ -615,13 +615,13 @@ namespace Chummer
             // 
             // mnuMRU7
             // 
-            this.mnuMRU7.Image = null;
-            this.mnuMRU7.ImageDpi120 = null;
-            this.mnuMRU7.ImageDpi144 = null;
-            this.mnuMRU7.ImageDpi192 = null;
-            this.mnuMRU7.ImageDpi288 = null;
-            this.mnuMRU7.ImageDpi384 = null;
-            this.mnuMRU7.ImageDpi96 = null;
+            this.mnuMRU7.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU7.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU7.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU7.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU7.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU7.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU7.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU7.Name = "mnuMRU7";
             this.mnuMRU7.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU7.Text = "[MRU7]";
@@ -631,13 +631,13 @@ namespace Chummer
             // 
             // mnuMRU8
             // 
-            this.mnuMRU8.Image = null;
-            this.mnuMRU8.ImageDpi120 = null;
-            this.mnuMRU8.ImageDpi144 = null;
-            this.mnuMRU8.ImageDpi192 = null;
-            this.mnuMRU8.ImageDpi288 = null;
-            this.mnuMRU8.ImageDpi384 = null;
-            this.mnuMRU8.ImageDpi96 = null;
+            this.mnuMRU8.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU8.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU8.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU8.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU8.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU8.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU8.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU8.Name = "mnuMRU8";
             this.mnuMRU8.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU8.Text = "[MRU8]";
@@ -647,13 +647,13 @@ namespace Chummer
             // 
             // mnuMRU9
             // 
-            this.mnuMRU9.Image = null;
-            this.mnuMRU9.ImageDpi120 = null;
-            this.mnuMRU9.ImageDpi144 = null;
-            this.mnuMRU9.ImageDpi192 = null;
-            this.mnuMRU9.ImageDpi288 = null;
-            this.mnuMRU9.ImageDpi384 = null;
-            this.mnuMRU9.ImageDpi96 = null;
+            this.mnuMRU9.Image = global::Chummer.Properties.Resources.clock_select_remain_16;
+            this.mnuMRU9.ImageDpi120 = global::Chummer.Properties.Resources.clock_select_remain_20;
+            this.mnuMRU9.ImageDpi144 = global::Chummer.Properties.Resources.clock_select_remain_24;
+            this.mnuMRU9.ImageDpi192 = global::Chummer.Properties.Resources.clock_select_remain_32;
+            this.mnuMRU9.ImageDpi288 = global::Chummer.Properties.Resources.clock_select_remain_48;
+            this.mnuMRU9.ImageDpi384 = global::Chummer.Properties.Resources.clock_select_remain_64;
+            this.mnuMRU9.ImageDpi96 = global::Chummer.Properties.Resources.clock_select_remain_16;
             this.mnuMRU9.Name = "mnuMRU9";
             this.mnuMRU9.Size = new System.Drawing.Size(195, 22);
             this.mnuMRU9.Text = "[MRU9]";

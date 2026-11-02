@@ -6867,4 +6867,40 @@
   <data name="track_changes_edit_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\64px\track_changes_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="heart_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\16px\heart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="heart_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\20px\heart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="heart_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\24px\heart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="heart_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\32px\heart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="heart_48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\48px\heart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="heart_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\64px\heart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_remain_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\64px\clock_select_remain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_remain_48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\48px\clock_select_remain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_remain_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\32px\clock_select_remain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_remain_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\24px\clock_select_remain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_remain_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\20px\clock_select_remain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_remain_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\16px\clock_select_remain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
