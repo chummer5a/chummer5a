@@ -1160,8 +1160,8 @@ namespace Chummer
                 objFavoriteNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_FavoriteCharacters", token: token).ConfigureAwait(false))
                 {
                     Tag = "Favorite",
-                    ImageIndex = 3,
-                    SelectedImageIndex = 3
+                    ImageIndex = 4,
+                    SelectedImageIndex = 4
                 };
                 blnAddFavoriteNode = true;
             }
@@ -1190,8 +1190,8 @@ namespace Chummer
                 objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters", token: token).ConfigureAwait(false))
                 {
                     Tag = "Recent",
-                    ImageIndex = 4,
-                    SelectedImageIndex = 4
+                    ImageIndex = 5,
+                    SelectedImageIndex = 5
                 };
                 blnAddRecentNode = true;
             }
@@ -1425,8 +1425,8 @@ namespace Chummer
                     objWatchNode = new TreeNode(strWatchText)
                     {
                         Tag = "Watch",
-                        ImageIndex = 5,
-                        SelectedImageIndex = 5
+                        ImageIndex = 6,
+                        SelectedImageIndex = 6
                     };
                     if (!string.IsNullOrEmpty(strErrorText))
                     {
@@ -1465,10 +1465,10 @@ namespace Chummer
                         if (objWatchNode.TreeView.IsDisposed)
                             continue;
                         await objWatchNode.TreeView.DoThreadSafeAsync(
-                            () => objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s, ImageIndex = 6, SelectedImageIndex = 6 }), token).ConfigureAwait(false);
+                            () => objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s, ImageIndex = 7, SelectedImageIndex = 7 }), token).ConfigureAwait(false);
                     }
                     else
-                        objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s, ImageIndex = 6, SelectedImageIndex = 6 });
+                        objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s, ImageIndex = 7, SelectedImageIndex = 7 });
                 }
 
                 foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
@@ -1763,21 +1763,25 @@ namespace Chummer
                 {
                     Text = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false),
                     ForeColor = ColorManager.ErrorColor,
-                    ImageIndex = 2,
-                    SelectedImageIndex = 2
+                    ImageIndex = 3,
+                    SelectedImageIndex = 3
                 };
             }
 
             token.ThrowIfCancellationRequested();
-            bool blnIsCareer = await objCache.GetCreatedAsync(token).ConfigureAwait(false);
+            int intImageIndex = await objCache.GetIsCritterAsync(token).ConfigureAwait(false)
+                ? 2
+                : await objCache.GetCreatedAsync(token).ConfigureAwait(false)
+                    ? 1
+                    : 0;
             TreeNode objNode = new TreeNode
             {
                 Text = await objCache.CalculatedNameAsync(token: token).ConfigureAwait(false),
                 ToolTipText = await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
                     .CheapReplaceAsync(Utils.GetStartupPath, () => "<" + Application.ProductName + ">", token: token).ConfigureAwait(false),
                 Tag = objCache,
-                ImageIndex = blnIsCareer ? 1 : 0,
-                SelectedImageIndex = blnIsCareer ? 1 : 0
+                ImageIndex = intImageIndex,
+                SelectedImageIndex = intImageIndex
             };
             string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strErrorText))

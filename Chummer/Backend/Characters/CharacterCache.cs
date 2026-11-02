@@ -58,7 +58,8 @@ namespace Chummer
         private string _strBuildMethod;
         private string _strEssence;
         private Image _imgMugshot;
-        private int _intCreated;
+        private bool _blnCreated;
+        private bool _blnIsCritter;
         private string _strSettingsFile;
         private readonly ConcurrentDictionary<string, object> _dicMyPluginData = new ConcurrentDictionary<string, object>();
         private SafeAsyncEventHandler _onMyDoubleClick;
@@ -467,7 +468,7 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _intCreated > 0;
+                    return _blnCreated;
             }
         }
 
@@ -477,7 +478,30 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _intCreated > 0;
+                return _blnCreated;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public bool IsCritter
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _blnIsCritter;
+            }
+        }
+
+        public async Task<bool> GetIsCritterAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnIsCritter;
             }
             finally
             {
@@ -588,7 +612,8 @@ namespace Chummer
                 _strCharacterName = objExistingCache.CharacterName;
                 _strCharacterNotes = objExistingCache.CharacterNotes;
                 _strConcept = objExistingCache.Concept;
-                _intCreated = objExistingCache.Created.ToInt32();
+                _blnCreated = objExistingCache.Created;
+                _blnIsCritter = objExistingCache.IsCritter;
                 _strDescription = objExistingCache.Description;
                 _strEssence = objExistingCache.Essence;
                 _strGameNotes = objExistingCache.GameNotes;
@@ -618,7 +643,8 @@ namespace Chummer
                     _strCharacterName = await objExistingCache.GetCharacterNameAsync(token).ConfigureAwait(false);
                     _strCharacterNotes = await objExistingCache.GetCharacterNotesAsync(token).ConfigureAwait(false);
                     _strConcept = await objExistingCache.GetConceptAsync(token).ConfigureAwait(false);
-                    _intCreated = (await objExistingCache.GetCreatedAsync(token).ConfigureAwait(false)).ToInt32();
+                    _blnCreated = await objExistingCache.GetCreatedAsync(token).ConfigureAwait(false);
+                    _blnIsCritter = await objExistingCache.GetIsCritterAsync(token).ConfigureAwait(false);
                     _strDescription = await objExistingCache.GetDescriptionAsync(token).ConfigureAwait(false);
                     _strEssence = await objExistingCache.GetEssenceAsync(token).ConfigureAwait(false);
                     _strGameNotes = await objExistingCache.GetGameNotesAsync(token).ConfigureAwait(false);
@@ -843,8 +869,10 @@ namespace Chummer
                     _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
                     _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                     _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
-                    _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
-                                   == bool.TrueString).ToInt32();
+                    _blnCreated = xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
+                                   == bool.TrueString;
+                    _blnIsCritter = xmlSourceNode.SelectSingleNodeAndCacheExpression("iscritter", token)?.Value
+                                   == bool.TrueString;
                     _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
 
                     string strSettings
@@ -938,7 +966,8 @@ namespace Chummer
                     _strPlayerName = string.Empty;
                     _strCharacterName = string.Empty;
                     _strCharacterAlias = string.Empty;
-                    _intCreated = 0;
+                    _blnCreated = false;
+                    _blnIsCritter = false;
                     _strEssence = string.Empty;
                     _strSettingsFile = string.Empty;
                     Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();

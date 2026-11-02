@@ -581,11 +581,12 @@ namespace Chummer
             this.lstRosterImages16.TransparentColor = System.Drawing.Color.Transparent;
             this.lstRosterImages16.Images.SetKeyName(0, "user_edit.png");
             this.lstRosterImages16.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages16.Images.SetKeyName(2, "user_red.png");
-            this.lstRosterImages16.Images.SetKeyName(3, "heart.png");
-            this.lstRosterImages16.Images.SetKeyName(4, "clock_select_remain.png");
-            this.lstRosterImages16.Images.SetKeyName(5, "folder_find.png");
-            this.lstRosterImages16.Images.SetKeyName(6, "folder.png");
+            this.lstRosterImages16.Images.SetKeyName(2, "ladybird.png");
+            this.lstRosterImages16.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages16.Images.SetKeyName(4, "heart.png");
+            this.lstRosterImages16.Images.SetKeyName(5, "clock_select_remain.png");
+            this.lstRosterImages16.Images.SetKeyName(6, "folder_find.png");
+            this.lstRosterImages16.Images.SetKeyName(7, "folder.png");
             // 
             // cmsRoster
             // 
@@ -715,7 +716,7 @@ namespace Chummer
             this.tsOpenForExportNoClose,
             this.tsDeleteNoClose});
             this.cmsRosterNoClose.Name = "cmsRoster";
-            this.cmsRosterNoClose.Size = new System.Drawing.Size(214, 158);
+            this.cmsRosterNoClose.Size = new System.Drawing.Size(214, 136);
             // 
             // tsToggleFavNoClose
             // 
@@ -807,11 +808,12 @@ namespace Chummer
             this.lstRosterImages20.TransparentColor = System.Drawing.Color.Transparent;
             this.lstRosterImages20.Images.SetKeyName(0, "user_edit.png");
             this.lstRosterImages20.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages20.Images.SetKeyName(2, "user_red.png");
-            this.lstRosterImages20.Images.SetKeyName(3, "heart.png");
-            this.lstRosterImages20.Images.SetKeyName(4, "clock_select_remain.png");
-            this.lstRosterImages20.Images.SetKeyName(5, "folder_find.png");
-            this.lstRosterImages20.Images.SetKeyName(6, "folder.png");
+            this.lstRosterImages20.Images.SetKeyName(2, "ladybird.png");
+            this.lstRosterImages20.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages20.Images.SetKeyName(4, "heart.png");
+            this.lstRosterImages20.Images.SetKeyName(5, "clock_select_remain.png");
+            this.lstRosterImages20.Images.SetKeyName(6, "folder_find.png");
+            this.lstRosterImages20.Images.SetKeyName(7, "folder.png");
             // 
             // lstRosterImages24
             // 
@@ -819,11 +821,12 @@ namespace Chummer
             this.lstRosterImages24.TransparentColor = System.Drawing.Color.Transparent;
             this.lstRosterImages24.Images.SetKeyName(0, "user_edit.png");
             this.lstRosterImages24.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages24.Images.SetKeyName(2, "user_red.png");
-            this.lstRosterImages24.Images.SetKeyName(3, "heart.png");
-            this.lstRosterImages24.Images.SetKeyName(4, "clock_select_remain.png");
-            this.lstRosterImages24.Images.SetKeyName(5, "folder_find.png");
-            this.lstRosterImages24.Images.SetKeyName(6, "folder.png");
+            this.lstRosterImages24.Images.SetKeyName(2, "ladybird.png");
+            this.lstRosterImages24.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages24.Images.SetKeyName(4, "heart.png");
+            this.lstRosterImages24.Images.SetKeyName(5, "clock_select_remain.png");
+            this.lstRosterImages24.Images.SetKeyName(6, "folder_find.png");
+            this.lstRosterImages24.Images.SetKeyName(7, "folder.png");
             // 
             // lstRosterImages32
             // 
@@ -831,11 +834,12 @@ namespace Chummer
             this.lstRosterImages32.TransparentColor = System.Drawing.Color.Transparent;
             this.lstRosterImages32.Images.SetKeyName(0, "user_edit.png");
             this.lstRosterImages32.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages32.Images.SetKeyName(2, "user_red.png");
-            this.lstRosterImages32.Images.SetKeyName(3, "heart.png");
-            this.lstRosterImages32.Images.SetKeyName(4, "clock_select_remain.png");
-            this.lstRosterImages32.Images.SetKeyName(5, "folder_find.png");
-            this.lstRosterImages32.Images.SetKeyName(6, "folder.png");
+            this.lstRosterImages32.Images.SetKeyName(2, "ladybird.png");
+            this.lstRosterImages32.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages32.Images.SetKeyName(4, "heart.png");
+            this.lstRosterImages32.Images.SetKeyName(5, "clock_select_remain.png");
+            this.lstRosterImages32.Images.SetKeyName(6, "folder_find.png");
+            this.lstRosterImages32.Images.SetKeyName(7, "folder.png");
             // 
             // lstRosterImages48
             // 
@@ -843,11 +847,12 @@ namespace Chummer
             this.lstRosterImages48.TransparentColor = System.Drawing.Color.Transparent;
             this.lstRosterImages48.Images.SetKeyName(0, "user_edit.png");
             this.lstRosterImages48.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages48.Images.SetKeyName(2, "user_red.png");
-            this.lstRosterImages48.Images.SetKeyName(3, "heart.png");
-            this.lstRosterImages48.Images.SetKeyName(4, "clock_select_remain.png");
-            this.lstRosterImages48.Images.SetKeyName(5, "folder_find.png");
-            this.lstRosterImages48.Images.SetKeyName(6, "folder.png");
+            this.lstRosterImages48.Images.SetKeyName(2, "ladybird.png");
+            this.lstRosterImages48.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages48.Images.SetKeyName(4, "heart.png");
+            this.lstRosterImages48.Images.SetKeyName(5, "clock_select_remain.png");
+            this.lstRosterImages48.Images.SetKeyName(6, "folder_find.png");
+            this.lstRosterImages48.Images.SetKeyName(7, "folder.png");
             // 
             // lstRosterImages64
             // 
@@ -855,11 +860,12 @@ namespace Chummer
             this.lstRosterImages64.TransparentColor = System.Drawing.Color.Transparent;
             this.lstRosterImages64.Images.SetKeyName(0, "user_edit.png");
             this.lstRosterImages64.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages64.Images.SetKeyName(2, "user_red.png");
-            this.lstRosterImages64.Images.SetKeyName(3, "heart.png");
-            this.lstRosterImages64.Images.SetKeyName(4, "clock_select_remain.png");
-            this.lstRosterImages64.Images.SetKeyName(5, "folder_find.png");
-            this.lstRosterImages64.Images.SetKeyName(6, "folder.png");
+            this.lstRosterImages64.Images.SetKeyName(2, "ladybird.png");
+            this.lstRosterImages64.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages64.Images.SetKeyName(4, "heart.png");
+            this.lstRosterImages64.Images.SetKeyName(5, "clock_select_remain.png");
+            this.lstRosterImages64.Images.SetKeyName(6, "folder_find.png");
+            this.lstRosterImages64.Images.SetKeyName(7, "folder.png");
             // 
             // CharacterRoster
             // 
