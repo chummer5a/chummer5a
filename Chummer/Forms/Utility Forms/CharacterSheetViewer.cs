@@ -212,7 +212,8 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
-                    sbdTitle.Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token).ConfigureAwait(false), ':', strSpace);
+                    sbdTitle.Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false), strSpace);
                     string strConjunction = "," + strSpace;
                     bool blnAddConjunction = false;
                     await _lstCharacters.ForEachAsync(async (x, t) =>

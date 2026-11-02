@@ -27671,10 +27671,10 @@ namespace Chummer
                             ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
                                     objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
                                                                  ? GlobalSettings.CustomDateFormat
-                                                                   + " " + GlobalSettings.CustomTimeFormat
+                                                                   + await LanguageManager.GetStringAsync("String_Space", token: t).ConfigureAwait(false) + GlobalSettings.CustomTimeFormat
                                                                  : GlobalSettings.CultureInfo.DateTimeFormat
                                                                                  .ShortDatePattern
-                                                                   + " " + GlobalSettings.CultureInfo.DateTimeFormat
+                                                                   + await LanguageManager.GetStringAsync("String_Space", token: t).ConfigureAwait(false) + GlobalSettings.CultureInfo.DateTimeFormat
                                                                        .ShortTimePattern,
                                                              GlobalSettings.CultureInfo)
                             );
@@ -27799,10 +27799,10 @@ namespace Chummer
                             ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
                                     objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
                                                                  ? GlobalSettings.CustomDateFormat
-                                                                   + " " + GlobalSettings.CustomTimeFormat
+                                                                   + await LanguageManager.GetStringAsync("String_Space", token: t).ConfigureAwait(false) + GlobalSettings.CustomTimeFormat
                                                                  : GlobalSettings.CultureInfo.DateTimeFormat
                                                                                  .ShortDatePattern
-                                                                   + " " + GlobalSettings.CultureInfo.DateTimeFormat
+                                                                   + await LanguageManager.GetStringAsync("String_Space", token: t).ConfigureAwait(false) + GlobalSettings.CultureInfo.DateTimeFormat
                                                                        .ShortTimePattern,
                                                              GlobalSettings.CultureInfo)
                             );
