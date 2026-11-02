@@ -1729,6 +1729,10 @@
       <text>Settings File:</text>
     </string>
     <string>
+      <key>Label_Roster_Build_Method</key>
+      <text>Build Method:</text>
+    </string>
+    <string>
       <key>Tab_Roster_Description</key>
       <text>Description</text>
     </string>

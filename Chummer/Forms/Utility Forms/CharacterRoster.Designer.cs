@@ -80,7 +80,6 @@ namespace Chummer
             this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
             this.lblEssence = new System.Windows.Forms.Label();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
-            this.lblFilePath = new Chummer.LabelWithToolTip();
             this.lblFilePathLabel = new System.Windows.Forms.Label();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
@@ -89,6 +88,14 @@ namespace Chummer
             this.tlpCharacterRoster = new System.Windows.Forms.TableLayoutPanel();
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.cmsRoster = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmsRosterNoClose = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.lstRosterImages16 = new System.Windows.Forms.ImageList(this.components);
+            this.lstRosterImages20 = new System.Windows.Forms.ImageList(this.components);
+            this.lstRosterImages24 = new System.Windows.Forms.ImageList(this.components);
+            this.lstRosterImages32 = new System.Windows.Forms.ImageList(this.components);
+            this.lstRosterImages48 = new System.Windows.Forms.ImageList(this.components);
+            this.lstRosterImages64 = new System.Windows.Forms.ImageList(this.components);
+            this.lblFilePath = new Chummer.LabelWithToolTip();
             this.tsToggleFav = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsSort = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsOpen = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -96,13 +103,14 @@ namespace Chummer
             this.tsOpenForExport = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsDelete = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsCloseOpenCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.cmsRosterNoClose = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsToggleFavNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsSortNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsOpenNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsOpenForPrintingNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsOpenForExportNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsDeleteNoClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.lblBuildMethodLabel = new System.Windows.Forms.Label();
+            this.lblBuildMethod = new System.Windows.Forms.Label();
             this.tabCharacterTexts.SuspendLayout();
             this.tabCharacterDescription.SuspendLayout();
             this.tabCharacterConcept.SuspendLayout();
@@ -396,19 +404,6 @@ namespace Chummer
             this.lblEssenceLabel.Text = "Essence:";
             this.lblEssenceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblFilePath
-            // 
-            this.lblFilePath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblFilePath.AutoSize = true;
-            this.lblFilePath.Location = new System.Drawing.Point(96, 156);
-            this.lblFilePath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFilePath.Name = "lblFilePath";
-            this.lblFilePath.Size = new System.Drawing.Size(39, 13);
-            this.lblFilePath.TabIndex = 38;
-            this.lblFilePath.Text = "[None]";
-            this.lblFilePath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblFilePath.ToolTipText = "";
-            // 
             // lblFilePathLabel
             // 
             this.lblFilePathLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -455,9 +450,10 @@ namespace Chummer
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpRight.Controls.Add(this.lblBuildMethod, 1, 8);
+            this.tlpRight.Controls.Add(this.lblBuildMethodLabel, 0, 8);
             this.tlpRight.Controls.Add(this.lblSettings, 1, 7);
-            this.tlpRight.Controls.Add(this.tabCharacterTexts, 0, 9);
+            this.tlpRight.Controls.Add(this.tabCharacterTexts, 0, 10);
             this.tlpRight.Controls.Add(this.lblCharacterAliasLabel, 0, 1);
             this.tlpRight.Controls.Add(this.picMugshot, 2, 0);
             this.tlpRight.Controls.Add(this.lblSettingsLabel, 0, 7);
@@ -478,7 +474,8 @@ namespace Chummer
             this.tlpRight.Location = new System.Drawing.Point(306, 0);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
-            this.tlpRight.RowCount = 10;
+            this.tlpRight.RowCount = 11;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -497,7 +494,7 @@ namespace Chummer
             this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picMugshot.Location = new System.Drawing.Point(157, 3);
             this.picMugshot.Name = "picMugshot";
-            this.tlpRight.SetRowSpan(this.picMugshot, 9);
+            this.tlpRight.SetRowSpan(this.picMugshot, 10);
             this.picMugshot.Size = new System.Drawing.Size(300, 300);
             this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 21;
@@ -525,8 +522,11 @@ namespace Chummer
             // 
             this.treCharacterList.AllowDrop = true;
             this.treCharacterList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treCharacterList.ImageIndex = 0;
+            this.treCharacterList.ImageList = this.lstRosterImages16;
             this.treCharacterList.Location = new System.Drawing.Point(3, 3);
             this.treCharacterList.Name = "treCharacterList";
+            this.treCharacterList.SelectedImageIndex = 0;
             this.treCharacterList.ShowNodeToolTips = true;
             this.treCharacterList.Size = new System.Drawing.Size(300, 537);
             this.treCharacterList.TabIndex = 0;
@@ -548,6 +548,103 @@ namespace Chummer
             this.tsCloseOpenCharacter});
             this.cmsRoster.Name = "cmsRoster";
             this.cmsRoster.Size = new System.Drawing.Size(214, 158);
+            // 
+            // cmsRosterNoClose
+            // 
+            this.cmsRosterNoClose.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsToggleFavNoClose,
+            this.tsSortNoClose,
+            this.tsOpenNoClose,
+            this.tsOpenForPrintingNoClose,
+            this.tsOpenForExportNoClose,
+            this.tsDeleteNoClose});
+            this.cmsRosterNoClose.Name = "cmsRoster";
+            this.cmsRosterNoClose.Size = new System.Drawing.Size(214, 136);
+            // 
+            // lstRosterImages16
+            // 
+            this.lstRosterImages16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages16.ImageStream")));
+            this.lstRosterImages16.TransparentColor = System.Drawing.Color.Transparent;
+            this.lstRosterImages16.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages16.Images.SetKeyName(1, "user.png");
+            this.lstRosterImages16.Images.SetKeyName(2, "user_red.png");
+            this.lstRosterImages16.Images.SetKeyName(3, "heart.png");
+            this.lstRosterImages16.Images.SetKeyName(4, "clock_select_remain.png");
+            this.lstRosterImages16.Images.SetKeyName(5, "folder_find.png");
+            this.lstRosterImages16.Images.SetKeyName(6, "folder.png");
+            // 
+            // lstRosterImages20
+            // 
+            this.lstRosterImages20.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages20.ImageStream")));
+            this.lstRosterImages20.TransparentColor = System.Drawing.Color.Transparent;
+            this.lstRosterImages20.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages20.Images.SetKeyName(1, "user.png");
+            this.lstRosterImages20.Images.SetKeyName(2, "user_red.png");
+            this.lstRosterImages20.Images.SetKeyName(3, "heart.png");
+            this.lstRosterImages20.Images.SetKeyName(4, "clock_select_remain.png");
+            this.lstRosterImages20.Images.SetKeyName(5, "folder_find.png");
+            this.lstRosterImages20.Images.SetKeyName(6, "folder.png");
+            // 
+            // lstRosterImages24
+            // 
+            this.lstRosterImages24.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages24.ImageStream")));
+            this.lstRosterImages24.TransparentColor = System.Drawing.Color.Transparent;
+            this.lstRosterImages24.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages24.Images.SetKeyName(1, "user.png");
+            this.lstRosterImages24.Images.SetKeyName(2, "user_red.png");
+            this.lstRosterImages24.Images.SetKeyName(3, "heart.png");
+            this.lstRosterImages24.Images.SetKeyName(4, "clock_select_remain.png");
+            this.lstRosterImages24.Images.SetKeyName(5, "folder_find.png");
+            this.lstRosterImages24.Images.SetKeyName(6, "folder.png");
+            // 
+            // lstRosterImages32
+            // 
+            this.lstRosterImages32.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages32.ImageStream")));
+            this.lstRosterImages32.TransparentColor = System.Drawing.Color.Transparent;
+            this.lstRosterImages32.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages32.Images.SetKeyName(1, "user.png");
+            this.lstRosterImages32.Images.SetKeyName(2, "user_red.png");
+            this.lstRosterImages32.Images.SetKeyName(3, "heart.png");
+            this.lstRosterImages32.Images.SetKeyName(4, "clock_select_remain.png");
+            this.lstRosterImages32.Images.SetKeyName(5, "folder_find.png");
+            this.lstRosterImages32.Images.SetKeyName(6, "folder.png");
+            // 
+            // lstRosterImages48
+            // 
+            this.lstRosterImages48.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages48.ImageStream")));
+            this.lstRosterImages48.TransparentColor = System.Drawing.Color.Transparent;
+            this.lstRosterImages48.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages48.Images.SetKeyName(1, "user.png");
+            this.lstRosterImages48.Images.SetKeyName(2, "user_red.png");
+            this.lstRosterImages48.Images.SetKeyName(3, "heart.png");
+            this.lstRosterImages48.Images.SetKeyName(4, "clock_select_remain.png");
+            this.lstRosterImages48.Images.SetKeyName(5, "folder_find.png");
+            this.lstRosterImages48.Images.SetKeyName(6, "folder.png");
+            // 
+            // lstRosterImages64
+            // 
+            this.lstRosterImages64.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages64.ImageStream")));
+            this.lstRosterImages64.TransparentColor = System.Drawing.Color.Transparent;
+            this.lstRosterImages64.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages64.Images.SetKeyName(1, "user.png");
+            this.lstRosterImages64.Images.SetKeyName(2, "user_red.png");
+            this.lstRosterImages64.Images.SetKeyName(3, "heart.png");
+            this.lstRosterImages64.Images.SetKeyName(4, "clock_select_remain.png");
+            this.lstRosterImages64.Images.SetKeyName(5, "folder_find.png");
+            this.lstRosterImages64.Images.SetKeyName(6, "folder.png");
+            // 
+            // lblFilePath
+            // 
+            this.lblFilePath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFilePath.AutoSize = true;
+            this.lblFilePath.Location = new System.Drawing.Point(96, 156);
+            this.lblFilePath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblFilePath.Name = "lblFilePath";
+            this.lblFilePath.Size = new System.Drawing.Size(39, 13);
+            this.lblFilePath.TabIndex = 38;
+            this.lblFilePath.Text = "[None]";
+            this.lblFilePath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFilePath.ToolTipText = "";
             // 
             // tsToggleFav
             // 
@@ -654,18 +751,6 @@ namespace Chummer
             this.tsCloseOpenCharacter.Text = "&Close this character";
             this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
             // 
-            // cmsRosterNoClose
-            // 
-            this.cmsRosterNoClose.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsToggleFavNoClose,
-            this.tsSortNoClose,
-            this.tsOpenNoClose,
-            this.tsOpenForPrintingNoClose,
-            this.tsOpenForExportNoClose,
-            this.tsDeleteNoClose});
-            this.cmsRosterNoClose.Name = "cmsRoster";
-            this.cmsRosterNoClose.Size = new System.Drawing.Size(214, 136);
-            // 
             // tsToggleFavNoClose
             // 
             this.tsToggleFavNoClose.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
@@ -749,6 +834,31 @@ namespace Chummer
             this.tsDeleteNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsDeleteNoClose.Tag = "Menu_Delete";
             this.tsDeleteNoClose.Text = "&Delete from this list";
+            // 
+            // lblBuildMethodLabel
+            // 
+            this.lblBuildMethodLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblBuildMethodLabel.AutoSize = true;
+            this.lblBuildMethodLabel.Location = new System.Drawing.Point(18, 206);
+            this.lblBuildMethodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBuildMethodLabel.Name = "lblBuildMethodLabel";
+            this.lblBuildMethodLabel.Size = new System.Drawing.Size(72, 13);
+            this.lblBuildMethodLabel.TabIndex = 41;
+            this.lblBuildMethodLabel.Tag = "Label_Roster_Build_Method";
+            this.lblBuildMethodLabel.Text = "Build Method:";
+            this.lblBuildMethodLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblBuildMethod
+            // 
+            this.lblBuildMethod.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblBuildMethod.AutoSize = true;
+            this.lblBuildMethod.Location = new System.Drawing.Point(96, 206);
+            this.lblBuildMethod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBuildMethod.Name = "lblBuildMethod";
+            this.lblBuildMethod.Size = new System.Drawing.Size(39, 13);
+            this.lblBuildMethod.TabIndex = 42;
+            this.lblBuildMethod.Text = "[None]";
+            this.lblBuildMethod.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // CharacterRoster
             // 
@@ -837,6 +947,14 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsOpenForPrintingNoClose;
         private DpiFriendlyToolStripMenuItem tsOpenForExportNoClose;
         private DpiFriendlyToolStripMenuItem tsDeleteNoClose;
+        private System.Windows.Forms.ImageList lstRosterImages16;
+        private System.Windows.Forms.ImageList lstRosterImages20;
+        private System.Windows.Forms.ImageList lstRosterImages24;
+        private System.Windows.Forms.ImageList lstRosterImages32;
+        private System.Windows.Forms.ImageList lstRosterImages48;
+        private System.Windows.Forms.ImageList lstRosterImages64;
+        private System.Windows.Forms.Label lblBuildMethodLabel;
+        private System.Windows.Forms.Label lblBuildMethod;
     }
 }
 

@@ -990,11 +990,7 @@ namespace Chummer
                                 sbdReturn.Append(LanguageManager.GetString("String_UnnamedCharacter"));
                         }
 
-                        string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
-                        if (string.IsNullOrEmpty(strBuildMethod))
-                            strBuildMethod = LanguageManager.GetString("String_Unknown");
-                        sbdReturn.Append(strSpace, '(', strBuildMethod)
-                            .Append(strSpace, '-', strSpace)
+                        sbdReturn.Append(strSpace, '(')
                             .Append(LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"), ')');
                     }
 
@@ -1059,12 +1055,7 @@ namespace Chummer
                                     .ConfigureAwait(false));
                         }
 
-                        string strBuildMethod = await LanguageManager.GetStringAsync("String_" + await GetBuildMethodAsync(token).ConfigureAwait(false), false, token)
-                            .ConfigureAwait(false);
-                        if (string.IsNullOrEmpty(strBuildMethod))
-                            strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
-                                .ConfigureAwait(false);
-                        sbdReturn.Append(strSpace, '(', strBuildMethod).Append(strSpace, '-', strSpace)
+                        sbdReturn.Append(strSpace, '(')
                                      .Append(await LanguageManager
                                          .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
                                             ? "Title_CareerMode"

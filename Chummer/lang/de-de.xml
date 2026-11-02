@@ -7246,6 +7246,10 @@
       <text>Konfigurationsdatei:</text>
     </string>
     <string>
+      <key>Label_Roster_Build_Method</key>
+      <text>Erstellungsmethode:</text>
+    </string>
+    <string>
       <key>Menu_ValidCharacter</key>
       <text>Prüfe Charaktergültigkeit</text>
     </string>

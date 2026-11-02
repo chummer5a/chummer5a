@@ -48,6 +48,7 @@ Application:
 - When attempting to open a linked PDF from a source label within a form that is not part of the basic character editor forms, the program now properly respects custom dataset changes to book codes when it attempts to find the PDF it needs to open.
 - Fixed an issue where certain languages that did not use Latin space characters for their spaces could not properly deal with PDF-related code.
 - The program will now also warn about potential handle issues when attempting to create a new character, not just when opening an existing one.
+- The character roster now displays small icons next to each entry in the roster depicting the entry type, and character build methods are now only shown when an entry is selected instead of being put into the name of each entry.
 
 Critters:
 - Added 58 Parazoologie 2075 (PZG) critters, including alternate forms and book-specific profiles.
@@ -352,6 +353,7 @@ Changed/New Strings:
 - Menu_CreateCritterPet
 - Button_AddContact
 - Message_DeletePet
+- Label_Roster_Build_Method
 
 Build 226
 Application Changes:
