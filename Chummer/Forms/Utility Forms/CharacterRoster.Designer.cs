@@ -579,10 +579,10 @@ namespace Chummer
             // 
             this.lstRosterImages16.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages16.ImageStream")));
             this.lstRosterImages16.TransparentColor = System.Drawing.Color.Transparent;
-            this.lstRosterImages16.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages16.Images.SetKeyName(0, "status_offline.png");
             this.lstRosterImages16.Images.SetKeyName(1, "user.png");
             this.lstRosterImages16.Images.SetKeyName(2, "ladybird.png");
-            this.lstRosterImages16.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages16.Images.SetKeyName(3, "error.png");
             this.lstRosterImages16.Images.SetKeyName(4, "heart.png");
             this.lstRosterImages16.Images.SetKeyName(5, "clock_select_remain.png");
             this.lstRosterImages16.Images.SetKeyName(6, "folder_find.png");
@@ -806,10 +806,10 @@ namespace Chummer
             // 
             this.lstRosterImages20.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages20.ImageStream")));
             this.lstRosterImages20.TransparentColor = System.Drawing.Color.Transparent;
-            this.lstRosterImages20.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages20.Images.SetKeyName(0, "status_offline.png");
             this.lstRosterImages20.Images.SetKeyName(1, "user.png");
-            this.lstRosterImages20.Images.SetKeyName(2, "ladybird.png");
-            this.lstRosterImages20.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages20.Images.SetKeyName(2, "error.png");
+            this.lstRosterImages20.Images.SetKeyName(3, "ladybird.png");
             this.lstRosterImages20.Images.SetKeyName(4, "heart.png");
             this.lstRosterImages20.Images.SetKeyName(5, "clock_select_remain.png");
             this.lstRosterImages20.Images.SetKeyName(6, "folder_find.png");
@@ -819,10 +819,10 @@ namespace Chummer
             // 
             this.lstRosterImages24.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages24.ImageStream")));
             this.lstRosterImages24.TransparentColor = System.Drawing.Color.Transparent;
-            this.lstRosterImages24.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages24.Images.SetKeyName(0, "status_offline.png");
             this.lstRosterImages24.Images.SetKeyName(1, "user.png");
             this.lstRosterImages24.Images.SetKeyName(2, "ladybird.png");
-            this.lstRosterImages24.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages24.Images.SetKeyName(3, "error.png");
             this.lstRosterImages24.Images.SetKeyName(4, "heart.png");
             this.lstRosterImages24.Images.SetKeyName(5, "clock_select_remain.png");
             this.lstRosterImages24.Images.SetKeyName(6, "folder_find.png");
@@ -832,10 +832,10 @@ namespace Chummer
             // 
             this.lstRosterImages32.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages32.ImageStream")));
             this.lstRosterImages32.TransparentColor = System.Drawing.Color.Transparent;
-            this.lstRosterImages32.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages32.Images.SetKeyName(0, "status_offline.png");
             this.lstRosterImages32.Images.SetKeyName(1, "user.png");
             this.lstRosterImages32.Images.SetKeyName(2, "ladybird.png");
-            this.lstRosterImages32.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages32.Images.SetKeyName(3, "error.png");
             this.lstRosterImages32.Images.SetKeyName(4, "heart.png");
             this.lstRosterImages32.Images.SetKeyName(5, "clock_select_remain.png");
             this.lstRosterImages32.Images.SetKeyName(6, "folder_find.png");
@@ -845,10 +845,10 @@ namespace Chummer
             // 
             this.lstRosterImages48.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages48.ImageStream")));
             this.lstRosterImages48.TransparentColor = System.Drawing.Color.Transparent;
-            this.lstRosterImages48.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages48.Images.SetKeyName(0, "status_offline.png");
             this.lstRosterImages48.Images.SetKeyName(1, "user.png");
             this.lstRosterImages48.Images.SetKeyName(2, "ladybird.png");
-            this.lstRosterImages48.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages48.Images.SetKeyName(3, "error.png");
             this.lstRosterImages48.Images.SetKeyName(4, "heart.png");
             this.lstRosterImages48.Images.SetKeyName(5, "clock_select_remain.png");
             this.lstRosterImages48.Images.SetKeyName(6, "folder_find.png");
@@ -858,10 +858,10 @@ namespace Chummer
             // 
             this.lstRosterImages64.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("lstRosterImages64.ImageStream")));
             this.lstRosterImages64.TransparentColor = System.Drawing.Color.Transparent;
-            this.lstRosterImages64.Images.SetKeyName(0, "user_edit.png");
+            this.lstRosterImages64.Images.SetKeyName(0, "status_offline.png");
             this.lstRosterImages64.Images.SetKeyName(1, "user.png");
             this.lstRosterImages64.Images.SetKeyName(2, "ladybird.png");
-            this.lstRosterImages64.Images.SetKeyName(3, "user_red.png");
+            this.lstRosterImages64.Images.SetKeyName(3, "error.png");
             this.lstRosterImages64.Images.SetKeyName(4, "heart.png");
             this.lstRosterImages64.Images.SetKeyName(5, "clock_select_remain.png");
             this.lstRosterImages64.Images.SetKeyName(6, "folder_find.png");
