@@ -3634,7 +3634,7 @@ namespace Chummer
                                               .ConfigureAwait(false))
                         {
                             string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
-                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                            await frmLoadingBar.MyForm.PerformStepAsync(string.IsNullOrEmpty(strCharacterName)
                                                                             ? strUI
                                                                             : strUI + strSpace + strLeftPar
                                                                             + strCharacterName
@@ -3667,6 +3667,7 @@ namespace Chummer
                             }
 
                             //Timekeeper.Start("load_event_time");
+                            string strFileName = string.Empty;
                             // Show the character forms.
                             IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
@@ -3712,18 +3713,16 @@ namespace Chummer
                                     }
                                 }, token).ConfigureAwait(false);
                                 if (blnIncludeInMru)
-                                {
-                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
-                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                            0, strFileName, token).ConfigureAwait(false);
-                                }
+                                    strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
                                 //Timekeeper.Finish("load_event_time");
                             }
                             finally
                             {
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
+                            if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, strFileName, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -3799,15 +3798,19 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
+                                if (objCharacter == null)
+                                {
+                                    await frmLoadingBar.MyForm.PerformStepAsync(strUI, token: token)
+                                                   .ConfigureAwait(false);
+                                    continue;
+                                }
                                 string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
-                                await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                await frmLoadingBar.MyForm.PerformStepAsync(string.IsNullOrEmpty(strCharacterName)
                                                                                 ? strUI
                                                                                 : strUI + strSpace + strLeftPar
                                                                                 + strCharacterName
                                                                                 + strRightPar, token: token)
                                                    .ConfigureAwait(false);
-                                if (objCharacter == null)
-                                    continue;
                                 ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
                                 if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
                                     && await lstToProcess.AnyAsync(
@@ -3829,6 +3832,7 @@ namespace Chummer
                                 }
 
                                 //Timekeeper.Start("load_event_time");
+                                string strFileName = string.Empty;
                                 // Show the character forms.
                                 IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                                 try
@@ -3874,18 +3878,17 @@ namespace Chummer
                                         }
                                     }, token).ConfigureAwait(false);
                                     if (blnIncludeInMru)
-                                    {
-                                        string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
-                                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                                0, strFileName, token).ConfigureAwait(false);
-                                    }
+                                        strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
                                     //Timekeeper.Finish("load_event_time");
                                 }
                                 finally
                                 {
                                     await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
+
+                                if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, strFileName, token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -4012,7 +4015,7 @@ namespace Chummer
                                               .ConfigureAwait(false))
                         {
                             string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
-                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                            await frmLoadingBar.MyForm.PerformStepAsync(string.IsNullOrEmpty(strCharacterName)
                                                                             ? strUI
                                                                             : strUI + strSpace + strLeftPar
                                                                             + strCharacterName
@@ -4054,6 +4057,7 @@ namespace Chummer
 
                         if (frmNewFormToProcess != null)
                         {
+                            string strFileName = string.Empty;
                             IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
                             {
@@ -4099,19 +4103,17 @@ namespace Chummer
                                             stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                                     }
                                 }, token).ConfigureAwait(false);
-
                                 if (blnIncludeInMru)
-                                {
-                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
-                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                            0, strFileName, token).ConfigureAwait(false);
-                                }
+                                    strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
                             }
                             finally
                             {
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
+
+                            if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, strFileName, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -4189,15 +4191,19 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
+                                if (objCharacter == null)
+                                {
+                                    await frmLoadingBar.MyForm.PerformStepAsync(strUI, token: token)
+                                                   .ConfigureAwait(false);
+                                    continue;
+                                }
                                 string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
-                                await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                await frmLoadingBar.MyForm.PerformStepAsync(string.IsNullOrEmpty(strCharacterName)
                                                                                 ? strUI
                                                                                 : strUI + strSpace + strLeftPar
                                                                                 + strCharacterName
                                                                                 + strRightPar, token: token)
                                                    .ConfigureAwait(false);
-                                if (objCharacter == null)
-                                    continue;
                                 ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                     = OpenCharacterSheetViewers;
                                 if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
@@ -4238,22 +4244,21 @@ namespace Chummer
 
                         foreach ((CharacterSheetViewer frmViewer, Character objCharacter) in lstNewFormsToProcess)
                         {
+                            string strFileName = string.Empty;
                             IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
                             {
                                 await frmViewer.SetCharacters(token, objCharacter).ConfigureAwait(false);
                                 if (blnIncludeInMru)
-                                {
-                                    string strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
-                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                            0, strFileName, token).ConfigureAwait(false);
-                                }
+                                    strFileName = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
                             }
                             finally
                             {
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
+                            if (!string.IsNullOrEmpty(strFileName) && File.Exists(strFileName))
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, strFileName, token).ConfigureAwait(false);
                         }
 
                         await this.DoThreadSafeAsync(x =>
@@ -4422,7 +4427,7 @@ namespace Chummer
                                               .ConfigureAwait(false))
                         {
                             string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
-                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                            await frmLoadingBar.MyForm.PerformStepAsync(string.IsNullOrEmpty(strCharacterName)
                                                                             ? strUI
                                                                             : strUI + strSpace + strLeftPar
                                                                             + strCharacterName
@@ -4457,6 +4462,7 @@ namespace Chummer
                             }
 
                             //Timekeeper.Start("load_event_time");
+                            string strFile = string.Empty;
                             // Show the character forms.
                             IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
@@ -4500,19 +4506,17 @@ namespace Chummer
                                             stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                                     }
                                 }, token).ConfigureAwait(false);
-                                if (blnIncludeInMru)
-                                {
-                                    string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
-                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                            0, strFile, token).ConfigureAwait(false);
-                                }
                                 //Timekeeper.Finish("load_event_time");
+                                if (blnIncludeInMru)
+                                    strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
                             }
                             finally
                             {
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
+                            if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, strFile, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -4588,15 +4592,20 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstNewCharacters)
                             {
+                                if (objCharacter == null)
+                                {
+                                    await frmLoadingBar.MyForm.PerformStepAsync(strUI, token: token)
+                                                   .ConfigureAwait(false);
+                                    continue;
+                                }
                                 string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
-                                await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                await frmLoadingBar.MyForm.PerformStepAsync(string.IsNullOrEmpty(strCharacterName)
                                                                                 ? strUI
                                                                                 : strUI + strSpace + strLeftPar
                                                                                 + strCharacterName
                                                                                 + strRightPar, token: token)
                                                    .ConfigureAwait(false);
-                                if (objCharacter == null)
-                                    continue;
+                                
                                 ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
                                 if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
                                     && await lstToProcess.AnyAsync(
@@ -4618,6 +4627,7 @@ namespace Chummer
                                 }
 
                                 //Timekeeper.Start("load_event_time");
+                                string strFile = string.Empty;
                                 // Show the character forms.
                                 IAsyncDisposable objLocker = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                                 try
@@ -4662,18 +4672,16 @@ namespace Chummer
                                         }
                                     }, token).ConfigureAwait(false);
                                     if (blnIncludeInMru)
-                                    {
-                                        string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
-                                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                                0, strFile, token).ConfigureAwait(false);
-                                    }
+                                        strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
                                     //Timekeeper.Finish("load_event_time");
                                 }
                                 finally
                                 {
                                     await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
+                                if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, strFile, token).ConfigureAwait(false);
                             }
                         }
                     }
