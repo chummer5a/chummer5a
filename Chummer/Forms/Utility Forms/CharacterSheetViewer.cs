@@ -210,9 +210,9 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode", token: token)
                                                         .ConfigureAwait(false);
-                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar")
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
                                                             .ConfigureAwait(false);
-                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar")
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
                                                         .ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
