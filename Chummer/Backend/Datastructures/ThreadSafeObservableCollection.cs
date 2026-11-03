@@ -352,6 +352,8 @@ namespace Chummer
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Move" />
         public void Move(int oldIndex, int newIndex)
         {
+            if (oldIndex == newIndex)
+                return;
             using (LockObject.EnterWriteLock())
                 _lstData.Move(oldIndex, newIndex);
         }
@@ -360,6 +362,8 @@ namespace Chummer
         public async Task MoveAsync(int oldIndex, int newIndex, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (oldIndex == newIndex)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
