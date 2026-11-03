@@ -232,12 +232,15 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
+                            if (lstToProcess?.IsDisposed == false)
                             {
                                 try
                                 {
-                                    await lstToProcess.RemoveAsync(objNewForm, _objGenericToken)
-                                                      .ConfigureAwait(false);
+                                    if (await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                                    {
+                                        await lstToProcess.RemoveAsync(
+                                            objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -321,12 +324,15 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
-                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
+                            if (lstToProcess?.IsDisposed == false)
                             {
                                 try
                                 {
-                                    await lstToProcess.RemoveAsync(objNewForm, _objGenericToken)
-                                                      .ConfigureAwait(false);
+                                    if (await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                                    {
+                                        await lstToProcess.RemoveAsync(
+                                            objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -389,12 +395,15 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
+                            if (lstToProcess?.IsDisposed == false)
                             {
                                 try
                                 {
-                                    await lstToProcess.RemoveAsync(objNewForm, _objGenericToken)
-                                                      .ConfigureAwait(false);
+                                    if (await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                                    {
+                                        await lstToProcess.RemoveAsync(
+                                            objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -471,12 +480,15 @@ namespace Chummer
                         {
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
-                            if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0)
+                            if (lstToProcess?.IsDisposed == false)
                             {
                                 try
                                 {
-                                    await lstToProcess.RemoveAsync(objNewForm, _objGenericToken)
-                                                      .ConfigureAwait(false);
+                                    if (await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                                    {
+                                        await lstToProcess.RemoveAsync(
+                                            objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -552,12 +564,15 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null && await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                            if (lstToProcess?.IsDisposed == false)
                             {
                                 try
                                 {
-                                    await lstToProcess.RemoveAsync(
-                                        objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    if (await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                                    {
+                                        await lstToProcess.RemoveAsync(
+                                            objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -643,12 +658,15 @@ namespace Chummer
                         async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args)
                         {
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
-                            if (lstToProcess != null && await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                            if (lstToProcess?.IsDisposed == false)
                             {
                                 try
                                 {
-                                    await lstToProcess.RemoveAsync(objNewForm, _objGenericToken)
-                                                      .ConfigureAwait(false);
+                                    if (await lstToProcess.GetCountAsync(_objGenericToken).ConfigureAwait(false) > 0)
+                                    {
+                                        await lstToProcess.RemoveAsync(
+                                            objNewForm, _objGenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 catch (OperationCanceledException)
                                 {
