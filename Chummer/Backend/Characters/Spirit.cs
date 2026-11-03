@@ -3129,7 +3129,10 @@ namespace Chummer
                 bool blnDoPropertyChanged = false;
                 using (LockObject.EnterWriteLock(token))
                 {
-                    CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
+                    if (objOldLinkedCharacter != null
+                        && CharacterObject.Spirits.All(x => x == this || x.LinkedCharacter != objOldLinkedCharacter, token)
+                        && CharacterObject.Contacts.All(x => x.LinkedCharacter != objOldLinkedCharacter, token))
+                        CharacterObject.LinkedCharacters.Remove(objOldLinkedCharacter);
                     bool blnError = false;
                     bool blnUseRelative = false;
 
@@ -3240,7 +3243,12 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     ConcurrentHashSet<Character> lstLinkedCharacters =
                         await CharacterObject.GetLinkedCharactersAsync(token).ConfigureAwait(false);
-                    lstLinkedCharacters.Remove(_objLinkedCharacter);
+                    if (objOldLinkedCharacter != null
+                        && await CharacterObject.Spirits.AllAsync(x => x == this || x.LinkedCharacter != objOldLinkedCharacter, token).ConfigureAwait(false)
+                        && await CharacterObject.Contacts.AllAsync(x => x.LinkedCharacter != objOldLinkedCharacter, token).ConfigureAwait(false))
+                    {
+                        lstLinkedCharacters.Remove(objOldLinkedCharacter);
+                    }
                     bool blnError = false;
                     bool blnUseRelative = false;
 
@@ -3950,24 +3958,33 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
             {
-                if (_objLinkedCharacter != null)
+                Character objOldLinkedCharacter = Interlocked.Exchange(ref _objLinkedCharacter, null);
+                if (objOldLinkedCharacter != null)
                 {
-                    if (_objLinkedCharacter?.IsDisposed == false)
+                    if (!objOldLinkedCharacter.IsDisposed)
                     {
                         try
                         {
-                            _objLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
+                            objOldLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
                         }
                         catch (ObjectDisposedException)
                         {
                             //swallow this
                         }
                     }
-                    if (!Utils.IsUnitTest && Program.OpenCharacters.All(x => x == _objLinkedCharacter
-                            || !x.LinkedCharacters.Contains(_objLinkedCharacter))
-                        && Program.MainForm.OpenFormsWithCharacters.All(x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
+                    if (CharacterObject?.IsDisposed == false)
                     {
-                        Program.OpenCharacters.Remove(_objLinkedCharacter);
+                        if (CharacterObject.Spirits.All(x => x == this || x.LinkedCharacter != objOldLinkedCharacter)
+                            && CharacterObject.Contacts.All(x => x.LinkedCharacter != objOldLinkedCharacter))
+                        {
+                            CharacterObject.LinkedCharacters.Remove(objOldLinkedCharacter);
+                        }
+                    }
+                    if (!Utils.IsUnitTest && Program.OpenCharacters.All(x => x == objOldLinkedCharacter
+                            || !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                        && Program.MainForm.OpenFormsWithCharacters.All(x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
+                    {
+                        Program.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
                 }
                 foreach (Image imgMugshot in _lstMugshots)
@@ -3988,24 +4005,33 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (_objLinkedCharacter != null)
+                Character objOldLinkedCharacter = Interlocked.Exchange(ref _objLinkedCharacter, null);
+                if (objOldLinkedCharacter != null)
                 {
-                    if (_objLinkedCharacter?.IsDisposed == false)
+                    if (!objOldLinkedCharacter.IsDisposed)
                     {
                         try
                         {
-                            _objLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
+                            objOldLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
                         }
                         catch (ObjectDisposedException)
                         {
                             //swallow this
                         }
                     }
-                    if (!Utils.IsUnitTest && await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                            || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(_objLinkedCharacter)).ConfigureAwait(false)
-                        && !await Program.MainForm.AnyOpenFormContainsCharacter(_objLinkedCharacter).ConfigureAwait(false))
+                    if (CharacterObject?.IsDisposed == false)
                     {
-                        await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
+                        if (await CharacterObject.Spirits.AllAsync(x => x == this || x.LinkedCharacter != objOldLinkedCharacter).ConfigureAwait(false)
+                            && await CharacterObject.Contacts.AllAsync(x => x.LinkedCharacter != objOldLinkedCharacter).ConfigureAwait(false))
+                        {
+                            CharacterObject.LinkedCharacters.Remove(objOldLinkedCharacter);
+                        }
+                    }
+                    if (!Utils.IsUnitTest && await Program.OpenCharacters.AllAsync(async x => x == objOldLinkedCharacter
+                            || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(objOldLinkedCharacter)).ConfigureAwait(false)
+                        && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter).ConfigureAwait(false))
+                    {
+                        await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter).ConfigureAwait(false);
                     }
                 }
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
