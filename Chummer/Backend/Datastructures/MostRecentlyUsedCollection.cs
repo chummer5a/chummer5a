@@ -41,11 +41,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public override void Insert(int index, T item)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 int intExistingIndex = IndexOf(item);
                 if (intExistingIndex == -1)
-                    base.Insert(index, item);
+                {
+                    using (LockObject.EnterWriteLock())
+                        base.Insert(index, item);
+                }
                 else
                     Move(intExistingIndex, Math.Min(index, Count - 1));
             }
@@ -54,13 +57,24 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public override async Task InsertAsync(int index, T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
-                    await base.InsertAsync(index, item, token).ConfigureAwait(false);
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await base.InsertAsync(index, item, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
                 else
                     await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token).ConfigureAwait(false) - 1), token).ConfigureAwait(false);
             }
@@ -72,7 +86,7 @@ namespace Chummer
 
         public override int Add(object value)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 int intExistingIndex = IndexOf(value);
                 if (intExistingIndex == -1)
@@ -118,7 +132,7 @@ namespace Chummer
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 int intExistingIndex = IndexOf(item);
                 if (intExistingIndex == -1)
