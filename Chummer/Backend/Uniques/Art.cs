@@ -108,7 +108,7 @@ namespace Chummer
                 }
                 string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                 if (!string.IsNullOrEmpty(strSelectedValue))
-                    _strName += LanguageManager.GetString("String_Space") + "(" + strSelectedValue + ")";
+                    _strName += LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_LeftPar") + strSelectedValue + LanguageManager.GetString("String_RightPar");
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -170,7 +170,10 @@ namespace Chummer
                 }
                 string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                 if (!string.IsNullOrEmpty(strSelectedValue))
-                    _strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + strSelectedValue + ")";
+                    _strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                        + strSelectedValue
+                        + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))

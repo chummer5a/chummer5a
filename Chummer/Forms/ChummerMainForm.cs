@@ -2217,12 +2217,12 @@ namespace Chummer
                             }
                             case CharacterSheetViewer frmSheetViewer:
                             {
-                                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false);
+                                string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false)
+                                        + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false);
                                 string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: _objGenericToken).ConfigureAwait(false);
                                 string strCharacters;
                                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCharacters))
                                 {
-                                    string strConjunction = "," + strSpace;
                                     bool blnAddConjunction = false;
                                     foreach (Character objLoop in frmSheetViewer.CharacterObjects)
                                     {
@@ -2613,7 +2613,8 @@ namespace Chummer
 
             try
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: token).ConfigureAwait(false);
                 string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: token).ConfigureAwait(false);
                 await tabForms.DoThreadSafeAsync(x =>
@@ -2630,7 +2631,7 @@ namespace Chummer
                                 objTabPage.Text
                                     = StringExtensions.FastFormat(
                                         strSheet,
-                                        StringExtensions.JoinFast("," + strSpace,
+                                        StringExtensions.JoinFast(strConjunction,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -2658,7 +2659,7 @@ namespace Chummer
 
             try
             {
-                Lazy<string> strSpace = new Lazy<string>(() => LanguageManager.GetString("String_Space", token: token));
+                Lazy<string> strConjunction = new Lazy<string>(() => LanguageManager.GetString("String_Comma", token: token) + LanguageManager.GetString("String_Space", token: token));
                 Lazy<string> strSheet = new Lazy<string>(() => LanguageManager.GetString("String_Sheet_Blank", token: token));
                 Lazy<string> strExport = new Lazy<string>(() => LanguageManager.GetString("String_Export_Blank", token: token));
                 tabForms.DoThreadSafe((x, t) =>
@@ -2675,7 +2676,7 @@ namespace Chummer
                                 objTabPage.Text
                                     = StringExtensions.FastFormat(
                                         strSheet.Value,
-                                        StringExtensions.JoinFast("," + strSpace.Value,
+                                        StringExtensions.JoinFast(strConjunction.Value,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -2707,7 +2708,7 @@ namespace Chummer
             try
             {
                 // Can't make these lazy without making them sync, so just allow them to be async because that still lets them resolve in the background
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: token).ConfigureAwait(false);
                 string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: token).ConfigureAwait(false);
                 await tabForms.DoThreadSafeAsync(x =>
@@ -2723,7 +2724,7 @@ namespace Chummer
                                 objTabPage.Text
                                     = StringExtensions.FastFormat(
                                         strSheet,
-                                        StringExtensions.JoinFast("," + strSpace,
+                                        StringExtensions.JoinFast(strConjunction,
                                                     frmCharacterSheetViewer.CharacterObjects.Select(
                                                         y => y.CharacterName.Trim())));
                                 break;
@@ -3525,7 +3526,7 @@ namespace Chummer
                             Character objCharacter;
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                        StringExtensions.JoinFast(
-                                           "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                           await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                            lstFilesToOpen.Select(Path.GetFileName)),
                                        intCount * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                             {
@@ -3539,7 +3540,7 @@ namespace Chummer
                             Character[] lstCharacters = new Character[intCount];
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                        StringExtensions.JoinFast(
-                                           "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                           await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                            lstFilesToOpen.Select(Path.GetFileName)),
                                        intCount * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                             {
@@ -3602,7 +3603,11 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
-                        
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
+
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
                                               .ConfigureAwait(false))
@@ -3610,9 +3615,9 @@ namespace Chummer
                             string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                             await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                             ? strUI
-                                                                            : strUI + strSpace + "("
+                                                                            : strUI + strSpace + strLeftPar
                                                                             + strCharacterName
-                                                                            + ")", token: token)
+                                                                            + strRightPar, token: token)
                                                 .ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterShared> lstToProcess = OpenCharacterEditorForms;
                             if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
@@ -3757,6 +3762,10 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         string strTooManyHandles
                             = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
                                                    .ConfigureAwait(false);
@@ -3772,9 +3781,9 @@ namespace Chummer
                                 string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
-                                                                                : strUI + strSpace + "("
+                                                                                : strUI + strSpace + strLeftPar
                                                                                 + strCharacterName
-                                                                                + ")", token: token)
+                                                                                + strRightPar, token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
                                     continue;
@@ -3908,7 +3917,7 @@ namespace Chummer
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                StringExtensions.JoinFast(
-                                   "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                   await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
@@ -3967,6 +3976,10 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         string strTooManyHandles
                             = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
                                                    .ConfigureAwait(false);
@@ -3980,9 +3993,9 @@ namespace Chummer
                             string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                             await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                             ? strUI
-                                                                            : strUI + strSpace + "("
+                                                                            : strUI + strSpace + strLeftPar
                                                                             + strCharacterName
-                                                                            + ")", token: token)
+                                                                            + strRightPar, token: token)
                                                .ConfigureAwait(false);
                             ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess
                                 = OpenCharacterSheetViewers;
@@ -4139,6 +4152,10 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         string strTooManyHandles
                             = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
                                                    .ConfigureAwait(false);
@@ -4154,9 +4171,9 @@ namespace Chummer
                                 string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
-                                                                                : strUI + strSpace + "("
+                                                                                : strUI + strSpace + strLeftPar
                                                                                 + strCharacterName
-                                                                                + ")", token: token)
+                                                                                + strRightPar, token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
                                     continue;
@@ -4315,7 +4332,7 @@ namespace Chummer
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                StringExtensions.JoinFast(
-                                   "," + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
+                                   await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false),
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
@@ -4375,6 +4392,10 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(strUI, 1, token)
                                               .ConfigureAwait(false))
@@ -4382,9 +4403,9 @@ namespace Chummer
                             string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                             await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                             ? strUI
-                                                                            : strUI + strSpace + "("
+                                                                            : strUI + strSpace + strLeftPar
                                                                             + strCharacterName
-                                                                            + ")", token: token)
+                                                                            + strRightPar, token: token)
                                                 .ConfigureAwait(false);
                             ThreadSafeObservableCollection<ExportCharacter> lstToProcess = OpenCharacterExportForms;
                             if (lstToProcess != null && await lstToProcess.GetCountAsync(token).ConfigureAwait(false) > 0
@@ -4530,6 +4551,10 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         string strTooManyHandles
                             = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
                                                    .ConfigureAwait(false);
@@ -4545,9 +4570,9 @@ namespace Chummer
                                 string strCharacterName = await objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                                 ? strUI
-                                                                                : strUI + strSpace + "("
+                                                                                : strUI + strSpace + strLeftPar
                                                                                 + strCharacterName
-                                                                                + ")", token: token)
+                                                                                + strRightPar, token: token)
                                                    .ConfigureAwait(false);
                                 if (objCharacter == null)
                                     continue;

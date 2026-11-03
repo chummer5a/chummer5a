@@ -64,6 +64,18 @@
       <text>：</text>
     </string>
     <string>
+      <key>String_Comma</key>
+      <text>，</text>
+    </string>
+    <string>
+      <key>String_LeftPar</key>
+      <text>（</text>
+    </string>
+    <string>
+      <key>String_RightPar</key>
+      <text>）</text>
+    </string>
+    <string>
       <key>String_NuyenSymbol</key>
       <text>￥</text>
     </string>
@@ -4268,7 +4280,7 @@
     </string>
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
-      <text>结果</text>
+      <text>结果（</text>
     </string>
     <!-- Select Metatype Window -->
     <string>

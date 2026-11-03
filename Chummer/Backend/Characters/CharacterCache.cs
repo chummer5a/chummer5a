@@ -1000,14 +1000,15 @@ namespace Chummer
         public string CalculatedName(bool blnAddMarkerIfOpen = true)
         {
             string strSpace = LanguageManager.GetString("String_Space");
+            string strLeftPar = LanguageManager.GetString("String_LeftPar");
+            string strRightPar = LanguageManager.GetString("String_RightPar");
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 using (LockObject.EnterReadLock())
                 {
                     if (!string.IsNullOrEmpty(ErrorText))
                     {
-                        sbdReturn.Append(Path.GetFileNameWithoutExtension(FileName), strSpace, '(')
-                            .Append(LanguageManager.GetString("String_Error"), ')');
+                        sbdReturn.Append(Path.GetFileNameWithoutExtension(FileName), strSpace, strLeftPar, LanguageManager.GetString("String_Error"), strRightPar);
                     }
                     else
                     {
@@ -1019,8 +1020,7 @@ namespace Chummer
                                 sbdReturn.Append(LanguageManager.GetString("String_UnnamedCharacter"));
                         }
 
-                        sbdReturn.Append(strSpace, '(')
-                            .Append(LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"), ')');
+                        sbdReturn.Append(strSpace, strLeftPar, LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"), strRightPar);
                     }
 
                     if (blnAddMarkerIfOpen && Program.MainForm != null)
@@ -1061,6 +1061,8 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -1071,7 +1073,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strErrorText))
                     {
                         sbdReturn.Append(Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false)),
-                            strSpace, '(').Append(await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false), ')');
+                            strSpace, strLeftPar, await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false), strRightPar);
                     }
                     else
                     {
@@ -1084,12 +1086,11 @@ namespace Chummer
                                     .ConfigureAwait(false));
                         }
 
-                        sbdReturn.Append(strSpace, '(')
-                                     .Append(await LanguageManager
+                        sbdReturn.Append(strSpace, strLeftPar, await LanguageManager
                                          .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
                                             ? "Title_CareerMode"
                                             : "Title_CreateMode", token: token)
-                                         .ConfigureAwait(false), ')');
+                                         .ConfigureAwait(false), strRightPar);
                     }
 
                     if (blnAddMarkerIfOpen && Program.MainForm != null)

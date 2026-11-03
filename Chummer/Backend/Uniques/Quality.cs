@@ -739,24 +739,21 @@ namespace Chummer
                     string strSpace = await LanguageManager
                         .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                         .ConfigureAwait(false);
-                    string strSpaceEnglish = await LanguageManager
-                        .GetStringAsync("String_Space", GlobalSettings.DefaultLanguage, token: token)
-                        .ConfigureAwait(false);
                     string strRatingString = string.Empty;
                     string strRatingStringEnglish = string.Empty;
                     if (intRating > 1)
                     {
                         strRatingString = strSpace + intRating.ToString(objCulture);
-                        strRatingStringEnglish = strSpaceEnglish + intRating.ToString(GlobalSettings.InvariantCultureInfo);
+                        strRatingStringEnglish = ' ' + intRating.ToString(GlobalSettings.InvariantCultureInfo);
                     }
                     string strSourceName = string.Empty;
                     string strSourceNameEnglish = string.Empty;
                     if (!string.IsNullOrWhiteSpace(await GetSourceNameAsync(token).ConfigureAwait(false)))
                     {
-                        strSourceName = strSpace + "("
+                        strSourceName = strSpace + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
                                                  + await DisplaySourceNameAsync(strLanguageToPrint, token)
-                                                     .ConfigureAwait(false) + ")";
-                        strSourceNameEnglish = strSpaceEnglish + "("
+                                                     .ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
+                        strSourceNameEnglish = " ("
                                                  + await DisplaySourceNameAsync(GlobalSettings.DefaultLanguage, token)
                                                      .ConfigureAwait(false) + ")";
                     }
@@ -1462,7 +1459,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                    strReturn += strSpace + LanguageManager.GetString("String_LeftPar", strLanguage) + _objCharacter.TranslateExtra(Extra, strLanguage) + LanguageManager.GetString("String_RightPar", strLanguage);
                 }
 
                 int intLevels = Levels;
@@ -1513,9 +1510,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + "(" + await _objCharacter
+                    strReturn += strSpace + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false) + await _objCharacter
                                                         .TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                        .ConfigureAwait(false) + ")";
+                                                        .ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 }
 
                 int intLevels = await GetLevelsAsync(token).ConfigureAwait(false);

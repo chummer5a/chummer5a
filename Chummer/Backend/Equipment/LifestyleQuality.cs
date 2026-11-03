@@ -1303,8 +1303,10 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(Extra))
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" +
-                                 _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage)
+                        + LanguageManager.GetString("String_LeftPar", strLanguage)
+                        + _objCharacter.TranslateExtra(Extra, strLanguage)
+                        + LanguageManager.GetString("String_RightPar", strLanguage);
                 return strReturn;
             }
         }
@@ -1322,10 +1324,10 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(Extra))
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                      .ConfigureAwait(false) + "(" +
-                                 await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                    .ConfigureAwait(false) + ")";
+                    strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false)
+                        + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
                 return strReturn;
             }
             finally
@@ -1610,7 +1612,7 @@ namespace Chummer.Backend.Equipment
                     if (decMultiplier != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',', LanguageManager.GetString("String_Space", strLanguage));
+                            sbdReturn.Append(LanguageManager.GetString("String_Comma", strLanguage), LanguageManager.GetString("String_Space", strLanguage));
                         if (decMultiplier > 0)
                             sbdReturn.Append('+');
                         sbdReturn.Append(decMultiplier.ToString(objCulture), '%');
@@ -1620,7 +1622,7 @@ namespace Chummer.Backend.Equipment
                     if (decCost != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',', LanguageManager.GetString("String_Space", strLanguage));
+                            sbdReturn.Append(LanguageManager.GetString("String_Comma", strLanguage), LanguageManager.GetString("String_Space", strLanguage));
                         if (decCost > 0)
                             sbdReturn.Append('+');
                         sbdReturn.Append(decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
@@ -1658,7 +1660,7 @@ namespace Chummer.Backend.Equipment
                     if (decMultiplier != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',', await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_Comma", strLanguage, token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
                         if (decMultiplier > 0)
                             sbdReturn.Append('+');
                         sbdReturn.Append(decMultiplier.ToString(objCulture), '%');
@@ -1668,7 +1670,7 @@ namespace Chummer.Backend.Equipment
                     if (decCost != 0)
                     {
                         if (sbdReturn.Length > 0)
-                            sbdReturn.Append(',', await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_Comma", strLanguage, token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false));
                         if (decCost > 0)
                             sbdReturn.Append('+');
                         sbdReturn.Append(decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture),

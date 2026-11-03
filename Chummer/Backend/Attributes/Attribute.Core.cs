@@ -1185,7 +1185,7 @@ namespace Chummer.Backend.Attributes
                 {
                     return HasModifiers()
                         ? Value.ToString(GlobalSettings.CultureInfo).ConcatFast(LanguageManager.GetString("String_Space"),
-                            "(", TotalValue.ToString(GlobalSettings.CultureInfo), ")")
+                            LanguageManager.GetString("String_LeftPar"), TotalValue.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_RightPar"))
                         : Value.ToString(GlobalSettings.CultureInfo);
                 }
             }
@@ -1204,7 +1204,7 @@ namespace Chummer.Backend.Attributes
                 return await HasModifiersAsync(token).ConfigureAwait(false)
                     ? intValue.ToString(GlobalSettings.CultureInfo).ConcatFast(
                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                        "(", (await GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")")
+                        await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false), (await GetTotalValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false))
                     : intValue.ToString(GlobalSettings.CultureInfo);
             }
             finally
@@ -2113,13 +2113,13 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterReadLock())
             {
-                string strSpacePlusParen = LanguageManager.GetString("String_Space", strLanguage) + "(";
+                string strSpacePlusParen = LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_LeftPar");
                 if (Abbrev == "MAGAdept")
                     return LanguageManager.GetString("String_AttributeMAGLong", strLanguage).ConcatFast(strSpacePlusParen,
-                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage), ")",
-                           strSpacePlusParen, LanguageManager.GetString("String_DescAdept", strLanguage), ")");
+                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage), LanguageManager.GetString("String_RightPar"),
+                           strSpacePlusParen, LanguageManager.GetString("String_DescAdept", strLanguage), LanguageManager.GetString("String_RightPar"));
 
-                return DisplayNameLong(strLanguage) + strSpacePlusParen + DisplayNameShort(strLanguage) + ")";
+                return DisplayNameLong(strLanguage) + strSpacePlusParen + DisplayNameShort(strLanguage) + LanguageManager.GetString("String_RightPar");
             }
         }
 
@@ -2130,16 +2130,16 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 string strSpacePlusParen = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                    .ConfigureAwait(false) + "(";
+                    .ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
                 if (Abbrev == "MAGAdept")
                     return (await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
                                .ConfigureAwait(false)).ConcatFast(strSpacePlusParen, await LanguageManager
                                .GetStringAsync("String_AttributeMAGShort", strLanguage, token: token)
-                               .ConfigureAwait(false), ")", strSpacePlusParen, await LanguageManager
-                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
+                               .ConfigureAwait(false), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false), strSpacePlusParen, await LanguageManager
+                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false));
 
                 return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpacePlusParen +
-                       await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ")";
+                       await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -2170,7 +2170,7 @@ namespace Chummer.Backend.Attributes
                     string strSpace = LanguageManager.GetString("String_Space");
                     return TotalMinimum.ToString(GlobalSettings.CultureInfo).ConcatFast(
                         strSpace, "/", strSpace, TotalMaximum.ToString(GlobalSettings.CultureInfo),
-                        strSpace, "(", TotalAugmentedMaximum.ToString(GlobalSettings.CultureInfo), ")");
+                        strSpace, LanguageManager.GetString("String_LeftPar"), TotalAugmentedMaximum.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_RightPar"));
                 }
             }
         }
@@ -2187,7 +2187,7 @@ namespace Chummer.Backend.Attributes
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 return (await GetTotalMinimumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo).ConcatFast(
                     strSpace, "/", strSpace, (await GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
-                    strSpace, "(", (await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")");
+                    strSpace, await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false), (await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false));
             }
             finally
             {
@@ -2436,6 +2436,8 @@ namespace Chummer.Backend.Attributes
                         return strReturn;
 
                     string strSpace = LanguageManager.GetString("String_Space");
+                    string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                    string strRightPar = LanguageManager.GetString("String_RightPar");
 
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setUniqueNames))
@@ -2478,7 +2480,7 @@ namespace Chummer.Backend.Attributes
                                     decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                                     sbdModifier.Append(strSpace, '+')
                                         .Append(strSpace, _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language), strSpace)
-                                               .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                               .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                     decBaseValue += decValue;
                                 }
                             }
@@ -2500,7 +2502,7 @@ namespace Chummer.Backend.Attributes
                                         decHighest = decValue;
                                         sbdNewModifier.Clear();
                                         sbdNewModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                            .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
 
                                     if (setUniqueNames.Contains("precedence-1"))
@@ -2513,7 +2515,7 @@ namespace Chummer.Backend.Attributes
                                             decHighest += decValue;
                                             sbdNewModifier
                                                 .Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                                .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                                .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                     }
 
@@ -2536,7 +2538,7 @@ namespace Chummer.Backend.Attributes
                                     {
                                         sbdNewModifier.Append(strSpace, '+', strSpace)
                                             .Append(strSourceName, strSpace)
-                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                            .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
 
                                     sbdModifier.Clear();
@@ -2556,7 +2558,7 @@ namespace Chummer.Backend.Attributes
                                         {
                                             decHighest = decValue;
                                             sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                                .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                                .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                     }
                                 }
@@ -2586,9 +2588,9 @@ namespace Chummer.Backend.Attributes
                                 else
                                 {
                                     sbdModifier.Append(strSpace, '+').Append(strSpace, _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                               .Append(strSpace, '(')
+                                               .Append(strSpace, strLeftPar)
                                                .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
-                                                           GlobalSettings.CultureInfo), ')');
+                                                           GlobalSettings.CultureInfo), strRightPar);
                                 }
                             }
 
@@ -2603,7 +2605,7 @@ namespace Chummer.Backend.Attributes
                                         continue;
                                     decHighest = decValue;
                                     sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                        .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }
                             }
 
@@ -2611,16 +2613,16 @@ namespace Chummer.Backend.Attributes
                             if (!_objCharacterSettings.DontUseCyberlimbCalculation &&
                                 Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                             {
-                                _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
+                                _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace, strLeftPar, strRightPar));
                             }
 
                             // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
-                            return _strCachedToolTip = CurrentDisplayAbbrev.ConcatFast(strSpace, "(", Value.ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
+                            return _strCachedToolTip = CurrentDisplayAbbrev.ConcatFast(strSpace, LanguageManager.GetString("String_LeftPar"), Value.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_RightPar"), sbdModifier.ToString());
                         }
                     }
                 }
 
-                void BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace)
+                void BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace, string strLeftPar, string strRightPar)
                 {
                     if (!objCyberware.IsLimb || !objCyberware.IsModularCurrentlyEquipped)
                     {
@@ -2629,14 +2631,14 @@ namespace Chummer.Backend.Attributes
 
                     if (objCyberware.InheritAttributes)
                     {
-                        objCyberware.Children.ForEach(objChild => BuildTooltip(sbdModifier, objChild, strSpace));
+                        objCyberware.Children.ForEach(objChild => BuildTooltip(sbdModifier, objChild, strSpace, strLeftPar, strRightPar));
 
                         return;
                     }
 
                     sbdModifier.AppendLine()
                         .Append(objCyberware.CurrentDisplayName, strSpace)
-                        .Append('(', objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo), ')');
+                        .Append(strLeftPar, objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo), strRightPar);
                 }
             }
         }
@@ -2657,6 +2659,8 @@ namespace Chummer.Backend.Attributes
                     return strReturn;
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setUniqueNames))
@@ -2699,8 +2703,8 @@ namespace Chummer.Backend.Attributes
                             {
                                 decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                                 sbdModifier.Append(strSpace, '+').Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false))
-                                           .Append(strSpace, '(')
-                                           .Append(decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                           .Append(strSpace, strLeftPar)
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 decBaseValue += decValue;
                             }
                         }
@@ -2724,7 +2728,7 @@ namespace Chummer.Backend.Attributes
                                     sbdNewModifier.Clear();
                                     sbdNewModifier
                                         .Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                        .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }
 
                                 if (setUniqueNames.Contains("precedence-1"))
@@ -2738,7 +2742,7 @@ namespace Chummer.Backend.Attributes
                                         decHighest += decValue;
                                         sbdNewModifier
                                             .Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                            .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
                                 }
 
@@ -2762,7 +2766,7 @@ namespace Chummer.Backend.Attributes
                                     token.ThrowIfCancellationRequested();
                                     sbdNewModifier.Append(strSpace, '+', strSpace)
                                         .Append(strSourceName, strSpace)
-                                        .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }
 
                                 sbdModifier.Clear();
@@ -2783,7 +2787,7 @@ namespace Chummer.Backend.Attributes
                                     {
                                         decHighest = decValue;
                                         sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                            .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
                                 }
                             }
@@ -2815,7 +2819,7 @@ namespace Chummer.Backend.Attributes
                             {
                                 sbdModifier.Append(strSpace, '+')
                                     .Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false), strSpace)
-                                    .Append('(', (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalSettings.CultureInfo), strRightPar);
                             }
                         }
 
@@ -2832,7 +2836,7 @@ namespace Chummer.Backend.Attributes
                                     continue;
                                 decHighest = decValue;
                                 sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
-                                    .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, decValue.ToString(GlobalSettings.CultureInfo), strRightPar);
                             }
                         }
 
@@ -2840,11 +2844,11 @@ namespace Chummer.Backend.Attributes
                         if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
-                            await _objCharacter.Cyberware.ForEachAsync((objCyberware, t) => BuildTooltip(sbdModifier, objCyberware, strSpace, t), token: token).ConfigureAwait(false);
+                            await _objCharacter.Cyberware.ForEachAsync((objCyberware, t) => BuildTooltip(sbdModifier, objCyberware, strSpace, strLeftPar, strRightPar, t), token: token).ConfigureAwait(false);
                         }
 
                         // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
-                        return _strCachedToolTip = StringExtensions.ConcatFast(await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false), strSpace, "(", (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
+                        return _strCachedToolTip = StringExtensions.ConcatFast(await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false), strSpace, await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false), (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false), sbdModifier.ToString());
                     }
                 }
             }
@@ -2853,7 +2857,7 @@ namespace Chummer.Backend.Attributes
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace, CancellationToken innerToken = default)
+            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace, string strLeftPar, string strRightPar, CancellationToken innerToken = default)
             {
                 if (!await objCyberware.GetIsLimbAsync(innerToken).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(innerToken).ConfigureAwait(false))
                 {
@@ -2862,14 +2866,14 @@ namespace Chummer.Backend.Attributes
 
                 if (await objCyberware.GetInheritAttributesAsync(innerToken).ConfigureAwait(false))
                 {
-                    await (await objCyberware.GetChildrenAsync(innerToken).ConfigureAwait(false)).ForEachAsync((objChild, t) => BuildTooltip(sbdModifier, objChild, strSpace, t), token: innerToken).ConfigureAwait(false);
+                    await (await objCyberware.GetChildrenAsync(innerToken).ConfigureAwait(false)).ForEachAsync((objChild, t) => BuildTooltip(sbdModifier, objChild, strSpace, strLeftPar, strRightPar, t), token: innerToken).ConfigureAwait(false);
 
                     return;
                 }
 
                 sbdModifier.AppendLine()
                     .Append(await objCyberware.GetCurrentDisplayNameAsync(innerToken).ConfigureAwait(false), strSpace)
-                    .Append('(', (await objCyberware.GetAttributeTotalValueAsync(Abbrev, innerToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
+                    .Append(strLeftPar, (await objCyberware.GetAttributeTotalValueAsync(Abbrev, innerToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), strRightPar);
             }
         }
 

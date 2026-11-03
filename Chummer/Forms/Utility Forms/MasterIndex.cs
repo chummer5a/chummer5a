@@ -554,6 +554,7 @@ namespace Chummer
                                         string strSpace = await LanguageManager
                                                                 .GetStringAsync("String_Space", token: token)
                                                                 .ConfigureAwait(false);
+                                        string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace;
                                         string strFormat = "{0}" + strSpace + "[{1}]";
                                         Dictionary<string, List<ListItem>> dicHelper
                                             = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
@@ -595,7 +596,7 @@ namespace Chummer
                                                                 ListItem objItemToAdd = new ListItem(
                                                                     objItem.Value,
                                                                     objItem.Name.ConcatFast(strSpace, "[",
-                                                                        StringExtensions.JoinFast("," + strSpace, objEntry.FileNames), "]"));
+                                                                        StringExtensions.JoinFast(strConjunction, objEntry.FileNames), "]"));
                                                                 _lstItems.Add(
                                                                     objItemToAdd); // Not using AddRange because of potential memory issues
                                                                 lstExistingItems.Add(objItemToAdd);
@@ -613,7 +614,7 @@ namespace Chummer
                                                                     objItemToAdd = new ListItem(
                                                                         objToRename.Value,
                                                                         objExistingEntry.DisplayName.ConcatFast(strSpace, "[",
-                                                                            StringExtensions.JoinFast("," + strSpace, objExistingEntry.FileNames), "]"));
+                                                                            StringExtensions.JoinFast(strConjunction, objExistingEntry.FileNames), "]"));
                                                                     _lstItems.Add(
                                                                         objItemToAdd); // Not using AddRange because of potential memory issues
                                                                     lstExistingItems.Add(objItemToAdd);

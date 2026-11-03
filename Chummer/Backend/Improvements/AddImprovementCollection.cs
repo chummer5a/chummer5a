@@ -1024,6 +1024,9 @@ namespace Chummer
             else
             {
                 string strSpace = LanguageManager.GetString("String_Space");
+                string strSeparator = LanguageManager.GetString("String_Comma") + strSpace;
+                string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                string strRightPar = LanguageManager.GetString("String_RightPar");
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdValue))
                 {
@@ -1034,10 +1037,10 @@ namespace Chummer
                             continue;
                         if (sbdValue.Length > 0)
                         {
-                            sbdValue.Append(',', strSpace);
+                            sbdValue.Append(strSeparator);
                         }
 
-                        sbdValue.Append(s, strSpace, "(", i.ToString(GlobalSettings.CultureInfo), ")");
+                        sbdValue.Append(s, strSpace, strLeftPar, i.ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
 
                     SelectedValue = sbdValue.ToString();
@@ -2152,7 +2155,7 @@ namespace Chummer
                 }
                 else
                 {
-                    SelectedValue += "," + LanguageManager.GetString("String_Space") + objSelectedContact.Name;
+                    SelectedValue += LanguageManager.GetString("String_Comma") + LanguageManager.GetString("String_Space") + objSelectedContact.Name;
                 }
             }
         }
@@ -5806,6 +5809,9 @@ namespace Chummer
                     {
                         if (xmlQualityNodeList?.Count > 0)
                         {
+                            string strSpace = LanguageManager.GetString("String_Space");
+                            string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                            string strRightPar = LanguageManager.GetString("String_RightPar");
                             foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                             {
                                 strForceDiscountValue = objXmlAddQuality.SelectSingleNodeAndCacheExpressionAsNavigator("@select")?.Value ?? string.Empty;
@@ -5817,7 +5823,7 @@ namespace Chummer
                                 {
                                     string strDisplayName = objXmlQuality["translate"]?.InnerTextViaPool() ?? strName;
                                     if (!string.IsNullOrWhiteSpace(strForceDiscountValue))
-                                        strDisplayName += " (" + strForceDiscountValue + ")";
+                                        strDisplayName += strSpace + strLeftPar + strForceDiscountValue + strRightPar;
                                     lstQualities.Add(new ListItem(strName, strDisplayName));
                                 }
                             }

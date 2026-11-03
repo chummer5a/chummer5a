@@ -6274,7 +6274,9 @@ namespace Chummer
                                 {
                                     objReplaceQuality.Type = QualityType.Negative;
                                     if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                                        objReplaceQuality.Extra += "," + await LanguageManager
+                                        objReplaceQuality.Extra += await LanguageManager
+                                            .GetStringAsync("String_Comma", token: token)
+                                            .ConfigureAwait(false) + await LanguageManager
                                             .GetStringAsync("String_Space", token: token)
                                             .ConfigureAwait(false);
                                     objReplaceQuality.Extra
@@ -6286,7 +6288,9 @@ namespace Chummer
                                 {
                                     objReplaceQuality.Type = QualityType.Positive;
                                     if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                                        objReplaceQuality.Extra += "," + await LanguageManager
+                                        objReplaceQuality.Extra += await LanguageManager
+                                            .GetStringAsync("String_Comma", token: token)
+                                            .ConfigureAwait(false) + await LanguageManager
                                             .GetStringAsync("String_Space", token: token)
                                             .ConfigureAwait(false);
                                     objReplaceQuality.Extra
@@ -14970,6 +14974,10 @@ namespace Chummer
             const int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                   .ConfigureAwait(false);
             string strPoints = blnDoUIUpdate
                 ? await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)
                 : string.Empty;
@@ -15054,7 +15062,7 @@ namespace Chummer
                             {
                                 sbdPositiveQualityTooltip.Append(
                                         await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                        strSpace, '(').Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(')');
+                                        strSpace, strLeftPar).Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(strRightPar);
                             }
                         }
                         else if (blnDoUIUpdate)
@@ -15064,13 +15072,13 @@ namespace Chummer
                                 case QualityType.Positive:
                                     sbdPositiveQualityTooltip.Append(
                                         await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                        strSpace, '(').Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(')');
+                                        strSpace, strLeftPar).Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(strRightPar);
                                     break;
 
                                 case QualityType.Negative:
                                     sbdNegativeQualityTooltip.Append(
                                         await objLoopQuality.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                        strSpace, '(').Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(')');
+                                        strSpace, strLeftPar).Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).AppendLine(strRightPar);
                                     break;
                             }
                         }
@@ -15108,10 +15116,10 @@ namespace Chummer
                                 else if (!string.IsNullOrWhiteSpace(strName))
                                     sbdPositiveQualityTooltip.Append(strNameToUse, '/', strName);
 
-                                sbdPositiveQualityTooltip.Append(strSpace, '(',
+                                sbdPositiveQualityTooltip.Append(strSpace, strLeftPar,
                                     (await objGroupContact.GetContactPointsAsync(t).ConfigureAwait(false)
                                     * await CharacterObjectSettings.GetKarmaContactAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
-                                    .AppendLine(')');
+                                    .AppendLine(strRightPar);
                             }, token).ConfigureAwait(false);
                         }
 
@@ -15179,8 +15187,7 @@ namespace Chummer
                                     sbdMartialArtsBPToolTip.AppendLine().Append(strSpace, '+', strSpace);
                                 sbdMartialArtsBPToolTip
                                     .Append(await objMartialArt.GetCurrentDisplayNameAsync(t1).ConfigureAwait(false))
-                                    .Append(strSpace, '(')
-                                    .Append(intLoopCost.ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strSpace, strLeftPar, intLoopCost.ToString(GlobalSettings.CultureInfo), strRightPar);
 
                                 bool blnIsFirst = true;
                                 await objMartialArt.Techniques.ForEachAsync(async (objTechnique, t2) =>
@@ -15198,7 +15205,7 @@ namespace Chummer
                                     sbdMartialArtsBPToolTip.AppendLine().Append(strSpace, '+', strSpace)
                                         .Append(await objTechnique.GetCurrentDisplayNameAsync(t2)
                                             .ConfigureAwait(false), strSpace)
-                                        .Append('(', intLoopCost.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, intLoopCost.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }, token: t1).ConfigureAwait(false);
                             }
                             else
@@ -15511,9 +15518,9 @@ namespace Chummer
                                                     "String_MasteryPointsAcronym", token: token)
                                                 .ConfigureAwait(false);
                                         if (intSpellPointsUsed > 0)
-                                            strText = strCommonPreamble.ConcatFast("(", StringExtensions.FastFormat(GlobalSettings.CultureInfo, strMasteryPointsFormat, intQualityKarmaToSpellPoints), ")", strColon, strSpace, intSpellPointsUsed.ToString(GlobalSettings.CultureInfo), strSpace, strPoints);
+                                            strText = strCommonPreamble.ConcatFast(await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false), StringExtensions.FastFormat(GlobalSettings.CultureInfo, strMasteryPointsFormat, intQualityKarmaToSpellPoints), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false), strColon, strSpace, intSpellPointsUsed.ToString(GlobalSettings.CultureInfo), strSpace, strPoints);
                                         else
-                                            strText = string.Concat(strCommonPreamble, "(", StringExtensions.FastFormat(GlobalSettings.CultureInfo, strMasteryPointsFormat, intQualityKarmaToSpellPoints), ")");
+                                            strText = string.Concat(strCommonPreamble, await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false), StringExtensions.FastFormat(GlobalSettings.CultureInfo, strMasteryPointsFormat, intQualityKarmaToSpellPoints), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false));
                                     }
                                     else if (intSpellPointsUsed > 0)
                                         strText = strCommonPreamble + strColon + strSpace + intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
@@ -15627,7 +15634,7 @@ namespace Chummer
                                     .Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(t)
                                         .ConfigureAwait(false), strSpace);
                             sbdFociPointsTooltip
-                                .Append('(', intBindingCost.ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, intBindingCost.ToString(GlobalSettings.CultureInfo), strRightPar);
                             return true;
                         }, token).ConfigureAwait(false);
 
@@ -15653,7 +15660,7 @@ namespace Chummer
                                     sbdFociPointsTooltip
                                         .Append(await objFocus.GetCurrentDisplayNameAsync(t)
                                             .ConfigureAwait(false), strSpace)
-                                        .Append('(', intBindingCost.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, intBindingCost.ToString(GlobalSettings.CultureInfo), strRightPar);
                                     return intBindingCost;
                                 }, token).ConfigureAwait(false);
 
@@ -15836,8 +15843,8 @@ namespace Chummer
                     {
                         int intKarmaUsed = Math.Max(0, intPointsInContacts - intContactPoints) +
                                            Math.Max(0, intHighPlacesFriends - intFriendsInHighPlacesPoints);
-                        sbdContactPoints.Append(strSpace, '(', intKarmaUsed.ToString(GlobalSettings.CultureInfo))
-                            .Append(strSpace, strPoints, ')');
+                        sbdContactPoints.Append(strSpace, strLeftPar, intKarmaUsed.ToString(GlobalSettings.CultureInfo))
+                            .Append(strSpace, strPoints, strRightPar);
                     }
 
                     string strContactPoints = sbdContactPoints.ToString();
@@ -16840,6 +16847,10 @@ namespace Chummer
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                            .ConfigureAwait(false);
+                    string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                    string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                           .ConfigureAwait(false);
                     if (objSelectedNodeTag is IHasSource objSelected)
                     {
                         await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -17360,10 +17371,10 @@ namespace Chummer
 
                                 if (!string.IsNullOrEmpty(objSelectedAccessory.AddMount))
                                 {
-                                    sbdSlotsText.Append(strSpace, "(++", strSpace).Append(await LanguageManager.GetStringAsync(
+                                    sbdSlotsText.Append(strSpace, strLeftPar, "++", strSpace).Append(await LanguageManager.GetStringAsync(
                                                                                 "String_Mount" + objSelectedAccessory.AddMount,
                                                                                 token: token)
-                                                                            .ConfigureAwait(false), ')');
+                                                                            .ConfigureAwait(false), strRightPar);
                                 }
 
                                 strSlotsText = sbdSlotsText.ToString();
@@ -17961,6 +17972,10 @@ namespace Chummer
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         if (objSelectedNodeTag is ArmorMod objArmorMod)
                         {
                             await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
@@ -18001,11 +18016,12 @@ namespace Chummer
                                 x => x.Text = strCapacity, token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
                             {
-                                string strText = objArmorMod.GearCapacity + "/" + strCapacity + strSpace + "(" +
+                                string strText = objArmorMod.GearCapacity + "/" + strCapacity + strSpace
+                                    + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false) +
                                                  (await objArmorMod.GetGearCapacityRemainingAsync(token).ConfigureAwait(false)).ToString(
                                                      "#,0.##", GlobalSettings.CultureInfo) + strSpace +
                                                  await LanguageManager.GetStringAsync("String_Remaining", token: token)
-                                                     .ConfigureAwait(false) + ")";
+                                                     .ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                                 await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strText, token)
                                                       .ConfigureAwait(false);
                             }
@@ -18284,8 +18300,7 @@ namespace Chummer
                                                 sbdArmorEquipped
                                                     .Append(await objLoopArmor.GetCurrentDisplayNameAsync(t)
                                                                               .ConfigureAwait(false), strSpace)
-                                                    .Append('(', await objLoopArmor.GetDisplayArmorValueAsync(t).ConfigureAwait(false))
-                                                    .AppendLine(')');
+                                                    .AppendLine(strLeftPar, await objLoopArmor.GetDisplayArmorValueAsync(t).ConfigureAwait(false), strRightPar);
                                             }
                                         }, token).ConfigureAwait(false);
 
@@ -18333,8 +18348,7 @@ namespace Chummer
                                                     sbdArmorEquipped
                                                         .Append(await objLoopArmor.GetCurrentDisplayNameAsync(t)
                                                                     .ConfigureAwait(false), strSpace)
-                                                        .Append('(', await objLoopArmor.GetDisplayArmorValueAsync(t).ConfigureAwait(false))
-                                                        .AppendLine(')');
+                                                        .AppendLine(strLeftPar, await objLoopArmor.GetDisplayArmorValueAsync(t).ConfigureAwait(false), strRightPar);
                                                 }
                                             }, token).ConfigureAwait(false);
 
@@ -19807,10 +19821,13 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (!string.IsNullOrEmpty(await objLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false)))
                     {
+                        string strComma = await LanguageManager.GetStringAsync(
+                            "String_Comma", token: token).ConfigureAwait(false);
+                        string strQualities;
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdQualities))
                         {
-                            await sbdQualities.AppendJoinAsync("," + Environment.NewLine,
+                            await sbdQualities.AppendJoinAsync(strComma + Environment.NewLine,
                                                                objLifestyle.LifestyleQualities.Select(
                                                                    (r, t) => r.GetCurrentFormattedDisplayNameAsync(t), token),
                                                                token).ConfigureAwait(false);
@@ -19821,7 +19838,7 @@ namespace Chummer
                                                                              token: token).ConfigureAwait(false))
                             {
                                 if (sbdQualities.Length > 0)
-                                    sbdQualities.AppendLine(',');
+                                    sbdQualities.AppendLine(strComma);
 
                                 sbdQualities.Append(await CharacterObject
                                                           .GetObjectNameAsync(objImprovement, token: token)
@@ -19842,7 +19859,7 @@ namespace Chummer
                                                  token: token).ConfigureAwait(false))
                                 {
                                     if (sbdQualities.Length > 0)
-                                        sbdQualities.AppendLine(',');
+                                        sbdQualities.AppendLine(strComma);
 
                                     sbdQualities.Append(await CharacterObject
                                             .GetObjectNameAsync(objImprovement, token: token)
@@ -19854,9 +19871,10 @@ namespace Chummer
                                 }
                             }
 
-                            await lblLifestyleQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token)
-                                                       .ConfigureAwait(false);
+                            strQualities = sbdQualities.ToString();
                         }
+                        await lblLifestyleQualities.DoThreadSafeAsync(x => x.Text = strQualities, token)
+                                                       .ConfigureAwait(false);
 
                         string strName = await objLifestyle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = strName, token)
@@ -19977,6 +19995,10 @@ namespace Chummer
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                                            .ConfigureAwait(false);
+                    string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                    string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                           .ConfigureAwait(false);
                     if (objSelectedNodeTag is IHasStolenProperty selectedLoot && (await ImprovementManager
                             .GetCachedImprovementListForValueOfAsync(
                                 CharacterObject,
@@ -20078,12 +20100,12 @@ namespace Chummer
                             {
                                 int intSlots = await objVehicle.GetSlotsAsync(token).ConfigureAwait(false);
                                 string strText = intSlots.ToString(GlobalSettings.CultureInfo) + strSpace
-                                    + "("
+                                    + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
                                     + (intSlots - await objVehicle.GetSlotsUsedAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo)
                                     + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token)
                                                                       .ConfigureAwait(false)
-                                    + ")";
+                                    + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                                 await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
                                 await lblVehicleSlots.DoThreadSafeAsync(x =>
@@ -21031,10 +21053,10 @@ namespace Chummer
 
                                 if (!string.IsNullOrEmpty(objAccessory.AddMount))
                                 {
-                                    sbdMount.Append(strSpace, "(++", strSpace).Append(await LanguageManager.GetStringAsync(
+                                    sbdMount.Append(strSpace, strLeftPar, "++", strSpace).Append(await LanguageManager.GetStringAsync(
                                                                                 "String_Mount" + objAccessory.AddMount,
                                                                                 token: token)
-                                                                            .ConfigureAwait(false), ')');
+                                                                            .ConfigureAwait(false), strRightPar);
                                 }
 
                                 strMountText = sbdMount.ToString();
@@ -21466,13 +21488,13 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
-                            string strText2 = objGear.CalculatedCapacity + strSpace + "("
+                            string strText2 = objGear.CalculatedCapacity + strSpace + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
                                               + objGear.CapacityRemaining.ToString(
                                                   "#,0.##", GlobalSettings.CultureInfo) +
                                               strSpace + await LanguageManager
                                                                .GetStringAsync("String_Remaining", token: token)
                                                                .ConfigureAwait(false)
-                                              + ")";
+                                              + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -22453,6 +22475,11 @@ namespace Chummer
                     {
                         blnValid = false;
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                        string strComma = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                                                               .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                                                               .ConfigureAwait(false);
                         sbdMessage.AppendLine().Append('\t').Append(await LanguageManager.GetStringAsync(
                                                                         "Message_InvalidActiveSkillExcessSpecializations",
                                                                         token: token).ConfigureAwait(false));
@@ -22464,10 +22491,10 @@ namespace Chummer
                                 return;
                             sbdMessage.AppendLine()
                                 .Append(await objSkill.GetCurrentDisplayNameAsync(t1).ConfigureAwait(false),
-                                    strSpace, '(');
-                            await sbdMessage.AppendJoinAsync("," + strSpace,
+                                    strSpace, strLeftPar);
+                            await sbdMessage.AppendJoinAsync(strComma + strSpace,
                                 lstSpecs.Select((x, t2) => x.GetCurrentDisplayNameAsync(t2), t1), t1).ConfigureAwait(false);
-                            sbdMessage.Append(')');
+                            sbdMessage.Append(strRightPar);
                         }, token).ConfigureAwait(false);
                     }
 
@@ -23533,13 +23560,11 @@ namespace Chummer
                                 }
                             }
 
-                            strNewName += await LanguageManager.GetStringAsync("String_Space", token: token)
-                                    .ConfigureAwait(false) + "("
-                                                           + await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "Title_CreateMode", token: token)
-                                                               .ConfigureAwait(false)
-                                                           + ").chum5";
+                            strNewName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("Title_CreateMode", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false)
+                                + ".chum5";
                             string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strFileName) && strFileName.EndsWith(".chum5lz", Utils.PathStringComparison))
                                 strNewName += "lz";

@@ -135,7 +135,7 @@ namespace Chummer
                                 if (xmlTechniqueNode != null)
                                 {
                                     if (sbdTechniques.Length > 0)
-                                        sbdTechniques.AppendLine(',');
+                                        sbdTechniques.AppendLine(await LanguageManager.GetStringAsync("String_Comma").ConfigureAwait(false));
                                     sbdTechniques.Append(
                                         !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                         StringComparison.OrdinalIgnoreCase)

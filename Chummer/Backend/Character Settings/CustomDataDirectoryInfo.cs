@@ -935,7 +935,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return MyVersion == new ValueVersion(1)
                 ? Name
-                : Name.ConcatFast(LanguageManager.GetString("String_Space", strLanguage, token: token), "(", MyVersion.ToString(), ")");
+                : Name.ConcatFast(LanguageManager.GetString("String_Space", strLanguage, token: token), LanguageManager.GetString("String_LeftPar", strLanguage, token: token), MyVersion.ToString(), LanguageManager.GetString("String_RightPar", strLanguage, token: token));
         }
 
         public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
@@ -943,7 +943,8 @@ namespace Chummer
             return MyVersion == new ValueVersion(1)
                 ? Name
                 : Name.ConcatFast(await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
-                    "(", MyVersion.ToString(), ")");
+                    await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false), MyVersion.ToString(),
+                    await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false));
         }
 
         public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -1104,14 +1105,14 @@ namespace Chummer
             if (MinimumVersion != default(ValueVersion))
             {
                 return MaximumVersion != default(ValueVersion)
-                    ? Name.ConcatFast(strSpace, "(", MinimumVersion.ToString(), strSpace, "-", strSpace, MaximumVersion.ToString(), ")")
+                    ? Name.ConcatFast(strSpace, LanguageManager.GetString("String_LeftPar", strLanguage, token: token), MinimumVersion.ToString(), strSpace, "-", strSpace, MaximumVersion.ToString(), LanguageManager.GetString("String_RightPar", strLanguage, token: token))
                     // If maxversion is not given, don't display decimal.max display > instead
-                    : Name.ConcatFast(strSpace, "(", strSpace, ">", strSpace, MinimumVersion.ToString(), ")");
+                    : Name.ConcatFast(strSpace, LanguageManager.GetString("String_LeftPar", strLanguage, token: token), strSpace, ">", strSpace, MinimumVersion.ToString(), LanguageManager.GetString("String_RightPar", strLanguage, token: token));
             }
 
             return MaximumVersion != default(ValueVersion)
                 // If minversion is not given, don't display decimal.min display < instead
-                ? Name.ConcatFast(strSpace, "(", strSpace, "<", strSpace, MaximumVersion.ToString(), ")")
+                ? Name.ConcatFast(strSpace, LanguageManager.GetString("String_LeftPar", strLanguage, token: token), strSpace, "<", strSpace, MaximumVersion.ToString(), LanguageManager.GetString("String_RightPar", strLanguage, token: token))
                 // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                 : Name;
         }
@@ -1123,14 +1124,14 @@ namespace Chummer
             if (MinimumVersion != default(ValueVersion))
             {
                 return MaximumVersion != default(ValueVersion)
-                    ? Name.ConcatFast(strSpace, "(", MinimumVersion.ToString(), strSpace, "-", strSpace, MaximumVersion.ToString(), ")")
+                    ? Name.ConcatFast(strSpace, await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false), MinimumVersion.ToString(), strSpace, "-", strSpace, MaximumVersion.ToString(), await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false))
                     // If maxversion is not given, don't display decimal.max display > instead
-                    : Name.ConcatFast(strSpace, "(", strSpace, ">", strSpace, MinimumVersion.ToString(), ")");
+                    : Name.ConcatFast(strSpace, await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false), strSpace, ">", strSpace, MinimumVersion.ToString(), await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false));
             }
 
             return MaximumVersion != default(ValueVersion)
                 // If minversion is not given, don't display decimal.min display < instead
-                ? Name.ConcatFast(strSpace, "(", strSpace, "<", strSpace, MaximumVersion.ToString(), ")")
+                ? Name.ConcatFast(strSpace, await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false), strSpace, "<", strSpace, MaximumVersion.ToString(), await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false))
                 // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                 : Name;
         }

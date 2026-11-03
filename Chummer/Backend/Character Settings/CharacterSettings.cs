@@ -6939,7 +6939,9 @@ namespace Chummer
                         {
                             strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
                             lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage).ConcatFast(
-                                         LanguageManager.GetString("String_Space", strLanguage), "(", strToAppend, ")"));
+                                         LanguageManager.GetString("String_Space", strLanguage),
+                                         LanguageManager.GetString("String_LeftPar", strLanguage), strToAppend,
+                                         LanguageManager.GetString("String_RightPar", strLanguage)));
                         }
                     }
                 }
@@ -6999,8 +7001,12 @@ namespace Chummer
                                                .ConfigureAwait(false)).ConcatFast(
                                          await LanguageManager
                                                  .GetStringAsync("String_Space", strLanguage, token: token)
-                                                 .ConfigureAwait(false), "(",
-                                         strToAppend, ")"));
+                                                 .ConfigureAwait(false), await LanguageManager
+                                                 .GetStringAsync("String_LeftPar", strLanguage, token: token)
+                                                 .ConfigureAwait(false),
+                                         strToAppend, await LanguageManager
+                                                 .GetStringAsync("String_RightPar", strLanguage, token: token)
+                                                 .ConfigureAwait(false)));
                         }
                     }
                 }
@@ -8681,8 +8687,7 @@ namespace Chummer
                 .ContainsKey(await GetDictionaryKeyAsync(token).ConfigureAwait(false))
                 && !value.Contains("{PriorityNuyen}"))
             {
-                value
-                    = "(" + value + ") + {PriorityNuyen}";
+                value = "(" + value + ") + {PriorityNuyen}";
             }
 
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);

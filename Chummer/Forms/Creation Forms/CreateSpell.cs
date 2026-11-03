@@ -1031,7 +1031,9 @@ namespace Chummer
             if (strCategory == "Health" && await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = "(" + await LanguageManager.GetStringAsync("String_SpellDamageValue", token: token).ConfigureAwait(false) + ")";
+                strBase = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_SpellDamageValue", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             }
             else
             {

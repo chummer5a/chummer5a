@@ -59,6 +59,10 @@ namespace Chummer
                     case "GEAR":
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                        string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar")
+                                                            .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager.GetStringAsync("String_RightPar")
+                                                                .ConfigureAwait(false);
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
@@ -72,7 +76,7 @@ namespace Chummer
                                 {
                                     // Append the plugin information to the name.
                                     (await sbdAmmoName.Append(strSpace, '[')
-                                                      .AppendJoinAsync("," + strSpace,
+                                                      .AppendJoinAsync(await LanguageManager.GetStringAsync("String_Comma").ConfigureAwait(false) + strSpace,
                                                                        objGear.Children.Select(
                                                                            x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false))
                                         .Append(']');
@@ -81,13 +85,13 @@ namespace Chummer
                                 int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
                                 if (intRating > 0)
                                 {
-                                    sbdAmmoName.Append(strSpace, '(')
+                                    sbdAmmoName.Append(strSpace, strLeftPar)
                                                .AppendFastFormat(
                                                              await LanguageManager.GetStringAsync("Label_RatingFormat")
                                                                  .ConfigureAwait(false),
                                                              await LanguageManager.GetStringAsync(objGear.RatingLabel)
                                                                  .ConfigureAwait(false))
-                                               .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), ')');
+                                               .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }
 
                                 sbdAmmoName.Append(strSpace, '×', objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));

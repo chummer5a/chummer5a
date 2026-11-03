@@ -199,7 +199,9 @@ namespace Chummer
                                                                     () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence"))
                                                  .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong"))
                                                  .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch"))
-                                                 .CheapReplaceAsync("(A)", async () => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea").ConfigureAwait(false) + ")")
+                                                 .CheapReplaceAsync("(A)", async () => await LanguageManager.GetStringAsync("String_LeftPar").ConfigureAwait(false)
+                                                    + await LanguageManager.GetStringAsync("String_SpellRangeArea").ConfigureAwait(false)
+                                                    + await LanguageManager.GetStringAsync("String_RightPar").ConfigureAwait(false))
                                                  .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort")).ConfigureAwait(false);
                     }
                     await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strRange).ConfigureAwait(false);

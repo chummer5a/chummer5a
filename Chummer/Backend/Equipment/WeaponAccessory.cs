@@ -1121,7 +1121,10 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                strReturn += LanguageManager.GetString("String_Space", strLanguage)
+                    + LanguageManager.GetString("String_LeftPar", strLanguage)
+                    + _objCharacter.TranslateExtra(Extra, strLanguage)
+                    + LanguageManager.GetString("String_RightPar", strLanguage);
             }
 
             return strReturn;
@@ -1136,7 +1139,10 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false)
+                    + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             }
 
             return strReturn;
@@ -2636,7 +2642,10 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)

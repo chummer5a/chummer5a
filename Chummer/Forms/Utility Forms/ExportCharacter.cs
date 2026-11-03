@@ -622,7 +622,9 @@ namespace Chummer
                               + await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
                               + await LanguageManager.GetStringAsync(
                                   await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token).ConfigureAwait(false) + strSpace
-                              + "(" + await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetNameAsync(token).ConfigureAwait(false) + ")";
+                              + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                              + await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetNameAsync(token).ConfigureAwait(false)
+                              + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
         }
 

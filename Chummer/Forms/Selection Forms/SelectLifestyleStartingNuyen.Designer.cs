@@ -82,7 +82,6 @@ namespace Chummer
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(37, 13);
             this.lblResult.TabIndex = 3;
-            this.lblResult.Tag = "Label_LifestyleNuyen_ResultOf";
             this.lblResult.Text = "Result";
             // 
             // lblDice

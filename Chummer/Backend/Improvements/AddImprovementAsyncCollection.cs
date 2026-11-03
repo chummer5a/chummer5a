@@ -1071,6 +1071,9 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             else
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strSeparator = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace;
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdValue))
                 {
@@ -1081,10 +1084,10 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                             continue;
                         if (sbdValue.Length > 0)
                         {
-                            sbdValue.Append(',', strSpace);
+                            sbdValue.Append(strSeparator);
                         }
 
-                        sbdValue.Append(s, strSpace, "(", i.ToString(GlobalSettings.CultureInfo), ")");
+                        sbdValue.Append(s, strSpace, strLeftPar, i.ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
 
                     SelectedValue = sbdValue.ToString();
@@ -2230,7 +2233,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 }
                 else
                 {
-                    SelectedValue += "," + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objSelectedContact.GetNameAsync(token).ConfigureAwait(false);
+                    SelectedValue += await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objSelectedContact.GetNameAsync(token).ConfigureAwait(false);
                 }
             }
         }
@@ -6112,6 +6115,9 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     {
                         if (xmlQualityNodeList?.Count > 0)
                         {
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                             foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                             {
                                 strForceDiscountValue = objXmlAddQuality.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value ?? string.Empty;
@@ -6123,7 +6129,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                                 {
                                     string strDisplayName = objXmlQuality["translate"]?.InnerTextViaPool(token) ?? strName;
                                     if (!string.IsNullOrWhiteSpace(strForceDiscountValue))
-                                        strDisplayName += " (" + strForceDiscountValue + ")";
+                                        strDisplayName += strSpace + strLeftPar + strForceDiscountValue + strRightPar;
                                     lstQualities.Add(new ListItem(strName, strDisplayName));
                                 }
                             }

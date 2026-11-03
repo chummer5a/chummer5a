@@ -1400,8 +1400,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strErrorText))
                     strWatchText
                         += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                           + "(" + await LanguageManager.GetStringAsync("String_Error", token: token)
-                                                        .ConfigureAwait(false) + ")";
+                           + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                           + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false)
+                           + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 if (objWatchNode != null)
                 {
                     await treCharacterList.DoThreadSafeAsync(() =>
@@ -1899,8 +1900,10 @@ namespace Chummer
                                         objMetatypeNode = objMetatypeNode?.SelectSingleNode(
                                             "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + "]");
 
-                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
-                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ")";
+                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                            + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant)
+                                            + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                                     }
 
                                     await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatypeText, token).ConfigureAwait(false);

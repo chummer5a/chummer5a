@@ -3353,7 +3353,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just two chars and so does not require a char array to be allocated.
         /// </summary>
         public static string TrimEndNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
         {
@@ -3367,6 +3367,50 @@ namespace Chummer
             {
                 char chrLoop = strInput[intEnd];
                 if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just three chars and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimEndNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && chrLoop != chrToTrim3)
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just four chars and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimEndNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3, char chrToTrim4)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && chrLoop != chrToTrim3 && chrLoop != chrToTrim4)
                     break;
             }
             if (intEnd < 0)
@@ -3398,7 +3442,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just two chars and so does not require a char array to be allocated.
         /// This function also trims whitespace characters, too.
         /// </summary>
         public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
@@ -3413,6 +3457,52 @@ namespace Chummer
             {
                 char chrLoop = strInput[intEnd];
                 if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just three chars and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && chrLoop != chrToTrim3 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just four chars and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2, char chrToTrim3, char chrToTrim4)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && chrLoop != chrToTrim3 && chrLoop != chrToTrim4 && !char.IsWhiteSpace(chrLoop))
                     break;
             }
             if (intEnd < 0)

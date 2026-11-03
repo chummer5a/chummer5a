@@ -866,6 +866,18 @@ namespace Chummer
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", token: token)
                 : await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strComma = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_Comma", token: token)
+                : await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false);
+            string strLeftPar = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_LeftPar", token: token)
+                : await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_RightPar", token: token)
+                : await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             string strNodeInnerText = xmlNode.Value;
             string strNodeId
                 = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value ?? string.Empty;
@@ -1071,7 +1083,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "critterpowers.xml", "powers/power", "Tab_Critter", token).ConfigureAwait(false);
+                            strSpace, strLeftPar, strRightPar, "critterpowers.xml", "powers/power", "Tab_Critter", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -1314,7 +1326,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "echoes.xml", "echoes/echo", "String_Echo", token).ConfigureAwait(false);
+                            strSpace, strLeftPar, strRightPar, "echoes.xml", "echoes/echo", "String_Echo", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -1347,10 +1359,10 @@ namespace Chummer
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
                             t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
-                                InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
+                                InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                                 "gear.xml", "gears/gear", "String_Gear", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
-                            InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
+                            InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                             "gear.xml", "gears/gear", "String_Gear", token).ConfigureAwait(false);
                 case "group":
                     return blnSync
@@ -1404,7 +1416,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "martialarts.xml", "martialarts/martialart", "String_MartialArt", token)
+                            strSpace, strLeftPar, strRightPar, "martialarts.xml", "martialarts/martialart", "String_MartialArt", token)
                             .ConfigureAwait(false);
                     }
 
@@ -1451,7 +1463,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "martialarts.xml", "techniques/technique",
+                            strSpace, strLeftPar, strRightPar, "martialarts.xml", "techniques/technique",
                             "Label_Options_MartialArtTechnique", token).ConfigureAwait(false);
                     }
 
@@ -1479,7 +1491,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "metamagic.xml", "metamagics/metamagic", "String_Metamagic", token)
+                            strSpace, strLeftPar, strRightPar, "metamagic.xml", "metamagics/metamagic", "String_Metamagic", token)
                             .ConfigureAwait(false);
                     }
 
@@ -1506,7 +1518,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter,
-                                strNodeInnerText, strSpace, "metamagic.xml", "arts/art", "String_Art", token)
+                                strNodeInnerText, strSpace, strLeftPar, strRightPar, "metamagic.xml", "arts/art", "String_Art", token)
                                 .ConfigureAwait(false);
                         }
 
@@ -1568,7 +1580,7 @@ namespace Chummer
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(false, strName);
                     strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                        strSpace, "metamagic.xml", "arts/art", "String_Art", token).ConfigureAwait(false);
+                        strSpace, strLeftPar, strRightPar, "metamagic.xml", "arts/art", "String_Art", token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(false, strName);
                 }
                 case "magenabled":
@@ -1629,7 +1641,7 @@ namespace Chummer
                                                                       "/chummer/metatypes/metatype[id = "
                                                                       + strNodeInnerText.CleanXPath()
                                                                       + "]/name")?.Value ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
+                                                              : strNodeInnerText) + strSpace + strLeftPar
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -1637,7 +1649,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Metatype",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                                                              token: token).ConfigureAwait(false)) + strRightPar;
                     }
 
                     return new ValueTuple<bool, string>(strNodeInnerText == objCharacter.Metatype
@@ -1670,7 +1682,7 @@ namespace Chummer
                         strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
-                                                          : strNodeInnerText) + strSpace + "("
+                                                          : strNodeInnerText) + strSpace + strLeftPar
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -1678,7 +1690,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_MetatypeCategory",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                                                              token: token).ConfigureAwait(false)) + strRightPar;
                     }
 
                     return new ValueTuple<bool, string>(strNodeInnerText == objCharacter.MetatypeCategory, strName);
@@ -1716,7 +1728,7 @@ namespace Chummer
                                                                       "/chummer/metatypes/metatype/metavariants/metavariant[id = "
                                                                       + strNodeInnerText.CleanXPath()
                                                                       + "]/name")?.Value ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
+                                                              : strNodeInnerText) + strSpace + strLeftPar
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -1724,7 +1736,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_Metavariant",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                                                              token: token).ConfigureAwait(false)) + strRightPar;
                     }
 
                     return new ValueTuple<bool, string>(strNodeInnerText == objCharacter.Metavariant
@@ -1772,10 +1784,10 @@ namespace Chummer
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
                             t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
-                                InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
+                                InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                                 "powers.xml", "powers/power", "Tab_Adept", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
-                            InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
+                            InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                             "powers.xml", "powers/power", "Tab_Adept", token).ConfigureAwait(false);
                 case "program":
                 {
@@ -1790,7 +1802,7 @@ namespace Chummer
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(blnResult, strName);
                     strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                        strSpace, "programs.xml", "programs/program", "String_Program", token).ConfigureAwait(false);
+                        strSpace, strLeftPar, strRightPar, "programs.xml", "programs/program", "String_Program", token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnResult, strName);
                 }
                 case "characterquality":
@@ -1798,23 +1810,23 @@ namespace Chummer
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
                             t => TestInstalledCharacterQualityRequirementCoreAsync(true, xmlNode, objCharacter,
-                                strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, t), token)
+                                strNodeInnerText, strSpace, strLeftPar, strRightPar, strIgnoreQuality, blnShowMessage, t), token)
                         : await TestInstalledCharacterQualityRequirementCoreAsync(false, xmlNode, objCharacter,
-                            strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
+                            strNodeInnerText, strSpace, strLeftPar, strRightPar, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
                 case "lifestylequality":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
                             t => TestInstalledLifestyleQualityRequirementCoreAsync(true, xmlNode, objCharacter,
-                                objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, t), token)
+                                objParent, strNodeInnerText, strSpace, strLeftPar, strRightPar, strIgnoreQuality, blnShowMessage, t), token)
                         : await TestInstalledLifestyleQualityRequirementCoreAsync(false, xmlNode, objCharacter,
-                            objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token)
+                            objParent, strNodeInnerText, strSpace, strLeftPar, strRightPar, strIgnoreQuality, blnShowMessage, token)
                             .ConfigureAwait(false);
                 case "lifestyle":
                 {
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "lifestyles.xml", "lifestyles/lifestyle", "String_Lifestyle", token)
+                            strSpace, strLeftPar, strRightPar, "lifestyles.xml", "lifestyles/lifestyle", "String_Lifestyle", token)
                             .ConfigureAwait(false);
                     }
 
@@ -1928,7 +1940,7 @@ namespace Chummer
                                                 token: token).ConfigureAwait(false)).Count
                                     == 0)
                                 {
-                                    strName += strSpace + "(" + strSpec + ")";
+                                    strName += strSpace + strLeftPar + strSpec + strRightPar;
                                 }
 
                                 if (!string.IsNullOrEmpty(strValue))
@@ -1962,10 +1974,10 @@ namespace Chummer
                             if (objSkill == null && !string.IsNullOrEmpty(strSpec))
                                 objSkill = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + "(" + strSpec + ")",
+                                    ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + strLeftPar + strSpec + strRightPar,
                                         token)
                                     : await objSkillsSection.GetActiveSkillAsync(
-                                        strNodeName + strSpace + "(" + strSpec + ")", token).ConfigureAwait(false);
+                                        strNodeName + strSpace + strLeftPar + strSpec + strRightPar, token).ConfigureAwait(false);
                         }
 
                         if (objSkill != null)
@@ -2000,7 +2012,7 @@ namespace Chummer
                                                     token: token).ConfigureAwait(false)).Count
                                         == 0)
                                     {
-                                        strName += strSpace + "(" + strSpec + ")";
+                                        strName += strSpace + strLeftPar + strSpec + strRightPar;
                                     }
 
                                     if (!string.IsNullOrEmpty(strValue))
@@ -2049,7 +2061,7 @@ namespace Chummer
                                                           : strSkillName);
                         if (!string.IsNullOrEmpty(strSpec))
                         {
-                            strName += strSpace + "(" + strSpec + ")";
+                            strName += strSpace + strLeftPar + strSpec + strRightPar;
                         }
 
                         if (!string.IsNullOrEmpty(strValue))
@@ -2057,14 +2069,14 @@ namespace Chummer
                             strName += strSpace + strValue;
                         }
 
-                        strName += strSpace + "(" + (blnSync
+                        strName += strSpace + strLeftPar + (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString(
                                 "Tab_Skills",
                                 token: token)
                             : await LanguageManager.GetStringAsync(
                                 "Tab_Skills",
-                                token: token).ConfigureAwait(false)) + ")";
+                                token: token).ConfigureAwait(false)) + strRightPar;
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2098,7 +2110,7 @@ namespace Chummer
                                                 && objGroup.SourceIDString != strLoop)
                                                 continue;
                                             if (blnShowMessage)
-                                                sbdOutput.Append(objGroup.CurrentDisplayName, ',', strSpace);
+                                                sbdOutput.Append(objGroup.CurrentDisplayName, strComma, strSpace);
                                             intTotal += objGroup.Rating;
                                             break;
                                         }
@@ -2114,7 +2126,7 @@ namespace Chummer
                                                 && objGroup.SourceIDString != strLoop)
                                                 continue;
                                             if (blnShowMessage)
-                                                sbdOutput.Append(objGroup.CurrentDisplayName, ',', strSpace);
+                                                sbdOutput.Append(objGroup.CurrentDisplayName, strComma, strSpace);
                                             intTotal += objGroup.Rating;
                                             break;
                                         }
@@ -2136,7 +2148,7 @@ namespace Chummer
                                                     return true;
                                                 if (blnShowMessage)
                                                     sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(t)
-                                                            .ConfigureAwait(false), ',', strSpace);
+                                                            .ConfigureAwait(false), strComma, strSpace);
                                                 intTotal += await objGroup.GetRatingAsync(t).ConfigureAwait(false);
                                                 return false;
                                             }, token).ConfigureAwait(false);
@@ -2156,7 +2168,7 @@ namespace Chummer
                                                     return true;
                                                 if (blnShowMessage)
                                                     sbdOutput.Append(await objGroup.GetCurrentDisplayNameAsync(t)
-                                                            .ConfigureAwait(false), ',', strSpace);
+                                                            .ConfigureAwait(false), strComma, strSpace);
                                                 intTotal += await objGroup.GetRatingAsync(t).ConfigureAwait(false);
                                                 return false;
                                             }, token).ConfigureAwait(false);
@@ -2169,15 +2181,15 @@ namespace Chummer
                                 intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0),
                                 strName);
                         if (sbdOutput.Length > 0)
-                            sbdOutput.Length -= 2;
-                        strName = sbdOutput.Append(strSpace, '(').Append(blnSync
+                            sbdOutput.Length -= strComma.Length + strSpace.Length;
+                        strName = sbdOutput.Append(strSpace, strLeftPar, blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString(
                                 "String_ExpenseSkill",
                                 token: token)
                             : await LanguageManager.GetStringAsync(
                                 "String_ExpenseSkill",
-                                token: token).ConfigureAwait(false), ')').ToString();
+                                token: token).ConfigureAwait(false), strRightPar).ToString();
                     }
 
                     int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("val", token)
@@ -2209,7 +2221,7 @@ namespace Chummer
                                         if (objGroup.Name == strLoop)
                                         {
                                             if (blnShowMessage)
-                                                sbdOutput.Append(objGroup.CurrentDisplayName, ',', strSpace);
+                                                sbdOutput.Append(objGroup.CurrentDisplayName, strComma, strSpace);
                                             intTotal += objGroup.Rating;
                                             break;
                                         }
@@ -2229,7 +2241,7 @@ namespace Chummer
                                                     if (blnShowMessage)
                                                         sbdOutput.Append(await objGroup
                                                                 .GetCurrentDisplayNameAsync(t)
-                                                                .ConfigureAwait(false), ',', strSpace);
+                                                                .ConfigureAwait(false), strComma, strSpace);
                                                     intTotal += await objGroup.GetRatingAsync(t)
                                                         .ConfigureAwait(false);
                                                     return false;
@@ -2244,15 +2256,15 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             if (sbdOutput.Length > 0)
-                                sbdOutput.Length -= 2;
-                            strName = sbdOutput.Append(strSpace, '(').Append(blnSync
+                                sbdOutput.Length -= strComma.Length + strSpace.Length;
+                            strName = sbdOutput.Append(strSpace, strLeftPar, blnSync
                                           // ReSharper disable once MethodHasAsyncOverload
                                           ? LanguageManager.GetString(
                                               "String_ExpenseSkillGroup",
                                               token: token)
                                           : await LanguageManager.GetStringAsync(
                                               "String_ExpenseSkillGroup",
-                                              token: token).ConfigureAwait(false), ')').ToString();
+                                              token: token).ConfigureAwait(false), strRightPar).ToString();
                         }
                     }
 
@@ -2331,7 +2343,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "spells.xml", "spells/spell", "String_DescSpell", token).ConfigureAwait(false);
+                            strSpace, strLeftPar, strRightPar, "spells.xml", "spells/spell", "String_DescSpell", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2353,7 +2365,7 @@ namespace Chummer
                         strName = Environment.NewLine + "\t"
                                                       + (!string.IsNullOrEmpty(strTranslate)
                                                           ? strTranslate
-                                                          : strNodeInnerText) + strSpace + "("
+                                                          : strNodeInnerText) + strSpace + strLeftPar
                                                       + (blnSync
                                                           // ReSharper disable once MethodHasAsyncOverload
                                                           ? LanguageManager.GetString(
@@ -2361,7 +2373,7 @@ namespace Chummer
                                                               token: token)
                                                           : await LanguageManager.GetStringAsync(
                                                               "String_SpellCategory",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                                                              token: token).ConfigureAwait(false)) + strRightPar;
                     }
 
                     int intTarget = xmlNode.SelectSingleNodeAndCacheExpression("count", token)?.ValueAsInt ?? 0;
@@ -2452,7 +2464,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "traditions.xml", "traditions/tradition", "String_Tradition", token)
+                            strSpace, strLeftPar, strRightPar, "traditions.xml", "traditions/tradition", "String_Tradition", token)
                             .ConfigureAwait(false);
                     }
 
@@ -2470,7 +2482,7 @@ namespace Chummer
                     if (blnShowMessage)
                     {
                         strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                            strSpace, "critterpowers.xml", "powers/power", "String_Tradition", token)
+                            strSpace, strLeftPar, strRightPar, "critterpowers.xml", "powers/power", "String_Tradition", token)
                             .ConfigureAwait(false);
                     }
 
@@ -2508,7 +2520,7 @@ namespace Chummer
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(blnReturn, strName);
                     strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                        strSpace, "weapons.xml", "weapons/weapon", "String_Weapon", token).ConfigureAwait(false);
+                        strSpace, strLeftPar, strRightPar, "weapons.xml", "weapons/weapon", "String_Weapon", token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnReturn, strName);
                 }
                 case "accessory" when objParent is Weapon objWeapon:
@@ -2523,7 +2535,7 @@ namespace Chummer
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(blnReturn, strName);
                     strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                        strSpace, "weapons.xml", "accessories/accessory", "String_WeaponAccessory", token)
+                        strSpace, strLeftPar, strRightPar, "weapons.xml", "accessories/accessory", "String_WeaponAccessory", token)
                         .ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnReturn, strName);
                 }
@@ -2542,19 +2554,19 @@ namespace Chummer
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
                             t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
-                                InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
+                                InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                                 "armor.xml", "armormods/armormod", "String_ArmorMod", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
-                            InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
+                            InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                             "armor.xml", "armormods/armormod", "String_ArmorMod", token).ConfigureAwait(false);
                 case "vehiclemod":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
                             t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
-                                InstalledDataItemRequirementKind.VehicleMod, strNodeInnerText, strSpace, blnShowMessage,
+                                InstalledDataItemRequirementKind.VehicleMod, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                                 "vehicles.xml", "mods/mod", "String_VehicleModification", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
-                            InstalledDataItemRequirementKind.VehicleMod, strNodeInnerText, strSpace, blnShowMessage,
+                            InstalledDataItemRequirementKind.VehicleMod, strNodeInnerText, strSpace, strLeftPar, strRightPar, blnShowMessage,
                             "vehicles.xml", "mods/mod", "String_VehicleModification", token).ConfigureAwait(false);
                 default:
                     Utils.BreakIfDebug();
@@ -2839,25 +2851,25 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Formatted restriction message text.</returns>
         private static async Task<string> BuildDataItemRequirementRestrictionMessageAsync(bool blnSync,
-            Character objCharacter, string strNodeInnerText, string strSpace, string strDataFile,
+            Character objCharacter, string strNodeInnerText, string strSpace, string strLeftPar, string strRightPar, string strDataFile,
             string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
         {
             if (blnSync)
             {
                 return Utils.SafelyRunSynchronously(
                     t => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
-                        strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, t), token);
+                        strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, t), token);
             }
 
             return await BuildDataItemRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
-                strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+                strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Core implementation for <see cref="BuildDataItemRequirementRestrictionMessageAsync"/>.
         /// </summary>
         private static async Task<string> BuildDataItemRequirementRestrictionMessageCoreAsync(bool blnSync,
-            Character objCharacter, string strNodeInnerText, string strSpace, string strDataFile,
+            Character objCharacter, string strNodeInnerText, string strSpace, string strLeftPar, string strRightPar, string strDataFile,
             string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
         {
             XPathNavigator objLoopDoc = blnSync
@@ -2880,7 +2892,7 @@ namespace Chummer
                            ? objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[id = "
                                                          + strNodeInnerText.CleanXPath() + "]/name")?.Value
                              ?? strNodeInnerText
-                           : strNodeInnerText) + strSpace + "(" + strTypeLabel + ")";
+                           : strNodeInnerText) + strSpace + strLeftPar + strTypeLabel + strRightPar;
         }
 
         /// <summary>
@@ -2996,7 +3008,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Whether the requirement is met and any restriction message text.</returns>
         private static async Task<ValueTuple<bool, string>> TestInstalledCharacterQualityRequirementCoreAsync(
-            bool blnSync, XPathNavigator xmlNode, Character objCharacter, string strNodeInnerText, string strSpace,
+            bool blnSync, XPathNavigator xmlNode, Character objCharacter, string strNodeInnerText, string strSpace, string strLeftPar, string strRightPar,
             string strIgnoreQuality, bool blnShowMessage, CancellationToken token)
         {
             string strExtra = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value ?? string.Empty;
@@ -3022,7 +3034,7 @@ namespace Chummer
             if (!blnShowMessage)
                 return new ValueTuple<bool, string>(false, string.Empty);
             return new ValueTuple<bool, string>(false,
-                await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText, strSpace,
+                await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText, strSpace, strLeftPar, strRightPar,
                     "qualities.xml", "qualities/quality", "String_Quality", token).ConfigureAwait(false));
         }
 
@@ -3041,7 +3053,7 @@ namespace Chummer
         /// <returns>Whether the requirement is met and any restriction message text.</returns>
         private static async Task<ValueTuple<bool, string>> TestInstalledLifestyleQualityRequirementCoreAsync(
             bool blnSync, XPathNavigator xmlNode, Character objCharacter, object objParent, string strNodeInnerText,
-            string strSpace, string strIgnoreQuality, bool blnShowMessage, CancellationToken token)
+            string strSpace, string strLeftPar, string strRightPar, string strIgnoreQuality, bool blnShowMessage, CancellationToken token)
         {
             string strExtra = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value ?? string.Empty;
             LifestyleQuality objQuality = null;
@@ -3088,7 +3100,7 @@ namespace Chummer
             if (!blnShowMessage)
                 return new ValueTuple<bool, string>(false, string.Empty);
             return new ValueTuple<bool, string>(false,
-                await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText, strSpace,
+                await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText, strSpace, strLeftPar, strRightPar,
                     "lifestyles.xml", "qualities/quality", "String_Quality", token).ConfigureAwait(false));
         }
 
@@ -3125,7 +3137,7 @@ namespace Chummer
         /// <returns>Whether the requirement is met and any restriction message text.</returns>
         private static async Task<ValueTuple<bool, string>> TestInstalledDataItemRequirementCoreAsync(bool blnSync,
             XPathNavigator xmlNode, Character objCharacter, object objParent,
-            InstalledDataItemRequirementKind eKind, string strNodeInnerText, string strSpace, bool blnShowMessage,
+            InstalledDataItemRequirementKind eKind, string strNodeInnerText, string strSpace, string strLeftPar, string strRightPar, bool blnShowMessage,
             string strDataFile, string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
         {
             RequirementRatingFilter objRatingFilter = GetRequirementRatingFilter(xmlNode, token);
@@ -3135,7 +3147,7 @@ namespace Chummer
                  || eKind == InstalledDataItemRequirementKind.VehicleMod) && blnShowMessage)
             {
                 strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                    strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+                    strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
             }
 
             switch (eKind)
@@ -3266,7 +3278,7 @@ namespace Chummer
             if (blnShowMessage)
             {
                 strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
-                    strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+                    strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
             }
 
             return new ValueTuple<bool, string>(false, strName);

@@ -210,11 +210,15 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode", token: token)
                                                         .ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar")
+                                                            .ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar")
+                                                        .ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
                     sbdTitle.Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false), strSpace);
-                    string strConjunction = "," + strSpace;
+                    string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace;
                     bool blnAddConjunction = false;
                     await _lstCharacters.ForEachAsync(async (x, t) =>
                     {
@@ -226,8 +230,8 @@ namespace Chummer
                             .Append(strSpace, '-', strSpace)
                             .Append(await x.GetCreatedAsync(t).ConfigureAwait(false)
                                     ? strCareer
-                                    : strCreate, strSpace, '(')
-                            .Append(await (await x.GetSettingsAsync(t).ConfigureAwait(false)).GetNameAsync(t).ConfigureAwait(false), ')');
+                                    : strCreate, strSpace, strLeftPar)
+                            .Append(await (await x.GetSettingsAsync(t).ConfigureAwait(false)).GetNameAsync(t).ConfigureAwait(false), strRightPar);
                     }, token).ConfigureAwait(false);
                     strTitle = sbdTitle.ToString();
                 }

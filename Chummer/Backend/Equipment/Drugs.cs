@@ -1118,14 +1118,14 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(_strVectors))
                 return string.Empty;
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strSeparator = LanguageManager.GetString("String_Comma", strLanguage) + LanguageManager.GetString("String_Space", strLanguage);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdVectors))
             {
                 foreach (string strVector in _strVectors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (sbdVectors.Length > 0)
-                        sbdVectors.Append(',', strSpace);
+                        sbdVectors.Append(strSeparator);
                     sbdVectors.Append(LanguageManager.GetString("String_Vector_" + strVector.Trim(), strLanguage));
                 }
 
@@ -1141,14 +1141,15 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(_strVectors))
                 return string.Empty;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strSeparator = await LanguageManager.GetStringAsync("String_Comma", strLanguage, token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdVectors))
             {
                 foreach (string strVector in _strVectors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (sbdVectors.Length > 0)
-                        sbdVectors.Append(',', strSpace);
+                        sbdVectors.Append(strSeparator);
                     sbdVectors.Append(await LanguageManager.GetStringAsync("String_Vector_" + strVector.Trim(), strLanguage, token: token).ConfigureAwait(false));
                 }
 
@@ -1981,6 +1982,7 @@ namespace Chummer.Backend.Equipment
                                                           out StringBuilder sbdDescription))
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                string strSeparator = LanguageManager.GetString("String_Comma", strLanguage) + strSpace;
                 if (!blnEffectsOnly)
                 {
                     string strName = DisplayNameShort(strLanguage);
@@ -1997,7 +1999,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", strLanguage),
@@ -2018,7 +2020,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key, strLanguage),
@@ -2133,6 +2135,7 @@ namespace Chummer.Backend.Equipment
                                                           out StringBuilder sbdDescription))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+                string strSeparator = await LanguageManager.GetStringAsync("String_Comma", strLanguage, token: token).ConfigureAwait(false) + strSpace;
                 if (!blnEffectsOnly)
                 {
                     string strName = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
@@ -2149,7 +2152,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", strLanguage, token: token).ConfigureAwait(false),
@@ -2170,7 +2173,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguage, token: token).ConfigureAwait(false),
@@ -2292,7 +2295,8 @@ namespace Chummer.Backend.Equipment
             string strParent = _objParentCyberware.CurrentDisplayNameShort;
             if (string.IsNullOrEmpty(strParent))
                 strParent = _objParentCyberware.Name;
-            return string.IsNullOrEmpty(strParent) ? Name : Name + " (" + strParent + ")";
+            return string.IsNullOrEmpty(strParent) ? Name : Name
+                + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_LeftPar") + strParent + LanguageManager.GetString("String_RightPar");
         }
 
         /// <summary>
@@ -2309,7 +2313,10 @@ namespace Chummer.Backend.Equipment
             string strParent = await _objParentCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strParent))
                 strParent = _objParentCyberware.Name;
-            return string.IsNullOrEmpty(strParent) ? Name : Name + " (" + strParent + ")";
+            return string.IsNullOrEmpty(strParent) ? Name : Name
+                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                + strParent + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -3074,7 +3081,9 @@ namespace Chummer.Backend.Equipment
             if (Level != 0)
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                strReturn += strSpace + "(" + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture) + ")";
+                strReturn += strSpace + LanguageManager.GetString("String_LeftPar", strLanguage)
+                    + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture)
+                    + LanguageManager.GetString("String_RightPar", strLanguage);
             }
             return strReturn;
         }
@@ -3109,7 +3118,7 @@ namespace Chummer.Backend.Equipment
             if (Level != 0)
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync("String_Level", strLanguage, token: token).ConfigureAwait(false) + strSpace + Level.ToString(objCulture) + ")";
+                strReturn += strSpace + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Level", strLanguage, token: token).ConfigureAwait(false) + strSpace + Level.ToString(objCulture) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             }
             return strReturn;
         }
@@ -3412,6 +3421,7 @@ namespace Chummer.Backend.Equipment
                                                           out StringBuilder sbdDescription))
             {
                 string strSpace = LanguageManager.GetString("String_Space");
+                string strSeparator = LanguageManager.GetString("String_Comma") + strSpace;
                 string strColon = LanguageManager.GetString("String_Colon");
                 sbdDescription.Append(DisplayCategory(GlobalSettings.Language)).Append(strColon).Append(strSpace)
                               .AppendLine(CurrentDisplayName);
@@ -3426,7 +3436,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"),
@@ -3447,7 +3457,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key),
@@ -3559,6 +3569,7 @@ namespace Chummer.Backend.Equipment
                                                           out StringBuilder sbdDescription))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strSeparator = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace;
                 string strColon = await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false);
                 sbdDescription.Append(DisplayCategory(GlobalSettings.Language)).Append(strColon).Append(strSpace)
                               .AppendLine(CurrentDisplayName);
@@ -3573,7 +3584,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", token: token).ConfigureAwait(false),
@@ -3594,7 +3605,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (blnNewLineFlag)
                             {
-                                sbdDescription.Append(',', strSpace);
+                                sbdDescription.Append(strSeparator);
                             }
 
                             sbdDescription.Append(await LanguageManager.GetStringAsync("Node_" + objLimit.Key, token: token).ConfigureAwait(false),

@@ -2905,7 +2905,8 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(CustomName))
             {
-                strReturn += LanguageManager.GetString("String_Space") + "(\"" + CustomName + "\")";
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_LeftPar", strLanguage)
+                        + "\"" + CustomName + "\"" + LanguageManager.GetString("String_RightPar", strLanguage);
             }
 
             return strReturn;
@@ -2920,7 +2921,10 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(CustomName))
             {
-                strReturn += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(\"" + CustomName + "\")";
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false)
+                        + "\"" + CustomName + "\""
+                        + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             }
 
             return strReturn;

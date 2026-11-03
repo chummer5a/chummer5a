@@ -431,8 +431,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strBuildMethod))
                 strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            strName += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
-                       + await LanguageManager.GetStringAsync(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", token: token).ConfigureAwait(false) + ")";
+            strName += strSpace + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false) + strBuildMethod + strSpace + "-" + strSpace
+                       + await LanguageManager.GetStringAsync(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", token: token).ConfigureAwait(false)
+                       + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             return strName;
         }
 
@@ -515,10 +516,11 @@ namespace Chummer
                 {
                     objMetatypeNode = objMetatypeNode?.TryGetNodeByNameOrId("metavariants/metavariant", objCache.Metavariant);
 
-                    strMetatype += " (" + (objMetatypeNode != null
+                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false) + (objMetatypeNode != null
                         ? objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                           ?? objCache.Metavariant
-                        : objCache.Metavariant) + ")";
+                        : objCache.Metavariant) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 }
 
                 await lblMetatype.DoThreadSafeAsync(x =>

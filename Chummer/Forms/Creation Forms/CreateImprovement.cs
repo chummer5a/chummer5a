@@ -997,7 +997,11 @@ namespace Chummer
                 case "SelectMentalAttribute":
                 case "SelectSpecialAttribute":
                     return strToTranslate == "MAGAdept"
-                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await LanguageManager.GetStringAsync("String_DescAdept", token: token).ConfigureAwait(false) + ")"
+                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_DescAdept", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false)
                     : await LanguageManager.GetStringAsync("String_Attribute" + strToTranslate + "Short", token: token).ConfigureAwait(false);
 
                 case "SelectSkill":
@@ -1016,7 +1020,11 @@ namespace Chummer
                                   ?? astrToTranslateParts[0]
                                 : astrToTranslateParts[0];
 
-                            return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ")";
+                            return strFirstPartTranslated
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                         }
                         finally
                         {

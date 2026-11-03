@@ -560,6 +560,8 @@ namespace Chummer
             {
                 token = objJoinedCancellationTokenSource.Token;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
                 XPathNavigator objXmlMetatype = null;
                 XPathNavigator objXmlMetavariant = null;
                 string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
@@ -583,58 +585,58 @@ namespace Chummer
                         string strText = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodmin", token: token)?.Value
                                           ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                  .SelectSingleNodeAndCacheExpression("bodmax", token: token)?.Value
-                                             ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                             ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                          + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodaug", token: token)?.Value
-                                            ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                            ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblBOD.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         string strText2 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("agimin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("agimax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("agiaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblAGI.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
                         string strText3 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("reamin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("reamax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("reaaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblREA.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
                         string strText4 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("strmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("strmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("straug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblSTR.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
                         string strText5 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("chamin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("chamax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("chaaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblCHA.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
                         string strText6 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("intmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("intmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("intaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblINT.DoThreadSafeAsync(x => x.Text = strText6, token).ConfigureAwait(false);
                         string strText7 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("logmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("logmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("logaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblLOG.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
                         string strText8 = (objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetavariant
                                                   .SelectSingleNodeAndCacheExpression("wilmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblWIL.DoThreadSafeAsync(x => x.Text = strText8, token).ConfigureAwait(false);
                     }
                     else
@@ -694,8 +696,8 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace, '(')
-                                                .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false), ')');
+                                    sbdQualities.Append(strSpace, strLeftPar,
+                                        await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false), strRightPar);
                                 }
                             }
                             else
@@ -704,7 +706,7 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace, '(').Append(strSelect, ')');
+                                    sbdQualities.Append(strSpace, strLeftPar, strSelect, strRightPar);
                                 }
                             }
 
@@ -749,58 +751,58 @@ namespace Chummer
                         string strText = (objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmin", token: token)?.Value
                                           ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                  .SelectSingleNodeAndCacheExpression("bodmax", token: token)?.Value
-                                             ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                             ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                          + (objXmlMetatype.SelectSingleNodeAndCacheExpression("bodaug", token: token)?.Value
-                                            ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                            ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblBOD.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         string strText2 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("agimin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("agimax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("agiaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblAGI.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
                         string strText3 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("reamin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("reamax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("reaaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblREA.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
                         string strText4 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("strmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("strmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("straug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblSTR.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
                         string strText5 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("chamin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("chamax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("chaaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblCHA.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
                         string strText6 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("intmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("intmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("intaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblINT.DoThreadSafeAsync(x => x.Text = strText6, token).ConfigureAwait(false);
                         string strText7 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("logmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("logmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("logaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblLOG.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
                         string strText8 = (objXmlMetatype.SelectSingleNodeAndCacheExpression("wilmin", token: token)?.Value
                                    ?? 0.ToString(GlobalSettings.CultureInfo)) + "/" + (objXmlMetatype
                                                   .SelectSingleNodeAndCacheExpression("wilmax", token: token)?.Value
-                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + "("
+                                      ?? 0.ToString(GlobalSettings.CultureInfo)) + strSpace + strLeftPar
                                   + (objXmlMetatype.SelectSingleNodeAndCacheExpression("wilaug", token: token)?.Value
-                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + ")";
+                                     ?? 0.ToString(GlobalSettings.CultureInfo)) + strRightPar;
                         await lblWIL.DoThreadSafeAsync(x => x.Text = strText8, token).ConfigureAwait(false);
                     }
                     else
@@ -844,8 +846,8 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace, '(')
-                                                .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false), ')');
+                                    sbdQualities.Append(strSpace, strLeftPar,
+                                        await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false), strRightPar);
                                 }
                             }
                             else
@@ -854,7 +856,7 @@ namespace Chummer
                                 string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token: token)?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
                                 {
-                                    sbdQualities.Append(strSpace, '(').Append(strSelect, ')');
+                                    sbdQualities.Append(strSpace, strLeftPar, strSelect, strRightPar);
                                 }
                             }
 

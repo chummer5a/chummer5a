@@ -906,11 +906,17 @@ namespace Chummer
                             await LanguageManager.GetStringAsync(
                                     "String_Group", strLanguageToPrint,
                                     token: token)
-                                .ConfigureAwait(false) + "("
+                                .ConfigureAwait(false) + await LanguageManager.GetStringAsync(
+                                    "String_LeftPar", strLanguageToPrint,
+                                    token: token)
+                                .ConfigureAwait(false)
                                                        + (await GetConnectionAsync(token)
                                                            .ConfigureAwait(false))
                                                        .ToString(objCulture)
-                                                       + ")", token: token).ConfigureAwait(false);
+                                                       + await LanguageManager.GetStringAsync(
+                                    "String_RightPar", strLanguageToPrint,
+                                    token: token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
                         "loyalty", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
@@ -1384,12 +1390,12 @@ namespace Chummer
                     string strMetatypeTranslate
                         = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value;
                     strReturn += LanguageManager.GetString("String_Space", strLanguage)
-                                 + "("
+                                 + LanguageManager.GetString("String_LeftPar", strLanguage)
                                  + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                      ? strMetatypeTranslate
                                      : _objCharacter.TranslateExtra(LinkedCharacter.Metavariant, strLanguage,
                                                                     "metatypes.xml"))
-                                 + ")";
+                                 + LanguageManager.GetString("String_RightPar", strLanguage);
                 }
                 else
                     strReturn = _objCharacter.TranslateExtra(Metatype, strLanguage, "metatypes.xml");
@@ -1429,14 +1435,16 @@ namespace Chummer
                         ?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value;
                     strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                      .ConfigureAwait(false)
-                                 + "("
+                                 + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token)
+                                     .ConfigureAwait(false)
                                  + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                      ? strMetatypeTranslate
                                      : await _objCharacter.TranslateExtraAsync(
                                          await objLinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false),
                                          strLanguage, "metatypes.xml",
                                          token).ConfigureAwait(false))
-                                 + ")";
+                                 + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token)
+                                     .ConfigureAwait(false);
                 }
                 else
                     strReturn = await _objCharacter.TranslateExtraAsync(
@@ -1480,8 +1488,10 @@ namespace Chummer
                         string strMetatype = LinkedCharacter.Metatype;
                         if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
                         {
-                            strMetatype += LanguageManager.GetString("String_Space") + "(" + LinkedCharacter.Metavariant
-                                           + ")";
+                            strMetatype += LanguageManager.GetString("String_Space")
+                                + LanguageManager.GetString("String_LeftPar")
+                                + LinkedCharacter.Metavariant
+                                + LanguageManager.GetString("String_RightPar");
                         }
 
                         return strMetatype;
@@ -1517,9 +1527,10 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(strMetavariant))
                     {
-                        strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + "("
-                            + strMetavariant + ")";
+                        strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                            + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                            + strMetavariant
+                            + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                     }
 
                     return strMetatype;
@@ -2261,10 +2272,10 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                 {
                     return IsGroup
-                        ? "(".ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
-                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_GroupContactAbbrev"), ")")
-                        : "(".ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
-                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), ")");
+                        ? LanguageManager.GetString("String_LeftPar").ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
+                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_GroupContactAbbrev"), LanguageManager.GetString("String_RightPar"))
+                        : LanguageManager.GetString("String_LeftPar").ConcatFast(Connection.ToString(GlobalSettings.CultureInfo),
+                            "/", Loyalty.ToString(GlobalSettings.CultureInfo), LanguageManager.GetString("String_RightPar"));
                 }
             }
         }
@@ -2276,11 +2287,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return IsGroup
-                        ? "(".ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                        ? (await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false))
+                            .ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
                             "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
-                            await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false), ")")
-                        : "(".ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
-                            "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")");
+                            await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false))
+                        : (await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false))
+                            .ConcatFast((await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo),
+                            "/", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false));
             }
             finally
             {

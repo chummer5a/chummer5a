@@ -1236,8 +1236,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
-                        + CharacterObject.TranslateExtra(Extra, strLanguage) + ")";
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_LeftPar", strLanguage)
+                        + CharacterObject.TranslateExtra(Extra, strLanguage) + LanguageManager.GetString("String_RightPar", strLanguage);
                 }
 
                 return strReturn;
@@ -1259,9 +1259,10 @@ namespace Chummer
                 {
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn
-                        += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                .ConfigureAwait(false) + "(" + await CharacterObject
-                            .TranslateExtraAsync(strExtra, strLanguage, token: token).ConfigureAwait(false) + ")";
+                        += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false)
+                        + await CharacterObject.TranslateExtraAsync(strExtra, strLanguage, token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
                 }
 
                 return strReturn;
@@ -1639,6 +1640,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strCachedTotalRatingToolTip))
                         return _strCachedTotalRatingToolTip;
                     string strSpace = LanguageManager.GetString("String_Space");
+                    string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                    string strRightPar = LanguageManager.GetString("String_RightPar");
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                     {
                         bool blnFirstItem = true;
@@ -1648,8 +1651,8 @@ namespace Chummer
                         {
                             if (intRating != 0)
                             {
-                                sbdModifier.Append(LanguageManager.GetString("String_Rating"), strSpace, '(')
-                                    .Append(intRating.ToString(GlobalSettings.CultureInfo), ')');
+                                sbdModifier.Append(LanguageManager.GetString("String_Rating"), strSpace, strLeftPar)
+                                    .Append(intRating.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 blnFirstItem = false;
                             }
                         }
@@ -1675,8 +1678,8 @@ namespace Chummer
                             sbdModifier.Append(CharacterObject.GetObjectName(objImprovement));
                             if (blnLevelsEnabled)
                             {
-                                sbdModifier.Append(strSpace, '(')
-                                    .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo), ')');
+                                sbdModifier.Append(strSpace, strLeftPar)
+                                    .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo), strRightPar);
                             }
                         }
 
@@ -1705,6 +1708,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strCachedTotalRatingToolTip))
                     return _strCachedTotalRatingToolTip;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                 {
                     bool blnFirstItem = true;
@@ -1715,8 +1720,8 @@ namespace Chummer
                         if (intRating != 0)
                         {
                             sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
-                                    .ConfigureAwait(false), strSpace, '(')
-                                .Append(intRating.ToString(GlobalSettings.CultureInfo), ')');
+                                    .ConfigureAwait(false), strSpace, strLeftPar)
+                                .Append(intRating.ToString(GlobalSettings.CultureInfo), strRightPar);
                             blnFirstItem = false;
                         }
                     }
@@ -1747,8 +1752,8 @@ namespace Chummer
                             .ConfigureAwait(false));
                         if (blnLevelsEnabled)
                         {
-                            sbdModifier.Append(strSpace, '(')
-                                .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo), ')');
+                            sbdModifier.Append(strSpace, strLeftPar)
+                                .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
                     }
 
@@ -2095,13 +2100,15 @@ namespace Chummer
                     }
 
                     string strSpace = LanguageManager.GetString("String_Space");
+                    string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                    string strRightPar = LanguageManager.GetString("String_RightPar");
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                     {
                         decimal decExtraPointCost = ExtraPointCost;
                         if (decExtraPointCost != 0)
                         {
                             sbdModifier.Append(LanguageManager.GetString("Label_Base"), strSpace)
-                                .Append('(', decExtraPointCost.ToString(GlobalSettings.CultureInfo), ')')
+                                .Append(strLeftPar, decExtraPointCost.ToString(GlobalSettings.CultureInfo), strRightPar)
                                 .Append(strSpace, '+', strSpace);
                         }
 
@@ -2112,39 +2119,39 @@ namespace Chummer
                             int intMaximumLevels = TotalMaximumLevels;
                             if (intMaximumLevels < intRating + intFreeLevels)
                             {
-                                sbdModifier.Append('(').AppendFastFormat(
+                                sbdModifier.Append(strLeftPar).AppendFastFormat(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Tip_Power_Capped"),
-                                    LanguageManager.GetString("String_Level") + strSpace + "(" +
-                                    intRating.ToString(GlobalSettings.CultureInfo) + ")" +
+                                    LanguageManager.GetString("String_Level") + strSpace + strLeftPar +
+                                    intRating.ToString(GlobalSettings.CultureInfo) + strRightPar +
                                     strSpace + (intFreeLevels > 0 ? "-" : "+") + strSpace +
                                     LanguageManager.GetString("Checkbox_Contact_Free") + strSpace +
-                                    "(" + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ")",
-                                    intMaximumLevels).Append(')');
+                                    strLeftPar + intFreeLevels.ToString(GlobalSettings.CultureInfo) + strRightPar,
+                                    intMaximumLevels).Append(strRightPar);
                             }
                             else
                             {
                                 sbdModifier.Append('[', LanguageManager.GetString("String_Level"), strSpace)
-                                    .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')')
+                                    .Append(strLeftPar, intRating.ToString(GlobalSettings.CultureInfo), strRightPar)
                                     .Append(strSpace, intFreeLevels > 0 ? '-' : '+')
                                     .Append(strSpace, LanguageManager.GetString("Checkbox_Contact_Free"), strSpace)
-                                    .Append('(', intFreeLevels.ToString(GlobalSettings.CultureInfo), ")]");
+                                    .Append(strLeftPar, intFreeLevels.ToString(GlobalSettings.CultureInfo), ")]");
                             }
                         }
                         else
                         {
                             sbdModifier.Append(LanguageManager.GetString("String_Level"), strSpace)
-                                .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, intRating.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         sbdModifier.Append(strSpace, '×', strSpace)
                             .Append(LanguageManager.GetString("Tip_Power_PPperLevel"), strSpace)
-                            .Append('(', decPointsPerLevel.ToString(GlobalSettings.CultureInfo), ')');
+                            .Append(strLeftPar, decPointsPerLevel.ToString(GlobalSettings.CultureInfo), strRightPar);
                         if (decFreePoints != 0 && intFreeLevels * decPointsPerLevel < decFreePoints)
                         {
                             sbdModifier.Append(strSpace, decFreePoints > 0 ? '-' : '+')
                                 .Append(strSpace, LanguageManager.GetString("Tab_Improvements"), strSpace)
-                                .Append('(', Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         decimal decDiscount = Discount;
@@ -2152,7 +2159,7 @@ namespace Chummer
                         {
                             sbdModifier.Append(strSpace, decDiscount > 0 ? '-' : '+')
                                 .Append(strSpace, LanguageManager.GetString("Checkbox_Power_AdeptWay"), strSpace)
-                                .Append('(', Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         return _strCachedDisplayPointsToolTip = sbdModifier.ToString();
@@ -2198,6 +2205,8 @@ namespace Chummer
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
                 {
                     decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
@@ -2205,7 +2214,7 @@ namespace Chummer
                     {
                         sbdModifier.Append(await LanguageManager.GetStringAsync("Label_Base", token: token)
                                 .ConfigureAwait(false), strSpace)
-                            .Append('(', decExtraPointCost.ToString(GlobalSettings.CultureInfo), ')')
+                            .Append(strLeftPar, decExtraPointCost.ToString(GlobalSettings.CultureInfo), strRightPar)
                             .Append(strSpace, '+', strSpace);
                     }
 
@@ -2216,47 +2225,47 @@ namespace Chummer
                         int intMaximumLevels = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
                         if (intMaximumLevels < intRating + intFreeLevels)
                         {
-                            sbdModifier.Append('(').AppendFastFormat(
+                            sbdModifier.Append(strLeftPar).AppendFastFormat(
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
                                     .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("String_Level", token: token)
-                                    .ConfigureAwait(false) + strSpace + "(" +
-                                intRating.ToString(GlobalSettings.CultureInfo) + ")" +
+                                    .ConfigureAwait(false) + strSpace + strLeftPar +
+                                intRating.ToString(GlobalSettings.CultureInfo) + strRightPar +
                                 strSpace + (intFreeLevels > 0 ? "-" : "+") + strSpace +
                                 await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
                                     .ConfigureAwait(false) + strSpace +
-                                "(" + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ")",
-                                intMaximumLevels).Append(')');
+                                strLeftPar + intFreeLevels.ToString(GlobalSettings.CultureInfo) + strRightPar,
+                                intMaximumLevels).Append(strRightPar);
                         }
                         else
                         {
                             sbdModifier.Append('[', await LanguageManager.GetStringAsync("String_Level", token: token)
                                     .ConfigureAwait(false), strSpace)
-                                .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')')
+                                .Append(strLeftPar, intRating.ToString(GlobalSettings.CultureInfo), strRightPar)
                                 .Append(strSpace, intFreeLevels > 0 ? '-' : '+')
                                 .Append(strSpace, await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
                                     .ConfigureAwait(false), strSpace)
-                                .Append('(', intFreeLevels.ToString(GlobalSettings.CultureInfo), ")]");
+                                .Append(strLeftPar, intFreeLevels.ToString(GlobalSettings.CultureInfo), ")]");
                         }
                     }
                     else
                     {
                         sbdModifier.Append(await LanguageManager.GetStringAsync("String_Level", token: token)
                                 .ConfigureAwait(false), strSpace)
-                                .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, intRating.ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
 
                     sbdModifier.Append(strSpace, '×', strSpace)
                         .Append(await LanguageManager.GetStringAsync("Tip_Power_PPperLevel", token: token)
-                            .ConfigureAwait(false), strSpace, '(')
-                        .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo), ')');
+                            .ConfigureAwait(false), strSpace, strLeftPar)
+                        .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo), strRightPar);
                     if (decFreePoints != 0 && intFreeLevels * decPointsPerLevel < decFreePoints)
                     {
                         sbdModifier.Append(strSpace, decFreePoints > 0 ? '-' : '+')
                             .Append(strSpace, await LanguageManager.GetStringAsync("Tab_Improvements", token: token)
                                 .ConfigureAwait(false), strSpace)
-                            .Append('(', Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo), ')');
+                            .Append(strLeftPar, Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
 
                     decimal decDiscount = await GetDiscountAsync(token).ConfigureAwait(false);
@@ -2265,7 +2274,7 @@ namespace Chummer
                         sbdModifier.Append(strSpace, decDiscount > 0 ? '-' : '+')
                             .Append(strSpace, await LanguageManager.GetStringAsync("Checkbox_Power_AdeptWay", token: token)
                                 .ConfigureAwait(false), strSpace)
-                            .Append('(', Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo), ')');
+                            .Append(strLeftPar, Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
 
                     return _strCachedDisplayPointsToolTip = sbdModifier.ToString();

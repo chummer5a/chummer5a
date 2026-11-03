@@ -160,14 +160,16 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
+            string strLeftPar = LanguageManager.GetString("String_LeftPar");
+            string strRightPar = LanguageManager.GetString("String_RightPar");
             pgbLoadingProgress.DoThreadSafe(x =>
             {
                 int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
-                    strNewText += strSpace.ConcatFast("(",
+                    strNewText += strSpace.ConcatFast(strLeftPar,
                                            (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo),
-                                           "/", (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo), ")");
+                                           "/", (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo), strRightPar);
                 x.PerformStep();
             });
             lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
@@ -225,13 +227,15 @@ namespace Chummer
             }
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             await pgbLoadingProgress.DoThreadSafeAsync(x =>
             {
                 int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
-                    strNewText += strSpace.ConcatFast("(",
+                    strNewText += strSpace.ConcatFast(strLeftPar,
                                            (x.Value + 1).ToString(GlobalSettings.CultureInfo),
-                                           "/", (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo), ")");
+                                           "/", (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo), strRightPar);
                 x.PerformStep();
             }, token).ConfigureAwait(false);
             await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token).ConfigureAwait(false);

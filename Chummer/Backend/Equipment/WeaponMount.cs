@@ -1719,20 +1719,21 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                    sbdReturn.Append(strReturn, strSpace, '(');
+                    string strSeparator = LanguageManager.GetString("String_Comma", strLanguage) + strSpace;
+                    sbdReturn.Append(strReturn, strSpace, LanguageManager.GetString("String_LeftPar", strLanguage));
                     bool blnCloseParantheses = false;
                     foreach (WeaponMountOption objOption in WeaponMountOptions)
                     {
                         if (objOption.Name != "None")
                         {
                             blnCloseParantheses = true;
-                            sbdReturn.Append(objOption.DisplayName(strLanguage), ',', strSpace);
+                            sbdReturn.Append(objOption.DisplayName(strLanguage), strSeparator);
                         }
                     }
 
-                    sbdReturn.Length -= 1 + strSpace.Length;
+                    sbdReturn.Length -= strSeparator.Length;
                     if (blnCloseParantheses)
-                        sbdReturn.Append(')');
+                        sbdReturn.Append(LanguageManager.GetString("String_RightPar", strLanguage));
                     if (!string.IsNullOrWhiteSpace(Location))
                         sbdReturn.Append(strSpace, '-').Append(strSpace, Location);
                     strReturn = sbdReturn.ToString();
@@ -1753,20 +1754,21 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-                    sbdReturn.Append(strReturn, strSpace, '(');
+                    string strSeparator = await LanguageManager.GetStringAsync("String_Comma", strLanguage, token: token).ConfigureAwait(false) + strSpace;
+                    sbdReturn.Append(strReturn, strSpace, await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false));
                     bool blnCloseParantheses = false;
                     await WeaponMountOptions.ForEachAsync(async (objOption, t) =>
                     {
                         if (objOption.Name != "None")
                         {
                             blnCloseParantheses = true;
-                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, t).ConfigureAwait(false), ',', strSpace);
+                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, t).ConfigureAwait(false), strSeparator);
                         }
                     }, token).ConfigureAwait(false);
 
-                    sbdReturn.Length -= 1 + strSpace.Length;
+                    sbdReturn.Length -= strSeparator.Length;
                     if (blnCloseParantheses)
-                        sbdReturn.Append(')');
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false));
                     if (!string.IsNullOrWhiteSpace(Location))
                         sbdReturn.Append(strSpace, '-').Append(strSpace, Location);
                     strReturn = sbdReturn.ToString();
@@ -1926,7 +1928,10 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)

@@ -904,14 +904,17 @@ namespace Chummer
                             XPathNavigator objXmlLimit
                                 = _xmlBaseVehicleDataNode.SelectSingleNode(
                                     "limits/limit[. = " + strLimit.CleanXPath() + "]/@translate");
-                            strLimit = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + "(" + objXmlLimit?.Value
-                                       ?? strLimit + ")";
+                            strLimit = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + (objXmlLimit?.Value ?? strLimit)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                         }
                         else
                         {
-                            strLimit = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + "(" + strLimit + ")";
+                            strLimit = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + strLimit
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                         }
 
                         await lblLimit.DoThreadSafeAsync(x => x.Text = strLimit, token: token).ConfigureAwait(false);

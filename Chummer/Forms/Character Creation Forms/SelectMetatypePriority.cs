@@ -2628,6 +2628,9 @@ namespace Chummer
             {
                 token = objJoinedCancellationTokenSource.Token;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strComma = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                 string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                 string strSelectedHeritage = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
@@ -2659,7 +2662,7 @@ namespace Chummer
                     }
                 }
 
-                string strAttributeFormat = "{0}/{1}" + strSpace + "({2})";
+                string strAttributeFormat = "{0}/{1}" + strSpace + strLeftPar + "{2}" + strRightPar;
                 if (objXmlMetavariant != null)
                 {
                     if (objXmlMetavariantPriorityNode == null)
@@ -2842,15 +2845,15 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + "(" + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
-                                              + ")";
+                                strQuality += strSpace + strLeftPar + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
+                                              + strRightPar;
                         }
                         else
                         {
                             strQuality = objXmlQuality.Value;
                             string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + "(" + strSelect + ")";
+                                strQuality += strSpace + strLeftPar + strSelect + strRightPar;
                         }
 
                         if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
@@ -2872,10 +2875,10 @@ namespace Chummer
                                     sbdQualities.Append(strSpace, objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
                                 }
 
-                                sbdQualities.Append(',', strSpace);
+                                sbdQualities.Append(strComma, strSpace);
                             }
 
-                            sbdQualities.Length -= 2;
+                            sbdQualities.Length -= strComma.Length + strSpace.Length;
                             await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token).ConfigureAwait(false);
                         }
                     }
@@ -2983,15 +2986,15 @@ namespace Chummer
 
                             string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + "(" + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
-                                              + ")";
+                                strQuality += strSpace + strLeftPar + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
+                                              + strRightPar;
                         }
                         else
                         {
                             strQuality = xmlQuality.Value;
                             string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select", token)?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                strQuality += strSpace + "(" + strSelect + ")";
+                                strQuality += strSpace + strLeftPar + strSelect + strRightPar;
                         }
 
                         if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
@@ -3013,10 +3016,10 @@ namespace Chummer
                                     sbdQualities.Append(strSpace, objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
                                 }
 
-                                sbdQualities.Append(',', strSpace);
+                                sbdQualities.Append(strComma, strSpace);
                             }
 
-                            sbdQualities.Length -= 2;
+                            sbdQualities.Length -= strComma.Length + strSpace.Length;
                             await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token).ConfigureAwait(false);
                         }
                     }

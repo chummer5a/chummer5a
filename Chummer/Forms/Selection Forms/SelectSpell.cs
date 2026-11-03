@@ -577,6 +577,7 @@ namespace Chummer
             }
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strComma = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false);
 
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
@@ -585,6 +586,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strDescriptors))
                 {
+                    string strSeparator = await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace;
                     foreach (string strDescriptor in strDescriptors.SplitNoAlloc(
                                  ',', StringSplitOptions.RemoveEmptyEntries))
                     {
@@ -622,7 +624,7 @@ namespace Chummer
                                 break;
                         }
 
-                        sbdDescriptors.Append(',', strSpace);
+                        sbdDescriptors.Append(strSeparator);
                     }
                 }
 
@@ -674,7 +676,8 @@ namespace Chummer
                             return x.Checked;
                         }, token: token).ConfigureAwait(false))
                     {
-                        sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", token: token).ConfigureAwait(false), ',', strSpace);
+                        sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", token: token).ConfigureAwait(false),
+                            strComma, strSpace);
                     }
                 }
                 else
@@ -688,12 +691,13 @@ namespace Chummer
 
                 if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !blnAlchemicalFound)
                 {
-                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation", token: token).ConfigureAwait(false), ',', strSpace);
+                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation", token: token).ConfigureAwait(false),
+                        strComma, strSpace);
                 }
 
                 // Remove the trailing comma.
-                if (sbdDescriptors.Length > 2)
-                    sbdDescriptors.Length -= 2;
+                if (sbdDescriptors.Length > strComma.Length + strSpace.Length)
+                    sbdDescriptors.Length -= strComma.Length + strSpace.Length;
                 strDescriptors = sbdDescriptors.ToString();
             }
 
@@ -867,7 +871,9 @@ namespace Chummer
                                  .CheapReplaceAsync("LOI", t => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", token: t), token: token)
                                  .CheapReplaceAsync("Touch", t => LanguageManager.GetStringAsync("String_SpellRangeTouchLong", token: t), token: token)
                                  .CheapReplaceAsync("T", t => LanguageManager.GetStringAsync("String_SpellRangeTouch", token: t), token: token)
-                                 .CheapReplaceAsync("(A)", async t => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: t).ConfigureAwait(false) + ")", token: token)
+                                 .CheapReplaceAsync("(A)", async t => await LanguageManager.GetStringAsync("String_LeftPar", token: t).ConfigureAwait(false)
+                                    + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: t).ConfigureAwait(false)
+                                    + await LanguageManager.GetStringAsync("String_RightPar", token: t).ConfigureAwait(false), token: token)
                                  .CheapReplaceAsync("MAG", t => LanguageManager.GetStringAsync("String_AttributeMAGShort", token: t), token: token).ConfigureAwait(false);
             }
             await lblRange.DoThreadSafeAsync(x => x.Text = strRange, token: token).ConfigureAwait(false);

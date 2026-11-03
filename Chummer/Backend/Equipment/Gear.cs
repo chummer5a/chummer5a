@@ -5363,6 +5363,8 @@ namespace Chummer.Backend.Equipment
         {
             string strQuantity = !blnExcludeQuantity ? DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse) : string.Empty;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strLeftPar = LanguageManager.GetString("String_LeftPar", strLanguage);
+            string strRightPar = LanguageManager.GetString("String_RightPar", strLanguage);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(DisplayNameShort(strLanguage));
@@ -5373,22 +5375,22 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objCulture == null)
                         objCulture = GlobalSettings.CultureInfo;
-                    sbdReturn.Append(strSpace, '(').AppendFastFormat(
+                    sbdReturn.Append(strSpace, strLeftPar).AppendFastFormat(
                             LanguageManager.GetString("Label_RatingFormat", strLanguage),
                             LanguageManager.GetString(RatingLabel, strLanguage))
-                        .Append(strSpace, intRating.ToString(objCulture), ')');
+                        .Append(strSpace, intRating.ToString(objCulture), strRightPar);
                 }
                 if (!string.IsNullOrEmpty(Extra))
-                    sbdReturn.Append(strSpace, '(').Append(_objCharacter.TranslateExtra(Extra, strLanguage), ')');
+                    sbdReturn.Append(strSpace, strLeftPar, _objCharacter.TranslateExtra(Extra, strLanguage), strRightPar);
                 if (!string.IsNullOrEmpty(GearName))
-                    sbdReturn.Append(strSpace, "(\"", GearName, "\")");
+                    sbdReturn.Append(strSpace, strLeftPar, "\"", GearName, "\"", strRightPar);
                 if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                    sbdReturn.Append(strSpace, '(').Append(LanguageManager.GetString("Label_BondedFoci", strLanguage), ')');
+                    sbdReturn.Append(strSpace, strLeftPar, LanguageManager.GetString("Label_BondedFoci", strLanguage), strRightPar);
                 if (LoadedIntoClip != null)
                 {
                     if (objCulture == null)
                         objCulture = GlobalSettings.CultureInfo;
-                    sbdReturn.Append(strSpace, '(').AppendFastFormat(LanguageManager.GetString("Label_Loaded"), LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage)).Append(')');
+                    sbdReturn.Append(strSpace, strLeftPar).AppendFastFormat(LanguageManager.GetString("Label_Loaded"), LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage)).Append(strRightPar);
                 }
                 return sbdReturn.ToTrimmedString();
             }
@@ -5401,6 +5403,8 @@ namespace Chummer.Backend.Equipment
         {
             string strQuantity = !blnExcludeQuantity ? await DisplayQuantityAsync(objCulture, true, blnOverrideQuantity, decQuantityToUse, token: token).ConfigureAwait(false) : string.Empty;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false));
@@ -5411,24 +5415,24 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objCulture == null)
                         objCulture = GlobalSettings.CultureInfo;
-                    sbdReturn.Append(strSpace, '(').AppendFastFormat(
+                    sbdReturn.Append(strSpace, strLeftPar).AppendFastFormat(
                             await LanguageManager.GetStringAsync("Label_RatingFormat", strLanguage, token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false))
-                        .Append(strSpace, intRating.ToString(objCulture), ')');
+                        .Append(strSpace, intRating.ToString(objCulture), strRightPar);
                 }
                 if (!string.IsNullOrEmpty(Extra))
-                    sbdReturn.Append(strSpace, '(').Append(await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false), ')');
+                    sbdReturn.Append(strSpace, strLeftPar, await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false), strRightPar);
                 if (!string.IsNullOrEmpty(GearName))
-                    sbdReturn.Append(strSpace, "(\"", GearName, "\")");
+                    sbdReturn.Append(strSpace, strLeftPar, "\"", GearName, "\"", strRightPar);
                 if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                    sbdReturn.Append(strSpace, '(').Append(await LanguageManager.GetStringAsync("Label_BondedFoci", strLanguage, token: token).ConfigureAwait(false), ')');
+                    sbdReturn.Append(strSpace, strLeftPar, await LanguageManager.GetStringAsync("Label_BondedFoci", strLanguage, token: token).ConfigureAwait(false), strRightPar);
                 if (LoadedIntoClip != null)
                 {
                     if (objCulture == null)
                         objCulture = GlobalSettings.CultureInfo;
-                    sbdReturn.Append(strSpace, '(').AppendFastFormat(
+                    sbdReturn.Append(strSpace, strLeftPar).AppendFastFormat(
                         await LanguageManager.GetStringAsync("Label_Loaded", token: token).ConfigureAwait(false),
-                        await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage, token).ConfigureAwait(false)).Append(')');
+                        await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage, token).ConfigureAwait(false)).Append(strRightPar);
                 }
                 return sbdReturn.ToTrimmedString();
             }
@@ -6561,7 +6565,9 @@ namespace Chummer.Backend.Equipment
                                 : (await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
                                                                        intRestrictedGearQuantityUsed, token: token).ConfigureAwait(false)).ConcatFast(
                                                 await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                                                "(", await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), ")");
+                                                await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false),
+                                                await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false));
                             sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }

@@ -431,7 +431,7 @@ namespace Chummer
                 strReturn += strSpace + "[" + _intBonus.ToString(objCulture) + "]";
             string strCondition = DisplayCondition(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
-                strReturn += strSpace + "(" + strCondition + ")";
+                strReturn += strSpace + LanguageManager.GetString("String_LeftPar", strLanguage) + strCondition + LanguageManager.GetString("String_RightPar", strLanguage);
             return strReturn;
         }
 
@@ -445,7 +445,7 @@ namespace Chummer
                 strReturn += strSpace + "[" + _intBonus.ToString(objCulture) + "]";
             string strCondition = await DisplayConditionAsync(strLanguage, token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCondition))
-                strReturn += strSpace + "(" + strCondition + ")";
+                strReturn += strSpace + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false) + strCondition + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             return strReturn;
         }
 

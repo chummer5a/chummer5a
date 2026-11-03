@@ -54,6 +54,10 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                    string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar")
+                                                               .ConfigureAwait(false);
+                    string strRightPar = await LanguageManager.GetStringAsync("String_RightPar")
+                                                           .ConfigureAwait(false);
                     // Add each of the items to a new List since we need to also grab their plugin information.
                     foreach (Gear objGear in _lstAmmo)
                     {
@@ -62,32 +66,32 @@ namespace Chummer
                         int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
                         if (intRating > 0)
                         {
-                            sbdName.Append(strSpace, '(').AppendFastFormat(
+                            sbdName.Append(strSpace, strLeftPar).AppendFastFormat(
                                                     await LanguageManager.GetStringAsync("Label_RatingFormat")
                                                                          .ConfigureAwait(false),
                                                     await LanguageManager.GetStringAsync(objGear.RatingLabel)
                                                                          .ConfigureAwait(false))
-                                .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         if (objGear.Parent is Gear objParent)
                         {
                             if (!string.IsNullOrEmpty(await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)))
                             {
-                                sbdName.Append(strSpace, '(', await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false));
+                                sbdName.Append(strSpace, strLeftPar, await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false));
                                 if (objParent.Location != null)
                                     sbdName.Append(strSpace, '@', strSpace).Append(await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false));
-                                sbdName.Append(')');
+                                sbdName.Append(strRightPar);
                             }
                         }
                         else if (objGear.Location != null)
-                            sbdName.Append(strSpace, '(').Append(await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false), ')');
+                            sbdName.Append(strSpace, strLeftPar).Append(await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false), strRightPar);
 
                         // Retrieve the plugin information if it has any.
                         if (await objGear.Children.AnyAsync().ConfigureAwait(false))
                         {
                             sbdName.Append(strSpace, '[');
-                            await sbdName.AppendJoinAsync("," + strSpace, objGear.Children.Select(x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false);
+                            await sbdName.AppendJoinAsync(await LanguageManager.GetStringAsync("String_Comma").ConfigureAwait(false) + strSpace, objGear.Children.Select(x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false);
                             sbdName.Append(']');
                         }
 

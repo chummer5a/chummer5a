@@ -2847,16 +2847,18 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strLeftPar = LanguageManager.GetString("String_LeftPar", strLanguage);
+            string strRightPar = LanguageManager.GetString("String_RightPar", strLanguage);
             int intRating = Rating;
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
-                             intRating.ToString(objCulture) + ")";
+                strReturn += strSpace + strLeftPar + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
+                             intRating.ToString(objCulture) + strRightPar;
             }
             if (!string.IsNullOrEmpty(CustomName))
-                strReturn += strSpace + "(\"" + CustomName + "\")";
+                strReturn += strSpace + strLeftPar + "\"" + CustomName + "\"" + strRightPar;
             return strReturn;
         }
 
@@ -2869,17 +2871,21 @@ namespace Chummer.Backend.Equipment
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                 .ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token)
+                .ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token)
+                .ConfigureAwait(false);
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" +
+                strReturn += strSpace + strLeftPar +
                              await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
-                                 .ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
+                                 .ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + strRightPar;
             }
             if (!string.IsNullOrEmpty(CustomName))
-                strReturn += strSpace + "(\"" + CustomName + "\")";
+                strReturn += strSpace + strLeftPar + "\"" + CustomName + "\"" + strRightPar;
             return strReturn;
         }
 
@@ -5390,6 +5396,14 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strLeftPar = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_LeftPar", token: token)
+                : await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_RightPar", token: token)
+                : await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             string strReturn;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -5569,38 +5583,38 @@ namespace Chummer.Backend.Equipment
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplace(
                             "(b)",
-                            t => "(" + LanguageManager.GetString("String_AmmoBreakAction", strLanguage,
+                            t => strLeftPar + LanguageManager.GetString("String_AmmoBreakAction", strLanguage,
                                             token: t)
-                                        + ")", token: token)
+                                        + strRightPar, token: token)
                         .CheapReplace(
                             "(belt)",
-                            t => "(" + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: t) +
-                                    ")", token: token)
+                            t => strLeftPar + LanguageManager.GetString("String_AmmoBelt", strLanguage, token: t) +
+                                    strRightPar, token: token)
                         .CheapReplace(
                             "(box)",
-                            t => "(" + LanguageManager.GetString("String_AmmoBox", strLanguage, token: t) +
-                                    ")", token: token)
+                            t => strLeftPar + LanguageManager.GetString("String_AmmoBox", strLanguage, token: t) +
+                                    strRightPar, token: token)
                         .CheapReplace(
                             "(c)",
-                            t => "(" + LanguageManager.GetString("String_AmmoClip", strLanguage, token: t) +
-                                    ")", token: token)
+                            t => strLeftPar + LanguageManager.GetString("String_AmmoClip", strLanguage, token: t) +
+                                    strRightPar, token: token)
                         .CheapReplace(
                             "(cy)",
-                            t => "(" +
-                                    LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: t) + ")", token: token)
+                            t => strLeftPar +
+                                    LanguageManager.GetString("String_AmmoCylinder", strLanguage, token: t) + strRightPar, token: token)
                         .CheapReplace(
                             "(d)",
-                            t => "(" + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: t) +
-                                    ")", token: token)
+                            t => strLeftPar + LanguageManager.GetString("String_AmmoDrum", strLanguage, token: t) +
+                                    strRightPar, token: token)
                         .CheapReplace(
                             "(m)",
-                            t => "(" +
-                                    LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: t) + ")", token: token)
+                            t => strLeftPar +
+                                    LanguageManager.GetString("String_AmmoMagazine", strLanguage, token: t) + strRightPar, token: token)
                         .CheapReplace(
                             "(ml)",
-                            t => "(" + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage,
+                            t => strLeftPar + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage,
                                             token: t)
-                                        + ")", token: token);
+                                        + strRightPar, token: token);
                     // ReSharper restore MethodHasAsyncOverloadWithCancellation
                 }
                 else
@@ -5631,52 +5645,52 @@ namespace Chummer.Backend.Equipment
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplaceAsync(
                             "(b)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                                 "String_AmmoBreakAction", strLanguage, token: t)
-                                            .ConfigureAwait(false) + ")", token: token)
+                                            .ConfigureAwait(false) + strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(belt)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                             "String_AmmoBelt", strLanguage, token: t).ConfigureAwait(false) +
-                                        ")", token: token)
+                                        strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(box)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                             "String_AmmoBox", strLanguage, token: t).ConfigureAwait(false) +
-                                        ")", token: token)
+                                        strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(c)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                             "String_AmmoClip", strLanguage, token: t).ConfigureAwait(false) +
-                                        ")", token: token)
+                                        strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(cy)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                                 "String_AmmoCylinder", strLanguage, token: t)
-                                            .ConfigureAwait(false) + ")", token: token)
+                                            .ConfigureAwait(false) + strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(d)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                             "String_AmmoDrum", strLanguage, token: t).ConfigureAwait(false) +
-                                        ")", token: token)
+                                        strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(m)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                                 "String_AmmoMagazine", strLanguage, token: t)
-                                            .ConfigureAwait(false) + ")", token: token)
+                                            .ConfigureAwait(false) + strRightPar, token: token)
                         .CheapReplaceAsync(
                             "(ml)",
-                            async t => "("
+                            async t => strLeftPar
                                         + await LanguageManager.GetStringAsync(
                                                 "String_AmmoMuzzleLoad", strLanguage, token: t)
-                                            .ConfigureAwait(false) + ")", token: token).ConfigureAwait(false);
+                                            .ConfigureAwait(false) + strRightPar, token: token).ConfigureAwait(false);
                 }
             }
 
@@ -7338,6 +7352,14 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strLeftPar = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_LeftPar", token: token)
+                : await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_RightPar", token: token)
+                : await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             string strRCBase = "0";
             string strRCFull;
             string strRC = RC;
@@ -7789,7 +7811,7 @@ namespace Chummer.Backend.Equipment
                 // If the full RC is not higher than the base, only the base value is shown.
                 strRC = intRCBase.ToString(objCulture);
                 if (intRCFull > intRCBase)
-                    strRC += strSpace + "(" + intRCFull.ToString(objCulture) + ")";
+                    strRC += strSpace + strLeftPar + intRCFull.ToString(objCulture) + strRightPar;
 
                 if (blnWithTooltip)
                     strTooltip = sbdRCTip.ToString();
@@ -8449,7 +8471,9 @@ namespace Chummer.Backend.Equipment
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
                 return intAccuracy.ToString(objCulture).ConcatFast(
                     LanguageManager.GetString("String_Space", strLanguage),
-                    "(", intTotalAccuracy.ToString(objCulture), ")");
+                    LanguageManager.GetString("String_LeftPar", strLanguage),
+                    intTotalAccuracy.ToString(objCulture),
+                    LanguageManager.GetString("String_RightPar", strLanguage));
             return intTotalAccuracy.ToString(objCulture);
         }
 
@@ -8463,7 +8487,9 @@ namespace Chummer.Backend.Equipment
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
                 return intAccuracy.ToString(objCulture).ConcatFast(
                     await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
-                    "(", intTotalAccuracy.ToString(objCulture), ")");
+                    await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false),
+                    intTotalAccuracy.ToString(objCulture),
+                    await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false));
             return intTotalAccuracy.ToString(objCulture);
         }
 
@@ -8528,7 +8554,10 @@ namespace Chummer.Backend.Equipment
             {
                 return strRange;
             }
-            strRange += " (" + AmmoLoaded?.DisplayNameShort(strLanguage) + ")";
+            strRange += LanguageManager.GetString("String_Space", strLanguage)
+                + LanguageManager.GetString("String_LeftPar", strLanguage)
+                + AmmoLoaded.DisplayNameShort(strLanguage)
+                + LanguageManager.GetString("String_RightPar", strLanguage);
 
             return strRange;
         }
@@ -8637,7 +8666,10 @@ namespace Chummer.Backend.Equipment
             {
                 return strRange;
             }
-            strRange += " (" + (await AmmoLoaded.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false)) + ")";
+            strRange += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false)
+                + await AmmoLoaded.DisplayNameShortAsync(strLanguage, token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
 
             return strRange;
         }
@@ -10541,6 +10573,8 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
+                string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                string strRightPar = LanguageManager.GetString("String_RightPar");
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
                 {
@@ -10560,28 +10594,28 @@ namespace Chummer.Backend.Equipment
                                         && decimal.TryParse(strInner, out decimal decTemp2))
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(strWireless, strSpace, '(')
+                                            .Append(strWireless, strSpace, strLeftPar)
                                             .Append((decTemp + decTemp2).StandardRound()
-                                                .ToString(GlobalSettings.CultureInfo), ')');
+                                                .ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
                                     else
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(strWireless, strSpace, '(')
+                                            .Append(strWireless, strSpace, strLeftPar)
                                             .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(strWireless, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(strWireless, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                    .Append(strWireless, strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                    .Append(strWireless, strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                         else if (HasWirelessSmartgun)
@@ -10590,8 +10624,8 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strWeaponBonusPool))
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                    .Append(LanguageManager.GetString("String_Wireless"), strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                    .Append(LanguageManager.GetString("String_Wireless"), strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                     }
@@ -10602,8 +10636,8 @@ namespace Chummer.Backend.Equipment
                         if (decDicePool != 0)
                         {
                             sbdExtra.Append(strSpace, '+', strSpace)
-                                .Append(wa.CurrentDisplayName, strSpace, '(')
-                                .Append(decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo), ')');
+                                .Append(wa.CurrentDisplayName, strSpace, strLeftPar)
+                                .Append(decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
@@ -10621,28 +10655,28 @@ namespace Chummer.Backend.Equipment
                                             && decimal.TryParse(strInner, out decimal decTemp2))
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
-                                                .Append(strWireless, strSpace, '(')
+                                                .Append(strWireless, strSpace, strLeftPar)
                                                 .Append((decTemp + decTemp2).StandardRound()
-                                                    .ToString(GlobalSettings.CultureInfo), ')');
+                                                    .ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                         else
                                             sbdExtra.Append(strSpace, '+', strSpace)
-                                                .Append(strWireless, strSpace, '(')
+                                                .Append(strWireless, strSpace, strLeftPar)
                                                 .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(strWireless, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(strWireless, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(strWireless, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(strWireless, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else if (HasWirelessSmartgun)
@@ -10652,8 +10686,8 @@ namespace Chummer.Backend.Equipment
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(wa.CurrentDisplayName, strSpace)
-                                        .Append(LanguageManager.GetString("String_Wireless"), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(LanguageManager.GetString("String_Wireless"), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                         }
@@ -10679,27 +10713,27 @@ namespace Chummer.Backend.Equipment
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
                                                 .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace)
-                                                .Append('(', (decTemp + decTemp2).StandardRound()
-                                                    .ToString(GlobalSettings.CultureInfo), ')');
+                                                .Append(strLeftPar, (decTemp + decTemp2).StandardRound()
+                                                    .ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                         else
                                             sbdExtra.Append(strSpace, '+', strSpace)
-                                                .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
+                                                .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
                                                 .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else if (WirelessOn && HasWirelessSmartgun)
@@ -10708,8 +10742,8 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strWeaponBonusPool))
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                         }
@@ -10728,27 +10762,27 @@ namespace Chummer.Backend.Equipment
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
                                                 .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace)
-                                                .Append('(', (decTemp + decTemp2).StandardRound()
-                                                    .ToString(GlobalSettings.CultureInfo), ')');
+                                                .Append(strLeftPar, (decTemp + decTemp2).StandardRound()
+                                                    .ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                         else
                                             sbdExtra.Append(strSpace, '+', strSpace)
-                                                .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
+                                                .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
                                                 .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else if (WirelessOn && HasWirelessSmartgun)
@@ -10757,8 +10791,8 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strWeaponBonusPool))
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(objLoadedAmmo.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                         }
@@ -10781,28 +10815,28 @@ namespace Chummer.Backend.Equipment
                                                 && decimal.TryParse(strInner, out decimal decTemp2))
                                             {
                                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
+                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
                                                     .Append((decTemp + decTemp2).StandardRound()
-                                                        .ToString(GlobalSettings.CultureInfo), ')');
+                                                        .ToString(GlobalSettings.CultureInfo), strRightPar);
                                             }
                                             else
                                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
+                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
                                                     .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                    .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                    .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                         }
                                         else
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
-                                                .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
-                                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                                .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                         }
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else if (WirelessOn && HasWirelessSmartgun)
@@ -10811,8 +10845,8 @@ namespace Chummer.Backend.Equipment
                                     if (!string.IsNullOrEmpty(strWeaponBonusPool))
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                             }
@@ -10830,28 +10864,28 @@ namespace Chummer.Backend.Equipment
                                                 && decimal.TryParse(strInner, out decimal decTemp2))
                                             {
                                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
+                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
                                                     .Append((decTemp + decTemp2).StandardRound()
-                                                        .ToString(GlobalSettings.CultureInfo), ')');
+                                                        .ToString(GlobalSettings.CultureInfo), strRightPar);
                                             }
                                             else
                                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
+                                                    .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
                                                     .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                    .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                    .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                         }
                                         else
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
-                                                .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
-                                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                                .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                         }
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else if (WirelessOn && HasWirelessSmartgun)
@@ -10860,8 +10894,8 @@ namespace Chummer.Backend.Equipment
                                     if (!string.IsNullOrEmpty(strWeaponBonusPool))
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(objChild.CurrentDisplayNameShort, strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .Append(objChild.CurrentDisplayNameShort, strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                             }
@@ -10877,7 +10911,7 @@ namespace Chummer.Backend.Equipment
                             if (decSmartlinkBonus != 0)
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(LanguageManager.GetString("Tip_Skill_Smartlink"), strSpace)
-                                    .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         foreach (Improvement objImprovement in ImprovementManager
@@ -10918,7 +10952,7 @@ namespace Chummer.Backend.Equipment
                         {
                             sbdExtra.Append(strSpace, '+', strSpace)
                                 .Append(_objCharacter.GetObjectName(objImprovement), strSpace)
-                                .Append('(', objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, objImprovement.Value.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
                     }
                     else if (WirelessOn && HasWirelessSmartgun)
@@ -10976,7 +11010,7 @@ namespace Chummer.Backend.Equipment
                                 if (decSmartlinkBonus != 0)
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(LanguageManager.GetString("Tip_Skill_Smartlink"), strSpace)
-                                        .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 break;
 
                             case FiringMode.GunneryCommandDevice:
@@ -10984,7 +11018,7 @@ namespace Chummer.Backend.Equipment
                                 if (decSmartlinkBonus != 0)
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(LanguageManager.GetString("Tip_Skill_Smartlink"), strSpace)
-                                        .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 break;
                         }
                     }
@@ -10994,7 +11028,7 @@ namespace Chummer.Backend.Equipment
                         case FiringMode.DogBrain:
                             {
                                 sbdReturn.Append(LanguageManager.GetString("String_Pilot"), strSpace)
-                                    .Append('(', (ParentVehicle?.Pilot ?? 0).ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, (ParentVehicle?.Pilot ?? 0).ToString(GlobalSettings.CultureInfo), strRightPar);
                                 string strAutosoft = RelevantAutosoft;
                                 string strName = Name;
                                 string strDisplayName = CurrentDisplayName;
@@ -11019,7 +11053,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     sbdReturn.Append(strSpace, '+', strSpace)
                                         .Append(objAutosoft.CurrentDisplayName, strSpace)
-                                        .Append('(', objAutosoft.Rating.ToString(GlobalSettings.CultureInfo), ')');
+                                        .Append(strLeftPar, objAutosoft.Rating.ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }
                                 else
                                 {
@@ -11041,7 +11075,7 @@ namespace Chummer.Backend.Equipment
                                         int intSpecBonus = spec.SpecializationBonus;
                                         if (intSpecBonus != 0)
                                             sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, spec.CurrentDisplayName,
-                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                                strSpace, strLeftPar, intSpecBonus.ToString(GlobalSettings.CultureInfo), strRightPar));
                                     }
                                 }
 
@@ -11061,7 +11095,7 @@ namespace Chummer.Backend.Equipment
                                         int intSpecBonus = spec.SpecializationBonus;
                                         if (intSpecBonus != 0)
                                             sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, spec.CurrentDisplayName,
-                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                                strSpace, strLeftPar, intSpecBonus.ToString(GlobalSettings.CultureInfo), strRightPar));
                                     }
                                 }
 
@@ -11103,7 +11137,7 @@ namespace Chummer.Backend.Equipment
                                             int intSpecBonus = spec.SpecializationBonus;
                                             if (intSpecBonus != 0)
                                                 sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, spec.CurrentDisplayName,
-                                                    strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                                    strSpace, strLeftPar, intSpecBonus.ToString(GlobalSettings.CultureInfo), strRightPar));
                                         }
                                     }
 
@@ -11147,6 +11181,8 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtra))
             {
@@ -11166,28 +11202,28 @@ namespace Chummer.Backend.Equipment
                                     && decimal.TryParse(strInner, out decimal decTemp2))
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(strWireless, strSpace, '(')
+                                        .Append(strWireless, strSpace, strLeftPar)
                                         .Append((decTemp + decTemp2).StandardRound()
-                                            .ToString(GlobalSettings.CultureInfo), ')');
+                                            .ToString(GlobalSettings.CultureInfo), strRightPar);
                                 }
                                 else
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(strWireless, strSpace, '(')
+                                        .Append(strWireless, strSpace, strLeftPar)
                                         .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                        .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                        .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                             }
                             else
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                    .Append(strWireless, strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                    .Append(strWireless, strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                         else
                         {
                             sbdExtra.Append(strSpace, '+', strSpace)
-                                .Append(strWireless, strSpace, '(')
-                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                .Append(strWireless, strSpace, strLeftPar)
+                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                         }
                     }
                     else if (HasWirelessSmartgun)
@@ -11196,8 +11232,8 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
                         {
                             sbdExtra.Append(strSpace, '+', strSpace)
-                                .Append(await LanguageManager.GetStringAsync("String_Wireless", token: token).ConfigureAwait(false), strSpace, '(')
-                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                .Append(await LanguageManager.GetStringAsync("String_Wireless", token: token).ConfigureAwait(false), strSpace, strLeftPar)
+                                .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                         }
                     }
                 }
@@ -11210,8 +11246,8 @@ namespace Chummer.Backend.Equipment
                     if (decDicePool != 0)
                     {
                         sbdExtra.Append(strSpace, '+', strSpace)
-                                .Append(await wa.GetCurrentDisplayNameAsync(t).ConfigureAwait(false), strSpace, '(')
-                                .Append(decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo), ')');
+                                .Append(await wa.GetCurrentDisplayNameAsync(t).ConfigureAwait(false), strSpace, strLeftPar)
+                                .Append(decDicePool.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo), strRightPar);
                     }
                     if (WirelessOn && wa.WirelessOn && wa.WirelessWeaponBonus != null)
                     {
@@ -11228,28 +11264,28 @@ namespace Chummer.Backend.Equipment
                                         && decimal.TryParse(strInner, out decimal decTemp2))
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(strWireless, strSpace, '(')
+                                            .Append(strWireless, strSpace, strLeftPar)
                                             .Append((decTemp + decTemp2).StandardRound()
-                                                .ToString(GlobalSettings.CultureInfo), ')');
+                                                .ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
                                     else
                                         sbdExtra.Append(strSpace, '+', strSpace)
-                                            .Append(strWireless, strSpace, '(')
+                                            .Append(strWireless, strSpace, strLeftPar)
                                             .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
-                                        .Append(strWireless, strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .Append(strWireless, strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
-                                    .Append(strWireless, strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                    .Append(strWireless, strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                         else if (HasWirelessSmartgun)
@@ -11259,8 +11295,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await wa.GetCurrentDisplayNameAsync(t).ConfigureAwait(false), strSpace)
-                                    .Append(await LanguageManager.GetStringAsync("String_Wireless", token: t).ConfigureAwait(false), strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                    .Append(await LanguageManager.GetStringAsync("String_Wireless", token: t).ConfigureAwait(false), strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                     }
@@ -11285,31 +11321,31 @@ namespace Chummer.Backend.Equipment
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
                                             .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                                .ConfigureAwait(false), strSpace, '(')
+                                                .ConfigureAwait(false), strSpace, strLeftPar)
                                             .Append((decTemp + decTemp2).StandardRound()
-                                                .ToString(GlobalSettings.CultureInfo), ')');
+                                                .ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
                                     else
                                         sbdExtra.Append(strSpace, '+', strSpace)
                                             .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                                .ConfigureAwait(false), strSpace, '(')
+                                                .ConfigureAwait(false), strSpace, strLeftPar)
                                             .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                            .ConfigureAwait(false), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .ConfigureAwait(false), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                        .ConfigureAwait(false), strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .ConfigureAwait(false), strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                         else if (WirelessOn && HasWirelessSmartgun)
@@ -11319,8 +11355,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                        .ConfigureAwait(false), strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .ConfigureAwait(false), strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                     }
@@ -11339,31 +11375,31 @@ namespace Chummer.Backend.Equipment
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
                                             .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                                .ConfigureAwait(false), strSpace, '(')
+                                                .ConfigureAwait(false), strSpace, strLeftPar)
                                             .Append((decTemp + decTemp2).StandardRound()
-                                                .ToString(GlobalSettings.CultureInfo), ')');
+                                                .ToString(GlobalSettings.CultureInfo), strRightPar);
                                     }
                                     else
                                         sbdExtra.Append(strSpace, '+', strSpace)
                                             .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                                .ConfigureAwait(false), strSpace, '(')
+                                                .ConfigureAwait(false), strSpace, strLeftPar)
                                             .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                            .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                            .ConfigureAwait(false), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .ConfigureAwait(false), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                        .ConfigureAwait(false), strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .ConfigureAwait(false), strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                         else if (WirelessOn && HasWirelessSmartgun)
@@ -11373,8 +11409,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await objLoadedAmmo.GetCurrentDisplayNameShortAsync(token)
-                                        .ConfigureAwait(false), strSpace, '(')
-                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                        .ConfigureAwait(false), strSpace, strLeftPar)
+                                    .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                             }
                         }
                     }
@@ -11398,31 +11434,31 @@ namespace Chummer.Backend.Equipment
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
                                                 .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                                    .ConfigureAwait(false), strSpace, '(')
+                                                    .ConfigureAwait(false), strSpace, strLeftPar)
                                                 .Append((decTemp + decTemp2).StandardRound()
-                                                    .ToString(GlobalSettings.CultureInfo), ')');
+                                                    .ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                         else
                                             sbdExtra.Append(strSpace, '+', strSpace)
                                                 .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                                    .ConfigureAwait(false), strSpace, '(')
+                                                    .ConfigureAwait(false), strSpace, strLeftPar)
                                                 .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
                                             .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                                .ConfigureAwait(false), strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                                .ConfigureAwait(false), strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                            .ConfigureAwait(false), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .ConfigureAwait(false), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else if (WirelessOn && HasWirelessSmartgun)
@@ -11432,8 +11468,8 @@ namespace Chummer.Backend.Equipment
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                            .ConfigureAwait(false), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .ConfigureAwait(false), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                         }
@@ -11452,31 +11488,31 @@ namespace Chummer.Backend.Equipment
                                         {
                                             sbdExtra.Append(strSpace, '+', strSpace)
                                                 .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                                    .ConfigureAwait(false), strSpace, '(')
+                                                    .ConfigureAwait(false), strSpace, strLeftPar)
                                                 .Append((decTemp + decTemp2).StandardRound()
-                                                    .ToString(GlobalSettings.CultureInfo), ')');
+                                                    .ToString(GlobalSettings.CultureInfo), strRightPar);
                                         }
                                         else
                                             sbdExtra.Append(strSpace, '+', strSpace)
                                                 .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                                    .ConfigureAwait(false), strSpace, '(')
+                                                    .ConfigureAwait(false), strSpace, strLeftPar)
                                                 .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strSpace, '+')
-                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), ')');
+                                                .Append(strSpace, strInner.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                     else
                                     {
                                         sbdExtra.Append(strSpace, '+', strSpace)
                                             .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                                .ConfigureAwait(false), strSpace, '(')
-                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                                .ConfigureAwait(false), strSpace, strLeftPar)
+                                            .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                     }
                                 }
                                 else
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                            .ConfigureAwait(false), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .ConfigureAwait(false), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                             else if (WirelessOn && HasWirelessSmartgun)
@@ -11486,8 +11522,8 @@ namespace Chummer.Backend.Equipment
                                 {
                                     sbdExtra.Append(strSpace, '+', strSpace)
                                         .Append(await objChild.GetCurrentDisplayNameShortAsync(token)
-                                            .ConfigureAwait(false), strSpace, '(')
-                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), ')');
+                                            .ConfigureAwait(false), strSpace, strLeftPar)
+                                        .Append(strWeaponBonusPool.TrimStartNoAlloc('+'), strRightPar);
                                 }
                             }
                         }
@@ -11506,7 +11542,7 @@ namespace Chummer.Backend.Equipment
                         {
                             sbdExtra.Append(strSpace, '+', strSpace)
                                 .Append(await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token).ConfigureAwait(false), strSpace)
-                                .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
                     }
 
@@ -11548,7 +11584,7 @@ namespace Chummer.Backend.Equipment
                     {
                         sbdExtra.Append(strSpace, '+', strSpace)
                             .Append(await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace)
-                            .Append('(', objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
+                            .Append(strLeftPar, objImprovement.Value.ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
                 }
                 else if (WirelessOn && HasWirelessSmartgun)
@@ -11616,7 +11652,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token).ConfigureAwait(false), strSpace)
-                                    .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), strRightPar);
                             }
 
                             break;
@@ -11627,7 +11663,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 sbdExtra.Append(strSpace, '+', strSpace)
                                     .Append(await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token).ConfigureAwait(false), strSpace)
-                                    .Append('(', decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, decSmartlinkBonus.ToString(GlobalSettings.CultureInfo), strRightPar);
                             }
 
                             break;
@@ -11638,7 +11674,7 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.DogBrain:
                         {
                             sbdReturn.Append(await LanguageManager.GetStringAsync("String_Pilot", token: token).ConfigureAwait(false), strSpace)
-                                .Append('(', (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0).ToString(GlobalSettings.CultureInfo), ')');
+                                .Append(strLeftPar, (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0).ToString(GlobalSettings.CultureInfo), strRightPar);
                             string strAutosoft = await GetRelevantAutosoftAsync(token).ConfigureAwait(false);
                             string strName = Name;
                             string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -11660,7 +11696,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 sbdReturn.Append(strSpace, '+', strSpace)
                                     .Append(await objAutosoft.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace)
-                                    .Append('(', (await objAutosoft.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
+                                    .Append(strLeftPar, (await objAutosoft.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), strRightPar);
                             }
                             else
                             {
@@ -11687,7 +11723,7 @@ namespace Chummer.Backend.Equipment
                                         int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
                                         if (intSpecBonus != 0)
                                             sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                                strSpace, strLeftPar, intSpecBonus.ToString(GlobalSettings.CultureInfo), strRightPar));
                                     }
                                 }
                             }
@@ -11714,7 +11750,7 @@ namespace Chummer.Backend.Equipment
                                         int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
                                         if (intSpecBonus != 0)
                                             sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                                strSpace, strLeftPar, intSpecBonus.ToString(GlobalSettings.CultureInfo), strRightPar));
                                     }
                                 }
                             }
@@ -11771,7 +11807,7 @@ namespace Chummer.Backend.Equipment
                                         int intSpecBonus = await spec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
                                         if (intSpecBonus != 0)
                                             sbdExtra.Insert(0, strSpace.ConcatFast("+", strSpace, await spec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                                strSpace, "(", intSpecBonus.ToString(GlobalSettings.CultureInfo), ")"));
+                                                strSpace, strLeftPar, intSpecBonus.ToString(GlobalSettings.CultureInfo), strRightPar));
                                     }
                                 }
 
@@ -12771,8 +12807,10 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
-                                + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)

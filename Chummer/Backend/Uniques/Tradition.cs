@@ -1264,8 +1264,8 @@ namespace Chummer.Backend.Uniques
                 string strReturn = DisplayNameShort(strLanguage);
 
                 if (!string.IsNullOrEmpty(Extra))
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
-                        + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_LeftPar", strLanguage)
+                        + _objCharacter.TranslateExtra(Extra, strLanguage) + LanguageManager.GetString("String_RightPar", strLanguage);
 
                 return strReturn;
             }
@@ -1285,8 +1285,8 @@ namespace Chummer.Backend.Uniques
                 if (!string.IsNullOrEmpty(Extra))
                     strReturn
                         += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                .ConfigureAwait(false) + "(" + await _objCharacter
-                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
+                                                .ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false) + await _objCharacter
+                            .TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                 return strReturn;
             }
@@ -1597,6 +1597,8 @@ namespace Chummer.Backend.Uniques
                         return string.Empty;
                     string strDrainExpression = DrainExpression;
                     string strSpace = LanguageManager.GetString("String_Space");
+                    string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                    string strRightPar = LanguageManager.GetString("String_RightPar");
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
                     {
@@ -1614,7 +1616,7 @@ namespace Chummer.Backend.Uniques
                         {
                             sbdToolTip.Append(strSpace, '+', strSpace)
                                       .Append(_objCharacter.GetObjectName(objLoopImprovement), strSpace)
-                                      .Append('(', objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
+                                      .Append(strLeftPar, objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo), strRightPar);
                         }
 
                         return sbdToolTip.ToString();
@@ -1636,6 +1638,10 @@ namespace Chummer.Backend.Uniques
                 string strDrainExpression = await GetDrainExpressionAsync(token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token)
+                    .ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token)
+                    .ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdToolTip))
                 {
@@ -1656,7 +1662,7 @@ namespace Chummer.Backend.Uniques
                         sbdToolTip.Append(strSpace, '+', strSpace)
                             .Append(await _objCharacter.GetObjectNameAsync(objLoopImprovement, token: token)
                                 .ConfigureAwait(false), strSpace)
-                            .Append('(', objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
+                            .Append(strLeftPar, objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo), strRightPar);
                     }
 
                     return sbdToolTip.ToString();

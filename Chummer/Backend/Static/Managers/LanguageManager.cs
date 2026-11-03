@@ -1414,7 +1414,9 @@ namespace Chummer
                 strLanguage = GlobalSettings.Language;
             return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
                              token: token).ConcatFast(GetString("String_Space", strLanguage, token: token),
-                                           "(", GetString("String_DescAdept", strLanguage, token: token), ")");
+                                           GetString("String_LeftPar", strLanguage, token: token),
+                                           GetString("String_DescAdept", strLanguage, token: token),
+                                           GetString("String_RightPar", strLanguage, token: token));
         }
 
         public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false,
@@ -1425,8 +1427,9 @@ namespace Chummer
             return (await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
                                         token: token).ConfigureAwait(false)).ConcatFast(
                    await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false),
-                   "(", await GetStringAsync(
-                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false), ")");
+                   await GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false),
+                   await GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false),
+                   await GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false));
         }
 
         /// <summary>

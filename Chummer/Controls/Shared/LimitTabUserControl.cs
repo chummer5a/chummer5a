@@ -423,7 +423,8 @@ namespace Chummer.UI.Shared
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
                             {
                                 string strTranslatedCondition = await objImprovement.GetCurrentDisplayConditionAsync(t).ConfigureAwait(false);
-                                strName += ","
+                                strName += await LanguageManager.GetStringAsync("String_Comma", token: t)
+                                                        .ConfigureAwait(false)
                                            + await LanguageManager.GetStringAsync("String_Space", token: t)
                                                                   .ConfigureAwait(false) + strTranslatedCondition;
                             }

@@ -629,7 +629,9 @@ namespace Chummer
                             objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
 
                         objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
-                        string strSpace = await LanguageManager
+                        string strSeparator = await LanguageManager
+                            .GetStringAsync("String_Comma", strLanguageToPrint, token: token)
+                            .ConfigureAwait(false) + await LanguageManager
                             .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                             .ConfigureAwait(false);
                         bool blnExtrasAdded = false;
@@ -642,11 +644,11 @@ namespace Chummer
                             blnExtrasAdded = true;
                             sbdExtra.Append(await CharacterObject
                                     .TranslateExtraAsync(strLoopExtra, strLanguageToPrint, token: token)
-                                    .ConfigureAwait(false), ',', strSpace);
+                                    .ConfigureAwait(false), strSeparator);
                         }
 
                         if (blnExtrasAdded)
-                            sbdExtra.Length -= 2;
+                            sbdExtra.Length -= strSeparator.Length;
 
                         if (!objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
                             strPowerName = strEnglishName;
@@ -780,10 +782,14 @@ namespace Chummer
                                     token: token)
                                 .CheapReplaceAsync(
                                     "(A)",
-                                    async t => "(" + await LanguageManager.GetStringAsync(
+                                    async t => await LanguageManager.GetStringAsync(
+                                            "String_LeftPar", strLanguageToPrint,
+                                            token: t) + await LanguageManager.GetStringAsync(
                                             "String_SpellRangeArea", strLanguageToPrint,
                                             token: t)
-                                        .ConfigureAwait(false) + ")", StringComparison.OrdinalIgnoreCase, token: token)
+                                        .ConfigureAwait(false) + await LanguageManager.GetStringAsync(
+                                            "String_RightPar", strLanguageToPrint,
+                                            token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "MAG",
                                     t => LanguageManager.GetStringAsync(
@@ -2421,7 +2427,7 @@ namespace Chummer
                 strTypeData = await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             else
-                strTypeData += "," + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                strTypeData += await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             objNode.Nodes.Add("TypeData", strTypeData);
             objNode.Nodes.Add("Services", await LanguageManager.GetStringAsync("Label_Spirit_ServicesOwed", token: token)
@@ -2497,7 +2503,7 @@ namespace Chummer
                 strText = LanguageManager.GetString(RatingLabel, token: token)
                     + strSpace + Force.ToString(GlobalSettings.CultureInfo);
             else
-                strText += "," + strSpace
+                strText += LanguageManager.GetString("String_Comma", token: token) + strSpace
                     + LanguageManager.GetString(RatingLabel, token: token)
                     + strSpace + Force.ToString(GlobalSettings.CultureInfo);
             Utils.RunOnMainThread(t =>
@@ -2600,7 +2606,7 @@ namespace Chummer
                 strText = await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             else
-                strText += "," + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                strText += await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace + await LanguageManager.GetStringAsync(await GetRatingLabelAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                     + strSpace + (await GetForceAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             await Utils.RunOnMainThreadAsync(t =>
             {

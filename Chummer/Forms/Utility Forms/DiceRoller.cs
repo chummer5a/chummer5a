@@ -129,6 +129,10 @@ namespace Chummer
                     intGlitchThreshold = 1;
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar")
+                                                            .ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar")
+                                                        .ConfigureAwait(false);
 
                 if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
                     && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
@@ -156,13 +160,13 @@ namespace Chummer
                                 sbdResults.Append(await LanguageManager.GetStringAsync(
                                                       intHitCount >= intThreshold
                                                           ? "String_DiceRoller_Success"
-                                                          : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(');
+                                                          : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, strLeftPar);
                             }
 
                             sbdResults.AppendFastFormat(GlobalSettings.CultureInfo,
                                                     await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Glitch_Singular" : "String_DiceRoller_Glitch").ConfigureAwait(false), intHitCount);
                             if (intThreshold > 0)
-                                sbdResults.Append(')');
+                                sbdResults.Append(strRightPar);
                         }
                         else
                             sbdResults.Append(await LanguageManager.GetStringAsync("String_DiceRoller_CriticalGlitch").ConfigureAwait(false));
@@ -175,9 +179,9 @@ namespace Chummer
                             sbdResults
                                 .Append(await LanguageManager.GetStringAsync(intHitCount >= intThreshold
                                                                                  ? "String_DiceRoller_Success"
-                                                                                 : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(')
+                                                                                 : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, strLeftPar)
                                 .AppendFastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
-                                              intHitCount).Append(')');
+                                              intHitCount).Append(strRightPar);
                         }
                         else
                         {
@@ -357,6 +361,10 @@ namespace Chummer
                                                               out StringBuilder sbdResults))
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                    string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar")
+                                                            .ConfigureAwait(false);
+                    string strRightPar = await LanguageManager.GetStringAsync("String_RightPar")
+                                                            .ConfigureAwait(false);
                     if (blnHasGlitched)
                     {
                         int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt)
@@ -366,7 +374,7 @@ namespace Chummer
                             sbdResults.Append(await LanguageManager.GetStringAsync(
                                 intHitCount >= intThreshold
                                     ? "String_DiceRoller_Success"
-                                    : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(');
+                                    : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, strLeftPar);
                         }
 
                         sbdResults.AppendFastFormat(GlobalSettings.CultureInfo,
@@ -375,7 +383,7 @@ namespace Chummer
                                     ? "String_DiceRoller_Glitch_Singular"
                                     : "String_DiceRoller_Glitch").ConfigureAwait(false), intHitCount);
                         if (intThreshold > 0)
-                            sbdResults.Append(')');
+                            sbdResults.Append(strRightPar);
 
                         if (blnHasCriticalGlitched)
                         {
@@ -391,9 +399,9 @@ namespace Chummer
                             sbdResults
                                 .Append(await LanguageManager.GetStringAsync(intHitCount >= intThreshold
                                                                                  ? "String_DiceRoller_Success"
-                                                                                 : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, '(')
+                                                                                 : "String_DiceRoller_Failure").ConfigureAwait(false), strSpace, strLeftPar)
                                 .AppendFastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false),
-                                              intHitCount).Append(')');
+                                              intHitCount).Append(strRightPar);
                         }
                         else
                         {

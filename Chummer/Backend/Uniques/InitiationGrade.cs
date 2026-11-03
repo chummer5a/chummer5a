@@ -414,19 +414,20 @@ namespace Chummer
         public string Text(string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strComma = LanguageManager.GetString("String_Comma", strLanguage);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(LanguageManager.GetString("String_Grade", strLanguage), strSpace, Grade.ToString(GlobalSettings.CultureInfo));
                 if (Group || Ordeal)
                 {
-                    sbdReturn.Append(strSpace, '(');
+                    sbdReturn.Append(strSpace, LanguageManager.GetString("String_LeftPar", strLanguage));
                     if (Group)
                     {
                         sbdReturn.Append(
                             LanguageManager.GetString(Technomancer ? "String_Network" : "String_Group", strLanguage));
                         if (Ordeal || Schooling)
-                            sbdReturn.Append(',', strSpace);
+                            sbdReturn.Append(strComma, strSpace);
                     }
 
                     if (Ordeal)
@@ -434,7 +435,7 @@ namespace Chummer
                         sbdReturn.Append(
                             LanguageManager.GetString(Technomancer ? "String_Task" : "String_Ordeal", strLanguage));
                         if (Schooling)
-                            sbdReturn.Append(',', strSpace);
+                            sbdReturn.Append(strComma, strSpace);
                     }
 
                     if (Schooling)
@@ -442,7 +443,7 @@ namespace Chummer
                         sbdReturn.Append(LanguageManager.GetString("String_Schooling", strLanguage));
                     }
 
-                    sbdReturn.Append(')');
+                    sbdReturn.Append(LanguageManager.GetString("String_RightPar", strLanguage));
                 }
 
                 return sbdReturn.ToString();
@@ -455,20 +456,21 @@ namespace Chummer
         public async Task<string> TextAsync(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strComma = await LanguageManager.GetStringAsync("String_Comma", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 sbdReturn.Append(await LanguageManager.GetStringAsync("String_Grade", strLanguage, token: token), strSpace, Grade.ToString(GlobalSettings.CultureInfo));
                 if (Group || Ordeal)
                 {
-                    sbdReturn.Append(strSpace, '(');
+                    sbdReturn.Append(strSpace, await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false));
                     if (Group)
                     {
                         sbdReturn.Append(
                             await LanguageManager.GetStringAsync(Technomancer ? "String_Network" : "String_Group", strLanguage, token: token));
                         if (Ordeal || Schooling)
-                            sbdReturn.Append(',', strSpace);
+                            sbdReturn.Append(strComma, strSpace);
                     }
 
                     if (Ordeal)
@@ -476,7 +478,7 @@ namespace Chummer
                         sbdReturn.Append(
                             await LanguageManager.GetStringAsync(Technomancer ? "String_Task" : "String_Ordeal", strLanguage, token: token));
                         if (Schooling)
-                            sbdReturn.Append(',', strSpace);
+                            sbdReturn.Append(strComma, strSpace);
                     }
 
                     if (Schooling)
@@ -484,7 +486,7 @@ namespace Chummer
                         sbdReturn.Append(await LanguageManager.GetStringAsync("String_Schooling", strLanguage, token: token));
                     }
 
-                    sbdReturn.Append(')');
+                    sbdReturn.Append(await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false));
                 }
 
                 return sbdReturn.ToString();

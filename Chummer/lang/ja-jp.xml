@@ -8649,6 +8649,22 @@
       <text>：</text>
     </string>
     <string>
+      <key>String_Comma</key>
+      <text>，</text>
+    </string>
+    <string>
+      <key>String_LeftPar</key>
+      <text>（</text>
+    </string>
+    <string>
+      <key>String_RightPar</key>
+      <text>）</text>
+    </string>
+    <string>
+      <key>String_NuyenSymbol</key>
+      <text>￥</text>
+    </string>
+    <string>
       <key>String_UpgradedRating</key>
       <text>Upgraded Rating</text>
     </string>

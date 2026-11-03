@@ -3106,13 +3106,22 @@ namespace Chummer.Backend.Equipment
                         string strSpace = await LanguageManager
                             .GetStringAsync("String_Space", strLanguageToPrint, token: token)
                             .ConfigureAwait(false);
+                        string strSeparator = await LanguageManager
+                            .GetStringAsync("String_Comma", strLanguageToPrint, token: token)
+                            .ConfigureAwait(false) + strSpace;
+                        string strLeftPar = await LanguageManager
+                            .GetStringAsync("String_LeftPar", strLanguageToPrint, token: token)
+                            .ConfigureAwait(false);
+                        string strRightPar = await LanguageManager
+                            .GetStringAsync("String_RightPar", strLanguageToPrint, token: token)
+                            .ConfigureAwait(false);
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdName))
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdNameEnglish))
                         {
-                            sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), strSpace, '(');
-                            sbdNameEnglish.Append(Name, strSpace, '(');
+                            sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), strSpace, strLeftPar);
+                            sbdNameEnglish.Append(Name, " (");
                             bool blnFirst = true;
                             foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
                             {
@@ -3120,8 +3129,8 @@ namespace Chummer.Backend.Equipment
                                     .ConfigureAwait(false);
                                 if (!blnFirst)
                                 {
-                                    sbdName.Append(',', strSpace);
-                                    sbdNameEnglish.Append(',', strSpace);
+                                    sbdName.Append(strSeparator);
+                                    sbdNameEnglish.Append(strSeparator);
                                 }
                                 else
                                     blnFirst = false;
@@ -3135,12 +3144,11 @@ namespace Chummer.Backend.Equipment
                                         .ConfigureAwait(false));
                                 else
                                     sbdName.Append(strAbbrev);
-                                sbdName.Append(strSpace).Append(intTotalValue.ToString(objCulture));
-                                sbdNameEnglish.Append(strAbbrev).Append(strSpace)
-                                    .Append(intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdName.Append(strSpace, intTotalValue.ToString(objCulture));
+                                sbdNameEnglish.Append(strAbbrev, ' ', intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
                             }
 
-                            sbdName.Append(')');
+                            sbdName.Append(strRightPar);
                             sbdNameEnglish.Append(')');
                             await objWriter.WriteElementStringAsync("name", sbdName.ToString(), token: token)
                                 .ConfigureAwait(false);
@@ -3788,19 +3796,21 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = DisplayNameShort(strLanguage);
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                string strLeftPar = LanguageManager.GetString("String_LeftPar", strLanguage);
+                string strRightPar = LanguageManager.GetString("String_RightPar", strLanguage);
                 int intRating = Rating;
                 if (intRating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
                 {
                     if (objCulture == null)
                         objCulture = GlobalSettings.CultureInfo;
-                    strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace
-                                 + intRating.ToString(objCulture) + ")";
+                    strReturn += strSpace + strLeftPar + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace
+                                 + intRating.ToString(objCulture) + strRightPar;
                 }
 
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                    strReturn += strSpace + strLeftPar + _objCharacter.TranslateExtra(Extra, strLanguage) + strRightPar;
                 }
 
                 if (!string.IsNullOrEmpty(Location))
@@ -3818,7 +3828,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (!string.IsNullOrEmpty(strSide))
-                        strReturn += strSpace + "(" + strSide + ")";
+                        strReturn += strSpace + strLeftPar + strSide + strRightPar;
                 }
 
                 return strReturn;
@@ -3839,6 +3849,10 @@ namespace Chummer.Backend.Equipment
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                     .ConfigureAwait(false);
+                string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token)
+                    .ConfigureAwait(false);
+                string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token)
+                    .ConfigureAwait(false);
                 int intRating = await GetRatingAsync(token).ConfigureAwait(false);
                 if (intRating > 0)
                 {
@@ -3847,19 +3861,19 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objCulture == null)
                             objCulture = GlobalSettings.CultureInfo;
-                        strReturn += strSpace + "("
+                        strReturn += strSpace + strLeftPar
                                               + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                                   .ConfigureAwait(false) + strSpace
-                                              + intRating.ToString(objCulture) + ")";
+                                              + intRating.ToString(objCulture) + strRightPar;
                     }
                 }
 
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + "(" + await _objCharacter
+                    strReturn += strSpace + strLeftPar + await _objCharacter
                         .TranslateExtraAsync(Extra, strLanguage, token: token)
-                        .ConfigureAwait(false) + ")";
+                        .ConfigureAwait(false) + strRightPar;
                 }
 
                 if (!string.IsNullOrEmpty(Location))
@@ -3881,7 +3895,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (!string.IsNullOrEmpty(strSide))
-                        strReturn += strSpace + "(" + strSide + ")";
+                        strReturn += strSpace + strLeftPar + strSide + strRightPar;
                 }
 
                 return strReturn;
@@ -13359,13 +13373,17 @@ namespace Chummer.Backend.Equipment
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         Cyberware objParent = await GetParentAsync(token).ConfigureAwait(false);
                         if (objParent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
-                                                                                                       + await objParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await objParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                         Grade objGrade = await GetGradeAsync(token).ConfigureAwait(false);
                         if (objGrade.Avail != 0)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
-                                                                                                       + await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -14779,8 +14797,10 @@ namespace Chummer.Backend.Equipment
                         string strName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                         if (guidSourceID == EssenceHoleGUID || guidSourceID == EssenceAntiHoleGUID)
                         {
-                            strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" +
-                                       (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ")";
+                            strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                                + (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
+                                + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                         }
 
                         objExpense.Create(decCost * -1,
@@ -14899,13 +14919,15 @@ namespace Chummer.Backend.Equipment
                 if (blnDoGradeChange || blnDoRatingChange)
                 {
                     strExpense +=
-                        "(" + await LanguageManager.GetStringAsync("String_Grade", token: token).ConfigureAwait(false) +
+                        await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                        + await LanguageManager.GetStringAsync("String_Grade", token: token).ConfigureAwait(false) +
                         strSpace + await objOldGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
                         + strSpace + "->" + await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
                         + strSpace + await LanguageManager.GetStringAsync(RatingLabel, token: token)
                             .ConfigureAwait(false)
                         + intOldRating.ToString(GlobalSettings.CultureInfo)
-                        + strSpace + "->" + strSpace + intRating.ToString(GlobalSettings.CultureInfo) + ")";
+                        + strSpace + "->" + strSpace + intRating.ToString(GlobalSettings.CultureInfo)
+                        + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 }
 
                 // Create the Expense Log Entry.

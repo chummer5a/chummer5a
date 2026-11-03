@@ -487,9 +487,9 @@ namespace Chummer.UI.Powers
                                                   await _objCharacter.GetPowerPointsUsedAsync(token)
                                                       .ConfigureAwait(false);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                string strText = decPowerPointsTotal.ToString(GlobalSettings.CultureInfo).ConcatFast(strSpace, "(",
+                string strText = decPowerPointsTotal.ToString(GlobalSettings.CultureInfo).ConcatFast(strSpace, await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false),
                     decPowerPointsRemaining.ToString(GlobalSettings.CultureInfo),
-                    strSpace, await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false), ")");
+                    strSpace, await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false));
                 await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
             }
             finally

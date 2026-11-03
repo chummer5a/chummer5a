@@ -3150,6 +3150,8 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
+            string strLeftPar = LanguageManager.GetString("String_LeftPar", strLanguage, token: token);
+            string strRightPar = LanguageManager.GetString("String_RightPar", strLanguage, token: token);
             string strReturn = strInput;
             using (LockObject.EnterReadLock(token))
             {
@@ -3169,8 +3171,8 @@ namespace Chummer.Backend.Attributes
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName, out int intAttributeValue))
                                             intAttributeValue = objAttribute.TotalValue;
-                                        strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                                          + ")";
+                                        strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                                          + strRightPar;
                                     }
 
                                     return strInnerReturn;
@@ -3184,8 +3186,8 @@ namespace Chummer.Backend.Attributes
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName + "Unaug", out int intAttributeValue))
                                             intAttributeValue = objAttribute.Value;
-                                        strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                                          + ")";
+                                        strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                                          + strRightPar;
                                     }
 
                                     return StringExtensions.FastFormat(
@@ -3201,8 +3203,8 @@ namespace Chummer.Backend.Attributes
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName + "Base", out int intAttributeValue))
                                             intAttributeValue = objAttribute.TotalBase;
-                                        strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                                          + ")";
+                                        strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                                          + strRightPar;
                                     }
 
                                     return StringExtensions.FastFormat(
@@ -3218,8 +3220,8 @@ namespace Chummer.Backend.Attributes
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName + "Minimum", out int intAttributeValue))
                                             intAttributeValue = objAttribute.TotalMinimum;
-                                        strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                                          + ")";
+                                        strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                                          + strRightPar;
                                     }
 
                                     return StringExtensions.FastFormat(
@@ -3235,8 +3237,8 @@ namespace Chummer.Backend.Attributes
                                             || !dicValueOverrides.TryGetValue(
                                                 strCharAttributeName + "Maximum", out int intAttributeValue))
                                             intAttributeValue = objAttribute.TotalMaximum;
-                                        strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                                          + ")";
+                                        strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                                          + strRightPar;
                                     }
 
                                     return StringExtensions.FastFormat(
@@ -3263,6 +3265,8 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
+            string strLeftPar = LanguageManager.GetString("String_LeftPar", strLanguage, token: token);
+            string strRightPar = LanguageManager.GetString("String_RightPar", strLanguage, token: token);
             using (LockObject.EnterReadLock(token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -3279,7 +3283,7 @@ namespace Chummer.Backend.Attributes
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
                                 intAttributeValue = objAttribute.TotalValue;
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return strInnerReturn;
@@ -3293,7 +3297,7 @@ namespace Chummer.Backend.Attributes
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug",
                                                                   out int intAttributeValue))
                                 intAttributeValue = objAttribute.Value;
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3309,7 +3313,7 @@ namespace Chummer.Backend.Attributes
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base",
                                                                   out int intAttributeValue))
                                 intAttributeValue = objAttribute.TotalBase;
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3325,7 +3329,7 @@ namespace Chummer.Backend.Attributes
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum",
                                     out int intAttributeValue))
                                 intAttributeValue = objAttribute.TotalMinimum;
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3341,7 +3345,7 @@ namespace Chummer.Backend.Attributes
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum",
                                     out int intAttributeValue))
                                 intAttributeValue = objAttribute.TotalMaximum;
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3364,6 +3368,8 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             string strReturn = strInput;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3388,8 +3394,8 @@ namespace Chummer.Backend.Attributes
                                     intAttributeValue = await objAttribute
                                         .GetTotalValueAsync(t).ConfigureAwait(false);
                                 strInnerReturn
-                                    += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                       + ")";
+                                    += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                       + strRightPar;
                             }
 
                             return strInnerReturn;
@@ -3406,8 +3412,8 @@ namespace Chummer.Backend.Attributes
                                     intAttributeValue = await objAttribute
                                         .GetValueAsync(t).ConfigureAwait(false);
                                 strInnerReturn
-                                    += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                       + ")";
+                                    += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                       + strRightPar;
                             }
 
                             return StringExtensions.FastFormat(
@@ -3427,8 +3433,8 @@ namespace Chummer.Backend.Attributes
                                     intAttributeValue = await objAttribute
                                         .GetTotalBaseAsync(t).ConfigureAwait(false);
                                 strInnerReturn
-                                    += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                       + ")";
+                                    += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                       + strRightPar;
                             }
 
                             return StringExtensions.FastFormat(
@@ -3448,8 +3454,8 @@ namespace Chummer.Backend.Attributes
                                     intAttributeValue = await objAttribute
                                         .GetTotalMinimumAsync(t).ConfigureAwait(false);
                                 strInnerReturn
-                                    += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                       + ")";
+                                    += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                       + strRightPar;
                             }
 
                             return StringExtensions.FastFormat(
@@ -3469,8 +3475,8 @@ namespace Chummer.Backend.Attributes
                                     intAttributeValue = await objAttribute
                                         .GetTotalMaximumAsync(t).ConfigureAwait(false);
                                 strInnerReturn
-                                    += strSpace + "(" + intAttributeValue.ToString(objCultureInfo)
-                                       + ")";
+                                    += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo)
+                                       + strRightPar;
                             }
 
                             return StringExtensions.FastFormat(
@@ -3505,6 +3511,8 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                 .ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -3525,7 +3533,7 @@ namespace Chummer.Backend.Attributes
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
                                 intAttributeValue =
                                     await objAttribute.GetTotalValueAsync(t).ConfigureAwait(false);
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return strInnerReturn;
@@ -3541,7 +3549,7 @@ namespace Chummer.Backend.Attributes
                                     out int intAttributeValue))
                                 intAttributeValue =
                                     await objAttribute.GetValueAsync(t).ConfigureAwait(false);
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3560,7 +3568,7 @@ namespace Chummer.Backend.Attributes
                                     out int intAttributeValue))
                                 intAttributeValue =
                                     await objAttribute.GetTotalBaseAsync(t).ConfigureAwait(false);
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3579,7 +3587,7 @@ namespace Chummer.Backend.Attributes
                                     out int intAttributeValue))
                                 intAttributeValue =
                                     await objAttribute.GetTotalMinimumAsync(t).ConfigureAwait(false);
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(
@@ -3598,7 +3606,7 @@ namespace Chummer.Backend.Attributes
                                     out int intAttributeValue))
                                 intAttributeValue =
                                     await objAttribute.GetTotalMaximumAsync(t).ConfigureAwait(false);
-                            strInnerReturn += strSpace + "(" + intAttributeValue.ToString(objCultureInfo) + ")";
+                            strInnerReturn += strSpace + strLeftPar + intAttributeValue.ToString(objCultureInfo) + strRightPar;
                         }
 
                         return StringExtensions.FastFormat(

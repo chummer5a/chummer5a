@@ -9057,7 +9057,9 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(objImprovement.Condition))
                                 {
                                     string strTranslatedCondition = await objImprovement.GetCurrentDisplayConditionAsync(innerToken).ConfigureAwait(false);
-                                    strName += "," + await LanguageManager.GetStringAsync("String_Space", token: innerToken)
+                                    strName += await LanguageManager.GetStringAsync("String_Comma", token: innerToken)
+                                                       .ConfigureAwait(false)
+                                                       + await LanguageManager.GetStringAsync("String_Space", token: innerToken)
                                                        .ConfigureAwait(false)
                                                    + strTranslatedCondition;
                                 }
@@ -12972,7 +12974,9 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space", token: GenericToken);
-            string strTitle = CharacterObject.CharacterName + strSpace + "-" + strSpace + FormMode + strSpace + "(" + CharacterObjectSettings.Name + ")";
+            string strTitle = CharacterObject.CharacterName + strSpace + "-" + strSpace + FormMode + strSpace
+                + LanguageManager.GetString("String_LeftPar", token: GenericToken) + CharacterObjectSettings.Name
+                + LanguageManager.GetString("String_RightPar", token: GenericToken);
             if (IsDirty)
                 strTitle += "*";
             this.DoThreadSafe(x => x.Text = strTitle, token: GenericToken);
@@ -13003,7 +13007,9 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strTitle = await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
                     + await GetFormModeAsync(token).ConfigureAwait(false) + strSpace
-                    + "(" + await CharacterObjectSettings.GetNameAsync(token).ConfigureAwait(false) + ")";
+                    + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
+                    + await CharacterObjectSettings.GetNameAsync(token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                 if (IsDirty)
                     strTitle += "*";
                 await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);

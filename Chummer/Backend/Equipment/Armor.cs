@@ -3257,17 +3257,19 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage, token);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
+            string strLeftPar = LanguageManager.GetString("String_LeftPar", strLanguage, token: token);
+            string strRightPar = LanguageManager.GetString("String_RightPar", strLanguage, token: token);
             if (!string.IsNullOrEmpty(CustomName))
-                strReturn += strSpace + "(\"" + CustomName + "\")";
+                strReturn += strSpace + strLeftPar + "\"" + CustomName + "\"" + strRightPar;
             int intRating = Rating;
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + intRating.ToString(objCulture) + ")";
+                strReturn += strSpace + strLeftPar + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + intRating.ToString(objCulture) + strRightPar;
             }
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + ")";
+                strReturn += strSpace + strLeftPar + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + strRightPar;
             return strReturn;
         }
 
@@ -3278,17 +3280,19 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", strLanguage, token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", strLanguage, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(CustomName))
-                strReturn += strSpace + "(\"" + CustomName + "\")";
+                strReturn += strSpace + strLeftPar + "\"" + CustomName + "\"" + strRightPar;
             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating > 0)
             {
                 if (objCulture == null)
                     objCulture = GlobalSettings.CultureInfo;
-                strReturn += strSpace + "(" + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + ")";
+                strReturn += strSpace + strLeftPar + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + intRating.ToString(objCulture) + strRightPar;
             }
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
+                strReturn += strSpace + strLeftPar + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + strRightPar;
             return strReturn;
         }
 

@@ -2363,7 +2363,7 @@ namespace Chummer.Backend.Skills
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
                         sbdTooltip.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
-                            .AppendJoin("," + strSpace, SkillList.Select(x => x.CurrentDisplayName)).AppendLine();
+                            .AppendJoin(LanguageManager.GetString("String_Comma") + strSpace, SkillList.Select(x => x.CurrentDisplayName)).AppendLine();
 
                         if (IsDisabled)
                         {
@@ -2421,7 +2421,7 @@ namespace Chummer.Backend.Skills
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                             .ConfigureAwait(false);
                         sbdTooltip.Append(await LanguageManager.GetStringAsync("Tip_SkillGroup_Skills", token: token).ConfigureAwait(false), strSpace);
-                        await sbdTooltip.AppendJoinAsync("," + strSpace,
+                        await sbdTooltip.AppendJoinAsync(await LanguageManager.GetStringAsync("String_Comma", token: token).ConfigureAwait(false) + strSpace,
                             SkillList.Select((x, t) => x.GetCurrentDisplayNameAsync(t), token), token);
                         sbdTooltip.AppendLine();
 
