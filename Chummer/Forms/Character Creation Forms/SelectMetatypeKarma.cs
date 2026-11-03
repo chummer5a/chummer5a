@@ -419,116 +419,124 @@ namespace Chummer
                     return;
                 }
 
-                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        if (i >= await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false))
-                            continue;
-                        Quality objQuality = await _objCharacter.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Heritage)
-                            await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
-                    }
-
-                    // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant.IsEmptyGuid())
-                        strSelectedMetavariant
-                            = objXmlMetatype
-                                  .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                      "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
-                              ?.Value
-                              ?? Utils.GuidEmptyString;
-                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
-                        strSelectedMetatype
-                        || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
-                        strSelectedMetavariant)
-                    {
-                        // Remove qualities that require the old metatype
-                        List<Quality> lstQualitiesToCheck = new List<Quality>(await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false));
-                        await _objCharacter.Qualities.ForEachAsync(async (objQuality, t) =>
+                        token.ThrowIfCancellationRequested();
+                        // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
+                        for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(t).ConfigureAwait(false);
-                            if (eOriginSource == QualitySource.Improvement
-                                || eOriginSource == QualitySource.QualityLevelImprovement
-                                || eOriginSource == QualitySource.Metatype
-                                || eOriginSource == QualitySource.MetatypeRemovable
-                                || eOriginSource == QualitySource.MetatypeRemovedAtChargen)
-                                return;
-                            XPathNavigator xmlBaseNode
-                                = await objQuality.GetNodeXPathAsync(token: t).ConfigureAwait(false);
-                            XPathNavigator xmlRestrictionNode
-                                = xmlBaseNode?.SelectSingleNodeAndCacheExpression("required", t);
-                            if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
-                                 || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", t) != null))
+                            if (i >= await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false))
+                                continue;
+                            Quality objQuality = await _objCharacter.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Heritage)
+                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                        }
+
+                        // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                        if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant.IsEmptyGuid())
+                            strSelectedMetavariant
+                                = objXmlMetatype
+                                      .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                          "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
+                                  ?.Value
+                                  ?? Utils.GuidEmptyString;
+                        if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                            strSelectedMetatype
+                            || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                            strSelectedMetavariant)
+                        {
+                            // Remove qualities that require the old metatype
+                            List<Quality> lstQualitiesToCheck = new List<Quality>(await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false));
+                            await _objCharacter.Qualities.ForEachAsync(async (objQuality, t) =>
                             {
-                                lstQualitiesToCheck.Add(objQuality);
-                            }
-                            else
-                            {
-                                xmlRestrictionNode
-                                    = xmlBaseNode?.SelectSingleNodeAndCacheExpression("forbidden", t);
+                                QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(t).ConfigureAwait(false);
+                                if (eOriginSource == QualitySource.Improvement
+                                    || eOriginSource == QualitySource.QualityLevelImprovement
+                                    || eOriginSource == QualitySource.Metatype
+                                    || eOriginSource == QualitySource.MetatypeRemovable
+                                    || eOriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                    return;
+                                XPathNavigator xmlBaseNode
+                                    = await objQuality.GetNodeXPathAsync(token: t).ConfigureAwait(false);
+                                XPathNavigator xmlRestrictionNode
+                                    = xmlBaseNode?.SelectSingleNodeAndCacheExpression("required", t);
                                 if (xmlRestrictionNode != null &&
                                     (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
                                      || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", t) != null))
                                 {
                                     lstQualitiesToCheck.Add(objQuality);
                                 }
+                                else
+                                {
+                                    xmlRestrictionNode
+                                        = xmlBaseNode?.SelectSingleNodeAndCacheExpression("forbidden", t);
+                                    if (xmlRestrictionNode != null &&
+                                        (xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metatype", t) != null
+                                         || xmlRestrictionNode.SelectSingleNodeAndCacheExpression(".//metavariant", t) != null))
+                                    {
+                                        lstQualitiesToCheck.Add(objQuality);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token).ConfigureAwait(false);
+                            await _objCharacter.CreateAsync(strSelectedMetatypeCategory, strSelectedMetatype,
+                                strSelectedMetavariant,
+                                objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
+                                await _xmlCritterPowerDocumentPowersNode
+                                    .GetValueAsync(_objGenericToken)
+                                    .ConfigureAwait(false), _xmlSkillsDocumentKnowledgeSkillsNode,
+                                await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false)
+                                    ? await cboPossessionMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                        token).ConfigureAwait(false)
+                                    : string.Empty, token).ConfigureAwait(false);
+                            foreach (Quality objQuality in lstQualitiesToCheck)
+                            {
+                                XPathNavigator objLoopNode
+                                    = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
+                                if (objLoopNode != null && !await objLoopNode.RequirementsMetAsync(_objCharacter, strIgnoreQuality: await objQuality.GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                    await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                             }
+                        }
+
+                        // Flip all attribute, skill, and skill group points to karma levels (relevant when switching from Priority/Sum-to-Ten to Karma)
+                        await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objAttrib, t) =>
+                        {
+                            // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
+                            int intBase = await objAttrib.GetBaseAsync(t).ConfigureAwait(false);
+                            await objAttrib.SetBaseAsync(0, t).ConfigureAwait(false);
+                            await objAttrib.ModifyKarmaAsync(intBase, t).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
-                        int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token).ConfigureAwait(false);
-                        await _objCharacter.CreateAsync(strSelectedMetatypeCategory, strSelectedMetatype,
-                            strSelectedMetavariant,
-                            objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
-                            await _xmlCritterPowerDocumentPowersNode
-                                .GetValueAsync(_objGenericToken)
-                                .ConfigureAwait(false), _xmlSkillsDocumentKnowledgeSkillsNode,
-                            await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false)
-                                ? await cboPossessionMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
-                                    token).ConfigureAwait(false)
-                                : string.Empty, token).ConfigureAwait(false);
-                        foreach (Quality objQuality in lstQualitiesToCheck)
+                        await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkill, t) =>
                         {
-                            XPathNavigator objLoopNode
-                                = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                            // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
-                            if (objLoopNode != null && !await objLoopNode.RequirementsMetAsync(_objCharacter, strIgnoreQuality: await objQuality.GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
-                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
-                        }
+                            // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
+                            int intBase = await objSkill.GetBasePointsAsync(t).ConfigureAwait(false);
+                            await objSkill.SetBasePointsAsync(0, t).ConfigureAwait(false);
+                            await objSkill.ModifyKarmaPointsAsync(intBase, t).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+
+                        await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objGroup, t) =>
+                        {
+                            // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
+                            int intBase = await objGroup.GetBasePointsAsync(t).ConfigureAwait(false);
+                            await objGroup.SetBasePointsAsync(0, t).ConfigureAwait(false);
+                            await objGroup.ModifyKarmaPointsAsync(intBase, t).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
-
-                    // Flip all attribute, skill, and skill group points to karma levels (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objAttrib, t) =>
+                    finally
                     {
-                        // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = await objAttrib.GetBaseAsync(t).ConfigureAwait(false);
-                        await objAttrib.SetBaseAsync(0, t).ConfigureAwait(false);
-                        await objAttrib.ModifyKarmaAsync(intBase, t).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
-                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkill, t) =>
-                    {
-                        // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = await objSkill.GetBasePointsAsync(t).ConfigureAwait(false);
-                        await objSkill.SetBasePointsAsync(0, t).ConfigureAwait(false);
-                        await objSkill.ModifyKarmaPointsAsync(intBase, t).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
-                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objGroup, t) =>
-                    {
-                        // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = await objGroup.GetBasePointsAsync(t).ConfigureAwait(false);
-                        await objGroup.SetBasePointsAsync(0, t).ConfigureAwait(false);
-                        await objGroup.ModifyKarmaPointsAsync(intBase, t).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await this.DoThreadSafeAsync(x =>

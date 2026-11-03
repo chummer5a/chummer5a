@@ -338,87 +338,96 @@ namespace Chummer.UI.Attributes
         {
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objMyToken).ConfigureAwait(false);
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
-                    CharacterAttrib objAttrib = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttrib.LockObject.EnterReadLockAsync(_objMyToken)
-                        .ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objMyToken).ConfigureAwait(false);
                     try
                     {
-                        _objMyToken.ThrowIfCancellationRequested();
-                        string strName = await objAttrib.GetDisplayNameFormattedAsync(_objMyToken).ConfigureAwait(false);
-                        await lblName.DoThreadSafeAsync(x => x.Text = strName, _objMyToken).ConfigureAwait(false);
-                        string strValue = await objAttrib.GetDisplayValueAsync(_objMyToken).ConfigureAwait(false);
-                        string strAugmentedMetatypeLimits =
-                            await objAttrib.GetAugmentedMetatypeLimitsAsync(_objMyToken).ConfigureAwait(false);
-                        await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, _objMyToken)
+                        CharacterAttrib objAttrib = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
+                        IAsyncDisposable objLocker = await objAttrib.LockObject.EnterReadLockAsync(_objMyToken)
                             .ConfigureAwait(false);
-                        string strToolTip = await objAttrib.GetToolTipAsync(_objMyToken).ConfigureAwait(false);
-                        await lblValue.DoThreadSafeAsync(x =>
+                        try
                         {
-                            x.Text = strValue;
-                            x.ToolTipText = strToolTip;
-                        }, _objMyToken).ConfigureAwait(false);
-                        if (await _objCharacter.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
-                        {
-                            string strUpgradeToolTip =
-                                await objAttrib.GetUpgradeToolTipAsync(_objMyToken).ConfigureAwait(false);
-                            bool blnCanUpgradeCareer =
-                                await objAttrib.GetCanUpgradeCareerAsync(_objMyToken).ConfigureAwait(false);
-                            await cmdImproveATT.DoThreadSafeAsync(x =>
-                                {
-                                    x.ToolTipText = strUpgradeToolTip;
-                                    x.Enabled = blnCanUpgradeCareer;
-                                }, _objMyToken)
+                            _objMyToken.ThrowIfCancellationRequested();
+                            string strName = await objAttrib.GetDisplayNameFormattedAsync(_objMyToken).ConfigureAwait(false);
+                            await lblName.DoThreadSafeAsync(x => x.Text = strName, _objMyToken).ConfigureAwait(false);
+                            string strValue = await objAttrib.GetDisplayValueAsync(_objMyToken).ConfigureAwait(false);
+                            string strAugmentedMetatypeLimits =
+                                await objAttrib.GetAugmentedMetatypeLimitsAsync(_objMyToken).ConfigureAwait(false);
+                            await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, _objMyToken)
                                 .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            int intKarmaMaximum =
-                                await objAttrib.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
-                            int intPriorityMaximum =
-                                await objAttrib.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
-                            bool blnBaseUnlocked =
-                                await objAttrib.GetBaseUnlockedAsync(_objMyToken).ConfigureAwait(false);
-                            int intBase =
-                                await objAttrib.GetBaseAsync(_objMyToken).ConfigureAwait(false);
-                            int intKarma =
-                                await objAttrib.GetKarmaAsync(_objMyToken).ConfigureAwait(false);
-                            await nudKarma.DoThreadSafeAsync(x =>
-                                {
-                                    x.Maximum = intKarmaMaximum;
-                                    x.ValueAsInt = intKarma;
-                                }, _objMyToken)
-                                .ConfigureAwait(false);
-                            await nudBase.DoThreadSafeAsync(x =>
-                                {
-                                    x.Enabled = blnBaseUnlocked;
-                                    x.Maximum = intPriorityMaximum;
-                                    x.ValueAsInt = intBase;
-                                }, _objMyToken)
-                                .ConfigureAwait(false);
-                            await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
-                                    nameof(Character.EffectiveBuildMethodUsesPriorityTables),
-                                    x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(_objMyToken),
-                                    token: _objMyToken)
-                                .ConfigureAwait(false);
-                        }
+                            string strToolTip = await objAttrib.GetToolTipAsync(_objMyToken).ConfigureAwait(false);
+                            await lblValue.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strValue;
+                                x.ToolTipText = strToolTip;
+                            }, _objMyToken).ConfigureAwait(false);
+                            if (await _objCharacter.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
+                            {
+                                string strUpgradeToolTip =
+                                    await objAttrib.GetUpgradeToolTipAsync(_objMyToken).ConfigureAwait(false);
+                                bool blnCanUpgradeCareer =
+                                    await objAttrib.GetCanUpgradeCareerAsync(_objMyToken).ConfigureAwait(false);
+                                await cmdImproveATT.DoThreadSafeAsync(x =>
+                                    {
+                                        x.ToolTipText = strUpgradeToolTip;
+                                        x.Enabled = blnCanUpgradeCareer;
+                                    }, _objMyToken)
+                                    .ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                int intKarmaMaximum =
+                                    await objAttrib.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
+                                int intPriorityMaximum =
+                                    await objAttrib.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
+                                bool blnBaseUnlocked =
+                                    await objAttrib.GetBaseUnlockedAsync(_objMyToken).ConfigureAwait(false);
+                                int intBase =
+                                    await objAttrib.GetBaseAsync(_objMyToken).ConfigureAwait(false);
+                                int intKarma =
+                                    await objAttrib.GetKarmaAsync(_objMyToken).ConfigureAwait(false);
+                                await nudKarma.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Maximum = intKarmaMaximum;
+                                        x.ValueAsInt = intKarma;
+                                    }, _objMyToken)
+                                    .ConfigureAwait(false);
+                                await nudBase.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Enabled = blnBaseUnlocked;
+                                        x.Maximum = intPriorityMaximum;
+                                        x.ValueAsInt = intBase;
+                                    }, _objMyToken)
+                                    .ConfigureAwait(false);
+                                await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
+                                        nameof(Character.EffectiveBuildMethodUsesPriorityTables),
+                                        x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(_objMyToken),
+                                        token: _objMyToken)
+                                    .ConfigureAwait(false);
+                            }
 
-                        _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(AttributeName,
-                            OnAttributePropertyChanged);
+                            _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(AttributeName,
+                                OnAttributePropertyChanged);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout(true), _objMyToken).ConfigureAwait(false);
+                        Interlocked.CompareExchange(ref _intChangingBase, 0, 1);
+                        Interlocked.CompareExchange(ref _intChangingKarma, 0, 1);
+                        _blnLoading = false;
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout(true), _objMyToken).ConfigureAwait(false);
-                    Interlocked.CompareExchange(ref _intChangingBase, 0, 1);
-                    Interlocked.CompareExchange(ref _intChangingKarma, 0, 1);
-                    _blnLoading = false;
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -774,32 +783,40 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private async Task<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
-            CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
-            IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
-                if (intValue < intTotalMaximum || intTotalMaximum == 0)
-                    return true;
+                CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
+                    if (intValue < intTotalMaximum || intTotalMaximum == 0)
+                        return true;
 
-                if (await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).CanRaiseAttributeToMetatypeMax(objAttribute, token)
-                        .ConfigureAwait(false))
-                    return true;
+                    if (await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).CanRaiseAttributeToMetatypeMax(objAttribute, token)
+                            .ConfigureAwait(false))
+                        return true;
 
-                await Program.ShowScrollableMessageBoxAsync(
-                    StringExtensions.FastFormat(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token)
-                            .ConfigureAwait(false),
-                        await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)),
-                    await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token).ConfigureAwait(false),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                return false;
+                    await Program.ShowScrollableMessageBoxAsync(
+                        StringExtensions.FastFormat(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token)
+                                .ConfigureAwait(false),
+                            await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                    return false;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

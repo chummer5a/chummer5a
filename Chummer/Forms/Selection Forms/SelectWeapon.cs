@@ -521,128 +521,136 @@ namespace Chummer
                     XmlNode xmlParentWeaponDataNode = ParentWeapon != null
                         ? _objXmlDocument.TryGetNodeById("/chummer/weapons/weapon", ParentWeapon.SourceID)
                         : null;
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        foreach (XmlNode objXmlWeapon in objNodeList)
+                        IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            if (!await objXmlWeapon.CreateNavigator()
-                                    .RequirementsMetAsync(_objCharacter, ParentWeapon, token: token)
-                                    .ConfigureAwait(false))
-                                continue;
-
-                            XPathNavigator xmlTestNode =
-                                objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails",
-                                    token);
-                            if (xmlTestNode != null
-                                && await xmlParentWeaponDataNode
-                                    .ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
+                            token.ThrowIfCancellationRequested();
+                            foreach (XmlNode objXmlWeapon in objNodeList)
                             {
-                                // Assumes topmost parent is an AND node
-                                continue;
-                            }
-
-                            xmlTestNode =
-                                objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails",
-                                    token);
-                            if (xmlTestNode != null
-                                && !await xmlParentWeaponDataNode
-                                    .ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
-                            {
-                                // Assumes topmost parent is an AND node
-                                continue;
-                            }
-
-                            if (objXmlWeapon["cyberware"]?.InnerTextIsTrueString() == true)
-                                continue;
-                            string strTest = objXmlWeapon["mount"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
-                                continue;
-                            strTest = objXmlWeapon["extramount"]?.InnerTextViaPool(token);
-                            if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
-                                continue;
-                            if (blnHideOverAvailLimit
-                                && !await SelectionShared
-                                    .CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlWeapon["id"]?.InnerTextViaPool(token), blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
-                                    .ConfigureAwait(false))
-                                continue;
-                            if (!blnFreeItem && blnShowOnlyAffordItems)
-                            {
-                                decimal decCostMultiplier = decBaseCostMultiplier;
-                                if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerTextViaPool(token)))
-                                    decCostMultiplier *= 0.9m;
-                                if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter, decNuyen,
-                                        decCostMultiplier, token: token).ConfigureAwait(false))
+                                if (!await objXmlWeapon.CreateNavigator()
+                                        .RequirementsMetAsync(_objCharacter, ParentWeapon, token: token)
+                                        .ConfigureAwait(false))
                                     continue;
-                            }
 
-                            Weapon objWeapon = new Weapon(_objCharacter);
-                            try
-                            {
-                                await objWeapon.CreateAsync(objXmlWeapon, null, true, false, true, token: token)
-                                    .ConfigureAwait(false);
-                                await objWeapon.SetParentAsync(ParentWeapon, token).ConfigureAwait(false);
-                                if (objWeapon.RangeType == "Ranged")
-                                    blnAnyRanged = true;
-                                else
-                                    blnAnyMelee = true;
-                                string strID = objWeapon.SourceIDString;
-                                string strWeaponName =
-                                    await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                string strDice =
-                                    (await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo);
-                                string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
-                                string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
-                                string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
-                                if (strAP == "-")
-                                    strAP = "0";
-                                (string strRC, _) = await objWeapon.TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token).ConfigureAwait(false);
-                                string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
-                                string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
-                                string strReach =
-                                    (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo);
-                                string strConceal = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdAccessories))
+                                XPathNavigator xmlTestNode =
+                                    objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails",
+                                        token);
+                                if (xmlTestNode != null
+                                    && await xmlParentWeaponDataNode
+                                        .ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                 {
-                                    await objWeapon.WeaponAccessories.ForEachAsync(async (objAccessory, t) =>
-                                    {
-                                        sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(t)
-                                            .ConfigureAwait(false));
-                                    }, token).ConfigureAwait(false);
+                                    // Assumes topmost parent is an AND node
+                                    continue;
+                                }
 
-                                    if (sbdAccessories.Length > 0)
-                                        sbdAccessories.Length -= Environment.NewLine.Length;
-                                    AvailabilityValue objAvail = await objWeapon.TotalAvailTupleAsync(token: token)
+                                xmlTestNode =
+                                    objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails",
+                                        token);
+                                if (xmlTestNode != null
+                                    && !await xmlParentWeaponDataNode
+                                        .ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    continue;
+                                }
+
+                                if (objXmlWeapon["cyberware"]?.InnerTextIsTrueString() == true)
+                                    continue;
+                                string strTest = objXmlWeapon["mount"]?.InnerTextViaPool(token);
+                                if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                                    continue;
+                                strTest = objXmlWeapon["extramount"]?.InnerTextViaPool(token);
+                                if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
+                                    continue;
+                                if (blnHideOverAvailLimit
+                                    && !await SelectionShared
+                                        .CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlWeapon["id"]?.InnerTextViaPool(token), blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
+                                        .ConfigureAwait(false))
+                                    continue;
+                                if (!blnFreeItem && blnShowOnlyAffordItems)
+                                {
+                                    decimal decCostMultiplier = decBaseCostMultiplier;
+                                    if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerTextViaPool(token)))
+                                        decCostMultiplier *= 0.9m;
+                                    if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter, decNuyen,
+                                            decCostMultiplier, token: token).ConfigureAwait(false))
+                                        continue;
+                                }
+
+                                Weapon objWeapon = new Weapon(_objCharacter);
+                                try
+                                {
+                                    await objWeapon.CreateAsync(objXmlWeapon, null, true, false, true, token: token)
                                         .ConfigureAwait(false);
-                                    SourceString strSource = await SourceString.GetSourceStringAsync(objWeapon.Source,
-                                        await objWeapon.DisplayPageAsync(GlobalSettings.Language, token)
-                                            .ConfigureAwait(false),
-                                        GlobalSettings.Language,
-                                        GlobalSettings.CultureInfo,
-                                        _objCharacter, token).ConfigureAwait(false);
-                                    NuyenString strCost = await NuyenString.GetNuyenStringAsync(
-                                        (await objWeapon.DisplayCost(token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+                                    await objWeapon.SetParentAsync(ParentWeapon, token).ConfigureAwait(false);
+                                    if (objWeapon.RangeType == "Ranged")
+                                        blnAnyRanged = true;
+                                    else
+                                        blnAnyMelee = true;
+                                    string strID = objWeapon.SourceIDString;
+                                    string strWeaponName =
+                                        await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    string strDice =
+                                        (await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo);
+                                    string strAccuracy = await objWeapon.GetDisplayAccuracyAsync(token).ConfigureAwait(false);
+                                    string strDamage = await objWeapon.GetDisplayDamageAsync(token).ConfigureAwait(false);
+                                    string strAP = await objWeapon.GetDisplayTotalAPAsync(token).ConfigureAwait(false);
+                                    if (strAP == "-")
+                                        strAP = "0";
+                                    (string strRC, _) = await objWeapon.TotalRCAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token).ConfigureAwait(false);
+                                    string strAmmo = await objWeapon.GetDisplayAmmoAsync(token).ConfigureAwait(false);
+                                    string strMode = await objWeapon.GetDisplayModeAsync(token).ConfigureAwait(false);
+                                    string strReach =
+                                        (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo);
+                                    string strConceal = await objWeapon.GetDisplayConcealabilityAsync(token).ConfigureAwait(false);
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdAccessories))
+                                    {
+                                        await objWeapon.WeaponAccessories.ForEachAsync(async (objAccessory, t) =>
+                                        {
+                                            sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(t)
+                                                .ConfigureAwait(false));
+                                        }, token).ConfigureAwait(false);
 
-                                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP,
-                                        strRC,
-                                        strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(),
-                                        objAvail,
-                                        strSource, strCost);
+                                        if (sbdAccessories.Length > 0)
+                                            sbdAccessories.Length -= Environment.NewLine.Length;
+                                        AvailabilityValue objAvail = await objWeapon.TotalAvailTupleAsync(token: token)
+                                            .ConfigureAwait(false);
+                                        SourceString strSource = await SourceString.GetSourceStringAsync(objWeapon.Source,
+                                            await objWeapon.DisplayPageAsync(GlobalSettings.Language, token)
+                                                .ConfigureAwait(false),
+                                            GlobalSettings.Language,
+                                            GlobalSettings.CultureInfo,
+                                            _objCharacter, token).ConfigureAwait(false);
+                                        NuyenString strCost = await NuyenString.GetNuyenStringAsync(
+                                            (await objWeapon.DisplayCost(token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+
+                                        tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP,
+                                            strRC,
+                                            strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(),
+                                            objAvail,
+                                            strSource, strCost);
+                                    }
+                                }
+                                finally
+                                {
+                                    await objWeapon.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
-                            finally
-                            {
-                                await objWeapon.DisposeAsync().ConfigureAwait(false);
-                            }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
 
                     DataSet set = new DataSet("weapons");

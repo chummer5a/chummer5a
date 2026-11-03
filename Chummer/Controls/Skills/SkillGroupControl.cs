@@ -291,15 +291,24 @@ namespace Chummer.UI.Skills
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
                 return;
-            IAsyncDisposable objLocker = await _skillGroup.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                await DoDataBindingsAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _skillGroup.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await DoDataBindingsAsync(token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -334,30 +343,39 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _skillGroup.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
-                    _objMyToken.ThrowIfCancellationRequested();
-                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
-                        await LanguageManager
-                            .GetStringAsync(
-                                "Message_ConfirmKarmaExpense", token: _objMyToken)
-                            .ConfigureAwait(false),
-                        await _skillGroup.GetCurrentDisplayNameAsync(_objMyToken)
-                            .ConfigureAwait(false),
-                        await _skillGroup.GetRatingAsync(_objMyToken)
-                            .ConfigureAwait(false) + 1,
-                        await _skillGroup.GetUpgradeKarmaCostAsync(_objMyToken)
-                            .ConfigureAwait(false));
+                    IAsyncDisposable objLocker = await _skillGroup.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objMyToken.ThrowIfCancellationRequested();
+                        string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Message_ConfirmKarmaExpense", token: _objMyToken)
+                                .ConfigureAwait(false),
+                            await _skillGroup.GetCurrentDisplayNameAsync(_objMyToken)
+                                .ConfigureAwait(false),
+                            await _skillGroup.GetRatingAsync(_objMyToken)
+                                .ConfigureAwait(false) + 1,
+                            await _skillGroup.GetUpgradeKarmaCostAsync(_objMyToken)
+                                .ConfigureAwait(false));
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
-                        return;
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
+                            return;
 
-                    await _skillGroup.Upgrade(_objMyToken).ConfigureAwait(false);
+                        await _skillGroup.Upgrade(_objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

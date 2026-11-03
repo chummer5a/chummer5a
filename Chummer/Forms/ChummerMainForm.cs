@@ -3043,121 +3043,141 @@ namespace Chummer
 
         private void DisposeOpenForms()
         {
-            ThreadSafeObservableCollection<CharacterShared> lstToClose1
-                = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
-            if (lstToClose1 != null)
+            using (CursorWait.New(this))
             {
-                using (lstToClose1.LockObject.EnterWriteLock(CancellationToken.None))
+                ThreadSafeObservableCollection<CharacterShared> lstToClose1
+                    = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
+                if (lstToClose1 != null)
                 {
-                    for (int i = lstToClose1.Count - 1; i >= 0; --i)
+                    using (lstToClose1.LockObject.EnterWriteLock(CancellationToken.None))
                     {
-                        if (i >= lstToClose1.Count)
-                            continue;
-                        CharacterShared frmToClose = lstToClose1[i];
-                        if (frmToClose.IsNullOrDisposed())
-                            continue;
-                        Character objFormCharacter = frmToClose.CharacterObject;
-                        frmToClose.DoThreadSafe(x =>
+                        for (int i = lstToClose1.Count - 1; i >= 0; --i)
                         {
-                            try
+                            if (i >= lstToClose1.Count)
+                                continue;
+                            CharacterShared frmToClose = lstToClose1[i];
+                            if (frmToClose.IsNullOrDisposed())
+                                continue;
+                            Character objFormCharacter = frmToClose.CharacterObject;
+                            frmToClose.DoThreadSafe(x =>
                             {
-                                x.Close();
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // swallow this
-                            }
-                            catch (ArgumentException)
-                            {
-                                // swallow this
-                            }
-                        }, CancellationToken.None);
-                        objFormCharacter.Dispose();
-                    }
-                }
-
-                lstToClose1.Dispose();
-            }
-
-            ThreadSafeObservableCollection<ExportCharacter> lstToClose2
-                = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
-            if (lstToClose2 != null)
-            {
-                using (lstToClose2.LockObject.EnterWriteLock(CancellationToken.None))
-                {
-                    for (int i = lstToClose2.Count - 1; i >= 0; --i)
-                    {
-                        if (i >= lstToClose2.Count)
-                            continue;
-                        ExportCharacter frmToClose = lstToClose2[i];
-                        if (frmToClose.IsNullOrDisposed())
-                            continue;
-                        Character objFormCharacter = frmToClose.CharacterObject;
-                        frmToClose.DoThreadSafe(x =>
-                        {
-                            try
-                            {
-                                x.Close();
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // swallow this
-                            }
-                            catch (ArgumentException)
-                            {
-                                // swallow this
-                            }
-                        }, CancellationToken.None);
-                        objFormCharacter.Dispose();
-                    }
-                }
-
-                lstToClose2.Dispose();
-            }
-
-            ThreadSafeObservableCollection<CharacterSheetViewer> lstToClose3
-                = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
-            if (lstToClose3 != null)
-            {
-                using (lstToClose3.LockObject.EnterWriteLock(CancellationToken.None))
-                {
-                    for (int i = lstToClose3.Count - 1; i >= 0; --i)
-                    {
-                        if (i >= lstToClose3.Count)
-                            continue;
-                        CharacterSheetViewer frmToClose = lstToClose3[i];
-                        if (frmToClose.IsNullOrDisposed())
-                            continue;
-                        List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        // ReSharper disable once MethodSupportsCancellation
-                        frmToClose.DoThreadSafe(x =>
-                        {
-                            try
-                            {
-                                x.Close();
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // swallow this
-                            }
-                            catch (ArgumentException)
-                            {
-                                // swallow this
-                            }
-                        }, CancellationToken.None);
-                        foreach (Character objFormCharacter in lstFormCharacters)
+                                try
+                                {
+                                    x.Close();
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    // swallow this
+                                }
+                                catch (ArgumentException)
+                                {
+                                    // swallow this
+                                }
+                            }, CancellationToken.None);
                             objFormCharacter.Dispose();
+                        }
                     }
+
+                    lstToClose1.Dispose();
                 }
 
-                lstToClose3.Dispose();
-            }
+                ThreadSafeObservableCollection<ExportCharacter> lstToClose2
+                    = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
+                if (lstToClose2 != null)
+                {
+                    using (lstToClose2.LockObject.EnterWriteLock(CancellationToken.None))
+                    {
+                        for (int i = lstToClose2.Count - 1; i >= 0; --i)
+                        {
+                            if (i >= lstToClose2.Count)
+                                continue;
+                            ExportCharacter frmToClose = lstToClose2[i];
+                            if (frmToClose.IsNullOrDisposed())
+                                continue;
+                            Character objFormCharacter = frmToClose.CharacterObject;
+                            frmToClose.DoThreadSafe(x =>
+                            {
+                                try
+                                {
+                                    x.Close();
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    // swallow this
+                                }
+                                catch (ArgumentException)
+                                {
+                                    // swallow this
+                                }
+                            }, CancellationToken.None);
+                            objFormCharacter.Dispose();
+                        }
+                    }
 
-            PrintMultipleCharacters frmToProcess = Interlocked.Exchange(ref _frmOpenPrintMultipleCharacters, null);
-            if (frmToProcess != null)
-            {
-                List<Character> lstFormCharacters = frmToProcess.CharacterObjects.ToList();
-                frmToProcess.DoThreadSafe(x =>
+                    lstToClose2.Dispose();
+                }
+
+                ThreadSafeObservableCollection<CharacterSheetViewer> lstToClose3
+                    = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
+                if (lstToClose3 != null)
+                {
+                    using (lstToClose3.LockObject.EnterWriteLock(CancellationToken.None))
+                    {
+                        for (int i = lstToClose3.Count - 1; i >= 0; --i)
+                        {
+                            if (i >= lstToClose3.Count)
+                                continue;
+                            CharacterSheetViewer frmToClose = lstToClose3[i];
+                            if (frmToClose.IsNullOrDisposed())
+                                continue;
+                            List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
+                            // ReSharper disable once MethodSupportsCancellation
+                            frmToClose.DoThreadSafe(x =>
+                            {
+                                try
+                                {
+                                    x.Close();
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    // swallow this
+                                }
+                                catch (ArgumentException)
+                                {
+                                    // swallow this
+                                }
+                            }, CancellationToken.None);
+                            foreach (Character objFormCharacter in lstFormCharacters)
+                                objFormCharacter.Dispose();
+                        }
+                    }
+
+                    lstToClose3.Dispose();
+                }
+
+                PrintMultipleCharacters frmToProcess = Interlocked.Exchange(ref _frmOpenPrintMultipleCharacters, null);
+                if (frmToProcess != null)
+                {
+                    List<Character> lstFormCharacters = frmToProcess.CharacterObjects.ToList();
+                    frmToProcess.DoThreadSafe(x =>
+                    {
+                        try
+                        {
+                            x.Close();
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                        catch (ArgumentException)
+                        {
+                            // swallow this
+                        }
+                    }, CancellationToken.None);
+                    foreach (Character objFormCharacter in lstFormCharacters)
+                        objFormCharacter.Dispose();
+                }
+                Interlocked.Exchange(ref _frmMasterIndex, null)?.DoThreadSafe(x =>
                 {
                     try
                     {
@@ -3172,84 +3192,67 @@ namespace Chummer
                         // swallow this
                     }
                 }, CancellationToken.None);
-                foreach (Character objFormCharacter in lstFormCharacters)
-                    objFormCharacter.Dispose();
+                Interlocked.Exchange(ref _frmCharacterRoster, null)?.DoThreadSafe(x =>
+                {
+                    try
+                    {
+                        x.Close();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                    catch (ArgumentException)
+                    {
+                        // swallow this
+                    }
+                }, CancellationToken.None);
+                Interlocked.Exchange(ref _frmDiceRoller, null)?.DoThreadSafe(x =>
+                {
+                    try
+                    {
+                        x.Close();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                    catch (ArgumentException)
+                    {
+                        // swallow this
+                    }
+                }, CancellationToken.None);
+                Interlocked.Exchange(ref _frmUpdate, null)?.DoThreadSafe(x =>
+                {
+                    try
+                    {
+                        x.Close();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                    catch (ArgumentException)
+                    {
+                        // swallow this
+                    }
+                }, CancellationToken.None);
+                Interlocked.Exchange(ref _mascotChummy, null)?.DoThreadSafe(x =>
+                {
+                    try
+                    {
+                        x.Close();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                    catch (ArgumentException)
+                    {
+                        // swallow this
+                    }
+                }, CancellationToken.None);
             }
-            Interlocked.Exchange(ref _frmMasterIndex, null)?.DoThreadSafe(x =>
-            {
-                try
-                {
-                    x.Close();
-                }
-                catch (ObjectDisposedException)
-                {
-                    // swallow this
-                }
-                catch (ArgumentException)
-                {
-                    // swallow this
-                }
-            }, CancellationToken.None);
-            Interlocked.Exchange(ref _frmCharacterRoster, null)?.DoThreadSafe(x =>
-            {
-                try
-                {
-                    x.Close();
-                }
-                catch (ObjectDisposedException)
-                {
-                    // swallow this
-                }
-                catch (ArgumentException)
-                {
-                    // swallow this
-                }
-            }, CancellationToken.None);
-            Interlocked.Exchange(ref _frmDiceRoller, null)?.DoThreadSafe(x =>
-            {
-                try
-                {
-                    x.Close();
-                }
-                catch (ObjectDisposedException)
-                {
-                    // swallow this
-                }
-                catch (ArgumentException)
-                {
-                    // swallow this
-                }
-            }, CancellationToken.None);
-            Interlocked.Exchange(ref _frmUpdate, null)?.DoThreadSafe(x =>
-            {
-                try
-                {
-                    x.Close();
-                }
-                catch (ObjectDisposedException)
-                {
-                    // swallow this
-                }
-                catch (ArgumentException)
-                {
-                    // swallow this
-                }
-            }, CancellationToken.None);
-            Interlocked.Exchange(ref _mascotChummy, null)?.DoThreadSafe(x =>
-            {
-                try
-                {
-                    x.Close();
-                }
-                catch (ObjectDisposedException)
-                {
-                    // swallow this
-                }
-                catch (ArgumentException)
-                {
-                    // swallow this
-                }
-            }, CancellationToken.None);
         }
 
         private async void mnuHeroLabImporter_Click(object sender, EventArgs e)
@@ -4760,197 +4763,205 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker = await GlobalSettings.FavoriteCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token: token).ConfigureAwait(false);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    IAsyncDisposable objLocker2 = await GlobalSettings.MostRecentlyUsedCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await GlobalSettings.FavoriteCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        int intFavoriteCharactersCount = await GlobalSettings.FavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
-                        int intMruCharactersCount = await GlobalSettings.MostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
-                        await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 = await GlobalSettings.MostRecentlyUsedCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                         try
                         {
-                            await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible = intFavoriteCharactersCount > 0 || intMruCharactersCount > 0, token).ConfigureAwait(false);
-
-                            if (strText != "mru")
+                            token.ThrowIfCancellationRequested();
+                            int intFavoriteCharactersCount = await GlobalSettings.FavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
+                            int intMruCharactersCount = await GlobalSettings.MostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
+                            await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                            try
                             {
+                                await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible = intFavoriteCharactersCount > 0 || intMruCharactersCount > 0, token).ConfigureAwait(false);
+
+                                if (strText != "mru")
+                                {
+                                    for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                                    {
+                                        DpiFriendlyToolStripMenuItem objItem;
+                                        switch (i)
+                                        {
+                                            case 0:
+                                                objItem = mnuStickyMRU0;
+                                                break;
+
+                                            case 1:
+                                                objItem = mnuStickyMRU1;
+                                                break;
+
+                                            case 2:
+                                                objItem = mnuStickyMRU2;
+                                                break;
+
+                                            case 3:
+                                                objItem = mnuStickyMRU3;
+                                                break;
+
+                                            case 4:
+                                                objItem = mnuStickyMRU4;
+                                                break;
+
+                                            case 5:
+                                                objItem = mnuStickyMRU5;
+                                                break;
+
+                                            case 6:
+                                                objItem = mnuStickyMRU6;
+                                                break;
+
+                                            case 7:
+                                                objItem = mnuStickyMRU7;
+                                                break;
+
+                                            case 8:
+                                                objItem = mnuStickyMRU8;
+                                                break;
+
+                                            case 9:
+                                                objItem = mnuStickyMRU9;
+                                                break;
+
+                                            default:
+                                                continue;
+                                        }
+
+                                        if (i < intFavoriteCharactersCount)
+                                        {
+                                            string strSelected = await GlobalSettings.FavoriteCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                            await menuStrip.DoThreadSafeAsync(() =>
+                                            {
+                                                objItem.Text = strSelected;
+                                                objItem.Tag = strSelected;
+                                                objItem.Visible = true;
+                                            }, token).ConfigureAwait(false);
+                                        }
+                                        else
+                                        {
+                                            await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token).ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+
+                                await menuStrip.DoThreadSafeAsync(() =>
+                                {
+                                    mnuMRU0.Visible = false;
+                                    mnuMRU1.Visible = false;
+                                    mnuMRU2.Visible = false;
+                                    mnuMRU3.Visible = false;
+                                    mnuMRU4.Visible = false;
+                                    mnuMRU5.Visible = false;
+                                    mnuMRU6.Visible = false;
+                                    mnuMRU7.Visible = false;
+                                    mnuMRU8.Visible = false;
+                                    mnuMRU9.Visible = false;
+                                }, token).ConfigureAwait(false);
+
+                                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                                int i2 = 0;
                                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                                 {
+                                    if (i2 >= intMruCharactersCount || i >= intMruCharactersCount)
+                                        continue;
+                                    string strFile = await GlobalSettings.MostRecentlyUsedCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token).ConfigureAwait(false))
+                                        continue;
                                     DpiFriendlyToolStripMenuItem objItem;
-                                    switch (i)
+                                    switch (i2)
                                     {
                                         case 0:
-                                            objItem = mnuStickyMRU0;
+                                            objItem = mnuMRU0;
                                             break;
 
                                         case 1:
-                                            objItem = mnuStickyMRU1;
+                                            objItem = mnuMRU1;
                                             break;
 
                                         case 2:
-                                            objItem = mnuStickyMRU2;
+                                            objItem = mnuMRU2;
                                             break;
 
                                         case 3:
-                                            objItem = mnuStickyMRU3;
+                                            objItem = mnuMRU3;
                                             break;
 
                                         case 4:
-                                            objItem = mnuStickyMRU4;
+                                            objItem = mnuMRU4;
                                             break;
 
                                         case 5:
-                                            objItem = mnuStickyMRU5;
+                                            objItem = mnuMRU5;
                                             break;
 
                                         case 6:
-                                            objItem = mnuStickyMRU6;
+                                            objItem = mnuMRU6;
                                             break;
 
                                         case 7:
-                                            objItem = mnuStickyMRU7;
+                                            objItem = mnuMRU7;
                                             break;
 
                                         case 8:
-                                            objItem = mnuStickyMRU8;
+                                            objItem = mnuMRU8;
                                             break;
 
                                         case 9:
-                                            objItem = mnuStickyMRU9;
+                                            objItem = mnuMRU9;
                                             break;
 
                                         default:
                                             continue;
                                     }
 
-                                    if (i < intFavoriteCharactersCount)
+                                    string strMenuStripText;
+                                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                    if (i2 <= 9
+                                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                        && i2 >= 0)
                                     {
-                                        string strSelected = await GlobalSettings.FavoriteCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                        await menuStrip.DoThreadSafeAsync(() =>
-                                        {
-                                            objItem.Text = strSelected;
-                                            objItem.Tag = strSelected;
-                                            objItem.Visible = true;
-                                        }, token).ConfigureAwait(false);
+                                        string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                                        strMenuStripText = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace
+                                                + strFile;
                                     }
                                     else
                                     {
-                                        await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token).ConfigureAwait(false);
+                                        string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                                        strMenuStripText = strNumAsString + strSpace + strFile;
                                     }
+
+                                    await menuStrip.DoThreadSafeAsync(() =>
+                                    {
+                                        objItem.Text = strMenuStripText;
+                                        objItem.Tag = strFile;
+                                        objItem.Visible = true;
+                                    }, token).ConfigureAwait(false);
+                                    ++i2;
                                 }
                             }
-
-                            await menuStrip.DoThreadSafeAsync(() =>
+                            finally
                             {
-                                mnuMRU0.Visible = false;
-                                mnuMRU1.Visible = false;
-                                mnuMRU2.Visible = false;
-                                mnuMRU3.Visible = false;
-                                mnuMRU4.Visible = false;
-                                mnuMRU5.Visible = false;
-                                mnuMRU6.Visible = false;
-                                mnuMRU7.Visible = false;
-                                mnuMRU8.Visible = false;
-                                mnuMRU9.Visible = false;
-                            }, token).ConfigureAwait(false);
-
-                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                            int i2 = 0;
-                            for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
-                            {
-                                if (i2 >= intMruCharactersCount || i >= intMruCharactersCount)
-                                    continue;
-                                string strFile = await GlobalSettings.MostRecentlyUsedCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token).ConfigureAwait(false))
-                                    continue;
-                                DpiFriendlyToolStripMenuItem objItem;
-                                switch (i2)
-                                {
-                                    case 0:
-                                        objItem = mnuMRU0;
-                                        break;
-
-                                    case 1:
-                                        objItem = mnuMRU1;
-                                        break;
-
-                                    case 2:
-                                        objItem = mnuMRU2;
-                                        break;
-
-                                    case 3:
-                                        objItem = mnuMRU3;
-                                        break;
-
-                                    case 4:
-                                        objItem = mnuMRU4;
-                                        break;
-
-                                    case 5:
-                                        objItem = mnuMRU5;
-                                        break;
-
-                                    case 6:
-                                        objItem = mnuMRU6;
-                                        break;
-
-                                    case 7:
-                                        objItem = mnuMRU7;
-                                        break;
-
-                                    case 8:
-                                        objItem = mnuMRU8;
-                                        break;
-
-                                    case 9:
-                                        objItem = mnuMRU9;
-                                        break;
-
-                                    default:
-                                        continue;
-                                }
-
-                                string strMenuStripText;
-                                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                                if (i2 <= 9
-                                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                                    && i2 >= 0)
-                                {
-                                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                                    strMenuStripText = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace
-                                            + strFile;
-                                }
-                                else
-                                {
-                                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                                    strMenuStripText = strNumAsString + strSpace + strFile;
-                                }
-
-                                await menuStrip.DoThreadSafeAsync(() =>
-                                {
-                                    objItem.Text = strMenuStripText;
-                                    objItem.Tag = strFile;
-                                    objItem.Visible = true;
-                                }, token).ConfigureAwait(false);
-                                ++i2;
+                                await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                             }
                         }
                         finally
                         {
-                            await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -5382,66 +5393,74 @@ namespace Chummer
         public async Task<bool> AnyOpenFormContainsCharacter(Character objCharacter, Form frmIgnore = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Weird structure with assignment to locals and null checks needed in case we dispose the list in the middle of an iteration
-            ThreadSafeObservableCollection<CharacterShared> lstForms1 = _lstOpenCharacterEditorForms;
-            IAsyncDisposable objLocker1 = lstForms1 != null
-                ? await lstForms1.LockObject.EnterReadLockAsync(token).ConfigureAwait(false)
-                : null;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                if (lstForms1 != null && await lstForms1.AnyAsync(x => !ReferenceEquals(frmIgnore, x) && x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
-                {
-                    return true;
-                }
-
-                // Keep the old read locks active until we are completely done with our iterations so that we don't randomly get new characters opened while we are still checking later forms
-                ThreadSafeObservableCollection<CharacterSheetViewer> lstForms2 = _lstOpenCharacterSheetViewers;
-                IAsyncDisposable objLocker2 = lstForms2 != null
-                    ? await lstForms2.LockObject.EnterReadLockAsync(token).ConfigureAwait(false)
+                // Weird structure with assignment to locals and null checks needed in case we dispose the list in the middle of an iteration
+                ThreadSafeObservableCollection<CharacterShared> lstForms1 = _lstOpenCharacterEditorForms;
+                IAsyncDisposable objLocker1 = lstForms1 != null
+                    ? await lstForms1.LockObject.EnterReadLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (lstForms2 != null && await lstForms2.AnyAsync(x => !ReferenceEquals(frmIgnore, x) && x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
+                    if (lstForms1 != null && await lstForms1.AnyAsync(x => !ReferenceEquals(frmIgnore, x) && x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                     {
                         return true;
                     }
 
-                    ThreadSafeObservableCollection<ExportCharacter> lstForms3 = _lstOpenCharacterExportForms;
-                    IAsyncDisposable objLocker3 = lstForms3 != null
-                        ? await lstForms3.LockObject.EnterReadLockAsync(token).ConfigureAwait(false)
+                    // Keep the old read locks active until we are completely done with our iterations so that we don't randomly get new characters opened while we are still checking later forms
+                    ThreadSafeObservableCollection<CharacterSheetViewer> lstForms2 = _lstOpenCharacterSheetViewers;
+                    IAsyncDisposable objLocker2 = lstForms2 != null
+                        ? await lstForms2.LockObject.EnterReadLockAsync(token).ConfigureAwait(false)
                         : null;
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (lstForms3 != null && await lstForms3.AnyAsync(x => !ReferenceEquals(frmIgnore, x) && x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
+                        if (lstForms2 != null && await lstForms2.AnyAsync(x => !ReferenceEquals(frmIgnore, x) && x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
                         {
                             return true;
                         }
 
-                        PrintMultipleCharacters frmToProcess = _frmOpenPrintMultipleCharacters;
-                        if (frmToProcess != null && !ReferenceEquals(frmToProcess, frmIgnore) && frmToProcess.CharacterObjects.Contains(objCharacter))
+                        ThreadSafeObservableCollection<ExportCharacter> lstForms3 = _lstOpenCharacterExportForms;
+                        IAsyncDisposable objLocker3 = lstForms3 != null
+                            ? await lstForms3.LockObject.EnterReadLockAsync(token).ConfigureAwait(false)
+                            : null;
+                        try
                         {
-                            return true;
+                            token.ThrowIfCancellationRequested();
+                            if (lstForms3 != null && await lstForms3.AnyAsync(x => !ReferenceEquals(frmIgnore, x) && x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
+                            {
+                                return true;
+                            }
+
+                            PrintMultipleCharacters frmToProcess = _frmOpenPrintMultipleCharacters;
+                            if (frmToProcess != null && !ReferenceEquals(frmToProcess, frmIgnore) && frmToProcess.CharacterObjects.Contains(objCharacter))
+                            {
+                                return true;
+                            }
+                        }
+                        finally
+                        {
+                            if (objLocker3 != null)
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        if (objLocker3 != null)
-                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        if (objLocker2 != null)
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    if (objLocker1 != null)
+                        await objLocker1.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                if (objLocker1 != null)
-                    await objLocker1.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
             return false;
         }

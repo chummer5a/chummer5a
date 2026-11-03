@@ -81,34 +81,42 @@ namespace Chummer
         {
             try
             {
-                IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(_objGenericToken)
-                                                                     .ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    _objGenericToken.ThrowIfCancellationRequested();
-                    _objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
-                    _objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
-                    // TODO: Make these also work for any children collection changes
-                    _objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
-                    _objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    _objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(_objGenericToken)
+                                                                     .ConfigureAwait(false);
+                    try
+                    {
+                        _objGenericToken.ThrowIfCancellationRequested();
+                        _objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
+                        _objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
+                        // TODO: Make these also work for any children collection changes
+                        _objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                        _objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        _objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
+                    }
+                    finally
+                    {
+                        await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await LanguageManager
@@ -238,33 +246,41 @@ namespace Chummer
                 objTemp.Dispose();
             }
 
-            // ReSharper disable once MethodSupportsCancellation
-            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
-                                                                 .ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: CancellationToken.None).ConfigureAwait(false);
             try
             {
-                _objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
-                _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
-                _objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
-                _objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
-                _objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                // ReSharper disable once MethodSupportsCancellation
+                IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
+                                                                 .ConfigureAwait(false);
+                try
+                {
+                    _objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
+                    _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
+                    _objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
+                    _objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                    _objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                }
+                finally
+                {
+                    await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
-                await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             Task tskOld = Interlocked.Exchange(ref _tskXmlGenerator, null);

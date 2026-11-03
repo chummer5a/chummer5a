@@ -735,15 +735,24 @@ namespace Chummer.UI.Skills
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
                 return;
-            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                await DoDataBindingsAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    await DoDataBindingsAsync(token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
@@ -986,30 +995,39 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
-                    _objMyToken.ThrowIfCancellationRequested();
-                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync(
-                                "Message_ConfirmKarmaExpense",
-                                token: _objMyToken)
-                            .ConfigureAwait(false),
-                        await _objSkill.GetCurrentDisplayNameAsync(_objMyToken)
-                            .ConfigureAwait(false),
-                        await _objSkill.GetRatingAsync(_objMyToken).ConfigureAwait(false)
-                        + 1,
-                        await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken)
-                            .ConfigureAwait(false));
+                    IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objMyToken.ThrowIfCancellationRequested();
+                        string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                    "Message_ConfirmKarmaExpense",
+                                    token: _objMyToken)
+                                .ConfigureAwait(false),
+                            await _objSkill.GetCurrentDisplayNameAsync(_objMyToken)
+                                .ConfigureAwait(false),
+                            await _objSkill.GetRatingAsync(_objMyToken).ConfigureAwait(false)
+                            + 1,
+                            await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken)
+                                .ConfigureAwait(false));
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
-                        return;
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
+                            return;
 
-                    await _objSkill.Upgrade(_objMyToken).ConfigureAwait(false);
+                        await _objSkill.Upgrade(_objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1022,57 +1040,66 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
-                    _objMyToken.ThrowIfCancellationRequested();
-                    Character objCharacter = _objCharacter;
-                    int intPrice = await (await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false))
-                        .GetKarmaKnowledgeSpecializationAsync(_objMyToken).ConfigureAwait(false);
-
-                    int intTotalBaseRating = await _objSkill.GetTotalBaseRatingAsync(_objMyToken).ConfigureAwait(false);
-                    decimal decExtraSpecCost = 0;
-                    decimal decSpecCostMultiplier = 1.0m;
-                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(objCharacter, Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, _objSkill.SkillCategory, true, _objMyToken).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
                     {
-                        if (objImprovement.Minimum <= intTotalBaseRating)
-                            decExtraSpecCost += objImprovement.Value;
-                    }
-                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(objCharacter, Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier, _objSkill.SkillCategory, true, _objMyToken).ConfigureAwait(false))
-                    {
-                        if (objImprovement.Minimum <= intTotalBaseRating)
-                            decSpecCostMultiplier *= objImprovement.Value / 100.0m;
-                    }
+                        _objMyToken.ThrowIfCancellationRequested();
+                        Character objCharacter = _objCharacter;
+                        int intPrice = await (await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false))
+                            .GetKarmaKnowledgeSpecializationAsync(_objMyToken).ConfigureAwait(false);
 
-                    if (decSpecCostMultiplier != 1.0m)
-                        intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
-                    else
-                        intPrice += decExtraSpecCost.StandardRound(); //Spec
+                        int intTotalBaseRating = await _objSkill.GetTotalBaseRatingAsync(_objMyToken).ConfigureAwait(false);
+                        decimal decExtraSpecCost = 0;
+                        decimal decSpecCostMultiplier = 1.0m;
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(objCharacter, Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, _objSkill.SkillCategory, true, _objMyToken).ConfigureAwait(false))
+                        {
+                            if (objImprovement.Minimum <= intTotalBaseRating)
+                                decExtraSpecCost += objImprovement.Value;
+                        }
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(objCharacter, Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier, _objSkill.SkillCategory, true, _objMyToken).ConfigureAwait(false))
+                        {
+                            if (objImprovement.Minimum <= intTotalBaseRating)
+                                decSpecCostMultiplier *= objImprovement.Value / 100.0m;
+                        }
 
-                    string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
-                        await LanguageManager
-                            .GetStringAsync(
-                                "Message_ConfirmKarmaExpenseSkillSpecialization",
-                                token: _objMyToken).ConfigureAwait(false), intPrice);
+                        if (decSpecCostMultiplier != 1.0m)
+                            intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                        else
+                            intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken)
-                            .ConfigureAwait(false))
-                        return;
+                        string strConfirm = StringExtensions.FastFormat(GlobalSettings.CultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Message_ConfirmKarmaExpenseSkillSpecialization",
+                                    token: _objMyToken).ConfigureAwait(false), intPrice);
 
-                    using (ThreadSafeForm<SelectSpec> selectForm =
-                           await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill), _objMyToken)
-                               .ConfigureAwait(false))
-                    {
-                        if (await selectForm.ShowDialogSafeAsync(objCharacter, _objMyToken)
-                                .ConfigureAwait(false) != DialogResult.OK)
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken)
+                                .ConfigureAwait(false))
                             return;
-                        await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem, _objMyToken)
-                            .ConfigureAwait(false);
+
+                        using (ThreadSafeForm<SelectSpec> selectForm =
+                               await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill), _objMyToken)
+                                   .ConfigureAwait(false))
+                        {
+                            if (await selectForm.ShowDialogSafeAsync(objCharacter, _objMyToken)
+                                    .ConfigureAwait(false) != DialogResult.OK)
+                                return;
+                            await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem, _objMyToken)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1168,34 +1195,43 @@ namespace Chummer.UI.Skills
                 return;
             if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
                 return;
-            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
-                    return;
-                CharacterAttrib objOldAttribute = await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false);
-                string strNewAttribute = await cboSelectAttribute.DoThreadSafeFuncAsync(x =>
+                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    x.SelectedValue = objOldAttribute.Abbrev;
-                    x.Visible = false;
-                    return x.SelectedValue?.ToString() ?? string.Empty;
+                    token.ThrowIfCancellationRequested();
+                    if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
+                        return;
+                    CharacterAttrib objOldAttribute = await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false);
+                    string strNewAttribute = await cboSelectAttribute.DoThreadSafeFuncAsync(x =>
+                    {
+                        x.SelectedValue = objOldAttribute.Abbrev;
+                        x.Visible = false;
+                        return x.SelectedValue?.ToString() ?? string.Empty;
+                    }, token: token).ConfigureAwait(false);
+                    await SetAttributeActiveAsync(
+                        await _objCharacter.GetAttributeAsync(strNewAttribute, token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                await btnAttribute.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = true;
+                    x.Text = strText;
                 }, token: token).ConfigureAwait(false);
-                await SetAttributeActiveAsync(
-                    await _objCharacter.GetAttributeAsync(strNewAttribute, token: token)
-                        .ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
-
-            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            await btnAttribute.DoThreadSafeAsync(x =>
-            {
-                x.Visible = true;
-                x.Text = strText;
-            }, token: token).ConfigureAwait(false);
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)

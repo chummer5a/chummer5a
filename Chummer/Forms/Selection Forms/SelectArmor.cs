@@ -260,9 +260,9 @@ namespace Chummer
                                                 .DoThreadSafeFuncAsync(x => x.MaximumAsInt, token)
                                                 .ConfigureAwait(false);
                                             while (intMaximum > 1 && !await SelectionShared
-                                                       .CheckAvailRestrictionAsync(xmlArmor, _objCharacter, intMaximum,
-                                                       (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objArmor.SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(),
-                                                           token: token).ConfigureAwait(false))
+                                                        .CheckAvailRestrictionAsync(xmlArmor, _objCharacter, intMaximum,
+                                                        (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objArmor.SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(),
+                                                            token: token).ConfigureAwait(false))
                                             {
                                                 --intMaximum;
                                             }
@@ -286,8 +286,8 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                                             decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                                             while (intMaximum > 1 && !await SelectionShared
-                                                       .CheckNuyenRestrictionAsync(xmlArmor, _objCharacter, decNuyen,
-                                                           decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                                                        .CheckNuyenRestrictionAsync(xmlArmor, _objCharacter, decNuyen,
+                                                            decCostMultiplier, intMaximum, token).ConfigureAwait(false))
                                             {
                                                 --intMaximum;
                                             }
@@ -743,82 +743,90 @@ namespace Chummer
                     tabArmor.Columns.Add("Cost");
                     tabArmor.Columns["Cost"].DataType = typeof(NuyenString);
 
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        // Populate the Armor list.
-                        foreach (XmlNode objXmlArmor in objXmlArmorList)
+                        IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            decimal decCostMultiplier = decBaseMarkup;
-                            if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerTextViaPool(token)))
-                                decCostMultiplier *= 0.9m;
-                            if (!blnHideOverAvailLimit
-                                || await SelectionShared
-                                    .CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlArmor["id"]?.InnerTextViaPool(token), blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
-                                    .ConfigureAwait(false) && (blnFreeItem
-                                                               || !blnShowOnlyAffordItems
-                                                               || await SelectionShared.CheckNuyenRestrictionAsync(
-                                                                   objXmlArmor, _objCharacter, decNuyen, decCostMultiplier,
-                                                                   token: token).ConfigureAwait(false)))
+                            token.ThrowIfCancellationRequested();
+                            // Populate the Armor list.
+                            foreach (XmlNode objXmlArmor in objXmlArmorList)
                             {
-                                Armor objArmor = new Armor(_objCharacter);
-                                try
+                                decimal decCostMultiplier = decBaseMarkup;
+                                if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerTextViaPool(token)))
+                                    decCostMultiplier *= 0.9m;
+                                if (!blnHideOverAvailLimit
+                                    || await SelectionShared
+                                        .CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlArmor["id"]?.InnerTextViaPool(token), blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
+                                        .ConfigureAwait(false) && (blnFreeItem
+                                                                   || !blnShowOnlyAffordItems
+                                                                   || await SelectionShared.CheckNuyenRestrictionAsync(
+                                                                       objXmlArmor, _objCharacter, decNuyen, decCostMultiplier,
+                                                                       token: token).ConfigureAwait(false)))
                                 {
-                                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                                    await objArmor
-                                        .CreateAsync(objXmlArmor, 0, lstWeapons, true, true, true, true, token)
-                                        .ConfigureAwait(false);
-
-                                    string strArmorGuid = objArmor.SourceIDString;
-                                    string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token)
-                                        .ConfigureAwait(false);
-                                    int intArmor = await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false);
-                                    decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
-                                        System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity);
-                                    AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token)
-                                        .ConfigureAwait(false);
-                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                               out StringBuilder sbdAccessories))
+                                    Armor objArmor = new Armor(_objCharacter);
+                                    try
                                     {
-                                        foreach (ArmorMod objMod in objArmor.ArmorMods)
-                                        {
-                                            sbdAccessories.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
-                                                .ConfigureAwait(false));
-                                        }
-
-                                        foreach (Gear objGear in objArmor.GearChildren)
-                                        {
-                                            sbdAccessories.AppendLine(await objGear.GetCurrentDisplayNameAsync(token)
-                                                .ConfigureAwait(false));
-                                        }
-
-                                        if (sbdAccessories.Length > 0)
-                                            sbdAccessories.Length -= Environment.NewLine.Length;
-                                        SourceString strSource = await SourceString.GetSourceStringAsync(
-                                                objArmor.Source,
-                                                await objArmor.DisplayPageAsync(GlobalSettings.Language, token)
-                                                    .ConfigureAwait(false),
-                                                GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter,
-                                                token)
+                                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                                        await objArmor
+                                            .CreateAsync(objXmlArmor, 0, lstWeapons, true, true, true, true, token)
                                             .ConfigureAwait(false);
-                                        NuyenString strCost =
-                                            await NuyenString.GetNuyenStringAsync((await objArmor.DisplayCost(false, token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
 
-                                        tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
-                                            sbdAccessories.ToString(), strSource, strCost);
+                                        string strArmorGuid = objArmor.SourceIDString;
+                                        string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token)
+                                            .ConfigureAwait(false);
+                                        int intArmor = await objArmor.GetTotalArmorAsync(token: token).ConfigureAwait(false);
+                                        decimal.TryParse(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
+                                            System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCapacity);
+                                        AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token)
+                                            .ConfigureAwait(false);
+                                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                   out StringBuilder sbdAccessories))
+                                        {
+                                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                            {
+                                                sbdAccessories.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
+                                                    .ConfigureAwait(false));
+                                            }
+
+                                            foreach (Gear objGear in objArmor.GearChildren)
+                                            {
+                                                sbdAccessories.AppendLine(await objGear.GetCurrentDisplayNameAsync(token)
+                                                    .ConfigureAwait(false));
+                                            }
+
+                                            if (sbdAccessories.Length > 0)
+                                                sbdAccessories.Length -= Environment.NewLine.Length;
+                                            SourceString strSource = await SourceString.GetSourceStringAsync(
+                                                    objArmor.Source,
+                                                    await objArmor.DisplayPageAsync(GlobalSettings.Language, token)
+                                                        .ConfigureAwait(false),
+                                                    GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter,
+                                                    token)
+                                                .ConfigureAwait(false);
+                                            NuyenString strCost =
+                                                await NuyenString.GetNuyenStringAsync((await objArmor.DisplayCost(false, token: token).ConfigureAwait(false)).Item1, token: token).ConfigureAwait(false);
+
+                                            tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
+                                                sbdAccessories.ToString(), strSource, strCost);
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        await objArmor.DisposeAsync().ConfigureAwait(false);
                                     }
                                 }
-                                finally
-                                {
-                                    await objArmor.DisposeAsync().ConfigureAwait(false);
-                                }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
 
                     DataSet set = new DataSet("armor");

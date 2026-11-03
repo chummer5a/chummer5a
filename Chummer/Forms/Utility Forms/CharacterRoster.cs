@@ -2003,17 +2003,25 @@ namespace Chummer
                     return;
                 if (objSelectedNode.Tag is CharacterCache objCache)
                 {
-                    System.IAsyncDisposable objLocker = await objCache.LockObject.EnterUpgradeableReadLockAsync(_objGenericToken).ConfigureAwait(false);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token: _objGenericToken).ConfigureAwait(false);
                     try
                     {
-                        _objGenericToken.ThrowIfCancellationRequested();
-                        if (objCache.OnMyAfterSelect != null)
-                            await objCache.OnMyAfterSelect(sender, e, _objGenericToken).ConfigureAwait(false);
-                        await UpdateCharacter(objCache, _objGenericToken).ConfigureAwait(false);
+                        System.IAsyncDisposable objLocker = await objCache.LockObject.EnterUpgradeableReadLockAsync(_objGenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            _objGenericToken.ThrowIfCancellationRequested();
+                            if (objCache.OnMyAfterSelect != null)
+                                await objCache.OnMyAfterSelect(sender, e, _objGenericToken).ConfigureAwait(false);
+                            await UpdateCharacter(objCache, _objGenericToken).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode), _objGenericToken).ConfigureAwait(false);
