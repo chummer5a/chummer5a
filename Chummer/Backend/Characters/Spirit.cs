@@ -96,6 +96,7 @@ namespace Chummer
             _guiId = Guid.NewGuid();
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
+            _objCachedSourceDetailLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }
 
