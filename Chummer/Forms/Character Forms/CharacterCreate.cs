@@ -11675,7 +11675,7 @@ namespace Chummer
             }
         }
 
-        private async void txtSpiritName_TextChanged(object sender, EventArgs e)
+        private void txtSpiritName_TextChanged(object sender, EventArgs e)
         {
             if (_tmrSpiritName.Enabled)
                 _tmrSpiritName.Stop();
@@ -13037,7 +13037,7 @@ namespace Chummer
             }
         }
 
-        private async void txtSpriteName_TextChanged(object sender, EventArgs e)
+        private void txtSpriteName_TextChanged(object sender, EventArgs e)
         {
             if (_tmrSpriteName.Enabled)
                 _tmrSpriteName.Stop();
@@ -14214,7 +14214,7 @@ namespace Chummer
             }
         }
 
-        private async void txtContactName_TextChanged(object sender, EventArgs e)
+        private void txtContactName_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactName.Enabled)
                 _tmrContactName.Stop();
@@ -14256,7 +14256,7 @@ namespace Chummer
             }
         }
 
-        private async void txtContactLocation_TextChanged(object sender, EventArgs e)
+        private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactLocation.Enabled)
                 _tmrContactLocation.Stop();
@@ -14298,7 +14298,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactMetatype_TextChanged(object sender, EventArgs e)
+        private void cboContactMetatype_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactMetatype.Enabled)
                 _tmrContactMetatype.Stop();
@@ -14361,7 +14361,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactGender_TextChanged(object sender, EventArgs e)
+        private void cboContactGender_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactGender.Enabled)
                 _tmrContactGender.Stop();
@@ -14421,7 +14421,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactAge_TextChanged(object sender, EventArgs e)
+        private void cboContactAge_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactAge.Enabled)
                 _tmrContactAge.Stop();
@@ -14480,7 +14480,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactPersonalLife_TextChanged(object sender, EventArgs e)
+        private void cboContactPersonalLife_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactPersonalLife.Enabled)
                 _tmrContactPersonalLife.Stop();
@@ -14540,7 +14540,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactType_TextChanged(object sender, EventArgs e)
+        private void cboContactType_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactType.Enabled)
                 _tmrContactType.Stop();
@@ -14599,7 +14599,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactPreferredPayment_TextChanged(object sender, EventArgs e)
+        private void cboContactPreferredPayment_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactPreferredPayment.Enabled)
                 _tmrContactPreferredPayment.Stop();
@@ -14659,7 +14659,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactHobbiesVice_TextChanged(object sender, EventArgs e)
+        private void cboContactHobbiesVice_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactHobbiesVice.Enabled)
                 _tmrContactHobbiesVice.Stop();
@@ -14719,7 +14719,7 @@ namespace Chummer
             }
         }
 
-        private async void cboContactRole_TextChanged(object sender, EventArgs e)
+        private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
             if (_tmrContactRole.Enabled)
                 _tmrContactRole.Stop();
