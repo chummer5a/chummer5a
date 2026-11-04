@@ -2461,8 +2461,8 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strLeftPar = LanguageManager.GetString("String_Space");
-                string strRightPar = LanguageManager.GetString("String_Space");
+                string strLeftPar = LanguageManager.GetString("String_LeftPar");
+                string strRightPar = LanguageManager.GetString("String_RightPar");
                 using (LockObject.EnterReadLock())
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
