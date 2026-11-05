@@ -200,7 +200,11 @@ namespace Chummer
                 }
 
                 string strCost = objXmlQuality.SelectSingleNodeAndCacheExpression("cost")?.Value ?? string.Empty;
-                if (!string.IsNullOrEmpty(strCost))
+                decimal decMultiplier = 0;
+                objXmlQuality.TryGetDecFieldQuickly("multiplier", ref decMultiplier);
+                decimal decBaseMultiplier = 0;
+                objXmlQuality.TryGetDecFieldQuickly("multiplierbaseonly", ref decBaseMultiplier);
+                if (!string.IsNullOrEmpty(strCost) || decMultiplier != 0 || decBaseMultiplier != 0)
                 {
                     if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                     {
@@ -212,26 +216,55 @@ namespace Chummer
                     }
                     else
                     {
-                        if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
                         {
-                            strCost = await _objCharacter.ProcessAttributesInXPathAsync(strCost).ConfigureAwait(false);
-                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
-                            if (blnIsSuccess)
-                                decCost = Convert.ToDecimal((double)objProcess);
+                            string strNuyenFormat = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false);
+                            if (decBaseMultiplier != 0)
+                            {
+                                if (decBaseMultiplier > 0)
+                                    sbdCost.Append('+');
+                                sbdCost.Append((await _objParentLifestyle.GetCostAsync().ConfigureAwait(false) * decBaseMultiplier / 100.0m).ToString(strNuyenFormat, GlobalSettings.CultureInfo),
+                                    await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false));
+                            }
+
+                            if (decMultiplier != 0)
+                            {
+                                if (sbdCost.Length > 0)
+                                    sbdCost.Append(await LanguageManager.GetStringAsync("String_Comma").ConfigureAwait(false), await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false));
+                                if (decMultiplier > 0)
+                                    sbdCost.Append('+');
+                                sbdCost.Append(decMultiplier.ToString(GlobalSettings.CultureInfo), '%');
+                            }
+
+                            if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
+                            {
+                                strCost = await _objCharacter.ProcessAttributesInXPathAsync(strCost).ConfigureAwait(false);
+                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
+                                if (blnIsSuccess)
+                                    decCost = Convert.ToDecimal((double)objProcess);
+                            }
+
+                            if (decCost != 0)
+                            {
+                                if (sbdCost.Length > 0)
+                                    sbdCost.Append(await LanguageManager.GetStringAsync("String_Comma").ConfigureAwait(false), await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false));
+                                if (decCost > 0)
+                                    sbdCost.Append('+');
+                                sbdCost.Append(decCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo),
+                                    await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false));
+                            }
+
+                            strCost = sbdCost.ToString();
                         }
-                        strCost = decCost.ToString(
-                                              await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false),
-                                              GlobalSettings.CultureInfo)
-                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol")
-                                              .ConfigureAwait(false);
                     }
 
+                    bool blnCostVisible = !string.IsNullOrEmpty(strCost);
                     await lblCost.DoThreadSafeAsync(x =>
                     {
                         x.Text = strCost;
-                        x.Visible = true;
+                        x.Visible = blnCostVisible;
                     }).ConfigureAwait(false);
-                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnCostVisible).ConfigureAwait(false);
                 }
                 else
                 {

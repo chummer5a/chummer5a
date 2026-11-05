@@ -181,6 +181,7 @@ Actions:
 Lifestyles:
 - Cleaning Service (Standard, Mage Sensitive, and Pollution Sensitive) and Safety Third now ask for a description, so multiple copies on the same lifestyle can be told apart.
 - Corrected multiple lifestyle qualities, including Bolt Hole, Traveler, Merchandise: Goods, Railway Pass, Maids/Manservants, and Escape Tunnel.
+- The lifestyle quality selection screen now also previews the cost of a lifestyle quality if it is based on a multiplier of some kind instead of just a flat cost.
 
 Licenses:
 - Added the Combat Spell License and Technomancer License (SR5 p. 367).
