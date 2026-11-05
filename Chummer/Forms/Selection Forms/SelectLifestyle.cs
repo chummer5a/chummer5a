@@ -58,6 +58,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
             if (_objLifestyle.StyleType == LifestyleType.Standard)
             {
+                lblRatingLabel.Visible = false;
                 lblAreaLabel.Visible = false;
                 lblArea.Visible = false;
                 nudArea.Visible = false;

@@ -38,7 +38,7 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
+            this.lblRatingLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -111,19 +111,19 @@ namespace Chummer
             this.tlpLifestyleQuality.SuspendLayout();
             this.SuspendLayout();
             // 
-            // Label_SelectAdvancedLifestyle_Upgrade_Comforts
+            // lblRatingLabel
             // 
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.Label_SelectAdvancedLifestyle_Upgrade_Comforts, 2);
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Location = new System.Drawing.Point(191, 60);
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Name = "Label_SelectAdvancedLifestyle_Upgrade_Comforts";
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Size = new System.Drawing.Size(41, 13);
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.TabIndex = 2;
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Tag = "Label_SelectAdvancedLifestyle_Rating";
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.Text = "Rating:";
-            this.Label_SelectAdvancedLifestyle_Upgrade_Comforts.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.lblRatingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblRatingLabel.AutoSize = true;
+            this.tlpRight.SetColumnSpan(this.lblRatingLabel, 2);
+            this.lblRatingLabel.Location = new System.Drawing.Point(191, 60);
+            this.lblRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblRatingLabel.Name = "lblRatingLabel";
+            this.lblRatingLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblRatingLabel.TabIndex = 2;
+            this.lblRatingLabel.Tag = "Label_SelectAdvancedLifestyle_Rating";
+            this.lblRatingLabel.Text = "Rating:";
+            this.lblRatingLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // cmdOKAdd
             // 
@@ -505,7 +505,7 @@ namespace Chummer
             this.lblBonusLP.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBonusLP.AutoSize = true;
             this.tlpRight.SetColumnSpan(this.lblBonusLP, 2);
-            this.lblBonusLP.Location = new System.Drawing.Point(195, 234);
+            this.lblBonusLP.Location = new System.Drawing.Point(217, 234);
             this.lblBonusLP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBonusLP.Name = "lblBonusLP";
             this.tlpRight.SetRowSpan(this.lblBonusLP, 2);
@@ -617,7 +617,7 @@ namespace Chummer
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Controls.Add(this.Label_SelectAdvancedLifestyle_Upgrade_Comforts, 2, 1);
+            this.tlpRight.Controls.Add(this.lblRatingLabel, 2, 1);
             this.tlpRight.Controls.Add(this.lblSource, 1, 10);
             this.tlpRight.Controls.Add(this.lblComforts, 1, 2);
             this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 10);
@@ -968,7 +968,7 @@ namespace Chummer
             // 
             this.nudBonusLP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudBonusLP.AutoSize = true;
-            this.nudBonusLP.Location = new System.Drawing.Point(281, 237);
+            this.nudBonusLP.Location = new System.Drawing.Point(303, 237);
             this.nudBonusLP.Maximum = new decimal(new int[] {
             100,
             0,
@@ -997,7 +997,7 @@ namespace Chummer
             this.chkBonusLPRandomize.Checked = true;
             this.chkBonusLPRandomize.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBonusLPRandomize.DefaultColorScheme = true;
-            this.chkBonusLPRandomize.Location = new System.Drawing.Point(328, 238);
+            this.chkBonusLPRandomize.Location = new System.Drawing.Point(350, 238);
             this.chkBonusLPRandomize.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkBonusLPRandomize.Name = "chkBonusLPRandomize";
             this.tlpRight.SetRowSpan(this.chkBonusLPRandomize, 2);
@@ -1124,7 +1124,7 @@ namespace Chummer
         }
         #endregion
 
-        private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Upgrade_Comforts;
+        private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
