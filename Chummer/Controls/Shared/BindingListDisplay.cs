@@ -33,7 +33,7 @@ namespace Chummer.Controls.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl where TType : INotifyPropertyChanged
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
         private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setChildPropertyChangedAsync =
             new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
@@ -524,18 +524,24 @@ namespace Chummer.Controls.Shared
 
                         sw.Stop();
 
-                        if (sw.Elapsed > TimeSpan.FromSeconds(0.1f))
+                        if (sw.ElapsedMilliseconds > 100)
                         {
                             if (_intOffScreenChunkSize > 1)
                             {
-                                _intOffScreenChunkSize /= 2;
+                                int intDivisor = 2;
+                                for (long lngTemp = sw.ElapsedMilliseconds / 2; lngTemp > 100 && intDivisor < int.MaxValue / 2; lngTemp /= 2)
+                                    intDivisor *= 2;
+                                _intOffScreenChunkSize = _intOffScreenChunkSize.DivAwayFromZero(intDivisor);
                                 Log.Trace("Offscreen chunk render size decreased to " +
                                           _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
                             }
                         }
-                        else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f) && _intOffScreenChunkSize < ushort.MaxValue)
+                        else if (sw.ElapsedMilliseconds < 50 && _intOffScreenChunkSize < ushort.MaxValue)
                         {
-                            _intOffScreenChunkSize *= 2;
+                            int intFactor = 2;
+                            for (long lngTemp = sw.ElapsedMilliseconds * 2; lngTemp < 50 && intFactor < int.MaxValue / 2; lngTemp *= 2)
+                                intFactor *= 2;
+                            _intOffScreenChunkSize = Math.Min(_intOffScreenChunkSize * intFactor, ushort.MaxValue);
                             Log.Trace("Offscreen chunk render size increased to " +
                                       _intOffScreenChunkSize.ToString(GlobalSettings.InvariantCultureInfo));
                         }
