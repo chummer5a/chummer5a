@@ -54,7 +54,7 @@ namespace Chummer.Controls.Shared
         private readonly List<int> _lstDisplayIndex = new List<int>(10);
         private readonly IndexComparer _indexComparer;
         private bool[] _ablnRendered; // Not BitArray because read/write performance is much more important here than memory footprint
-        private int _intOffScreenChunkSize = 1;
+        private int _intOffScreenChunkSize = 8;
         private int _intListItemControlHeight;
         private bool _blnAllRendered;
         private Predicate<TType> _visibleFilter = _ => true;
