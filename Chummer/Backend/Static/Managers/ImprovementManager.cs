@@ -3101,27 +3101,38 @@ namespace Chummer
                 && (string.IsNullOrEmpty(strSourceFriendlyName) || o.SourceName == strSourceFriendlyName), token).ConfigureAwait(false);
         }
 
-        private static async Task<List<Quality>> ListDrugGrantedQualitiesCoreAsync(bool blnSync, Character objCharacter, Improvement objImprovement, CancellationToken token)
+        private static Task<List<Quality>> ListDrugGrantedQualitiesCoreAsync(bool blnSync, Character objCharacter, Improvement objImprovement, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<List<Quality>>(token);
             string strQualityName = GetDrugGrantedQualityName(objImprovement);
             string strSourceFriendlyName = objImprovement.CustomGroup;
             if (blnSync)
             {
-                return objCharacter.Qualities.Where(o =>
+                List<Quality> lstReturn;
+                try
                 {
-                    if (o.OriginSource != QualitySource.Improvement)
-                        return false;
-                    if (!string.IsNullOrEmpty(strSourceFriendlyName) && o.SourceName != strSourceFriendlyName)
-                        return false;
-                    if (!string.IsNullOrEmpty(strQualityName) && o.Name == strQualityName)
-                        return true;
-                    string strImprovedName = objImprovement.ImprovedName;
-                    return strImprovedName.IsGuid() && o.InternalId == strImprovedName;
-                }).ToList();
+                    lstReturn = objCharacter.Qualities.Where(o =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (o.OriginSource != QualitySource.Improvement)
+                            return false;
+                        if (!string.IsNullOrEmpty(strSourceFriendlyName) && o.SourceName != strSourceFriendlyName)
+                            return false;
+                        if (!string.IsNullOrEmpty(strQualityName) && o.Name == strQualityName)
+                            return true;
+                        string strImprovedName = objImprovement.ImprovedName;
+                        return strImprovedName.IsGuid() && o.InternalId == strImprovedName;
+                    }).ToList();
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException<List<Quality>>(e);
+                }
+                return Task.FromResult<List<Quality>>(lstReturn);
             }
 
-            return await objCharacter.Qualities.ToListAsync(async (o, t) =>
+            return objCharacter.Qualities.ToListAsync(async (o, t) =>
             {
                 if (await o.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.Improvement)
                     return false;
@@ -3133,7 +3144,7 @@ namespace Chummer
                     return true;
                 string strImprovedName = objImprovement.ImprovedName;
                 return strImprovedName.IsGuid() && o.InternalId == strImprovedName;
-            }, token: token).ConfigureAwait(false);
+            }, token: token);
         }
 
         private static async Task<Quality> CreateDrugGrantedQualityCoreAsync(bool blnSync, Character objCharacter, Improvement objImprovement, CancellationToken token)
@@ -6362,7 +6373,6 @@ namespace Chummer
                     // ReSharper disable once UseObjectOrCollectionInitializer
 #pragma warning disable IDE0017
                     objImprovement = new Improvement(objCharacter)
-#pragma warning restore IDE0017
                     {
                         ImprovedName = strImprovedName,
                         ImproveSource = objImprovementSource,
@@ -6382,6 +6392,7 @@ namespace Chummer
                     };
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above
                     objImprovement.SetupComplete = true;
+#pragma warning restore IDE0017
                     // Add the Improvement to the list.
                     objCharacter.Improvements.Add(objImprovement);
                     ClearCachedValue(objCharacter, objImprovementType, strImprovedName, token);
@@ -6460,9 +6471,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Record the improvement.
                     // ReSharper disable once UseObjectOrCollectionInitializer
-#pragma warning disable IDE0017
                     objImprovement = new Improvement(objCharacter)
-#pragma warning restore IDE0017
                     {
                         ImprovedName = strImprovedName,
                         ImproveSource = objImprovementSource,
@@ -7764,13 +7773,16 @@ namespace Chummer
         /// <param name="targetObject">The target object to evaluate against.</param>
         /// <param name="token">Cancellation token.</param>
         /// <returns>True if the improvement should be applied, false otherwise.</returns>
-        public static async Task<bool> EvaluateImprovementConditionAsync(Improvement improvement, object targetObject, CancellationToken token = default)
+        public static Task<bool> EvaluateImprovementConditionAsync(Improvement improvement, object targetObject, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            if (improvement == null || string.IsNullOrEmpty(improvement.Condition))
-                return true;
-
-            return await EvaluateConditionAsync(improvement.Condition, targetObject, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            if (improvement == null)
+                return Task.FromResult(true);
+            string strCondition = improvement.Condition;
+            return string.IsNullOrEmpty(strCondition)
+                ? Task.FromResult(true)
+                : EvaluateConditionAsync(strCondition, targetObject, token);
         }
 
         /// <summary>
@@ -7782,10 +7794,10 @@ namespace Chummer
         public static bool EvaluateImprovementCondition(Improvement improvement, object targetObject, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (improvement == null || string.IsNullOrEmpty(improvement.Condition))
+            if (improvement == null)
                 return true;
-
-            return EvaluateCondition(improvement.Condition, targetObject, token);
+            string strCondition = improvement.Condition;
+            return string.IsNullOrEmpty(strCondition) || EvaluateCondition(strCondition, targetObject, token);
         }
 
         #endregion Condition Evaluation

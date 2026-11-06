@@ -3764,10 +3764,12 @@ namespace Chummer
                 {
                     if (lstCharacters == null)
                         return;
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
                     {
                         lstNewCharacters = lstCharacters.AsReadOnly();
                     }
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -4140,10 +4142,12 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
                     {
                         lstNewCharacters = lstCharacters.AsReadOnly();
                     }
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -4529,10 +4533,12 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
                     if (!(lstCharacters is IReadOnlyCollection<Character> lstNewCharacters))
                     {
                         lstNewCharacters = lstCharacters.AsReadOnly();
                     }
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
                     if (lstNewCharacters.Count == 0)
                         return;
                     await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);

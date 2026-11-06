@@ -2778,19 +2778,30 @@ namespace Chummer
         /// <param name="eMatchMode">How the condition text is resolved for display.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Formatted restriction message text.</returns>
-        private static async Task<string> BuildInstalledWareRequirementRestrictionMessageAsync(bool blnSync,
+        private static Task<string> BuildInstalledWareRequirementRestrictionMessageAsync(bool blnSync,
             Character objCharacter, string strNodeInnerText, string strSpace, string strLabelKey,
             string strDataFile, string strItemXPathBase, WareMatchMode eMatchMode, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             if (blnSync)
             {
-                return Utils.SafelyRunSynchronously(
-                    t => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
-                        strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, t), token);
+                string strReturn;
+                try
+                {
+                    strReturn = Utils.SafelyRunSynchronously(
+                        t => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                            strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, t), token);
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException<string>(e);
+                }
+                return Task.FromResult(strReturn);
             }
 
-            return await BuildInstalledWareRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
-                strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token).ConfigureAwait(false);
+            return BuildInstalledWareRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
+                strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token);
         }
 
         /// <summary>
@@ -2850,19 +2861,30 @@ namespace Chummer
         /// <param name="strTypeLabelKey">LanguageManager key appended in parentheses (for example, <c>String_Gear</c>).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Formatted restriction message text.</returns>
-        private static async Task<string> BuildDataItemRequirementRestrictionMessageAsync(bool blnSync,
+        private static Task<string> BuildDataItemRequirementRestrictionMessageAsync(bool blnSync,
             Character objCharacter, string strNodeInnerText, string strSpace, string strLeftPar, string strRightPar, string strDataFile,
             string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             if (blnSync)
             {
-                return Utils.SafelyRunSynchronously(
-                    t => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                string strReturn;
+                try
+                {
+                    strReturn = Utils.SafelyRunSynchronously(
+                        t => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
                         strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, t), token);
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException<string>(e);
+                }
+                return Task.FromResult(strReturn);
             }
 
-            return await BuildDataItemRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
-                strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+            return BuildDataItemRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
+                strSpace, strLeftPar, strRightPar, strDataFile, strItemXPathBase, strTypeLabelKey, token);
         }
 
         /// <summary>

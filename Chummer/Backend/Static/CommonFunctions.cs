@@ -2382,7 +2382,7 @@ namespace Chummer
             if (objCultureInfo == null)
                 objCultureInfo = GlobalSettings.CultureInfo;
 
-            string strBook = string.Empty;
+            string strBook;
             int intPage = 0;
             int intWhitespaceIndex = strSource.IndexOf(' ');
             if (intWhitespaceIndex != -1)
@@ -2508,7 +2508,7 @@ namespace Chummer
             if (objCultureInfo == null)
                 objCultureInfo = GlobalSettings.CultureInfo;
 
-            string strBook = string.Empty;
+            string strBook;
             int intPage = 0;
             int intWhitespaceIndex = strSource.IndexOf(' ');
             if (intWhitespaceIndex != -1)

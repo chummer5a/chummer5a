@@ -74,8 +74,10 @@ namespace Chummer.Forms
 
         private ScrollableMessageBox(string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button1, MessageBoxOptions options = 0)
         {
+#pragma warning disable IDE0016 // Use 'throw' expression
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
+#pragma warning restore IDE0016 // Use 'throw' expression
 
             InitializeComponent();
             this.UpdateLightDarkMode();

@@ -138,6 +138,7 @@ namespace Chummer.Backend.Equipment
 
         private bool _blnDoPropertyChangedInCollectionChanged = true;
 
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
         // I don't like this, but it's easier than making it a specific property of the cyberware.
         // We're using IReadOnlyCollection and IReadOnlyDictionary to make extra-sure that none of these will get changed
 
@@ -156,6 +157,7 @@ namespace Chummer.Backend.Equipment
                     { "AGI", new HashSet<string> { "Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)" } },
                     { "STR", new HashSet<string> { "Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)" } }
                 };
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 
         private static readonly IReadOnlyDictionary<string, IReadOnlyCollection<string>> s_AttributeAffectingCyberwares
             = new Dictionary<string, IReadOnlyCollection<string>>

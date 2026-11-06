@@ -3889,16 +3889,18 @@ namespace Chummer.Backend.Equipment
 
         public Task<string> GetNotesAsync(CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled<string>(token);
-            return Task.FromResult(_strNotes);
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<string>(token)
+                : Task.FromResult(_strNotes);
         }
 
-        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        public Task SetNotesAsync(string value, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (Interlocked.Exchange(ref _strNotes, value) == value)
-                return;
-            await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return OnPropertyChangedAsync(nameof(Notes), token);
         }
 
         /// <summary>
@@ -3912,9 +3914,9 @@ namespace Chummer.Backend.Equipment
 
         public Task<Color> GetNotesColorAsync(CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled<Color>(token);
-            return Task.FromResult(_colNotes);
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<Color>(token)
+                : Task.FromResult(_colNotes);
         }
 
         public Task SetNotesColorAsync(Color value, CancellationToken token = default)

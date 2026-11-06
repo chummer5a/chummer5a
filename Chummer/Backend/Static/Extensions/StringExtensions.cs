@@ -8824,7 +8824,9 @@ namespace Chummer
             "xmlopen"
         };
 
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
         private static readonly IReadOnlyDictionary<string, string> s_DicSpecialRtfCharacters = new Dictionary<string, string>
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
         {
             {"par", "\n"},
             {"sect", "\n\n"},
