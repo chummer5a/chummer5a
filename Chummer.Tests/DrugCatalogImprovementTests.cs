@@ -52,7 +52,7 @@ namespace Chummer.Tests
                     await objCharacter.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
                         Improvement objRea = await objCharacter.Improvements.FirstOrDefaultAsync(x =>
                             x.SourceName == objDrug.InternalId
@@ -109,7 +109,7 @@ namespace Chummer.Tests
                     await objCharacter.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
                         Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == "High Pain Tolerance", token).ConfigureAwait(false));
                         Assert.IsTrue(await objCharacter.Improvements.AnyAsync(x =>
@@ -229,7 +229,7 @@ namespace Chummer.Tests
                     await objCharacter.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
                         Improvement objInt = await objCharacter.Improvements.FirstOrDefaultAsync(x =>
                             x.SourceName == objDrug.InternalId
@@ -280,7 +280,7 @@ namespace Chummer.Tests
                     await objCharacter.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
                         Improvement objGymnastics = await objCharacter.Improvements.FirstOrDefaultAsync(x =>
                             x.SourceName == objDrug.InternalId
@@ -331,7 +331,7 @@ namespace Chummer.Tests
                     await objCharacter.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                         List<Improvement> lstDrugImprovements = await objCharacter.Improvements
                             .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
                         Assert.Contains(x => x.ImproveType == Improvement.ImprovementType.InitiativeDice && x.Custom, lstDrugImprovements);
@@ -386,7 +386,7 @@ namespace Chummer.Tests
                     await objCharacter.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                         List<Improvement> lstDrugImprovements = await objCharacter.Improvements
                             .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
 

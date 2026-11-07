@@ -30540,7 +30540,7 @@ namespace Chummer
                                     == selectedDrug.InternalId, GenericToken)
                                 .ConfigureAwait(false))
                         {
-                            await selectedDrug.GenerateImprovement(GenericToken).ConfigureAwait(false);
+                            await selectedDrug.GenerateImprovementsAsync(GenericToken).ConfigureAwait(false);
                         }
 
                         await CreateCareerDrugPurchaseExpenseAsync(selectedDrug, decCost, 1, GenericToken)

@@ -49,7 +49,7 @@ namespace Chummer.Tests
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
                         Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
                             "Drug qualities should not appear until the custom group is enabled");
@@ -95,7 +95,7 @@ namespace Chummer.Tests
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                         List<Improvement> lstDrugImprovements = await objCharacter.Improvements
                             .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
 
@@ -145,7 +145,7 @@ namespace Chummer.Tests
                 try
                 {
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
-                    await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                    await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                     List<Improvement> lstDrugImprovements = await objCharacter.Improvements
                         .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
                     await ImprovementManager.EnableImprovementsAsync(objCharacter, lstDrugImprovements, token)
@@ -192,7 +192,7 @@ namespace Chummer.Tests
                     Drug objDrug = await CreateTestDrugAsync(objCharacter, 3, token).ConfigureAwait(false);
                     try
                     {
-                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                         List<Improvement> lstQualityImprovements = await objCharacter.Improvements
                             .ToListAsync(x => x.ImproveType == Improvement.ImprovementType.SpecificQuality
                                               && x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);

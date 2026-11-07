@@ -2821,7 +2821,7 @@ namespace Chummer.Backend.Equipment
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstDrug.Add(objDrug);
                                     // Legacy gland drugs had no improvements; create disabled group if missing.
-                                    Utils.SafelyRunSynchronously(t => objDrug.GenerateImprovement(t), token);
+                                    objDrug.GenerateImprovements(token);
                                 }
                                 catch
                                 {
@@ -2837,7 +2837,7 @@ namespace Chummer.Backend.Equipment
                                     await objDrug.LoadAsync(nodChild, token).ConfigureAwait(false);
                                     await _lstDrug.AddAsync(objDrug, token).ConfigureAwait(false);
                                     // Legacy gland drugs had no improvements; create disabled group if missing.
-                                    await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                                    await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                                 }
                                 catch
                                 {

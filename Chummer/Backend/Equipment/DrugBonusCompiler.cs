@@ -59,6 +59,33 @@ namespace Chummer.Backend.Equipment
         /// <param name="objDrug">Drug being activated.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Compiled bonus and extracted quality nodes.</returns>
+        public static CompileResult Compile(Character objCharacter, Drug objDrug,
+            CancellationToken token = default)
+        {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (objDrug == null)
+                throw new ArgumentNullException(nameof(objDrug));
+
+            token.ThrowIfCancellationRequested();
+
+            XmlNode nodSourceBonus = objDrug.Components.Count > 0
+                ? BuildCustomBonusNode(objDrug, token)
+                : GetCatalogBonusNode(objCharacter, objDrug, token);
+
+            if (nodSourceBonus == null)
+                return new CompileResult();
+
+            return SplitQualityNodes(NormalizeBonusNode(nodSourceBonus));
+        }
+
+        /// <summary>
+        /// Produces the bonus XML used to create drug improvements.
+        /// </summary>
+        /// <param name="objCharacter">Character owning the drug.</param>
+        /// <param name="objDrug">Drug being activated.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Compiled bonus and extracted quality nodes.</returns>
         public static async Task<CompileResult> CompileAsync(Character objCharacter, Drug objDrug,
             CancellationToken token = default)
         {
@@ -86,6 +113,31 @@ namespace Chummer.Backend.Equipment
         /// <param name="objDrug">Drug with a catalog <see cref="Drug.SourceID"/>.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The bonus node, or null when not found.</returns>
+        public static XmlNode GetCatalogBonusNode(Character objCharacter, Drug objDrug,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDrug.SourceID == Guid.Empty)
+                return null;
+
+            XmlDocument objDoc =
+                objCharacter.LoadData(DrugsData.CatalogFileName, token: token);
+            XmlNode objDrugNode = objDoc.TryGetNodeById(DrugsData.CatalogDrugXPath, objDrug.SourceID);
+            if (objDrugNode == null)
+            {
+                objDoc = objCharacter.LoadData(DrugsData.ComponentsFileName, token: token);
+                objDrugNode = objDoc.TryGetNodeById(DrugsData.CatalogDrugXPath, objDrug.SourceID);
+            }
+            return objDrugNode?["bonus"];
+        }
+
+        /// <summary>
+        /// Returns the catalog &lt;bonus&gt; child for a premade drug, if present.
+        /// </summary>
+        /// <param name="objCharacter">Character owning the drug.</param>
+        /// <param name="objDrug">Drug with a catalog <see cref="Drug.SourceID"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The bonus node, or null when not found.</returns>
         public static async Task<XmlNode> GetCatalogBonusNodeAsync(Character objCharacter, Drug objDrug,
             CancellationToken token = default)
         {
@@ -103,6 +155,104 @@ namespace Chummer.Backend.Equipment
                 objDrugNode = objDoc.TryGetNodeById(DrugsData.CatalogDrugXPath, objDrug.SourceID);
             }
             return objDrugNode?["bonus"];
+        }
+
+        /// <summary>
+        /// Merges custom drug component effects into a synthetic &lt;bonus&gt; node.
+        /// Narco is not applied here; use bioware <c>drugpositiveattributemodifier</c> instead.
+        /// </summary>
+        /// <param name="objDrug">Custom drug with components.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A bonus node, or null when there are no effects.</returns>
+        public static XmlNode BuildCustomBonusNode(Drug objDrug,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlDocument objDoc = new XmlDocument();
+            XmlElement nodBonus = objDoc.CreateElement("bonus");
+
+            foreach (KeyValuePair<string, decimal> kvpAttribute in objDrug.Attributes)
+            {
+                if (kvpAttribute.Value == 0)
+                    continue;
+                XmlElement nodAttr = objDoc.CreateElement("specificattribute");
+                nodAttr.AppendChild(objDoc.CreateElement("name")).InnerText = kvpAttribute.Key;
+                nodAttr.AppendChild(objDoc.CreateElement("val")).InnerText =
+                    kvpAttribute.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodAttr);
+            }
+
+            foreach (KeyValuePair<string, int> kvpLimit in objDrug.Limits)
+            {
+                if (kvpLimit.Value == 0)
+                    continue;
+                string strLimitElement;
+                switch (kvpLimit.Key.ToUpperInvariant())
+                {
+                    case "PHYSICAL":
+                        strLimitElement = "physicallimit";
+                        break;
+                    case "MENTAL":
+                        strLimitElement = "mentallimit";
+                        break;
+                    case "SOCIAL":
+                        strLimitElement = "sociallimit";
+                        break;
+                    default:
+                        continue;
+                }
+                XmlElement nodLimit = objDoc.CreateElement(strLimitElement);
+                nodLimit.InnerText = kvpLimit.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodLimit);
+            }
+
+            int intInitiative = objDrug.Initiative;
+            if (intInitiative != 0)
+            {
+                XmlElement nodIni = objDoc.CreateElement("initiative");
+                nodIni.InnerText = intInitiative.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodIni);
+            }
+
+            int intInitiativeDice = objDrug.InitiativeDice;
+            if (intInitiativeDice != 0)
+            {
+                XmlElement nodDice = objDoc.CreateElement("initiativedice");
+                nodDice.InnerText = intInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodDice);
+            }
+
+            foreach (XmlNode objXmlQuality in objDrug.Qualities)
+            {
+                string strQualityName = objXmlQuality?.InnerText?.Trim();
+                if (string.IsNullOrEmpty(strQualityName))
+                    continue;
+                XmlElement nodQuality = objDoc.CreateElement("quality");
+                nodQuality.InnerText = strQualityName;
+                string strRatingAttr = objXmlQuality.Attributes?["rating"]?.InnerText?.Trim();
+                nodQuality.SetAttribute("rating", !string.IsNullOrEmpty(strRatingAttr) ? strRatingAttr : "1");
+                string strSelect = objXmlQuality.Attributes?["select"]?.InnerText?.Trim();
+                if (!string.IsNullOrEmpty(strSelect))
+                    nodQuality.SetAttribute("select", strSelect);
+                if (objXmlQuality.Attributes?["forced"]?.InnerTextIsTrueString() == true)
+                    nodQuality.SetAttribute("forced", bool.TrueString);
+                nodBonus.AppendChild(nodQuality);
+            }
+
+            objDrug.Components.ForEach(objComponent =>
+            {
+                DrugEffect objEffect = objComponent.ActiveDrugEffect;
+                if (objEffect == null)
+                    return;
+                foreach (XmlNode nodSkill in objEffect.SpecificSkills)
+                {
+                    if (nodSkill == null)
+                        continue;
+                    nodBonus.AppendChild(objDoc.ImportNode(nodSkill, true));
+                }
+            }, token);
+
+            return nodBonus.ChildNodes.Count > 0 ? nodBonus : null;
         }
 
         /// <summary>

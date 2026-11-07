@@ -1464,7 +1464,7 @@ namespace Chummer
                             }
 
                             await objCyberware.DrugChildren.AddAsync(objDrug, token).ConfigureAwait(false);
-                            await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                            await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
                         }
                         catch
                         {
@@ -6197,7 +6197,7 @@ namespace Chummer
                 throw;
             }
 
-            await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+            await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
             if (blnCareer && !blnFreeCost)
             {
