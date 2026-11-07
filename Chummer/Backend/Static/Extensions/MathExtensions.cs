@@ -28,16 +28,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(params int[] aintValues)
         {
-            switch (aintValues.Length)
+            int intLength = aintValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(aintValues));
                 case 1:
                     return aintValues[0];
+                case 2:
+                    return Math.Min(aintValues[0], aintValues[1]);
             }
 
             int intReturn = aintValues[0];
-            for (int i = 1; i < aintValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 int intLoop = aintValues[i];
                 if (intReturn > intLoop)
@@ -50,16 +53,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Min(params long[] aintValues)
         {
-            switch (aintValues.Length)
+            int intLength = aintValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(aintValues));
                 case 1:
                     return aintValues[0];
+                case 2:
+                    return Math.Min(aintValues[0], aintValues[1]);
             }
 
             long lngReturn = aintValues[0];
-            for (int i = 1; i < aintValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 long lngLoop = aintValues[i];
                 if (lngReturn > lngLoop)
@@ -72,16 +78,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(params float[] afltValues)
         {
-            switch (afltValues.Length)
+            int intLength = afltValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(afltValues));
                 case 1:
                     return afltValues[0];
+                case 2:
+                    return Math.Min(afltValues[0], afltValues[1]);
             }
 
             float fltReturn = afltValues[0];
-            for (int i = 1; i < afltValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 float fltLoop = afltValues[i];
                 if (float.IsNaN(fltLoop))
@@ -96,16 +105,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Min(params double[] adblValues)
         {
-            switch (adblValues.Length)
+            int intLength = adblValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(adblValues));
                 case 1:
                     return adblValues[0];
+                case 2:
+                    return Math.Min(adblValues[0], adblValues[1]);
             }
 
             double dblReturn = adblValues[0];
-            for (int i = 1; i < adblValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 double dblLoop = adblValues[i];
                 if (double.IsNaN(dblLoop))
@@ -120,16 +132,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Min(params decimal[] adecValues)
         {
-            switch (adecValues.Length)
+            int intLength = adecValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(adecValues));
                 case 1:
                     return adecValues[0];
+                case 2:
+                    return Math.Min(adecValues[0], adecValues[1]);
             }
 
             decimal decReturn = adecValues[0];
-            for (int i = 1; i < adecValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 decimal decLoop = adecValues[i];
                 if (decReturn > decLoop)
@@ -142,16 +157,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(params int[] aintValues)
         {
-            switch (aintValues.Length)
+            int intLength = aintValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(aintValues));
                 case 1:
                     return aintValues[0];
+                case 2:
+                    return Math.Max(aintValues[0], aintValues[1]);
             }
 
             int intReturn = aintValues[0];
-            for (int i = 1; i < aintValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 int intLoop = aintValues[i];
                 if (intReturn < intLoop)
@@ -164,16 +182,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Max(params long[] aintValues)
         {
-            switch (aintValues.Length)
+            int intLength = aintValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(aintValues));
                 case 1:
                     return aintValues[0];
+                case 2:
+                    return Math.Max(aintValues[0], aintValues[1]);
             }
 
             long lngReturn = aintValues[0];
-            for (int i = 1; i < aintValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 long lngLoop = aintValues[i];
                 if (lngReturn < lngLoop)
@@ -186,16 +207,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(params float[] afltValues)
         {
-            switch (afltValues.Length)
+            int intLength = afltValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(afltValues));
                 case 1:
                     return afltValues[0];
+                case 2:
+                    return Math.Max(afltValues[0], afltValues[1]);
             }
 
             float fltReturn = afltValues[0];
-            for (int i = 1; i < afltValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 float fltLoop = afltValues[i];
                 if (float.IsNaN(fltLoop))
@@ -210,16 +234,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Max(params double[] adblValues)
         {
-            switch (adblValues.Length)
+            int intLength = adblValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(adblValues));
                 case 1:
                     return adblValues[0];
+                case 2:
+                    return Math.Max(adblValues[0], adblValues[1]);
             }
 
             double dblReturn = adblValues[0];
-            for (int i = 1; i < adblValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 double dblLoop = adblValues[i];
                 if (double.IsNaN(dblLoop))
@@ -234,16 +261,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Max(params decimal[] adecValues)
         {
-            switch (adecValues.Length)
+            int intLength = adecValues.Length;
+            switch (intLength)
             {
                 case 0:
                     throw new InvalidOperationException(nameof(adecValues));
                 case 1:
                     return adecValues[0];
+                case 2:
+                    return Math.Max(adecValues[0], adecValues[1]);
             }
 
             decimal decReturn = adecValues[0];
-            for (int i = 1; i < adecValues.Length - 1; ++i)
+            for (int i = 1; i < intLength; ++i)
             {
                 decimal decLoop = adecValues[i];
                 if (decReturn < decLoop)
@@ -510,6 +540,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Quick way to get the floor of the base-2 logarithm of an integer.
+        /// Adapted from: https://graphics.stanford.edu/~seander/bithacks.html#IntegerLogLookup
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FloorLog2(this long n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            // n is between 2^63 - 1 and 0, which means the fastest way is going to be to binary search, but we can get help from a lookup table
+            int intTemp = (int)(n >> 32);
+            return intTemp > 0 ? 32 + FloorLog2(intTemp) : FloorLog2((int)n);
+        }
+
+        /// <summary>
         /// Quick way to get the ceiling of the base-2 logarithm of an integer
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -518,6 +562,17 @@ namespace Chummer
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
             return FloorLog2(n) + (n & 1);
+        }
+
+        /// <summary>
+        /// Quick way to get the ceiling of the base-2 logarithm of an integer
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CeilingLog2(this long n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            return FloorLog2(n) + (int)(n & 1);
         }
 
         /// <summary>
@@ -554,10 +609,67 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Quick way to get the floor of the base-10 logarithm of an integer
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FloorLog10(this long n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            // n is between 2*10^18 and 0, which means the fastest way is going to be to binary search
+            if (n >= 1000000000L)
+            {
+                if (n >= 10000000000000L)
+                {
+                    if (n >= 1000000000000000L)
+                    {
+                        if (n >= 100000000000000000L)
+                            return n >= 1000000000000000000L ? 18 : 17;
+                        else
+                            return n >= 10000000000000000L ? 16 : 15;
+                    }
+                    else
+                        return n >= 100000000000000L ? 14 : 13;
+                }
+                else if (n >= 100000000000L)
+                    return n >= 1000000000000L ? 12 : 11;
+                else
+                    return n >= 10000000000L ? 10 : 9;
+            }
+            else if (n >= 100000L)
+            {
+                if (n >= 10000000L)
+                    return n >= 100000000L ? 8 : 7;
+                else
+                    return n >= 1000000L ? 6 : 5;
+            }
+            else if (n >= 1000L)
+                return n >= 10000L ? 4 : 3;
+            else if (n >= 10L)
+                return n >= 100L ? 2 : 1;
+            else
+                return 0;
+        }
+
+        /// <summary>
         /// Quick way to get the ceiling of the base-2 logarithm of an integer
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CeilingLog10(this int n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            int num = FloorLog10(n);
+            if (n % 10 != 0)
+                ++num;
+            return num;
+        }
+
+        /// <summary>
+        /// Quick way to get the ceiling of the base-2 logarithm of an integer
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CeilingLog10(this long n)
         {
             if (n <= 0)
                 throw new ArgumentOutOfRangeException(nameof(n));
