@@ -540,8 +540,9 @@ namespace Chummer.Controls.Shared
                         }
                         else if (sw.ElapsedMilliseconds < 50 && _intOffScreenChunkSize < ushort.MaxValue)
                         {
+                            int intMaxFactor = ((int)ushort.MaxValue).DivAwayFromZero(_intOffScreenChunkSize);
                             int intFactor = 2;
-                            for (long lngTemp = sw.ElapsedMilliseconds * 2; lngTemp < 50 && intFactor < int.MaxValue / 2; lngTemp *= 2)
+                            for (long lngTemp = sw.ElapsedMilliseconds * 2; lngTemp < 50 && intFactor < intMaxFactor; lngTemp *= 2)
                                 intFactor *= 2;
                             _intOffScreenChunkSize = Math.Min(_intOffScreenChunkSize * intFactor, ushort.MaxValue);
                             Log.Trace("Offscreen chunk render size increased to " +
