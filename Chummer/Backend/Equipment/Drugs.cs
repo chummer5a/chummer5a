@@ -369,7 +369,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("speed_raw", _intCatalogSpeed != int.MinValue ? _intCatalogSpeed.ToString(GlobalSettings.InvariantCultureInfo) : string.Empty, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("duration", await GetDisplayDurationAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("duration_english", await GetDisplayDurationAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("duration_raw", Components.Count == 0 ? _strDuration ?? string.Empty : string.Empty, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("duration_raw", await Components.GetCountAsync(token).ConfigureAwait(false) == 0 ? _strDuration ?? string.Empty : string.Empty, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("crashdamage", (await GetCrashDamageAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
                     "avail", await TotalAvailAsync(GlobalSettings.CultureInfo, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -835,7 +835,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (_decCachedCost != decimal.MinValue)
                 return _decCachedCost;
-            decimal decReturn = Components.Count > 0
+            decimal decReturn = await Components.GetCountAsync(token).ConfigureAwait(false) > 0
                 ? await Components.SumAsync(d => d.ActiveDrugEffect != null,
                     (d, t) => d.GetCostPerLevelAsync(t), token).ConfigureAwait(false)
                 : _decCost;
@@ -1045,7 +1045,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             return _intCachedAddictionThreshold != int.MinValue
                     ? _intCachedAddictionThreshold
-                    : _intCachedAddictionThreshold = Components.Count > 0
+                    : _intCachedAddictionThreshold = await Components.GetCountAsync(token).ConfigureAwait(false) > 0
                         ? await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold, token).ConfigureAwait(false)
                         : _intAddictionThreshold;
         }
@@ -1075,7 +1075,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             return _intCachedAddictionRating != int.MinValue
                     ? _intCachedAddictionRating
-                    : _intCachedAddictionRating = Components.Count > 0
+                    : _intCachedAddictionRating = await Components.GetCountAsync(token).ConfigureAwait(false) > 0
                         ? await Components.SumAsync(d => d.ActiveDrugEffect != null, d => d.AddictionRating, token).ConfigureAwait(false)
                         : _intAddictionRating;
         }
@@ -1100,7 +1100,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Task<string> DisplayAddictionTypeAsync(string strLanguage, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return string.IsNullOrEmpty(_strAddictionType)
                 ? Task.FromResult(string.Empty)
                 : LanguageManager.GetStringAsync("String_AddictionType_" + _strAddictionType, strLanguage, token: token);
@@ -2219,7 +2220,7 @@ namespace Chummer.Backend.Equipment
                         sbdDescription.AppendLine(await _objCharacter.TranslateExtraAsync(strInfo, strLanguage, token: token).ConfigureAwait(false));
 
                     // Catalog drugs apply their bonus through improvements instead of components.
-                    if (Components.Count == 0)
+                    if (await Components.GetCountAsync(token).ConfigureAwait(false) == 0)
                     {
                         List<Improvement> lstImprovements = await _objCharacter.Improvements
                             .ToListAsync(x => x.SourceName == InternalId, token: token).ConfigureAwait(false);
