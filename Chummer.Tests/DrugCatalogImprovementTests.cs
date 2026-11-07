@@ -54,10 +54,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.GenerateImprovement(token).ConfigureAwait(false);
 
-                        Improvement objRea = objCharacter.Improvements.FirstOrDefault(x =>
+                        Improvement objRea = await objCharacter.Improvements.FirstOrDefaultAsync(x =>
                             x.SourceName == objDrug.InternalId
                             && x.ImproveType == Improvement.ImprovementType.Attribute
-                            && x.ImprovedName == "REA");
+                            && x.ImprovedName == "REA", token).ConfigureAwait(false);
                         Assert.IsNotNull(objRea, "Bliss should create a REA attribute improvement");
                         Assert.IsFalse(objRea.Enabled, "Drug improvements should start disabled");
                         Assert.AreEqual(-1m, objRea.Augmented);
@@ -231,10 +231,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.GenerateImprovement(token).ConfigureAwait(false);
 
-                        Improvement objInt = objCharacter.Improvements.FirstOrDefault(x =>
+                        Improvement objInt = await objCharacter.Improvements.FirstOrDefaultAsync(x =>
                             x.SourceName == objDrug.InternalId
                             && x.ImproveType == Improvement.ImprovementType.Attribute
-                            && x.ImprovedName == "INT");
+                            && x.ImprovedName == "INT", token).ConfigureAwait(false);
                         Assert.IsNotNull(objInt);
                         Assert.AreEqual(1m, objInt.Augmented);
                         Assert.IsFalse(objInt.Enabled);
@@ -282,10 +282,10 @@ namespace Chummer.Tests
                     {
                         await objDrug.GenerateImprovement(token).ConfigureAwait(false);
 
-                        Improvement objGymnastics = objCharacter.Improvements.FirstOrDefault(x =>
+                        Improvement objGymnastics = await objCharacter.Improvements.FirstOrDefaultAsync(x =>
                             x.SourceName == objDrug.InternalId
                             && x.ImproveType == Improvement.ImprovementType.Skill
-                            && x.ImprovedName == "Gymnastics");
+                            && x.ImprovedName == "Gymnastics", token).ConfigureAwait(false);
                         Assert.IsNotNull(objGymnastics, "Infiltrator should grant Gymnastics");
                         Assert.AreEqual(2m, objGymnastics.Value);
                         Assert.IsFalse(objGymnastics.Enabled);

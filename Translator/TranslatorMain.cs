@@ -841,7 +841,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -893,30 +893,30 @@ namespace Translator
                     {
                         if (xmlArmorNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataArmorId;
                             xmlArmorNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlArmorNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataArmorName;
                             xmlArmorNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlArmorNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataArmorName;
                             xmlArmorNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlArmorNode["page"];
+                        XmlElement xmlPage = xmlArmorNode["page"];
                         if (xmlArmorNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataArmorNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlArmorNode.AppendChild(xmlIdElement);
                         }
@@ -930,19 +930,19 @@ namespace Translator
                     {
                         xmlArmorNode = objDataDoc.CreateElement("armor");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataArmorId;
                         xmlArmorNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataArmorName;
                         xmlArmorNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataArmorName;
                         xmlArmorNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataArmorNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlArmorNode.AppendChild(xmlPageElement);
 
@@ -1004,30 +1004,30 @@ namespace Translator
                     {
                         if (xmlArmorModNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataArmorModId;
                             xmlArmorModNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlArmorModNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataArmorModName;
                             xmlArmorModNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlArmorModNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataArmorModName;
                             xmlArmorModNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlArmorModNode["page"];
+                        XmlElement xmlPage = xmlArmorModNode["page"];
                         if (xmlArmorModNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataArmorModNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlArmorModNode.AppendChild(xmlIdElement);
                         }
@@ -1041,19 +1041,19 @@ namespace Translator
                     {
                         xmlArmorModNode = objDataDoc.CreateElement("mod");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataArmorModId;
                         xmlArmorModNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataArmorModName;
                         xmlArmorModNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataArmorModName;
                         xmlArmorModNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataArmorModNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlArmorModNode.AppendChild(xmlPageElement);
 
@@ -1135,7 +1135,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -1187,30 +1187,30 @@ namespace Translator
                     {
                         if (xmlBiowareNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataBiowareId;
                             xmlBiowareNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlBiowareNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataBiowareName;
                             xmlBiowareNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlBiowareNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataBiowareName;
                             xmlBiowareNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlBiowareNode["page"];
+                        XmlElement xmlPage = xmlBiowareNode["page"];
                         if (xmlBiowareNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataBiowareNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlBiowareNode.AppendChild(xmlIdElement);
                         }
@@ -1224,19 +1224,19 @@ namespace Translator
                     {
                         xmlBiowareNode = objDataDoc.CreateElement("bioware");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataBiowareId;
                         xmlBiowareNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataBiowareName;
                         xmlBiowareNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataBiowareName;
                         xmlBiowareNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataBiowareNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlBiowareNode.AppendChild(xmlPageElement);
 
@@ -1297,30 +1297,30 @@ namespace Translator
                     {
                         if (xmlGradeNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataGradeId;
                             xmlGradeNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlGradeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataGradeName;
                             xmlGradeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlGradeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataGradeName;
                             xmlGradeNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlGradeNode["page"];
+                        XmlElement xmlPage = xmlGradeNode["page"];
                         if (xmlGradeNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataGradeNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlGradeNode.AppendChild(xmlIdElement);
                         }
@@ -1334,19 +1334,19 @@ namespace Translator
                     {
                         xmlGradeNode = objDataDoc.CreateElement("grade");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataGradeId;
                         xmlGradeNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataGradeName;
                         xmlGradeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataGradeName;
                         xmlGradeNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataGradeNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlGradeNode.AppendChild(xmlPageElement);
 
@@ -1430,28 +1430,28 @@ namespace Translator
                     {
                         if (xmlBookNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataBookId;
                             xmlBookNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlBookNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataBookName;
                             xmlBookNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlBookNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataBookName;
                             xmlBookNode.AppendChild(xmlTranslateElement);
                         }
 
                         if (xmlBookNode["altcode"] == null)
                         {
-                            XmlNode xmlCodeElement = objDataDoc.CreateElement("altcode");
+                            XmlElement xmlCodeElement = objDataDoc.CreateElement("altcode");
                             xmlCodeElement.InnerText = xmlDataBookNode.SelectSingleNode("code")?.Value ?? string.Empty;
                             xmlBookNode.AppendChild(xmlCodeElement);
                         }
@@ -1460,19 +1460,19 @@ namespace Translator
                     {
                         xmlBookNode = objDataDoc.CreateElement("book");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataBookId;
                         xmlBookNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataBookName;
                         xmlBookNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataBookName;
                         xmlBookNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlCodeElement = objDataDoc.CreateElement("altcode");
+                        XmlElement xmlCodeElement = objDataDoc.CreateElement("altcode");
                         xmlCodeElement.InnerText = xmlDataBookNode.SelectSingleNode("code")?.Value ?? string.Empty;
                         xmlBookNode.AppendChild(xmlCodeElement);
 
@@ -1562,30 +1562,30 @@ namespace Translator
                     {
                         if (xmlComplexFormNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataComplexFormId;
                             xmlComplexFormNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlComplexFormNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataComplexFormName;
                             xmlComplexFormNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlComplexFormNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataComplexFormName;
                             xmlComplexFormNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlComplexFormNode["page"];
+                        XmlElement xmlPage = xmlComplexFormNode["page"];
                         if (xmlComplexFormNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataComplexFormNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlComplexFormNode.AppendChild(xmlIdElement);
                         }
@@ -1599,19 +1599,19 @@ namespace Translator
                     {
                         xmlComplexFormNode = objDataDoc.CreateElement("complexform");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataComplexFormId;
                         xmlComplexFormNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataComplexFormName;
                         xmlComplexFormNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataComplexFormName;
                         xmlComplexFormNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataComplexFormNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlComplexFormNode.AppendChild(xmlPageElement);
 
@@ -1699,7 +1699,7 @@ namespace Translator
                         return;
                     if (xmlContactNodesParent.SelectSingleNode("contact[. = " + xmlDataContactNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlContactNode = objDataDoc.CreateElement("contact");
+                        XmlElement xmlContactNode = objDataDoc.CreateElement("contact");
                         xmlContactNode.InnerText = xmlDataContactNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataContactNode.Value;
@@ -1747,7 +1747,7 @@ namespace Translator
                         return;
                     if (xmlSexNodesParent.SelectSingleNode("sex[. = " + xmlDataSexNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlSexNode = objDataDoc.CreateElement("sex");
+                        XmlElement xmlSexNode = objDataDoc.CreateElement("sex");
                         xmlSexNode.InnerText = xmlDataSexNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataSexNode.Value;
@@ -1795,7 +1795,7 @@ namespace Translator
                         return;
                     if (xmlAgeNodesParent.SelectSingleNode("age[. = " + xmlDataAgeNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlAgeNode = objDataDoc.CreateElement("age");
+                        XmlElement xmlAgeNode = objDataDoc.CreateElement("age");
                         xmlAgeNode.InnerText = xmlDataAgeNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataAgeNode.Value;
@@ -1837,7 +1837,7 @@ namespace Translator
                         return;
                     if (xmlPersonalLifeNodesParent.SelectSingleNode("personallife[text() = " + xmlDataPersonalLifeNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlPersonalLifeNode = objDataDoc.CreateElement("personallife");
+                        XmlElement xmlPersonalLifeNode = objDataDoc.CreateElement("personallife");
                         xmlPersonalLifeNode.InnerText = xmlDataPersonalLifeNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataPersonalLifeNode.Value;
@@ -1879,7 +1879,7 @@ namespace Translator
                         return;
                     if (xmlTypeNodesParent.SelectSingleNode("type[. = " + xmlDataTypeNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlTypeNode = objDataDoc.CreateElement("type");
+                        XmlElement xmlTypeNode = objDataDoc.CreateElement("type");
                         xmlTypeNode.InnerText = xmlDataTypeNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataTypeNode.Value;
@@ -1921,7 +1921,7 @@ namespace Translator
                         return;
                     if (xmlPreferredPaymentNodesParent.SelectSingleNode("preferredpayment[. = " + xmlDataPreferredPaymentNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlPreferredPaymentNode = objDataDoc.CreateElement("preferredpayment");
+                        XmlElement xmlPreferredPaymentNode = objDataDoc.CreateElement("preferredpayment");
                         xmlPreferredPaymentNode.InnerText = xmlDataPreferredPaymentNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataPreferredPaymentNode.Value;
@@ -1963,7 +1963,7 @@ namespace Translator
                         return;
                     if (xmlHobbyViceNodesParent.SelectSingleNode("hobbyvice[. = " + xmlDataHobbyViceNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlHobbyViceNode = objDataDoc.CreateElement("hobbyvice");
+                        XmlElement xmlHobbyViceNode = objDataDoc.CreateElement("hobbyvice");
                         xmlHobbyViceNode.InnerText = xmlDataHobbyViceNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataHobbyViceNode.Value;
@@ -2029,7 +2029,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -2081,30 +2081,30 @@ namespace Translator
                     {
                         if (xmlPowerNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataPowerId;
                             xmlPowerNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlPowerNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataPowerName;
                             xmlPowerNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlPowerNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataPowerName;
                             xmlPowerNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlPowerNode["page"];
+                        XmlElement xmlPage = xmlPowerNode["page"];
                         if (xmlPowerNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataPowerNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlPowerNode.AppendChild(xmlIdElement);
                         }
@@ -2118,19 +2118,19 @@ namespace Translator
                     {
                         xmlPowerNode = objDataDoc.CreateElement("power");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataPowerId;
                         xmlPowerNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataPowerName;
                         xmlPowerNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataPowerName;
                         xmlPowerNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataPowerNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlPowerNode.AppendChild(xmlPageElement);
 
@@ -2218,7 +2218,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -2270,30 +2270,30 @@ namespace Translator
                     {
                         if (xmlMetatypeNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataMetatypeId;
                             xmlMetatypeNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlMetatypeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataMetatypeName;
                             xmlMetatypeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlMetatypeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataMetatypeName;
                             xmlMetatypeNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlMetatypeNode["page"];
+                        XmlElement xmlPage = xmlMetatypeNode["page"];
                         if (xmlMetatypeNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataMetatypeNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlMetatypeNode.AppendChild(xmlIdElement);
                         }
@@ -2307,19 +2307,19 @@ namespace Translator
                     {
                         xmlMetatypeNode = objDataDoc.CreateElement("metatype");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataMetatypeId;
                         xmlMetatypeNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataMetatypeName;
                         xmlMetatypeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataMetatypeName;
                         xmlMetatypeNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataMetatypeNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlMetatypeNode.AppendChild(xmlPageElement);
 
@@ -2407,7 +2407,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -2459,30 +2459,30 @@ namespace Translator
                     {
                         if (xmlCyberwareNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataCyberwareId;
                             xmlCyberwareNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlCyberwareNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataCyberwareName;
                             xmlCyberwareNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlCyberwareNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataCyberwareName;
                             xmlCyberwareNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlCyberwareNode["page"];
+                        XmlElement xmlPage = xmlCyberwareNode["page"];
                         if (xmlCyberwareNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataCyberwareNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlCyberwareNode.AppendChild(xmlIdElement);
                         }
@@ -2496,19 +2496,19 @@ namespace Translator
                     {
                         xmlCyberwareNode = objDataDoc.CreateElement("cyberware");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataCyberwareId;
                         xmlCyberwareNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataCyberwareName;
                         xmlCyberwareNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataCyberwareName;
                         xmlCyberwareNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataCyberwareNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlCyberwareNode.AppendChild(xmlPageElement);
 
@@ -2570,30 +2570,30 @@ namespace Translator
                     {
                         if (xmlGradeNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataGradeId;
                             xmlGradeNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlGradeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataGradeName;
                             xmlGradeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlGradeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataGradeName;
                             xmlGradeNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlGradeNode["page"];
+                        XmlElement xmlPage = xmlGradeNode["page"];
                         if (xmlGradeNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataGradeNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlGradeNode.AppendChild(xmlIdElement);
                         }
@@ -2607,19 +2607,19 @@ namespace Translator
                     {
                         xmlGradeNode = objDataDoc.CreateElement("grade");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataGradeId;
                         xmlGradeNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataGradeName;
                         xmlGradeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataGradeName;
                         xmlGradeNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataGradeNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlGradeNode.AppendChild(xmlPageElement);
 
@@ -2714,16 +2714,16 @@ namespace Translator
                     if (xmlGradeNode != null)
                         continue;
                     xmlGradeNode = objDataDoc.CreateElement("grade");
-                    XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                    XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                     xmlIdElement.InnerText = strDataGradeId;
                     xmlGradeNode.AppendChild(xmlIdElement);
-                    XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                    XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                     xmlNameElement.InnerText = strDataGradeName;
                     xmlGradeNode.AppendChild(xmlNameElement);
-                    XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                    XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                     xmlTranslateElement.InnerText = strDataGradeName;
                     xmlGradeNode.AppendChild(xmlTranslateElement);
-                    XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                    XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                     xmlPageElement.InnerText = xmlDataGradeNode.SelectSingleNode("page")?.Value ?? string.Empty;
                     xmlGradeNode.AppendChild(xmlPageElement);
                     xmlGradeNodesParent.AppendChild(xmlGradeNode);
@@ -2759,7 +2759,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -2811,30 +2811,30 @@ namespace Translator
                     {
                         if (xmlDrugComponentNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataDrugComponentId;
                             xmlDrugComponentNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlDrugComponentNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataDrugComponentName;
                             xmlDrugComponentNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlDrugComponentNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataDrugComponentName;
                             xmlDrugComponentNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlDrugComponentNode["page"];
+                        XmlElement xmlPage = xmlDrugComponentNode["page"];
                         if (xmlDrugComponentNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataDrugComponentNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlDrugComponentNode.AppendChild(xmlIdElement);
                         }
@@ -2848,19 +2848,19 @@ namespace Translator
                     {
                         xmlDrugComponentNode = objDataDoc.CreateElement("drugcomponent");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataDrugComponentId;
                         xmlDrugComponentNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataDrugComponentName;
                         xmlDrugComponentNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataDrugComponentName;
                         xmlDrugComponentNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataDrugComponentNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlDrugComponentNode.AppendChild(xmlPageElement);
 
@@ -2952,30 +2952,30 @@ namespace Translator
                     {
                         if (xmlEchoNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataEchoId;
                             xmlEchoNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlEchoNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataEchoName;
                             xmlEchoNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlEchoNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataEchoName;
                             xmlEchoNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlEchoNode["page"];
+                        XmlElement xmlPage = xmlEchoNode["page"];
                         if (xmlEchoNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataEchoNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlEchoNode.AppendChild(xmlIdElement);
                         }
@@ -2989,19 +2989,19 @@ namespace Translator
                     {
                         xmlEchoNode = objDataDoc.CreateElement("echo");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataEchoId;
                         xmlEchoNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataEchoName;
                         xmlEchoNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataEchoName;
                         xmlEchoNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataEchoNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlEchoNode.AppendChild(xmlPageElement);
 
@@ -3089,7 +3089,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -3141,30 +3141,30 @@ namespace Translator
                     {
                         if (xmlGearNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataGearId;
                             xmlGearNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlGearNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataGearName;
                             xmlGearNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlGearNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataGearName;
                             xmlGearNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlGearNode["page"];
+                        XmlElement xmlPage = xmlGearNode["page"];
                         if (xmlGearNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataGearNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlGearNode.AppendChild(xmlIdElement);
                         }
@@ -3178,19 +3178,19 @@ namespace Translator
                     {
                         xmlGearNode = objDataDoc.CreateElement("gear");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataGearId;
                         xmlGearNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataGearName;
                         xmlGearNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataGearName;
                         xmlGearNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataGearNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlGearNode.AppendChild(xmlPageElement);
 
@@ -3277,30 +3277,30 @@ namespace Translator
                     {
                         if (xmlImprovementNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataImprovementId;
                             xmlImprovementNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlImprovementNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataImprovementName;
                             xmlImprovementNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlImprovementNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataImprovementName;
                             xmlImprovementNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlImprovementNode["page"];
+                        XmlElement xmlPage = xmlImprovementNode["page"];
                         if (xmlImprovementNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataImprovementNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlImprovementNode.AppendChild(xmlIdElement);
                         }
@@ -3314,19 +3314,19 @@ namespace Translator
                     {
                         xmlImprovementNode = objDataDoc.CreateElement("improvement");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataImprovementId;
                         xmlImprovementNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataImprovementName;
                         xmlImprovementNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataImprovementName;
                         xmlImprovementNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataImprovementNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlImprovementNode.AppendChild(xmlPageElement);
 
@@ -3414,7 +3414,7 @@ namespace Translator
                         return;
                     if (xmlLicenseNodesParent.SelectSingleNode("license[. = " + xmlDataLicenseNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlLicenseNode = objDataDoc.CreateElement("license");
+                        XmlElement xmlLicenseNode = objDataDoc.CreateElement("license");
                         xmlLicenseNode.InnerText = xmlDataLicenseNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataLicenseNode.Value;
@@ -3486,7 +3486,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -3538,30 +3538,30 @@ namespace Translator
                     {
                         if (xmlLifestyleNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataLifestyleId;
                             xmlLifestyleNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlLifestyleNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataLifestyleName;
                             xmlLifestyleNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlLifestyleNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataLifestyleName;
                             xmlLifestyleNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlLifestyleNode["page"];
+                        XmlElement xmlPage = xmlLifestyleNode["page"];
                         if (xmlLifestyleNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataLifestyleNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlLifestyleNode.AppendChild(xmlIdElement);
                         }
@@ -3575,19 +3575,19 @@ namespace Translator
                     {
                         xmlLifestyleNode = objDataDoc.CreateElement("lifestyle");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataLifestyleId;
                         xmlLifestyleNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataLifestyleName;
                         xmlLifestyleNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataLifestyleName;
                         xmlLifestyleNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataLifestyleNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlLifestyleNode.AppendChild(xmlPageElement);
 
@@ -3649,30 +3649,30 @@ namespace Translator
                     {
                         if (xmlQualityNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataQualityId;
                             xmlQualityNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlQualityNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataQualityName;
                             xmlQualityNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlQualityNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataQualityName;
                             xmlQualityNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlQualityNode["page"];
+                        XmlElement xmlPage = xmlQualityNode["page"];
                         if (xmlQualityNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataQualityNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlQualityNode.AppendChild(xmlIdElement);
                         }
@@ -3686,19 +3686,19 @@ namespace Translator
                     {
                         xmlQualityNode = objDataDoc.CreateElement("quality");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataQualityId;
                         xmlQualityNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataQualityName;
                         xmlQualityNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataQualityName;
                         xmlQualityNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataQualityNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlQualityNode.AppendChild(xmlPageElement);
 
@@ -3816,30 +3816,30 @@ namespace Translator
                     {
                         if (xmlMartialArtNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataMartialArtId;
                             xmlMartialArtNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlMartialArtNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataMartialArtName;
                             xmlMartialArtNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlMartialArtNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataMartialArtName;
                             xmlMartialArtNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlMartialArtNode["page"];
+                        XmlElement xmlPage = xmlMartialArtNode["page"];
                         if (xmlMartialArtNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataMartialArtNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlMartialArtNode.AppendChild(xmlIdElement);
                         }
@@ -3853,19 +3853,19 @@ namespace Translator
                     {
                         xmlMartialArtNode = objDataDoc.CreateElement("martialart");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataMartialArtId;
                         xmlMartialArtNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataMartialArtName;
                         xmlMartialArtNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataMartialArtName;
                         xmlMartialArtNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataMartialArtNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlMartialArtNode.AppendChild(xmlPageElement);
 
@@ -3940,30 +3940,30 @@ namespace Translator
                     {
                         if (xmlTechniqueNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataTechniqueId;
                             xmlTechniqueNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlTechniqueNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataTechniqueName;
                             xmlTechniqueNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlTechniqueNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataTechniqueName;
                             xmlTechniqueNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlTechniqueNode["page"];
+                        XmlElement xmlPage = xmlTechniqueNode["page"];
                         if (xmlTechniqueNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataTechniqueNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlTechniqueNode.AppendChild(xmlIdElement);
                         }
@@ -3977,19 +3977,19 @@ namespace Translator
                     {
                         xmlTechniqueNode = objDataDoc.CreateElement("technique");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataTechniqueId;
                         xmlTechniqueNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataTechniqueName;
                         xmlTechniqueNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataTechniqueName;
                         xmlTechniqueNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataTechniqueNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlTechniqueNode.AppendChild(xmlPageElement);
 
@@ -4091,29 +4091,29 @@ namespace Translator
                     {
                         if (xmlMentorNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataMentorId;
                             xmlMentorNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlMentorNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataMentorName;
                             xmlMentorNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlMentorNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataMentorName;
                             xmlMentorNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlAdvantage = xmlMentorNode["advantage"];
+                        XmlElement xmlAdvantage = xmlMentorNode["advantage"];
                         if (xmlMentorNode["altadvantage"] == null)
                         {
-                            XmlNode xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
+                            XmlElement xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
                             xmlAdvantageElement.InnerText = xmlAdvantage?.InnerText ?? strDataMentorAdvantage;
                             xmlMentorNode.AppendChild(xmlAdvantageElement);
                         }
@@ -4123,10 +4123,10 @@ namespace Translator
                             xmlMentorNode.RemoveChild(xmlAdvantage);
                         }
 
-                        XmlNode xmlDisadvantage = xmlMentorNode["disadvantage"];
+                        XmlElement xmlDisadvantage = xmlMentorNode["disadvantage"];
                         if (xmlMentorNode["altdisadvantage"] == null)
                         {
-                            XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
+                            XmlElement xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
                             xmlDisadvantageElement.InnerText = xmlDisadvantage?.InnerText ?? strDataMentorDisadvantage;
                             xmlMentorNode.AppendChild(xmlDisadvantageElement);
                         }
@@ -4136,11 +4136,11 @@ namespace Translator
                             xmlMentorNode.RemoveChild(xmlDisadvantage);
                         }
 
-                        XmlNode xmlPage = xmlMentorNode["page"];
+                        XmlElement xmlPage = xmlMentorNode["page"];
                         if (xmlMentorNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataMentorNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlMentorNode.AppendChild(xmlIdElement);
                         }
@@ -4154,27 +4154,27 @@ namespace Translator
                     {
                         xmlMentorNode = objDataDoc.CreateElement("mentor");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataMentorId;
                         xmlMentorNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataMentorName;
                         xmlMentorNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataMentorName;
                         xmlMentorNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
+                        XmlElement xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
                         xmlAdvantageElement.InnerText = strDataMentorAdvantage;
                         xmlMentorNode.AppendChild(xmlAdvantageElement);
 
-                        XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
+                        XmlElement xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
                         xmlDisadvantageElement.InnerText = strDataMentorDisadvantage;
                         xmlMentorNode.AppendChild(xmlDisadvantageElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataMentorNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlMentorNode.AppendChild(xmlPageElement);
 
@@ -4201,11 +4201,11 @@ namespace Translator
                             {
                                 xmlChoiceNode = objDataDoc.CreateElement("choice");
 
-                                XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                                XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                                 xmlNameElement.InnerText = strDataChoiceName;
                                 xmlChoiceNode.AppendChild(xmlNameElement);
 
-                                XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                                XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                                 xmlTranslateElement.InnerText = strDataChoiceName;
                                 xmlChoiceNode.AppendChild(xmlTranslateElement);
 
@@ -4308,30 +4308,30 @@ namespace Translator
                     {
                         if (xmlMetamagicNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataMetamagicId;
                             xmlMetamagicNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlMetamagicNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataMetamagicName;
                             xmlMetamagicNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlMetamagicNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataMetamagicName;
                             xmlMetamagicNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlMetamagicNode["page"];
+                        XmlElement xmlPage = xmlMetamagicNode["page"];
                         if (xmlMetamagicNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataMetamagicNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlMetamagicNode.AppendChild(xmlIdElement);
                         }
@@ -4345,19 +4345,19 @@ namespace Translator
                     {
                         xmlMetamagicNode = objDataDoc.CreateElement("metamagic");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataMetamagicId;
                         xmlMetamagicNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataMetamagicName;
                         xmlMetamagicNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataMetamagicName;
                         xmlMetamagicNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataMetamagicNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlMetamagicNode.AppendChild(xmlPageElement);
 
@@ -4425,30 +4425,30 @@ namespace Translator
                     {
                         if (xmlArtNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataArtId;
                             xmlArtNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlArtNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataArtName;
                             xmlArtNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlArtNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataArtName;
                             xmlArtNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlArtNode["page"];
+                        XmlElement xmlPage = xmlArtNode["page"];
                         if (xmlArtNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataArtNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlArtNode.AppendChild(xmlIdElement);
                         }
@@ -4462,19 +4462,19 @@ namespace Translator
                     {
                         xmlArtNode = objDataDoc.CreateElement("art");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataArtId;
                         xmlArtNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataArtName;
                         xmlArtNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataArtName;
                         xmlArtNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataArtNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlArtNode.AppendChild(xmlPageElement);
 
@@ -4562,7 +4562,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -4614,30 +4614,30 @@ namespace Translator
                     {
                         if (xmlMetatypeNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataMetatypeId;
                             xmlMetatypeNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlMetatypeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataMetatypeName;
                             xmlMetatypeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlMetatypeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataMetatypeName;
                             xmlMetatypeNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlMetatypeNode["page"];
+                        XmlElement xmlPage = xmlMetatypeNode["page"];
                         if (xmlMetatypeNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataMetatypeNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlMetatypeNode.AppendChild(xmlIdElement);
                         }
@@ -4651,19 +4651,19 @@ namespace Translator
                     {
                         xmlMetatypeNode = objDataDoc.CreateElement("metatype");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataMetatypeId;
                         xmlMetatypeNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataMetatypeName;
                         xmlMetatypeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataMetatypeName;
                         xmlMetatypeNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataMetatypeNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlMetatypeNode.AppendChild(xmlPageElement);
 
@@ -4754,7 +4754,7 @@ namespace Translator
                         return;
                     if (xmlBlackMarketPipelineCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataBlackMarketPipelineCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlBlackMarketPipelineCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlBlackMarketPipelineCategoryNode = objDataDoc.CreateElement("category");
                         xmlBlackMarketPipelineCategoryNode.InnerText = xmlDataBlackMarketPipelineCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataBlackMarketPipelineCategoryNode.Value;
@@ -4805,14 +4805,14 @@ namespace Translator
                     {
                         if (xmlLimbOptionNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataLimbOptionName;
                             xmlLimbOptionNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlLimbOptionNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataLimbOptionName;
                             xmlLimbOptionNode.AppendChild(xmlTranslateElement);
                         }
@@ -4821,11 +4821,11 @@ namespace Translator
                     {
                         xmlLimbOptionNode = objDataDoc.CreateElement("limb");
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataLimbOptionName;
                         xmlLimbOptionNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataLimbOptionName;
                         xmlLimbOptionNode.AppendChild(xmlTranslateElement);
 
@@ -4883,14 +4883,14 @@ namespace Translator
                     {
                         if (xmlPdfArgumentNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataPdfArgumentName;
                             xmlPdfArgumentNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlPdfArgumentNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataPdfArgumentName;
                             xmlPdfArgumentNode.AppendChild(xmlTranslateElement);
                         }
@@ -4899,11 +4899,11 @@ namespace Translator
                     {
                         xmlPdfArgumentNode = objDataDoc.CreateElement("pdfargument");
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataPdfArgumentName;
                         xmlPdfArgumentNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataPdfArgumentName;
                         xmlPdfArgumentNode.AppendChild(xmlTranslateElement);
 
@@ -4982,7 +4982,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -5036,29 +5036,29 @@ namespace Translator
                     {
                         if (xmlParagonNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataParagonId;
                             xmlParagonNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlParagonNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataParagonName;
                             xmlParagonNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlParagonNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataParagonName;
                             xmlParagonNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlAdvantage = xmlParagonNode["advantage"];
+                        XmlElement xmlAdvantage = xmlParagonNode["advantage"];
                         if (xmlParagonNode["altadvantage"] == null)
                         {
-                            XmlNode xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
+                            XmlElement xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
                             xmlAdvantageElement.InnerText = xmlAdvantage?.InnerText ?? strDataParagonAdvantage;
                             xmlParagonNode.AppendChild(xmlAdvantageElement);
                         }
@@ -5068,10 +5068,10 @@ namespace Translator
                             xmlParagonNode.RemoveChild(xmlAdvantage);
                         }
 
-                        XmlNode xmlDisadvantage = xmlParagonNode["disadvantage"];
+                        XmlElement xmlDisadvantage = xmlParagonNode["disadvantage"];
                         if (xmlParagonNode["altdisadvantage"] == null)
                         {
-                            XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
+                            XmlElement xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
                             xmlDisadvantageElement.InnerText = xmlDisadvantage?.InnerText ?? strDataParagonDisadvantage;
                             xmlParagonNode.AppendChild(xmlDisadvantageElement);
                         }
@@ -5081,11 +5081,11 @@ namespace Translator
                             xmlParagonNode.RemoveChild(xmlDisadvantage);
                         }
 
-                        XmlNode xmlPage = xmlParagonNode["page"];
+                        XmlElement xmlPage = xmlParagonNode["page"];
                         if (xmlParagonNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataParagonNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlParagonNode.AppendChild(xmlIdElement);
                         }
@@ -5099,27 +5099,27 @@ namespace Translator
                     {
                         xmlParagonNode = objDataDoc.CreateElement("mentor");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataParagonId;
                         xmlParagonNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataParagonName;
                         xmlParagonNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataParagonName;
                         xmlParagonNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
+                        XmlElement xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
                         xmlAdvantageElement.InnerText = strDataParagonAdvantage;
                         xmlParagonNode.AppendChild(xmlAdvantageElement);
 
-                        XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
+                        XmlElement xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
                         xmlDisadvantageElement.InnerText = strDataParagonDisadvantage;
                         xmlParagonNode.AppendChild(xmlDisadvantageElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataParagonNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlParagonNode.AppendChild(xmlPageElement);
 
@@ -5146,11 +5146,11 @@ namespace Translator
                             {
                                 xmlChoiceNode = objDataDoc.CreateElement("choice");
 
-                                XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                                XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                                 xmlNameElement.InnerText = strDataChoiceName;
                                 xmlChoiceNode.AppendChild(xmlNameElement);
 
-                                XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                                XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                                 xmlTranslateElement.InnerText = strDataChoiceName;
                                 xmlChoiceNode.AppendChild(xmlTranslateElement);
 
@@ -5255,30 +5255,30 @@ namespace Translator
                     {
                         if (xmlPowerNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataPowerId;
                             xmlPowerNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlPowerNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataPowerName;
                             xmlPowerNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlPowerNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataPowerName;
                             xmlPowerNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlPowerNode["page"];
+                        XmlElement xmlPage = xmlPowerNode["page"];
                         if (xmlPowerNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataPowerNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlPowerNode.AppendChild(xmlIdElement);
                         }
@@ -5292,19 +5292,19 @@ namespace Translator
                     {
                         xmlPowerNode = objDataDoc.CreateElement("power");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataPowerId;
                         xmlPowerNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataPowerName;
                         xmlPowerNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataPowerName;
                         xmlPowerNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataPowerNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlPowerNode.AppendChild(xmlPageElement);
 
@@ -5372,30 +5372,30 @@ namespace Translator
                     {
                         if (xmlEnhancementNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataEnhancementId;
                             xmlEnhancementNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlEnhancementNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataEnhancementName;
                             xmlEnhancementNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlEnhancementNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataEnhancementName;
                             xmlEnhancementNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlEnhancementNode["page"];
+                        XmlElement xmlPage = xmlEnhancementNode["page"];
                         if (xmlEnhancementNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataEnhancementNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlEnhancementNode.AppendChild(xmlIdElement);
                         }
@@ -5409,19 +5409,19 @@ namespace Translator
                     {
                         xmlEnhancementNode = objDataDoc.CreateElement("enhancement");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataEnhancementId;
                         xmlEnhancementNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataEnhancementName;
                         xmlEnhancementNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataEnhancementName;
                         xmlEnhancementNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataEnhancementNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlEnhancementNode.AppendChild(xmlPageElement);
 
@@ -5509,7 +5509,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -5561,21 +5561,21 @@ namespace Translator
                     {
                         if (xmlPriorityNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataPriorityId;
                             xmlPriorityNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlPriorityNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataPriorityName;
                             xmlPriorityNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlPriorityNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataPriorityName;
                             xmlPriorityNode.AppendChild(xmlTranslateElement);
                         }
@@ -5584,15 +5584,15 @@ namespace Translator
                     {
                         xmlPriorityNode = objDataDoc.CreateElement("priority");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataPriorityId;
                         xmlPriorityNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataPriorityName;
                         xmlPriorityNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataPriorityName;
                         xmlPriorityNode.AppendChild(xmlTranslateElement);
 
@@ -5699,7 +5699,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -5751,30 +5751,30 @@ namespace Translator
                     {
                         if (xmlProgramNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataProgramId;
                             xmlProgramNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlProgramNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataProgramName;
                             xmlProgramNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlProgramNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataProgramName;
                             xmlProgramNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlProgramNode["page"];
+                        XmlElement xmlPage = xmlProgramNode["page"];
                         if (xmlProgramNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataProgramNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlProgramNode.AppendChild(xmlIdElement);
                         }
@@ -5788,19 +5788,19 @@ namespace Translator
                     {
                         xmlProgramNode = objDataDoc.CreateElement("program");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataProgramId;
                         xmlProgramNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataProgramName;
                         xmlProgramNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataProgramName;
                         xmlProgramNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataProgramNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlProgramNode.AppendChild(xmlPageElement);
 
@@ -5899,14 +5899,14 @@ namespace Translator
                     {
                         if (xmlRangeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataRangeName;
                             xmlRangeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlRangeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataRangeName;
                             xmlRangeNode.AppendChild(xmlTranslateElement);
                         }
@@ -5915,11 +5915,11 @@ namespace Translator
                     {
                         xmlRangeNode = objDataDoc.CreateElement("range");
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataRangeName;
                         xmlRangeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataRangeName;
                         xmlRangeNode.AppendChild(xmlTranslateElement);
 
@@ -6004,7 +6004,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -6056,30 +6056,30 @@ namespace Translator
                     {
                         if (xmlQualityNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataQualityId;
                             xmlQualityNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlQualityNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataQualityName;
                             xmlQualityNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlQualityNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataQualityName;
                             xmlQualityNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlQualityNode["page"];
+                        XmlElement xmlPage = xmlQualityNode["page"];
                         if (xmlQualityNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataQualityNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlQualityNode.AppendChild(xmlIdElement);
                         }
@@ -6093,19 +6093,19 @@ namespace Translator
                     {
                         xmlQualityNode = objDataDoc.CreateElement("quality");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataQualityId;
                         xmlQualityNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataQualityName;
                         xmlQualityNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataQualityName;
                         xmlQualityNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataQualityNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlQualityNode.AppendChild(xmlPageElement);
 
@@ -6197,21 +6197,21 @@ namespace Translator
                     {
                         if (xmlSettingNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataSettingId;
                             xmlSettingNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlSettingNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataSettingName;
                             xmlSettingNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlSettingNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataSettingName;
                             xmlSettingNode.AppendChild(xmlTranslateElement);
                         }
@@ -6220,15 +6220,15 @@ namespace Translator
                     {
                         xmlSettingNode = objDataDoc.CreateElement("setting");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataSettingId;
                         xmlSettingNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataSettingName;
                         xmlSettingNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataSettingName;
                         xmlSettingNode.AppendChild(xmlTranslateElement);
 
@@ -6324,7 +6324,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -6375,7 +6375,7 @@ namespace Translator
                         return;
                     if (xmlSkillGroupNodesParent.SelectSingleNode("name[. = " + xmlDataSkillGroupNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlSkillGroupNode = objDataDoc.CreateElement("name");
+                        XmlElement xmlSkillGroupNode = objDataDoc.CreateElement("name");
                         xmlSkillGroupNode.InnerText = xmlDataSkillGroupNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataSkillGroupNode.Value;
@@ -6421,30 +6421,30 @@ namespace Translator
                     {
                         if (xmlSkillNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataSkillId;
                             xmlSkillNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlSkillNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataSkillName;
                             xmlSkillNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlSkillNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataSkillName;
                             xmlSkillNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlSkillNode["page"];
+                        XmlElement xmlPage = xmlSkillNode["page"];
                         if (xmlSkillNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataSkillNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlSkillNode.AppendChild(xmlIdElement);
                         }
@@ -6458,19 +6458,19 @@ namespace Translator
                     {
                         xmlSkillNode = objDataDoc.CreateElement("skill");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataSkillId;
                         xmlSkillNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataSkillName;
                         xmlSkillNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataSkillName;
                         xmlSkillNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataSkillNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlSkillNode.AppendChild(xmlPageElement);
 
@@ -6608,21 +6608,21 @@ namespace Translator
                     {
                         if (xmlKnowledgeSkillNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataKnowledgeSkillId;
                             xmlKnowledgeSkillNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlKnowledgeSkillNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataKnowledgeSkillName;
                             xmlKnowledgeSkillNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlKnowledgeSkillNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataKnowledgeSkillName;
                             xmlKnowledgeSkillNode.AppendChild(xmlTranslateElement);
                         }
@@ -6631,15 +6631,15 @@ namespace Translator
                     {
                         xmlKnowledgeSkillNode = objDataDoc.CreateElement("skill");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataKnowledgeSkillId;
                         xmlKnowledgeSkillNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataKnowledgeSkillName;
                         xmlKnowledgeSkillNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataKnowledgeSkillName;
                         xmlKnowledgeSkillNode.AppendChild(xmlTranslateElement);
 
@@ -6797,7 +6797,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -6849,30 +6849,30 @@ namespace Translator
                     {
                         if (xmlSpellNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataSpellId;
                             xmlSpellNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlSpellNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataSpellName;
                             xmlSpellNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlSpellNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataSpellName;
                             xmlSpellNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlSpellNode["page"];
+                        XmlElement xmlPage = xmlSpellNode["page"];
                         if (xmlSpellNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataSpellNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlSpellNode.AppendChild(xmlIdElement);
                         }
@@ -6886,19 +6886,19 @@ namespace Translator
                     {
                         xmlSpellNode = objDataDoc.CreateElement("spell");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataSpellId;
                         xmlSpellNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataSpellName;
                         xmlSpellNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataSpellName;
                         xmlSpellNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataSpellNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlSpellNode.AppendChild(xmlPageElement);
 
@@ -6989,23 +6989,23 @@ namespace Translator
                     {
                         if (xmlPowerNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataPowerName;
                             xmlPowerNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlPowerNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataPowerName;
                             xmlPowerNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlPowerNode["page"];
+                        XmlElement xmlPage = xmlPowerNode["page"];
                         if (xmlPowerNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataPowerNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlPowerNode.AppendChild(xmlIdElement);
                         }
@@ -7019,15 +7019,15 @@ namespace Translator
                     {
                         xmlPowerNode = objDataDoc.CreateElement("power");
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataPowerName;
                         xmlPowerNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataPowerName;
                         xmlPowerNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataPowerNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlPowerNode.AppendChild(xmlPageElement);
 
@@ -7116,30 +7116,30 @@ namespace Translator
                     {
                         if (xmlTraditionNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataTraditionId;
                             xmlTraditionNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlTraditionNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataTraditionName;
                             xmlTraditionNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlTraditionNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataTraditionName;
                             xmlTraditionNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlTraditionNode["page"];
+                        XmlElement xmlPage = xmlTraditionNode["page"];
                         if (xmlTraditionNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataTraditionNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlTraditionNode.AppendChild(xmlIdElement);
                         }
@@ -7153,19 +7153,19 @@ namespace Translator
                     {
                         xmlTraditionNode = objDataDoc.CreateElement("tradition");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataTraditionId;
                         xmlTraditionNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataTraditionName;
                         xmlTraditionNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataTraditionName;
                         xmlTraditionNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataTraditionNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlTraditionNode.AppendChild(xmlPageElement);
 
@@ -7233,30 +7233,30 @@ namespace Translator
                     {
                         if (xmlSpiritNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataSpiritId;
                             xmlSpiritNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlSpiritNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataSpiritName;
                             xmlSpiritNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlSpiritNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataSpiritName;
                             xmlSpiritNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlSpiritNode["page"];
+                        XmlElement xmlPage = xmlSpiritNode["page"];
                         if (xmlSpiritNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataSpiritNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlSpiritNode.AppendChild(xmlIdElement);
                         }
@@ -7270,19 +7270,19 @@ namespace Translator
                     {
                         xmlSpiritNode = objDataDoc.CreateElement("spirit");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataSpiritId;
                         xmlSpiritNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataSpiritName;
                         xmlSpiritNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataSpiritName;
                         xmlSpiritNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataSpiritNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlSpiritNode.AppendChild(xmlPageElement);
 
@@ -7374,21 +7374,21 @@ namespace Translator
                     {
                         if (xmlTipNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataTipId;
                             xmlTipNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlTipNode["text"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("text");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("text");
                             xmlNameElement.InnerText = strDataTipText;
                             xmlTipNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlTipNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataTipText;
                             xmlTipNode.AppendChild(xmlTranslateElement);
                         }
@@ -7397,15 +7397,15 @@ namespace Translator
                     {
                         xmlTipNode = objDataDoc.CreateElement("tip");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataTipId;
                         xmlTipNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("text");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("text");
                         xmlNameElement.InnerText = strDataTipText;
                         xmlTipNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataTipText;
                         xmlTipNode.AppendChild(xmlTranslateElement);
 
@@ -7497,30 +7497,30 @@ namespace Translator
                     {
                         if (xmlTraditionNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataTraditionId;
                             xmlTraditionNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlTraditionNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataTraditionName;
                             xmlTraditionNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlTraditionNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataTraditionName;
                             xmlTraditionNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlTraditionNode["page"];
+                        XmlElement xmlPage = xmlTraditionNode["page"];
                         if (xmlTraditionNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataTraditionNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlTraditionNode.AppendChild(xmlIdElement);
                         }
@@ -7534,19 +7534,19 @@ namespace Translator
                     {
                         xmlTraditionNode = objDataDoc.CreateElement("tradition");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataTraditionId;
                         xmlTraditionNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataTraditionName;
                         xmlTraditionNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataTraditionName;
                         xmlTraditionNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataTraditionNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlTraditionNode.AppendChild(xmlPageElement);
 
@@ -7608,30 +7608,30 @@ namespace Translator
                     {
                         if (xmlSpiritNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataSpiritId;
                             xmlSpiritNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlSpiritNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataSpiritName;
                             xmlSpiritNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlSpiritNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataSpiritName;
                             xmlSpiritNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlSpiritNode["page"];
+                        XmlElement xmlPage = xmlSpiritNode["page"];
                         if (xmlSpiritNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataSpiritNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlSpiritNode.AppendChild(xmlIdElement);
                         }
@@ -7645,19 +7645,19 @@ namespace Translator
                     {
                         xmlSpiritNode = objDataDoc.CreateElement("spirit");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataSpiritId;
                         xmlSpiritNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataSpiritName;
                         xmlSpiritNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataSpiritName;
                         xmlSpiritNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataSpiritNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlSpiritNode.AppendChild(xmlPageElement);
 
@@ -7719,21 +7719,21 @@ namespace Translator
                     {
                         if (xmlDrainAttributeNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataDrainAttributeId;
                             xmlDrainAttributeNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlDrainAttributeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataDrainAttributeName;
                             xmlDrainAttributeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlDrainAttributeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataDrainAttributeName;
                             xmlDrainAttributeNode.AppendChild(xmlTranslateElement);
                         }
@@ -7742,15 +7742,15 @@ namespace Translator
                     {
                         xmlDrainAttributeNode = objDataDoc.CreateElement("drainattribute");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataDrainAttributeId;
                         xmlDrainAttributeNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataDrainAttributeName;
                         xmlDrainAttributeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataDrainAttributeName;
                         xmlDrainAttributeNode.AppendChild(xmlTranslateElement);
 
@@ -7832,7 +7832,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -7880,7 +7880,7 @@ namespace Translator
                         return;
                     if (xmlModCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -7926,30 +7926,30 @@ namespace Translator
                     {
                         if (xmlVehicleNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataVehicleId;
                             xmlVehicleNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlVehicleNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataVehicleName;
                             xmlVehicleNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlVehicleNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataVehicleName;
                             xmlVehicleNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlVehicleNode["page"];
+                        XmlElement xmlPage = xmlVehicleNode["page"];
                         if (xmlVehicleNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataVehicleNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlVehicleNode.AppendChild(xmlIdElement);
                         }
@@ -7963,19 +7963,19 @@ namespace Translator
                     {
                         xmlVehicleNode = objDataDoc.CreateElement("vehicle");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataVehicleId;
                         xmlVehicleNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataVehicleName;
                         xmlVehicleNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataVehicleName;
                         xmlVehicleNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataVehicleNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlVehicleNode.AppendChild(xmlPageElement);
 
@@ -8037,30 +8037,30 @@ namespace Translator
                     {
                         if (xmlVehicleModNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataVehicleModId;
                             xmlVehicleModNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlVehicleModNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataVehicleModName;
                             xmlVehicleModNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlVehicleModNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataVehicleModName;
                             xmlVehicleModNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlVehicleModNode["page"];
+                        XmlElement xmlPage = xmlVehicleModNode["page"];
                         if (xmlVehicleModNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataVehicleModNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlVehicleModNode.AppendChild(xmlIdElement);
                         }
@@ -8074,19 +8074,19 @@ namespace Translator
                     {
                         xmlVehicleModNode = objDataDoc.CreateElement("mod");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataVehicleModId;
                         xmlVehicleModNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataVehicleModName;
                         xmlVehicleModNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataVehicleModName;
                         xmlVehicleModNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataVehicleModNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlVehicleModNode.AppendChild(xmlPageElement);
 
@@ -8148,30 +8148,30 @@ namespace Translator
                     {
                         if (xmlWeaponMountNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataWeaponMountId;
                             xmlWeaponMountNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlWeaponMountNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataWeaponMountName;
                             xmlWeaponMountNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlWeaponMountNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataWeaponMountName;
                             xmlWeaponMountNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlWeaponMountNode["page"];
+                        XmlElement xmlPage = xmlWeaponMountNode["page"];
                         if (xmlWeaponMountNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataWeaponMountNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlWeaponMountNode.AppendChild(xmlIdElement);
                         }
@@ -8185,19 +8185,19 @@ namespace Translator
                     {
                         xmlWeaponMountNode = objDataDoc.CreateElement("weaponmount");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataWeaponMountId;
                         xmlWeaponMountNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataWeaponMountName;
                         xmlWeaponMountNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataWeaponMountName;
                         xmlWeaponMountNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataWeaponMountNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlWeaponMountNode.AppendChild(xmlPageElement);
 
@@ -8259,30 +8259,30 @@ namespace Translator
                     {
                         if (xmlWeaponMountModNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataWeaponMountModId;
                             xmlWeaponMountModNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlWeaponMountModNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataWeaponMountModName;
                             xmlWeaponMountModNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlWeaponMountModNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataWeaponMountModName;
                             xmlWeaponMountModNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlWeaponMountModNode["page"];
+                        XmlElement xmlPage = xmlWeaponMountModNode["page"];
                         if (xmlWeaponMountModNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataWeaponMountModNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlWeaponMountModNode.AppendChild(xmlIdElement);
                         }
@@ -8296,19 +8296,19 @@ namespace Translator
                     {
                         xmlWeaponMountModNode = objDataDoc.CreateElement("mod");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataWeaponMountModId;
                         xmlWeaponMountModNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataWeaponMountModName;
                         xmlWeaponMountModNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataWeaponMountModName;
                         xmlWeaponMountModNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataWeaponMountModNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlWeaponMountModNode.AppendChild(xmlPageElement);
 
@@ -8398,7 +8398,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -8450,30 +8450,30 @@ namespace Translator
                     {
                         if (xmlMetatypeNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataMetatypeId;
                             xmlMetatypeNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlMetatypeNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataMetatypeName;
                             xmlMetatypeNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlMetatypeNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataMetatypeName;
                             xmlMetatypeNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlMetatypeNode["page"];
+                        XmlElement xmlPage = xmlMetatypeNode["page"];
                         if (xmlMetatypeNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataMetatypeNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlMetatypeNode.AppendChild(xmlIdElement);
                         }
@@ -8487,19 +8487,19 @@ namespace Translator
                     {
                         xmlMetatypeNode = objDataDoc.CreateElement("metatype");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataMetatypeId;
                         xmlMetatypeNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataMetatypeName;
                         xmlMetatypeNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataMetatypeName;
                         xmlMetatypeNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataMetatypeNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlMetatypeNode.AppendChild(xmlPageElement);
 
@@ -8587,7 +8587,7 @@ namespace Translator
                         return;
                     if (xmlCategoryNodesParent.SelectSingleNode("category[. = " + xmlDataCategoryNode.Value.CleanXPath() + "]") == null)
                     {
-                        XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
+                        XmlElement xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.Value;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.Value;
@@ -8639,30 +8639,30 @@ namespace Translator
                     {
                         if (xmlWeaponNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataWeaponId;
                             xmlWeaponNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlWeaponNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataWeaponName;
                             xmlWeaponNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlWeaponNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataWeaponName;
                             xmlWeaponNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlWeaponNode["page"];
+                        XmlElement xmlPage = xmlWeaponNode["page"];
                         if (xmlWeaponNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataWeaponNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlWeaponNode.AppendChild(xmlIdElement);
                         }
@@ -8676,19 +8676,19 @@ namespace Translator
                     {
                         xmlWeaponNode = objDataDoc.CreateElement("weapon");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataWeaponId;
                         xmlWeaponNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataWeaponName;
                         xmlWeaponNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataWeaponName;
                         xmlWeaponNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataWeaponNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlWeaponNode.AppendChild(xmlPageElement);
 
@@ -8750,30 +8750,30 @@ namespace Translator
                     {
                         if (xmlAccessoryNode["id"] == null)
                         {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                             xmlIdElement.InnerText = strDataAccessoryId;
                             xmlAccessoryNode.PrependChild(xmlIdElement);
                         }
 
                         if (xmlAccessoryNode["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataAccessoryName;
                             xmlAccessoryNode.AppendChild(xmlNameElement);
                         }
 
                         if (xmlAccessoryNode["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataAccessoryName;
                             xmlAccessoryNode.AppendChild(xmlTranslateElement);
                         }
 
-                        XmlNode xmlPage = xmlAccessoryNode["page"];
+                        XmlElement xmlPage = xmlAccessoryNode["page"];
                         if (xmlAccessoryNode["altpage"] == null)
                         {
                             string strPage = xmlPage?.InnerText ?? xmlDataAccessoryNode.SelectSingleNode("page")?.Value ?? string.Empty;
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                             xmlIdElement.InnerText = strPage;
                             xmlAccessoryNode.AppendChild(xmlIdElement);
                         }
@@ -8787,19 +8787,19 @@ namespace Translator
                     {
                         xmlAccessoryNode = objDataDoc.CreateElement("accessory");
 
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        XmlElement xmlIdElement = objDataDoc.CreateElement("id");
                         xmlIdElement.InnerText = strDataAccessoryId;
                         xmlAccessoryNode.AppendChild(xmlIdElement);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataAccessoryName;
                         xmlAccessoryNode.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataAccessoryName;
                         xmlAccessoryNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                         xmlPageElement.InnerText = xmlDataAccessoryNode.SelectSingleNode("page")?.Value ?? string.Empty;
                         xmlAccessoryNode.AppendChild(xmlPageElement);
 
@@ -8873,14 +8873,14 @@ namespace Translator
                     {
                         if (xmlSubItem["name"] == null)
                         {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                             xmlNameElement.InnerText = strDataSubItemName;
                             xmlSubItem.AppendChild(xmlNameElement);
                         }
 
                         if (xmlSubItem["translate"] == null)
                         {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                             xmlTranslateElement.InnerText = strDataSubItemName;
                             xmlSubItem.AppendChild(xmlTranslateElement);
                         }
@@ -8888,11 +8888,11 @@ namespace Translator
                         // do we process pages?
                         if (blnProcessPages)
                         {
-                            XmlNode xmlPage = xmlSubItem["page"];
+                            XmlElement xmlPage = xmlSubItem["page"];
                             if (xmlSubItem["altpage"] == null)
                             {
                                 string strPage = xmlPage?.InnerText ?? xmlDataSubItem.SelectSingleNode("page")?.Value ?? string.Empty;
-                                XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                                XmlElement xmlIdElement = objDataDoc.CreateElement("altpage");
                                 xmlIdElement.InnerText = strPage;
                                 xmlSubItem.AppendChild(xmlIdElement);
                             }
@@ -8907,18 +8907,18 @@ namespace Translator
                     {
                         xmlSubItem = objDataDoc.CreateElement(strSubItem);
 
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        XmlElement xmlNameElement = objDataDoc.CreateElement("name");
                         xmlNameElement.InnerText = strDataSubItemName;
                         xmlSubItem.AppendChild(xmlNameElement);
 
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        XmlElement xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataSubItemName;
                         xmlSubItem.AppendChild(xmlTranslateElement);
 
                         // do we process pages?
                         if (blnProcessPages)
                         {
-                            XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                            XmlElement xmlPageElement = objDataDoc.CreateElement("altpage");
                             xmlPageElement.InnerText = xmlDataSubItem.SelectSingleNode("page")?.Value ?? string.Empty;
                             xmlSubItem.AppendChild(xmlPageElement);
                         }

@@ -543,7 +543,7 @@ namespace Translator
                             if (state.ShouldExitCurrentIteration)
                                 return default;
                             strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
-                            XmlNode xmlNodeAttributesTranslated = xmlNodeLocal.Attributes?["translated"];
+                            XmlAttribute xmlNodeAttributesTranslated = xmlNodeLocal.Attributes?["translated"];
                             blnTranslated = xmlNodeAttributesTranslated != null
                                 ? xmlNodeAttributesTranslated.InnerText == bool.TrueString
                                 : strEnglish != strTranslated;
@@ -770,7 +770,7 @@ namespace Translator
                                         string strDisadvantageAlt = string.Empty;
 
                                         bool blnAdvantage = strFileName == "mentors.xml" || strFileName == "paragons.xml";
-                                        XmlNode xmlChildNameNode = xmlChildNode["name"];
+                                        XmlElement xmlChildNameNode = xmlChildNode["name"];
                                         if (xmlChildNameNode == null)
                                         {
                                             strName = xmlChildNode.InnerText;

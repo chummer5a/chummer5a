@@ -303,7 +303,7 @@ namespace WpfApplication1
             // Create the default critter tab bonus.
             XmlElement xmlBonusNode = doc.CreateElement("bonus");
             XmlElement xmlChildNode = doc.CreateElement("enabletab");
-            XmlNode xmlTabNode = doc.CreateElement("name");
+            XmlElement xmlTabNode = doc.CreateElement("name");
             xmlTabNode.InnerText = "critter";
             xmlChildNode.AppendChild(xmlTabNode);
             xmlBonusNode.AppendChild(xmlChildNode);

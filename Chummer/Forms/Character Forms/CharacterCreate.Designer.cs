@@ -18676,8 +18676,6 @@ namespace Chummer
         private ColorableCheckBox chkJoinGroup;
         private System.Windows.Forms.GroupBox gpbInitiationType;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianSpell;
-        private System.Windows.Forms.FlowLayoutPanel flpFadingAttributesValue;
-        private System.Windows.Forms.FlowLayoutPanel flpTechnomancer;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerComplexForm;
         private System.Windows.Forms.Label lblComplexFormDicePoolLabel;
         private LabelWithToolTip lblComplexFormDicePool;
