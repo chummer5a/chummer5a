@@ -18,6 +18,7 @@ namespace Chummer
         {
             if (disposing)
             {
+                picMugshot.Image = null; // Clear the mugshot image so that we don't get crashes from disposal ordering (image can get disposed before its picturebox does)
                 _lstCharacterCache?.Dispose();
                 List<Bitmap> lstImages = _dicImages.GetValuesToListSafe();
                 _dicImages.Clear();

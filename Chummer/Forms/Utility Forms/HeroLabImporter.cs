@@ -594,8 +594,9 @@ namespace Chummer
                 {
                     try
                     {
-                        x.SizeMode = x.Image != null && x.Height >= x.Image.Height
-                                                     && x.Width >= x.Image.Width
+                        Image imgValue = x.Image;
+                        x.SizeMode = imgValue != null && x.Height >= imgValue.Height
+                                                      && x.Width >= imgValue.Width
                             ? PictureBoxSizeMode.CenterImage
                             : PictureBoxSizeMode.Zoom;
                     }
