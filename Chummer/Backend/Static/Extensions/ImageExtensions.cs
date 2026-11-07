@@ -450,6 +450,10 @@ namespace Chummer
                             eOverrideFormat = ImageFormat.Jpeg;
                         else if (ImageFormat.Gif.Equals(imgToConvert.RawFormat))
                             eOverrideFormat = ImageFormat.Gif;
+                        else if (ImageFormat.Bmp.Equals(imgToConvert.RawFormat))
+                            eOverrideFormat = ImageFormat.Bmp;
+                        else if (ImageFormat.Tiff.Equals(imgToConvert.RawFormat))
+                            eOverrideFormat = ImageFormat.Tiff;
                         else
                             eOverrideFormat = ImageFormat.Png;
                     }
@@ -554,6 +558,10 @@ namespace Chummer
                             eOverrideFormat = ImageFormat.Jpeg;
                         else if (ImageFormat.Gif.Equals(imgToConvert.RawFormat))
                             eOverrideFormat = ImageFormat.Gif;
+                        else if (ImageFormat.Bmp.Equals(imgToConvert.RawFormat))
+                            eOverrideFormat = ImageFormat.Bmp;
+                        else if (ImageFormat.Tiff.Equals(imgToConvert.RawFormat))
+                            eOverrideFormat = ImageFormat.Tiff;
                         else
                             eOverrideFormat = ImageFormat.Png;
                     }
