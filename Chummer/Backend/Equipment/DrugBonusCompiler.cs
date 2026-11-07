@@ -33,17 +33,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Result of compiling a drug's effects.
         /// </summary>
-        public sealed class CompileResult
+        public readonly struct CompileResult
         {
+            public CompileResult(XmlNode xmlBonusNode, IEnumerable<XmlNode> lstQualityNodes)
+            {
+                BonusNode = xmlBonusNode;
+                QualityNodes = new List<XmlNode>(lstQualityNodes);
+            }
+
             /// <summary>
             /// Bonus node suitable for CreateImprovements (quality nodes removed).
             /// </summary>
-            public XmlNode BonusNode { get; set; }
+            public XmlNode BonusNode { get; }
 
             /// <summary>
             /// Quality nodes stripped from the bonus; handled as disabled SpecificQuality stubs.
             /// </summary>
-            public IReadOnlyList<XmlNode> QualityNodes { get; set; } = Array.Empty<XmlNode>();
+            public IReadOnlyList<XmlNode> QualityNodes { get; }
         }
 
         /// <summary>
@@ -297,11 +303,7 @@ namespace Chummer.Backend.Equipment
             foreach (XmlNode nodRemove in lstToRemove)
                 nodBonusRoot.RemoveChild(nodRemove);
 
-            return new CompileResult
-            {
-                BonusNode = nodBonusRoot.ChildNodes.Count > 0 ? nodBonusRoot : null,
-                QualityNodes = lstQualities
-            };
+            return new CompileResult(nodBonusRoot.ChildNodes.Count > 0 ? nodBonusRoot : null, lstQualities);
         }
     }
 }
