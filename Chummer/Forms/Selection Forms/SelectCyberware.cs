@@ -2014,7 +2014,7 @@ namespace Chummer
                             if (decExactCost > 0)
                             {
                                 // Exact essence filtering (use larger epsilon because of potential fuzziness around markups)
-                                if (Math.Abs(decCost - decExactCost) > DecimalExtensions.DoubleEpsilon)
+                                if (Math.Abs(decCost - decExactCost) > DecimalExtensions.DoubleMantissaEpsilon)
                                 {
                                     continue;
                                 }

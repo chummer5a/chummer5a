@@ -29,9 +29,9 @@ namespace Chummer
         internal const decimal Epsilon = 0.000000000000000000000000001M;
 
         /// <summary>
-        /// <see cref="double.Epsilon"/> expressed in the decimal type
+        /// Smallest positive number supported by the double type's mantissa (the non-exponent region)
         /// </summary>
-        internal const decimal DoubleEpsilon = (decimal)double.Epsilon;
+        internal const decimal DoubleMantissaEpsilon = 0.000000000000001M;
 
         /// <summary>
         /// Syntactic sugar for rounding a decimal away from zero and then converting it to an integer.

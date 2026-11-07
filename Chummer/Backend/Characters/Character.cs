@@ -23209,7 +23209,7 @@ namespace Chummer
 
                     // Need this to make sure our division doesn't go haywire
                     if (decReturn <= 0)
-                        decReturn = DecimalExtensions.DoubleEpsilon;
+                        decReturn = DecimalExtensions.Epsilon;
 
                     return _decCachedEncumbranceInterval = decReturn;
                 }
@@ -23242,7 +23242,7 @@ namespace Chummer
 
                 // Need this to make sure our division doesn't go haywire
                 if (decReturn <= 0)
-                    decReturn = DecimalExtensions.DoubleEpsilon;
+                    decReturn = DecimalExtensions.Epsilon;
 
                 return _decCachedEncumbranceInterval = decReturn;
             }

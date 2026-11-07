@@ -825,7 +825,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Sqrt(double)"/> that tries to get the result to decimal precision by using a Newton-Raphson process after obtaining a guess from casting.
-        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="DecimalExtensions.DoubleMantissaEpsilon"/>, is usually slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than 0, which is outside the domain for a square root.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -835,7 +835,9 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
 
             // Couple of common and/or trivial cases
-            if (d < s_adecIntRoots.Length)
+            if (d == 0)
+                return 0;
+            if (d < s_adecIntRoots.Length && d >= 1)
             {
                 int intNumber = d.ToInt32();
                 if (intNumber == d)
@@ -845,7 +847,7 @@ namespace Chummer
             }
 
             // If the amount of precision we need is sufficiently met by Math.Sqrt, then just use that
-            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+            if (decEpsilon >= DecimalExtensions.DoubleMantissaEpsilon)
                 return Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
             if (decEpsilon < 0)
                 throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
@@ -855,7 +857,7 @@ namespace Chummer
             // Start doing Newton-Raphson iterations to find the root of the function f(x) = x^2 - a, which is equivalent to finding x when x = sqrt(a)
             // Use Math.Sqrt for doing square roots because we kind of have to for the initial guess, there's no easy way to do roots with built-in decimal arithmetic
             decimal decPrevious = Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
-            decimal decCurrent = (decPrevious + d / decPrevious) / 2; // Do at least one Newton-Raphson iteration because we expect the initial guess to be insufficient if we know our epsilon is smaller than double.Epsilon
+            decimal decCurrent = (decPrevious + d / decPrevious) / 2; // Do at least one Newton-Raphson iteration because we expect the initial guess to be insufficient if we know our epsilon is smaller than what doubles could support
             while (Math.Abs(decCurrent - decPrevious) > decEpsilon && decCurrent != 0.0m)
             {
                 decPrevious = decCurrent;
@@ -974,7 +976,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Pow(double, double)"/> that tries to get the result to decimal precision by using a Newton-Raphson process after obtaining a guess from casting.
-        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="DecimalExtensions.DoubleMantissaEpsilon"/>, is usually slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/> is less than 0 while <paramref name="y"/> is not an integer, which is undefined.</exception>
         /// <exception cref="DivideByZeroException"><paramref name="x"/> is 0 while <paramref name="y"/> is negative, which would result in a division by zero.</exception>
@@ -984,7 +986,7 @@ namespace Chummer
             // Special case for square roots because they are common enough
             if (y == 0.5m)
                 return x.Sqrt(decEpsilon);
-            if (y < 0 && x == decimal.Zero)
+            if (y < 0 && x == 0)
                 throw new DivideByZeroException();
 
             // If we have an integer power, then we can maintain absolute precision without any conversion to floating-point
@@ -996,7 +998,7 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(x), "Cannot raise negative number to a fractional power");
 
             // If the amount of precision we need is sufficiently met by Math.Sqrt, then just use that
-            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+            if (decEpsilon >= DecimalExtensions.DoubleMantissaEpsilon)
                 return Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
             if (decEpsilon < 0)
                 throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
@@ -1006,7 +1008,7 @@ namespace Chummer
             // Start doing Newton-Raphson iterations to find the root of the function f(x) = x^(1/b) - a, which is equivalent to finding x when x = a^b
             // Use Math.Pow for doing roots and fractional exponents because we kind of have to for the initial guess, there's no easy way to do roots with built-in decimal arithmetic
             decimal decPrevious = Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
-            decimal decCurrent = (1m - y) * decPrevious + x * y / decPrevious.Pow(1m / y - 1m, decEpsilon); // Do at least one Newton-Raphson iteration because we expect the initial guess to be insufficient if we know our epsilon is smaller than double.Epsilon
+            decimal decCurrent = (1m - y) * decPrevious + x * y / decPrevious.Pow(1m / y - 1m, decEpsilon); // Do at least one Newton-Raphson iteration because we expect the initial guess to be insufficient if we know our epsilon is smaller than what doubles could support
             while (Math.Abs(decCurrent - decPrevious) > decEpsilon && decCurrent != 0.0m)
             {
                 decPrevious = decCurrent;
@@ -1038,7 +1040,7 @@ namespace Chummer
                     return 1;
 
                 case -1:
-                    if (x == decimal.Zero)
+                    if (x == 0)
                         throw new DivideByZeroException();
                     return 1.0m / x;
             }
@@ -1232,7 +1234,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Log(double, double)"/> that avoids casting to floating-point until appropriate.
-        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="DecimalExtensions.DoubleMantissaEpsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="a"/> or <paramref name="newBase"/> are less than or equal to 0 or <paramref name="newBase"/> is 1, which are outside the domain for a logarithm.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1248,7 +1250,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Log(double)"/> that avoids casting to floating-point until appropriate.
-        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="DecimalExtensions.DoubleMantissaEpsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         public static decimal Log(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
@@ -1261,7 +1263,7 @@ namespace Chummer
             if (d >= Euler || d <= 1 / Euler)
                 return Log2(d, decEpsilon) / Log2_e; // Log_2(e) for transforming the base
             // If the amount of precision we need is sufficiently met by Math.Log, then just use that
-            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+            if (decEpsilon >= DecimalExtensions.DoubleMantissaEpsilon)
                 return Convert.ToDecimal(Math.Log(Convert.ToDouble(d)));
             if (decEpsilon < 0)
                 throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
@@ -1310,7 +1312,7 @@ namespace Chummer
 
         /// <summary>
         /// A decimal-precision version of <see cref="Math.Log10(double)"/> that avoids casting to floating-point until appropriate.
-        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
+        /// NOTE: If <paramref name="decEpsilon"/> is less than <see cref="DecimalExtensions.DoubleMantissaEpsilon"/>, is usually *much* slower compared to casting and using the floating-point version, so only use this if the extra precision is absolutely needed.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1321,7 +1323,7 @@ namespace Chummer
 
         /// <summary>
         /// A high-precision version of calculating a base-2 logarithm, used for an arbitrary precision number that avoids casting to floating-point until appropriate.
-        /// Note: If <paramref name="decEpsilon"/> is less than <see cref="double.Epsilon"/>, can be quite slow compared to just using Math.Log.
+        /// Note: If <paramref name="decEpsilon"/> is less than <see cref="DecimalExtensions.DoubleMantissaEpsilon"/>, can be quite slow compared to just using Math.Log.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         private static decimal Log2(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
@@ -1351,7 +1353,7 @@ namespace Chummer
             if (d == 1)
                 return blnNegate ? -decReturn : decReturn;
             // If the amount of precision we need is sufficiently met by Math.Log, then just use that for the fraction part
-            if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
+            if (decEpsilon >= DecimalExtensions.DoubleMantissaEpsilon)
             {
                 decReturn += Convert.ToDecimal(Math.Log(Convert.ToDouble(d), 2.0));
                 return blnNegate ? -decReturn : decReturn;
