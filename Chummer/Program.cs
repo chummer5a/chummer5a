@@ -1656,8 +1656,6 @@ namespace Chummer
 
         private static LoadingBar s_frmTopMostLoadingBar;
 
-        private static readonly ConcurrentHashSet<LoadingBar> s_setLoadingBars = new ConcurrentHashSet<LoadingBar>();
-
         /// <summary>
         /// Syntactic sugar for creating and displaying a LoadingBar screen with specific text and progress bar size.
         /// </summary>
@@ -1672,16 +1670,10 @@ namespace Chummer
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
             {
-                x.Closed += (_, args) =>
-                {
-                    s_setLoadingBars.Remove(x);
-                    Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
-                };
+                x.Disposed += (_, args) => Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
                 x.Show();
             });
             Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, frmReturn.MyForm, null);
-            if (!s_setLoadingBars.TryAdd(frmReturn.MyForm))
-                throw new InvalidOperationException();
             return frmReturn;
         }
 
@@ -1701,16 +1693,10 @@ namespace Chummer
                 await frmReturn.MyForm.ResetAsync(intCount, token).ConfigureAwait(false);
             await frmReturn.MyForm.DoThreadSafeAsync(x =>
             {
-                x.Closed += (sender, args) =>
-                {
-                    s_setLoadingBars.Remove(x);
-                    Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
-                };
+                x.Disposed += (_, args) => Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
                 x.Show();
             }, token).ConfigureAwait(false);
             Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, frmReturn.MyForm, null);
-            if (!s_setLoadingBars.TryAdd(frmReturn.MyForm))
-                throw new InvalidOperationException();
             return frmReturn;
         }
 
