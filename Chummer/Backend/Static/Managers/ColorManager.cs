@@ -742,10 +742,7 @@ namespace Chummer
                 case Form frmControl:
                     MenuStrip objMainMenuStrip = frmControl.DoThreadSafeFunc(x => x.MainMenuStrip, token);
                     if (objMainMenuStrip != null)
-                    {
-                        foreach (ToolStripMenuItem tssItem in objMainMenuStrip.DoThreadSafeFunc(x => x.Items, token))
-                            ApplyColorsRecursively(tssItem, blnLightMode, token);
-                    }
+                        ApplyColorsRecursively(objMainMenuStrip, blnLightMode, token);
                     goto default;
                 case TabControl objTabControl:
                     foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc(x => x.TabPages, token))
@@ -1259,10 +1256,7 @@ namespace Chummer
                 case Form frmControl:
                     MenuStrip objMainMenuStrip = await frmControl.DoThreadSafeFuncAsync(x => x.MainMenuStrip, token).ConfigureAwait(false);
                     if (objMainMenuStrip != null)
-                    {
-                        foreach (ToolStripMenuItem tssItem in await objMainMenuStrip.DoThreadSafeFuncAsync(x => x.Items, token).ConfigureAwait(false))
-                            await ApplyColorsRecursivelyAsync(tssItem, blnLightMode, token).ConfigureAwait(false);
-                    }
+                        await ApplyColorsRecursivelyAsync(objMainMenuStrip, blnLightMode, token).ConfigureAwait(false);
                     goto default;
                 case TabControl objTabControl:
                     foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync(x => x.TabPages, token).ConfigureAwait(false))
