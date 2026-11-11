@@ -1719,52 +1719,34 @@ namespace Chummer
                         }
                         using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
                         {
-                            bool blnEnglishLanguageLoaded;
                             CancellationToken objFoundItemToken = objFoundItemSource.Token;
                             if (!string.IsNullOrEmpty(strPreferFile))
                             {
                                 if (string.Equals(strPreferFile, "lang", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    blnEnglishLanguageLoaded = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        ? LoadLanguage(GlobalSettings.DefaultLanguage, token)
-                                        : await LoadLanguageAsync(GlobalSettings.DefaultLanguage, token)
-                                            .ConfigureAwait(false);
-                                    if (blnEnglishLanguageLoaded)
+                                    string strPreferFoundKey = string.Empty;
+                                    foreach (KeyValuePair<string, string> kvpLoop in s_DicEnglishStrings) // Queried this way to make sure the dictionary is locked from writes while we're checking it
                                     {
-                                        bool blnSuccess = LoadedLanguageData.TryGetValue(
-                                            GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                            out LanguageData objEnglishLanguageData);
-
                                         token.ThrowIfCancellationRequested();
-                                        if (blnSuccess)
+                                        if (kvpLoop.Value == strExtraNoQuotes)
                                         {
-                                            string strFoundKey = string.Empty;
-                                            foreach (KeyValuePair<string, string> kvpLoop in objEnglishLanguageData
-                                                         .TranslatedStrings)
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                if (kvpLoop.Value == strExtraNoQuotes)
-                                                {
-                                                    strFoundKey = kvpLoop.Key;
-                                                    break;
-                                                }
-                                            }
+                                            strPreferFoundKey = kvpLoop.Key;
+                                            break;
+                                        }
+                                    }
 
-                                            if (!string.IsNullOrEmpty(strFoundKey))
-                                            {
-                                                strTemp = blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    ? GetString(strFoundKey, strIntoLanguage, false, token: token)
-                                                    : await GetStringAsync(
-                                                            strFoundKey, strIntoLanguage, false, token: token)
-                                                        .ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(strTemp))
-                                                {
-                                                    strReturn = strTemp;
-                                                    break;
-                                                }
-                                            }
+                                    if (!string.IsNullOrEmpty(strPreferFoundKey))
+                                    {
+                                        strTemp = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? GetString(strPreferFoundKey, strIntoLanguage, false, token: token)
+                                            : await GetStringAsync(
+                                                    strPreferFoundKey, strIntoLanguage, false, token: token)
+                                                .ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strTemp))
+                                        {
+                                            strReturn = strTemp;
+                                            break;
                                         }
                                     }
                                 }
@@ -1797,44 +1779,28 @@ namespace Chummer
                                 break;
 
                             // Look through loaded strings first because that's faster than trawling through the XML data
-                            blnEnglishLanguageLoaded = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? LoadLanguage(GlobalSettings.DefaultLanguage, token)
-                                : await LoadLanguageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
-                            if (blnEnglishLanguageLoaded)
+                            string strFoundKey = string.Empty;
+                            foreach (KeyValuePair<string, string> kvpLoop in s_DicEnglishStrings) // Queried this way to make sure the dictionary is locked from writes while we're checking it
                             {
-                                bool blnSuccess = LoadedLanguageData.TryGetValue(
-                                    GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                    out LanguageData objEnglishLanguageData);
-
                                 token.ThrowIfCancellationRequested();
-                                if (blnSuccess)
+                                if (kvpLoop.Value == strExtraNoQuotes)
                                 {
-                                    string strFoundKey = string.Empty;
-                                    foreach (KeyValuePair<string, string> kvpLoop in objEnglishLanguageData
-                                                 .TranslatedStrings)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (kvpLoop.Value == strExtraNoQuotes)
-                                        {
-                                            strFoundKey = kvpLoop.Key;
-                                            break;
-                                        }
-                                    }
+                                    strFoundKey = kvpLoop.Key;
+                                    break;
+                                }
+                            }
 
-                                    if (!string.IsNullOrEmpty(strFoundKey))
-                                    {
-                                        strTemp = blnSync
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            ? GetString(strFoundKey, strIntoLanguage, false, token: token)
-                                            : await GetStringAsync(strFoundKey, strIntoLanguage, false, token: token)
-                                                .ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(strTemp))
-                                        {
-                                            strReturn = strTemp;
-                                            break;
-                                        }
-                                    }
+                            if (!string.IsNullOrEmpty(strFoundKey))
+                            {
+                                strTemp = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? GetString(strFoundKey, strIntoLanguage, false, token: token)
+                                    : await GetStringAsync(strFoundKey, strIntoLanguage, false, token: token)
+                                        .ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strTemp))
+                                {
+                                    strReturn = strTemp;
+                                    break;
                                 }
                             }
 
