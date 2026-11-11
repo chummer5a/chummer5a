@@ -2367,6 +2367,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     AddDrugQualityImprovements(objCompileResult.QualityNodes, strDisplayName, token);
+                    // Because improvements from the compile bonus node have already been added and processed before the quality ones, we need to have a separate finalizer that handles both groups
                     FinalizeDrugImprovements(strGroupName, token);
                     // The descriptions list catalog bonuses from these improvements, so rebuild them.
                     _strDescription = string.Empty;
@@ -2432,6 +2433,7 @@ namespace Chummer.Backend.Equipment
 
                     await AddDrugQualityImprovementsAsync(objCompileResult.QualityNodes, strDisplayName, token)
                         .ConfigureAwait(false);
+                    // Because improvements from the compile bonus node have already been added and processed before the quality ones, we need to have a separate finalizer that handles both groups
                     await FinalizeDrugImprovementsAsync(strGroupName, token).ConfigureAwait(false);
                     // The descriptions list catalog bonuses from these improvements, so rebuild them.
                     _strDescription = string.Empty;
@@ -2496,9 +2498,9 @@ namespace Chummer.Backend.Equipment
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.SpecificQuality,
                     CustomName = strCustomName,
-                    SetupComplete = true
+                    Rating = Math.Max(1, intCount)
+                    // These improvements will get disabled anyway in the finalize method, so don't mark setup complete here because we don't want to process events for them
                 };
-                objImprovement.Rating = Math.Max(1, intCount);
                 lstImprovements.Add(objImprovement);
             }
 
@@ -2554,10 +2556,10 @@ namespace Chummer.Backend.Equipment
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
                     ImproveType = Improvement.ImprovementType.SpecificQuality,
-                    CustomName = strCustomName,
-                    SetupComplete = true
+                    CustomName = strCustomName
                 };
                 await objImprovement.SetRatingAsync(Math.Max(1, intCount), token).ConfigureAwait(false);
+                // These improvements will get disabled anyway in the finalize method, so don't mark setup complete here because we don't want to process events for them
                 lstImprovements.Add(objImprovement);
             }
 
@@ -2593,8 +2595,9 @@ namespace Chummer.Backend.Equipment
 
                 objImprovement.CustomGroup = strGroupName;
                 objImprovement.Custom = true;
-                objImprovement.SetupComplete = true;
+                // This ordering will automatically catch cases where the improvement we're modifying has already had its events processed and so needs re-processing
                 objImprovement.Enabled = false;
+                objImprovement.SetupComplete = true;
                 lstCharacterImprovements.Add(objImprovement);
             }
         }
@@ -2628,8 +2631,9 @@ namespace Chummer.Backend.Equipment
 
                 objImprovement.CustomGroup = strGroupName;
                 objImprovement.Custom = true;
-                objImprovement.SetupComplete = true;
+                // This ordering will automatically catch cases where the improvement we're modifying has already had its events processed and so needs re-processing
                 await objImprovement.SetEnabledAsync(false, token).ConfigureAwait(false);
+                objImprovement.SetupComplete = true;
                 await lstCharacterImprovements.AddAsync(objImprovement, token).ConfigureAwait(false);
             }
         }
