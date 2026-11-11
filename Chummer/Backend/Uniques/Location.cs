@@ -523,7 +523,7 @@ namespace Chummer
 
         #endregion UI Methods
 
-        private void ChildrenOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ChildrenOnBeforeClearCollectionChanged(object _, NotifyCollectionChangedEventArgs e)
         {
             foreach (IHasLocation objOldItem in e.OldItems)
                 objOldItem.Location = null;

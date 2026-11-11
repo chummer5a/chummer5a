@@ -44,7 +44,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private async void SelectSkillGroup_Load(object sender, EventArgs e)
+        private async void SelectSkillGroup_Load(object _, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
             {

@@ -37,12 +37,12 @@ namespace Chummer.UI.Table
             _lblText.Click += lblText_Click;
         }
 
-        private async void lblText_Click(object sender, EventArgs e)
+        private async void lblText_Click(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
+        private void OnLoad(object _, EventArgs eventArgs)
         {
             MinimumSize = _lblText.Size;
         }

@@ -54,7 +54,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
+        private async void cmdEditCharacterOption_Click(object _, EventArgs e)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Chummer
             }
         }
 
-        private async void DataExporter_Load(object sender, EventArgs e)
+        private async void DataExporter_Load(object _, EventArgs e)
         {
             try
             {
@@ -282,7 +282,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCharacterSetting_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -474,7 +474,7 @@ namespace Chummer
 
         #endregion Control Events
 
-        private async void cmdExport_Click(object sender, EventArgs e)
+        private async void cmdExport_Click(object _, EventArgs e)
         {
             try
             {
@@ -486,7 +486,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdExportClose_Click(object sender, EventArgs e)
+        private async void cmdExportClose_Click(object _, EventArgs e)
         {
             try
             {
@@ -503,7 +503,7 @@ namespace Chummer
             }
         }
 
-        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object _, EventArgs e)
         {
             try
             {

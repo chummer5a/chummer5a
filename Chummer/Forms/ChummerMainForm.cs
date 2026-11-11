@@ -148,7 +148,7 @@ namespace Chummer
             }
         }
 
-        private async void CharactersToOpenCheckOnTick(object sender, EventArgs e)
+        private async void CharactersToOpenCheckOnTick(object _, EventArgs e)
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
@@ -162,7 +162,7 @@ namespace Chummer
             }
         }
 
-        private async void PerformLayoutCheckOnTick(object sender, EventArgs e)
+        private async void PerformLayoutCheckOnTick(object _, EventArgs e)
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
@@ -1104,7 +1104,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private void OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OpenCharactersOnBeforeClearCollectionChanged(object _, NotifyCollectionChangedEventArgs e)
         {
             foreach (Character objCharacter in e.OldItems)
             {
@@ -1121,7 +1121,7 @@ namespace Chummer
             }
         }
 
-        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OpenCharactersOnCollectionChanged(object _, NotifyCollectionChangedEventArgs e)
         {
             try
             {
@@ -1606,19 +1606,19 @@ namespace Chummer
         }
         */
 
-        private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolsStripMenuItem_Click(object _, EventArgs e)
         {
             Close();
         }
 
         /*
-        private void dashboardToolStripMenuItem_Click(object sender, EventArgs e)
+        private void dashboardToolStripMenuItem_Click(object _, EventArgs e)
         {
             frmGMDashboard.Instance.Show();
         }
         */
 
-        private void closeWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        private void closeWindowToolStripMenuItem_Click(object _, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is Form frmCurrentForm)
             {
@@ -1637,7 +1637,7 @@ namespace Chummer
             }
         }
 
-        private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CloseAllToolStripMenuItem_Click(object _, EventArgs e)
         {
             foreach (Form childForm in MdiChildren)
             {
@@ -1659,7 +1659,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuGlobalSettings_Click(object sender, EventArgs e)
+        private async void mnuGlobalSettings_Click(object _, EventArgs e)
         {
             try
             {
@@ -1683,7 +1683,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuCharacterSettings_Click(object sender, EventArgs e)
+        private async void mnuCharacterSettings_Click(object _, EventArgs e)
         {
             try
             {
@@ -1708,7 +1708,7 @@ namespace Chummer
             }
         }
 
-        private void mnuToolsUpdate_Click(object sender, EventArgs e)
+        private void mnuToolsUpdate_Click(object _, EventArgs e)
         {
             try
             {
@@ -1764,7 +1764,7 @@ namespace Chummer
             }
         }
 
-        private void mnuMasterIndex_Click(object sender, EventArgs e)
+        private void mnuMasterIndex_Click(object _, EventArgs e)
         {
             try
             {
@@ -1842,7 +1842,7 @@ namespace Chummer
             }
         }
 
-        private void mnuCharacterRoster_Click(object sender, EventArgs e)
+        private void mnuCharacterRoster_Click(object _, EventArgs e)
         {
             try
             {
@@ -1954,7 +1954,7 @@ namespace Chummer
             }
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void aboutToolStripMenuItem_Click(object _, EventArgs e)
         {
             try
             {
@@ -1972,29 +1972,29 @@ namespace Chummer
             }
         }
 
-        private void mnuChummerWiki_Click(object sender, EventArgs e)
+        private void mnuChummerWiki_Click(object _, EventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/wiki/") { UseShellExecute = true });
         }
 
-        private void mnuChummerDiscord_Click(object sender, EventArgs e)
+        private void mnuChummerDiscord_Click(object _, EventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://discord.gg/mJB7st9") { UseShellExecute = true });
         }
 
-        private void mnuHelpDumpshock_Click(object sender, EventArgs e)
+        private void mnuHelpDumpshock_Click(object _, EventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/") { UseShellExecute = true });
         }
 
-        private void mnuReportBug_Click(object sender, EventArgs e)
+        private void mnuReportBug_Click(object _, EventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/new/choose") { UseShellExecute = true });
         }
 
         public PrintMultipleCharacters PrintMultipleCharactersForm => _frmOpenPrintMultipleCharacters;
 
-        private async void mnuFilePrintMultiple_Click(object sender, EventArgs e)
+        private async void mnuFilePrintMultiple_Click(object _, EventArgs e)
         {
             try
             {
@@ -2035,7 +2035,7 @@ namespace Chummer
             }
         }
 
-        private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
+        private void mnuHelpRevisionHistory_Click(object _, EventArgs e)
         {
             try
             {
@@ -2053,7 +2053,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuNewCritter_Click(object sender, EventArgs e)
+        private async void mnuNewCritter_Click(object _, EventArgs e)
         {
             try
             {
@@ -2196,7 +2196,7 @@ namespace Chummer
             }
         }
 
-        private async void ChummerMainForm_MdiChildActivate(object sender, EventArgs e)
+        private async void ChummerMainForm_MdiChildActivate(object _, EventArgs e)
         {
             try
             {
@@ -2763,7 +2763,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuToolsDiceRoller_Click(object sender, EventArgs e)
+        private async void mnuToolsDiceRoller_Click(object _, EventArgs e)
         {
             try
             {
@@ -2775,7 +2775,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuXmlEditor_Click(object sender, EventArgs e)
+        private async void mnuXmlEditor_Click(object _, EventArgs e)
         {
             try
             {
@@ -2930,7 +2930,7 @@ namespace Chummer
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
         }
 
-        private void mnuToolsTranslator_Click(object sender, EventArgs e)
+        private void mnuToolsTranslator_Click(object _, EventArgs e)
         {
             string strTranslator = Path.Combine(Utils.GetStartupPath, "Translator.exe");
             if (File.Exists(strTranslator))
@@ -3256,7 +3256,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuHeroLabImporter_Click(object sender, EventArgs e)
+        private async void mnuHeroLabImporter_Click(object _, EventArgs e)
         {
             try
             {
@@ -3274,7 +3274,7 @@ namespace Chummer
             }
         }
 
-        private void mnuDataExporter_Click(object sender, EventArgs e)
+        private void mnuDataExporter_Click(object _, EventArgs e)
         {
             try
             {
@@ -3309,7 +3309,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSave_Click(object sender, EventArgs e)
+        private async void tsSave_Click(object _, EventArgs e)
         {
             try
             {
@@ -3326,7 +3326,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSaveAs_Click(object sender, EventArgs e)
+        private async void tsSaveAs_Click(object _, EventArgs e)
         {
             try
             {
@@ -3343,7 +3343,7 @@ namespace Chummer
             }
         }
 
-        private void tsClose_Click(object sender, EventArgs e)
+        private void tsClose_Click(object _, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
@@ -3362,7 +3362,7 @@ namespace Chummer
             }
         }
 
-        private async void tsPrint_Click(object sender, EventArgs e)
+        private async void tsPrint_Click(object _, EventArgs e)
         {
             try
             {
@@ -3385,7 +3385,7 @@ namespace Chummer
         }
 
 #if DEBUG
-        private void mnuForceCrash_Click(object sender, EventArgs e)
+        private void mnuForceCrash_Click(object _, EventArgs e)
         {
             throw new InvalidOperationException();
         }
@@ -3397,7 +3397,7 @@ namespace Chummer
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
-        private async void ShowNewForm(object sender, EventArgs e)
+        private async void ShowNewForm(object _, EventArgs e)
         {
             try
             {
@@ -3521,7 +3521,7 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private async void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object _, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
@@ -3902,7 +3902,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenFileForPrinting(object sender, EventArgs e)
+        private async void OpenFileForPrinting(object _, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
@@ -4308,7 +4308,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenFileForExport(object sender, EventArgs e)
+        private async void OpenFileForExport(object _, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
@@ -5014,7 +5014,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
+        private async void mnuClearUnpinnedItems_Click(object _, EventArgs e)
         {
             try
             {
@@ -5034,7 +5034,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuRestart_Click(object sender, EventArgs e)
+        private async void mnuRestart_Click(object _, EventArgs e)
         {
             try
             {

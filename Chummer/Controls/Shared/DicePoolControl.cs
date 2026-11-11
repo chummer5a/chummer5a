@@ -41,12 +41,12 @@ namespace Chummer.UI.Shared.Components
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
         }
 
-        private async void DicePoolControl_Load(object sender, EventArgs e)
+        private async void DicePoolControl_Load(object _, EventArgs e)
         {
             await cmdRoll.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_DiceRoller").ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object _, EventArgs e)
         {
             if (Program.MainForm == null)
                 return;

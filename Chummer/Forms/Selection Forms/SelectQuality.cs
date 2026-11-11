@@ -65,7 +65,7 @@ namespace Chummer
             _lstXPathQueries = Utils.ListItemListPool.Get();
         }
 
-        private async void SelectQuality_Load(object sender, EventArgs e)
+        private async void SelectQuality_Load(object _, EventArgs e)
         {
             // Populate the Quality Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.SelectAndCacheExpression("categories/category"))
@@ -110,12 +110,12 @@ namespace Chummer
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstQualities_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -182,30 +182,30 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object _, EventArgs e)
         {
             await BuildQualityList().ConfigureAwait(false);
         }
 
-        private async void CostControl_Changed(object sender, EventArgs e)
+        private async void CostControl_Changed(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -225,7 +225,7 @@ namespace Chummer
             _blnLoading = false;
         }
 
-        private async void chkMetagenic_CheckedChanged(object sender, EventArgs e)
+        private async void chkMetagenic_CheckedChanged(object _, EventArgs e)
         {
             if (await chkMetagenic.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 await chkNotMetagenic.DoThreadSafeAsync(x => x.Checked = false).ConfigureAwait(false);
@@ -303,7 +303,7 @@ namespace Chummer
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
 
-        private async void KarmaFilter(object sender, EventArgs e)
+        private async void KarmaFilter(object sender, EventArgs _)
         {
             if (_blnLoading)
                 return;
@@ -773,7 +773,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

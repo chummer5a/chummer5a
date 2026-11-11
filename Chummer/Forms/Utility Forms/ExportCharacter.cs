@@ -77,7 +77,7 @@ namespace Chummer
             Program.MainForm.OpenCharacterExportForms?.Add(this);
         }
 
-        private async void ExportCharacter_Load(object sender, EventArgs e)
+        private async void ExportCharacter_Load(object _, EventArgs e)
         {
             try
             {
@@ -312,7 +312,7 @@ namespace Chummer
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
 
-        private async void cmdExport_Click(object sender, EventArgs e)
+        private async void cmdExport_Click(object _, EventArgs e)
         {
             try
             {
@@ -324,7 +324,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdExportClose_Click(object sender, EventArgs e)
+        private async void cmdExportClose_Click(object _, EventArgs e)
         {
             try
             {
@@ -364,7 +364,7 @@ namespace Chummer
             }
         }
 
-        private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLanguage_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -376,7 +376,7 @@ namespace Chummer
             }
         }
 
-        private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboXSLT_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -963,7 +963,7 @@ namespace Chummer
 
         #endregion Methods
 
-        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object _, EventArgs e)
         {
             try
             {

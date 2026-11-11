@@ -194,7 +194,7 @@ namespace Chummer
             return missing;
         }
 
-        private async void SelectMetatypePriority_Load(object sender, EventArgs e)
+        private async void SelectMetatypePriority_Load(object _, EventArgs e)
         {
             try
             {
@@ -560,7 +560,7 @@ namespace Chummer
 
         #region Control Events
 
-        private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetatypes_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -597,7 +597,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             try
             {
@@ -617,7 +617,7 @@ namespace Chummer
             }
         }
 
-        private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTalents_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -1026,7 +1026,7 @@ namespace Chummer
             }
         }
 
-        private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboMetavariant_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1075,13 +1075,13 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1122,7 +1122,7 @@ namespace Chummer
             }
         }
 
-        private async void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboHeritage_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1194,7 +1194,7 @@ namespace Chummer
             }
         }
 
-        private async void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTalent_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1242,7 +1242,7 @@ namespace Chummer
             }
         }
 
-        private async void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboAttributes_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1281,7 +1281,7 @@ namespace Chummer
             }
         }
 
-        private async void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSkills_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1320,7 +1320,7 @@ namespace Chummer
             }
         }
 
-        private async void cboResources_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboResources_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1359,7 +1359,7 @@ namespace Chummer
             }
         }
 
-        private async void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
+        private async void chkPossessionBased_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -3924,7 +3924,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             try
             {

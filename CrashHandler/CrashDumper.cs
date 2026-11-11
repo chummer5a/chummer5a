@@ -139,7 +139,7 @@ namespace CrashHandler
                 _worker.RunWorkerAsync();
         }
 
-        private async void CollectCrashDump(object sender, DoWorkEventArgs e)
+        private async void CollectCrashDump(object _, DoWorkEventArgs e)
         {
             if (e.Cancel)
                 return;
@@ -285,7 +285,7 @@ namespace CrashHandler
             }
         }
 
-        private void SetProgressFinishedIfAppropriate(object sender, RunWorkerCompletedEventArgs e)
+        private void SetProgressFinishedIfAppropriate(object _, RunWorkerCompletedEventArgs e)
         {
             if (e?.Result is bool blnResult && blnResult)
             {

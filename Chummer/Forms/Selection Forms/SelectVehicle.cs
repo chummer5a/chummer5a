@@ -83,7 +83,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode));
         }
 
-        private async void SelectVehicle_Load(object sender, EventArgs e)
+        private async void SelectVehicle_Load(object _, EventArgs e)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object _, EventArgs e)
         {
             try
             {
@@ -209,7 +209,7 @@ namespace Chummer
             }
         }
 
-        private async void CostFilter(object sender, EventArgs e)
+        private async void CostFilter(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -233,7 +233,7 @@ namespace Chummer
             }
         }
 
-        private async void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstVehicle_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -245,7 +245,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             try
             {
@@ -258,13 +258,13 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             try
             {
@@ -289,7 +289,7 @@ namespace Chummer
             }
         }
 
-        private async void ProcessVehicleCostsChanged(object sender, EventArgs e)
+        private async void ProcessVehicleCostsChanged(object _, EventArgs e)
         {
             try
             {
@@ -304,7 +304,7 @@ namespace Chummer
             }
         }
 
-        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -1106,7 +1106,7 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             try
             {

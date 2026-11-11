@@ -37,14 +37,14 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _strSelectedSide = cboSide.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private async void SelectSide_Load(object sender, EventArgs e)
+        private async void SelectSide_Load(object _, EventArgs e)
         {
             // Create a list for the sides.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))

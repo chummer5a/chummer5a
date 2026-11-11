@@ -78,7 +78,7 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _strSelectedCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
@@ -124,7 +124,7 @@ namespace Chummer
                 _setExcludeCategories.Add(strCategory);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

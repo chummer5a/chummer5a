@@ -96,7 +96,7 @@ namespace Chummer
 
         #region Event Handlers
 
-        private void tmr_DrawTick(object sender, EventArgs e)
+        private void tmr_DrawTick(object _, EventArgs e)
         {
             // See if the cursor has moved.
             Point newPos = MousePosition;
@@ -107,7 +107,7 @@ namespace Chummer
             Invalidate();
         }
 
-        private void tmr_TipTick(object sender, EventArgs e)
+        private void tmr_TipTick(object _, EventArgs e)
         {
             ShowBalloonTip();
         }

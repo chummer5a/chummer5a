@@ -404,7 +404,7 @@ namespace Chummer
         private bool _haveFocus;
 
         // this handler is called at each mouse Enter/Leave movement
-        private void _mouseEnterLeave(object sender, EventArgs e)
+        private void _mouseEnterLeave(object _, EventArgs e)
         {
             Rectangle cr = RectangleToScreen(ClientRectangle);
             Point mp = MousePosition;

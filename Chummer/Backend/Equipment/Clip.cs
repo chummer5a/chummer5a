@@ -141,7 +141,7 @@ namespace Chummer.Backend.Equipment
                 await objOldGear.SetLoadedIntoClip(null, token).ConfigureAwait(false);
         }
 
-        private void UpdateAmmoQuantity(object sender, PropertyChangedEventArgs e)
+        private void UpdateAmmoQuantity(object _, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Gear.Quantity))
             {

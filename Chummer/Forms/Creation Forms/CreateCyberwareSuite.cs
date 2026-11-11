@@ -49,7 +49,7 @@ namespace Chummer
             txtFileName.Text = "custom_" + _strType + ".xml";
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             // Make sure the suite and file name fields are populated.
             string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
@@ -230,13 +230,13 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void CreateCyberwareSuite_Load(object sender, EventArgs e)
+        private void CreateCyberwareSuite_Load(object _, EventArgs e)
         {
             txtName.Left = lblName.Left + lblName.Width + 6;
             txtName.Width = Width - txtName.Left - 19;

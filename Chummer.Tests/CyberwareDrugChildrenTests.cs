@@ -233,8 +233,8 @@ namespace Chummer.Tests
                                 objGlandDrug.Load(xmlDoc.DocumentElement, token);
                                 objGland.DrugChildren.Add(objGlandDrug);
 
-                                Assert.AreEqual("Bliss", objInventory.GetImprovementGroupName());
-                                Assert.AreEqual("Bliss (Chemical Gland)", objGlandDrug.GetImprovementGroupName());
+                                Assert.AreEqual("Bliss", objInventory.GetImprovementGroupName(TestContext.CancellationToken));
+                                Assert.AreEqual("Bliss (Chemical Gland)", objGlandDrug.GetImprovementGroupName(TestContext.CancellationToken));
                             }
                             finally
                             {

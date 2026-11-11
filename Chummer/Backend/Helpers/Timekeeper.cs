@@ -113,7 +113,7 @@ namespace Chummer
             return final;
         }
 #else
-        public static void Finish(string taskname)
+        public static void Finish(string _)
         {
             // Deliberately empty so that we can still call this function, but the compiler will error out if we'd want to use the TimeSpan this function would normally create
         }

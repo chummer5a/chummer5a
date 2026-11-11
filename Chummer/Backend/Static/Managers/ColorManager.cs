@@ -87,7 +87,7 @@ namespace Chummer
             }
         }
 
-        private static async void TmrDarkModeCheckerTimerOnTick(object sender, EventArgs e)
+        private static async void TmrDarkModeCheckerTimerOnTick(object _, EventArgs e)
         {
             await AutoApplyLightDarkModeAsync(CancellationToken.None).ConfigureAwait(false);
         }

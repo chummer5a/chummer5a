@@ -165,7 +165,7 @@ namespace Chummer
             nudExactCost.KeyDown += NumericUpDown_KeyDown;
         }
 
-        private async void SelectCyberware_Load(object sender, EventArgs e)
+        private async void SelectCyberware_Load(object _, EventArgs e)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGrade_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -442,7 +442,7 @@ namespace Chummer
             }
         }
 
-        private async void cboGrade_EnabledChanged(object sender, EventArgs e)
+        private async void cboGrade_EnabledChanged(object _, EventArgs e)
         {
             try
             {
@@ -466,7 +466,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
@@ -509,7 +509,7 @@ namespace Chummer
             }
         }
 
-        private async void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstCyberware_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -707,7 +707,7 @@ namespace Chummer
             }
         }
 
-        private async void ProcessCyberwareInfoChanged(object sender, EventArgs e)
+        private async void ProcessCyberwareInfoChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -721,7 +721,7 @@ namespace Chummer
             }
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object _, EventArgs e)
         {
             try
             {
@@ -759,7 +759,7 @@ namespace Chummer
             await RefreshList(_strSelectedCategory, token).ConfigureAwait(false);
         }
 
-        private async void CapacityCostFilter(object sender, EventArgs e)
+        private async void CapacityCostFilter(object sender, EventArgs _)
         {
             if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
@@ -824,7 +824,7 @@ namespace Chummer
             }
         }
 
-        private async void EssenceCostFilter(object sender, EventArgs e)
+        private async void EssenceCostFilter(object sender, EventArgs _)
         {
             if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
@@ -938,7 +938,7 @@ namespace Chummer
         }
 
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -953,7 +953,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             try
@@ -966,13 +966,13 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void chkHideBannedGrades_CheckedChanged(object sender, EventArgs e)
+        private async void chkHideBannedGrades_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -996,7 +996,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             try
@@ -1009,7 +1009,7 @@ namespace Chummer
             }
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             try
             {
@@ -1021,7 +1021,7 @@ namespace Chummer
             }
         }
 
-        private async void chkFree_CheckedChanged(object sender, EventArgs e)
+        private async void chkFree_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1075,7 +1075,7 @@ namespace Chummer
                 txtSearch.Select(txtSearch.TextLength, 0);
         }
 
-        private async void chkUseCurrentEssence_CheckedChanged(object sender, EventArgs e)
+        private async void chkUseCurrentEssence_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1102,7 +1102,7 @@ namespace Chummer
             }
         }
 
-        private async void chkUseCurrentNuyen_CheckedChanged(object sender, EventArgs e)
+        private async void chkUseCurrentNuyen_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -2546,7 +2546,7 @@ namespace Chummer
             _blnPopulatingCategories = false;
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             try
             {

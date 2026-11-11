@@ -260,7 +260,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

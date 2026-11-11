@@ -757,7 +757,7 @@ namespace Chummer.UI.Skills
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
-        private async void SkillControl_Load(object sender, EventArgs e)
+        private async void SkillControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -991,7 +991,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object _, EventArgs e)
         {
             try
             {
@@ -1036,7 +1036,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnAddSpec_Click(object sender, EventArgs e)
+        private async void btnAddSpec_Click(object _, EventArgs e)
         {
             try
             {
@@ -1108,7 +1108,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void btnAttribute_Click(object sender, EventArgs e)
+        private void btnAttribute_Click(object _, EventArgs e)
         {
             if (cboSelectAttribute != null)
             {
@@ -1118,7 +1118,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboSelectAttribute_Closed(object sender, EventArgs e)
+        private async void cboSelectAttribute_Closed(object _, EventArgs e)
         {
             try
             {
@@ -1234,7 +1234,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             try
             {
@@ -1256,7 +1256,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void tsSkillLabelNotes_Click(object sender, EventArgs e)
+        private async void tsSkillLabelNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -1280,7 +1280,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void lblName_Click(object sender, EventArgs e)
+        private async void lblName_Click(object _, EventArgs e)
         {
             try
             {
@@ -1393,14 +1393,14 @@ namespace Chummer.UI.Skills
             ActiveButton = FindToolTipControl(e.Location);
         }
 
-        private void OnMouseLeave(object sender, EventArgs e)
+        private void OnMouseLeave(object _, EventArgs e)
         {
             ActiveButton = null;
         }
 
         #endregion ButtonWithToolTip Visibility workaround
 
-        private void SkillControl_DpiChangedAfterParent(object sender, EventArgs e)
+        private void SkillControl_DpiChangedAfterParent(object _, EventArgs e)
         {
             AdjustForDpi();
         }
@@ -1446,7 +1446,7 @@ namespace Chummer.UI.Skills
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
-        private void cboSpec_TextChanged(object sender, EventArgs e)
+        private void cboSpec_TextChanged(object _, EventArgs e)
         {
             if (_tmrSpecChangeTimer == null)
                 return;
@@ -1457,7 +1457,7 @@ namespace Chummer.UI.Skills
             _tmrSpecChangeTimer.Start();
         }
 
-        private async void SpecChangeTimer_Tick(object sender, EventArgs e)
+        private async void SpecChangeTimer_Tick(object _, EventArgs e)
         {
             try
             {

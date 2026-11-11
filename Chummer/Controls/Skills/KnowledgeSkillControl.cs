@@ -751,7 +751,7 @@ namespace Chummer.UI.Skills
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
-        private async void KnowledgeSkillControl_Load(object sender, EventArgs e)
+        private async void KnowledgeSkillControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -764,7 +764,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async Task OnSkillsSectionPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnSkillsSectionPropertyChanged(object _, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
@@ -786,7 +786,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async Task Skill_PropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
+        private async Task Skill_PropertyChanged(object _, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
             bool blnAll = e.PropertyNames == default;
@@ -1020,7 +1020,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object _, EventArgs e)
         {
             try
             {
@@ -1072,7 +1072,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnAddSpec_Click(object sender, EventArgs e)
+        private async void btnAddSpec_Click(object _, EventArgs e)
         {
             try
             {
@@ -1144,7 +1144,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             try
             {
@@ -1208,19 +1208,19 @@ namespace Chummer.UI.Skills
             return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.ClientRectangle.Contains(pt));
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object _, MouseEventArgs e)
         {
             ActiveButton = FindToolTipControl(e.Location);
         }
 
-        private void OnMouseLeave(object sender, EventArgs e)
+        private void OnMouseLeave(object _, EventArgs e)
         {
             ActiveButton = null;
         }
 
         #endregion ButtonWithToolTip Visibility workaround
 
-        private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
+        private void KnowledgeSkillControl_DpiChangedAfterParent(object _, EventArgs e)
         {
             AdjustForDpi();
         }
@@ -1236,7 +1236,7 @@ namespace Chummer.UI.Skills
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
-        private void cboName_TextChanged(object sender, EventArgs e)
+        private void cboName_TextChanged(object _, EventArgs e)
         {
             if (_tmrNameChangeTimer == null)
                 return;
@@ -1247,7 +1247,7 @@ namespace Chummer.UI.Skills
             _tmrNameChangeTimer.Start();
         }
 
-        private void cboSpec_TextChanged(object sender, EventArgs e)
+        private void cboSpec_TextChanged(object _, EventArgs e)
         {
             if (_tmrSpecChangeTimer == null)
                 return;
@@ -1258,7 +1258,7 @@ namespace Chummer.UI.Skills
             _tmrSpecChangeTimer.Start();
         }
 
-        private async void NameChangeTimer_Tick(object sender, EventArgs e)
+        private async void NameChangeTimer_Tick(object _, EventArgs e)
         {
             try
             {
@@ -1281,7 +1281,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void SpecChangeTimer_Tick(object sender, EventArgs e)
+        private async void SpecChangeTimer_Tick(object _, EventArgs e)
         {
             try
             {

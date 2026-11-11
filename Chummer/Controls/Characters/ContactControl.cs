@@ -97,7 +97,7 @@ namespace Chummer
             }
         }
 
-        private async void ContactControl_Load(object sender, EventArgs e)
+        private async void ContactControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace Chummer
                 objControl.ResetBindings();
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
@@ -187,7 +187,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdExpand_Click(object sender, EventArgs e)
+        private async void cmdExpand_Click(object _, EventArgs e)
         {
             try
             {
@@ -200,7 +200,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateMetatype(object sender, EventArgs e)
+        private async void UpdateMetatype(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
@@ -238,7 +238,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateGender(object sender, EventArgs e)
+        private async void UpdateGender(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
@@ -276,7 +276,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateAge(object sender, EventArgs e)
+        private async void UpdateAge(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded <= 1)
                 return;
@@ -313,7 +313,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdatePersonalLife(object sender, EventArgs e)
+        private async void UpdatePersonalLife(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
@@ -351,7 +351,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateType(object sender, EventArgs e)
+        private async void UpdateType(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
@@ -388,7 +388,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdatePreferredPayment(object sender, EventArgs e)
+        private async void UpdatePreferredPayment(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
@@ -426,7 +426,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateHobbiesVice(object sender, EventArgs e)
+        private async void UpdateHobbiesVice(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
@@ -464,7 +464,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateContactRole(object sender, EventArgs e)
+        private async void UpdateContactRole(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intUpdatingRole > 0)
                 return;
@@ -498,7 +498,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdLink_Click(object sender, EventArgs e)
+        private async void cmdLink_Click(object _, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
             try
@@ -530,7 +530,7 @@ namespace Chummer
             }
         }
 
-        private async void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object _, EventArgs e)
         {
             try
             {
@@ -594,7 +594,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAttachCharacter_Click(object sender, EventArgs e)
+        private async void tsAttachCharacter_Click(object _, EventArgs e)
         {
             try
             {
@@ -670,7 +670,7 @@ namespace Chummer
             }
         }
 
-        private async void tsRemoveCharacter_Click(object sender, EventArgs e)
+        private async void tsRemoveCharacter_Click(object _, EventArgs e)
         {
             try
             {
@@ -711,7 +711,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdNotes_Click(object sender, EventArgs e)
+        private async void cmdNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -1737,7 +1737,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactRole_TextChanged(object sender, EventArgs e)
+        private void cboContactRole_TextChanged(object _, EventArgs e)
         {
             if (_tmrRoleChangeTimer == null)
                 return;
@@ -1748,7 +1748,7 @@ namespace Chummer
             _tmrRoleChangeTimer.Start();
         }
 
-        private void MetatypeOnTextChanged(object sender, EventArgs e)
+        private void MetatypeOnTextChanged(object _, EventArgs e)
         {
             if (_tmrMetatypeChangeTimer == null)
                 return;
@@ -1759,7 +1759,7 @@ namespace Chummer
             _tmrMetatypeChangeTimer.Start();
         }
 
-        private void GenderOnTextChanged(object sender, EventArgs e)
+        private void GenderOnTextChanged(object _, EventArgs e)
         {
             if (_tmrGenderChangeTimer == null)
                 return;
@@ -1770,7 +1770,7 @@ namespace Chummer
             _tmrGenderChangeTimer.Start();
         }
 
-        private void AgeOnTextChanged(object sender, EventArgs e)
+        private void AgeOnTextChanged(object _, EventArgs e)
         {
             if (_tmrAgeChangeTimer == null)
                 return;
@@ -1781,7 +1781,7 @@ namespace Chummer
             _tmrAgeChangeTimer.Start();
         }
 
-        private void TypeOnTextChanged(object sender, EventArgs e)
+        private void TypeOnTextChanged(object _, EventArgs e)
         {
             if (_tmrTypeChangeTimer == null)
                 return;
@@ -1792,7 +1792,7 @@ namespace Chummer
             _tmrTypeChangeTimer.Start();
         }
 
-        private void PersonalLifeOnTextChanged(object sender, EventArgs e)
+        private void PersonalLifeOnTextChanged(object _, EventArgs e)
         {
             if (_tmrPersonalLifeChangeTimer == null)
                 return;
@@ -1803,7 +1803,7 @@ namespace Chummer
             _tmrPersonalLifeChangeTimer.Start();
         }
 
-        private void PreferredPaymentOnTextChanged(object sender, EventArgs e)
+        private void PreferredPaymentOnTextChanged(object _, EventArgs e)
         {
             if (_tmrPreferredPaymentChangeTimer == null)
                 return;
@@ -1814,7 +1814,7 @@ namespace Chummer
             _tmrPreferredPaymentChangeTimer.Start();
         }
 
-        private void HobbiesViceOnTextChanged(object sender, EventArgs e)
+        private void HobbiesViceOnTextChanged(object _, EventArgs e)
         {
             if (_tmrHobbiesViceChangeTimer == null)
                 return;

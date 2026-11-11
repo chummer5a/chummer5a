@@ -44,49 +44,49 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboMembership_SelectedIndexChanged(object _, EventArgs e)
         {
             ValuesChanged();
         }
 
-        private void cboAreaOfInfluence_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboAreaOfInfluence_SelectedIndexChanged(object _, EventArgs e)
         {
             ValuesChanged();
         }
 
-        private void cboMagicalResources_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboMagicalResources_SelectedIndexChanged(object _, EventArgs e)
         {
             ValuesChanged();
         }
 
-        private void cboMatrixResources_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboMatrixResources_SelectedIndexChanged(object _, EventArgs e)
         {
             ValuesChanged();
         }
 
-        private void txtGroupName_TextChanged(object sender, EventArgs e)
+        private void txtGroupName_TextChanged(object _, EventArgs e)
         {
             ValuesChanged();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void chkFreeContact_CheckedChanged(object sender, EventArgs e)
+        private void chkFreeContact_CheckedChanged(object _, EventArgs e)
         {
             ValuesChanged();
         }
 
-        private async void SelectContactConnection_Load(object sender, EventArgs e)
+        private async void SelectContactConnection_Load(object _, EventArgs e)
         {
             string strNone = await LanguageManager.GetStringAsync("String_None").ConfigureAwait(false);
             string strMembers = await LanguageManager.GetStringAsync("String_SelectContactConnection_Members").ConfigureAwait(false);
@@ -175,7 +175,7 @@ namespace Chummer
             await lblTotalConnectionModifier.DoThreadSafeAsync(x => x.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalSettings.CultureInfo)).ConfigureAwait(false);
         }
 
-        private async void cmdChangeColor_Click(object sender, EventArgs e)
+        private async void cmdChangeColor_Click(object _, EventArgs e)
         {
             Color objPreviewColor = ColorManager.GenerateCurrentModeColor(_objColor);
             (DialogResult eResult, Color objSelectedColor) = await this.DoThreadSafeFuncAsync(x =>

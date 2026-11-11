@@ -61,7 +61,7 @@ namespace Chummer
             _objImprovementsDocumentImprovementsNode = objCharacter.LoadDataXPath("improvements.xml").SelectSingleNode("/chummer/improvements");
         }
 
-        private async void CreateImprovement_Load(object sender, EventArgs e)
+        private async void CreateImprovement_Load(object _, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
@@ -138,18 +138,18 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboImprovemetType_SelectedIndexChanged(object _, EventArgs e)
         {
             string strSelectedId = cboImprovemetType.SelectedValue?.ToString();
 
@@ -253,7 +253,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdChangeSelection_Click(object sender, EventArgs e)
+        private async void cmdChangeSelection_Click(object _, EventArgs e)
         {
             switch (_strSelect)
             {
@@ -1124,7 +1124,7 @@ namespace Chummer
                 await cboSelectValue.DoThreadSafeAsync(x => x.SelectedValue = strCurrent).ConfigureAwait(false);
         }
 
-        private void cboSelectValue_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboSelectValue_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnPopulatingSelectValue || !cboSelectValue.Visible)
                 return;

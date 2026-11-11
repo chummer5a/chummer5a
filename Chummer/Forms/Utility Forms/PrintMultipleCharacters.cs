@@ -79,7 +79,7 @@ namespace Chummer
             await CleanUpOldCharacters(Interlocked.Exchange(ref _aobjCharacters, null), CancellationToken.None).ConfigureAwait(false);
         }
 
-        private async void cmdSelectCharacter_Click(object sender, EventArgs e)
+        private async void cmdSelectCharacter_Click(object _, EventArgs e)
         {
             // Add the selected Files to the list of characters to print.
             if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
@@ -157,7 +157,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             try
             {
@@ -242,7 +242,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdPrint_Click(object sender, EventArgs e)
+        private async void cmdPrint_Click(object _, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationToken objToken = objNewSource.Token;

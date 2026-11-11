@@ -49,13 +49,13 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void HeroLabImporter_Load(object sender, EventArgs e)
+        private async void HeroLabImporter_Load(object _, EventArgs e)
         {
             dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab").ConfigureAwait(false) + "|"
                 + await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
         }
 
-        private async void cmdSelectFile_Click(object sender, EventArgs e)
+        private async void cmdSelectFile_Click(object _, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
             if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)

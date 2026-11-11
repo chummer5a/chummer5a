@@ -103,7 +103,7 @@ namespace Chummer.UI.Skills
         private List<Tuple<string, Predicate<KnowledgeSkill>, Func<KnowledgeSkill, CancellationToken, Task<bool>>>> _lstDropDownKnowledgeSkills;
         private List<Tuple<string, IComparer<KnowledgeSkill>, IAsyncComparer<KnowledgeSkill>>> _lstSortKnowledgeSkills;
 
-        private async void SkillsTabUserControl_Load(object sender, EventArgs e)
+        private async void SkillsTabUserControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -664,7 +664,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void UnbindSkillsTabUserControlAsync(object sender, EventArgs e)
+        private async void UnbindSkillsTabUserControlAsync(object _, EventArgs e)
         {
             MakeDirtyWithCharacterUpdate = null;
             Character objCharacter = _objCharacter; // for thread safety
@@ -1250,7 +1250,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void Panel1_Resize(object sender, EventArgs e)
+        private void Panel1_Resize(object _, EventArgs e)
         {
             try
             {
@@ -1263,7 +1263,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void Panel2_Resize(object sender, EventArgs e)
+        private void Panel2_Resize(object _, EventArgs e)
         {
             try
             {
@@ -1275,7 +1275,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDisplayFilter_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -1318,7 +1318,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilter_TextUpdate(object _, EventArgs e)
         {
             if (!_blnActiveSkillSearchMode)
                 return;
@@ -1346,7 +1346,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboSort_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSort_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -1370,7 +1370,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnExotic_Click(object sender, EventArgs e)
+        private async void btnExotic_Click(object _, EventArgs e)
         {
             try
             {
@@ -1428,7 +1428,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnKnowledge_Click(object sender, EventArgs e)
+        private async void btnKnowledge_Click(object _, EventArgs e)
         {
             try
             {
@@ -1529,7 +1529,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
+        private async void btnResetCustomDisplayAttribute_Click(object _, EventArgs e)
         {
             try
             {
@@ -1556,7 +1556,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSortKnowledge_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -1580,7 +1580,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboDisplayFilterKnowledge_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDisplayFilterKnowledge_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -1623,7 +1623,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void cboDisplayFilterKnowledge_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilterKnowledge_TextUpdate(object _, EventArgs e)
         {
             if (!_blnKnowledgeSkillSearchMode)
                 return;
@@ -1651,7 +1651,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void splitSkills_Resize(object sender, EventArgs e)
+        private void splitSkills_Resize(object _, EventArgs e)
         {
             try
             {

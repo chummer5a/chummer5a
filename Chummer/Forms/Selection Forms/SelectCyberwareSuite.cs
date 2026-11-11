@@ -60,23 +60,23 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadData(_strType + ".xml", string.Empty, true);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void lstCyberware_DoubleClick(object sender, EventArgs e)
+        private void lstCyberware_DoubleClick(object _, EventArgs e)
         {
             AcceptForm();
         }
 
-        private async void SelectCyberwareSuite_Load(object sender, EventArgs e)
+        private async void SelectCyberwareSuite_Load(object _, EventArgs e)
         {
             if (_objCharacter.IsAI)
                 return;
@@ -130,7 +130,7 @@ namespace Chummer
             }
         }
 
-        private async void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstCyberware_SelectedIndexChanged(object _, EventArgs e)
         {
             string strSelectedSuite = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString()).ConfigureAwait(false);
             XmlNode xmlSuite = null;

@@ -62,7 +62,7 @@ namespace Chummer
             }
         }
 
-        private async void PetControl_Load(object sender, EventArgs e)
+        private async void PetControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace Chummer
                 objControl.ResetBindings();
         }
 
-        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        private void cboMetatype_TextChanged(object _, EventArgs e)
         {
             if (_tmrMetatypeChangeTimer == null)
                 return;
@@ -99,7 +99,7 @@ namespace Chummer
             _tmrMetatypeChangeTimer.Start();
         }
 
-        private async void UpdateMetatype(object sender, EventArgs e)
+        private async void UpdateMetatype(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intUpdatingMetatype > 0)
                 return;
@@ -131,7 +131,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
@@ -147,7 +147,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdLink_Click(object sender, EventArgs e)
+        private async void cmdLink_Click(object _, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
             try
@@ -179,7 +179,7 @@ namespace Chummer
             }
         }
 
-        private async void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object _, EventArgs e)
         {
             try
             {
@@ -243,7 +243,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAttachCharacter_Click(object sender, EventArgs e)
+        private async void tsAttachCharacter_Click(object _, EventArgs e)
         {
             try
             {
@@ -310,7 +310,7 @@ namespace Chummer
             }
         }
 
-        private async void tsRemoveCharacter_Click(object sender, EventArgs e)
+        private async void tsRemoveCharacter_Click(object _, EventArgs e)
         {
             try
             {
@@ -343,7 +343,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdNotes_Click(object sender, EventArgs e)
+        private async void cmdNotes_Click(object _, EventArgs e)
         {
             try
             {

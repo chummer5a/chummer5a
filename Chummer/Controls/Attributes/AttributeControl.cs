@@ -334,7 +334,7 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private async void AttributeControl_Load(object sender, EventArgs e)
+        private async void AttributeControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -540,7 +540,7 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private async void cmdImproveATT_Click(object sender, EventArgs e)
+        private async void cmdImproveATT_Click(object _, EventArgs e)
         {
             try
             {
@@ -604,7 +604,7 @@ namespace Chummer.UI.Attributes
         private int _intChangingBase = 1;
         private int _intChangingKarma = 1;
 
-        private void nudBase_ValueChanged(object sender, EventArgs e)
+        private void nudBase_ValueChanged(object _, EventArgs e)
         {
             if (_tmrBaseChangeTimer == null)
                 return;
@@ -615,7 +615,7 @@ namespace Chummer.UI.Attributes
             _tmrBaseChangeTimer.Start();
         }
 
-        private async void BaseChangeTimer_Tick(object sender, EventArgs e)
+        private async void BaseChangeTimer_Tick(object _, EventArgs e)
         {
             _tmrBaseChangeTimer.Stop();
             if (_blnLoading)
@@ -689,7 +689,7 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private void nudKarma_ValueChanged(object sender, EventArgs e)
+        private void nudKarma_ValueChanged(object _, EventArgs e)
         {
             if (_tmrKarmaChangeTimer == null)
                 return;
@@ -700,7 +700,7 @@ namespace Chummer.UI.Attributes
             _tmrKarmaChangeTimer.Start();
         }
 
-        private async void KarmaChangeTimer_Tick(object sender, EventArgs e)
+        private async void KarmaChangeTimer_Tick(object _, EventArgs e)
         {
             _tmrKarmaChangeTimer.Stop();
             if (_blnLoading)
@@ -833,7 +833,7 @@ namespace Chummer.UI.Attributes
         [UsedImplicitly]
         public int NameWidth => lblName.PreferredWidth;
 
-        private async void cmdBurnEdge_Click(object sender, EventArgs e)
+        private async void cmdBurnEdge_Click(object _, EventArgs e)
         {
             try
             {
@@ -1003,12 +1003,12 @@ namespace Chummer.UI.Attributes
             return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.ClientRectangle.Contains(pt));
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object _, MouseEventArgs e)
         {
             ActiveButton = FindToolTipControl(e.Location);
         }
 
-        private void OnMouseLeave(object sender, EventArgs e)
+        private void OnMouseLeave(object _, EventArgs e)
         {
             ActiveButton = null;
         }

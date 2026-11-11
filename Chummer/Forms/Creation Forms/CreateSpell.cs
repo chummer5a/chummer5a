@@ -49,7 +49,7 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 
-        private async void CreateSpell_Load(object sender, EventArgs e)
+        private async void CreateSpell_Load(object _, EventArgs e)
         {
             await lblDV.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo)).ConfigureAwait(false);
 
@@ -107,7 +107,7 @@ namespace Chummer
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             if (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false) == "Health")
             {
@@ -124,22 +124,22 @@ namespace Chummer
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboType_SelectedIndexChanged(object _, EventArgs e)
         {
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void cboRange_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboRange_SelectedIndexChanged(object _, EventArgs e)
         {
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void cboDuration_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDuration_SelectedIndexChanged(object _, EventArgs e)
         {
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void chkModifier_CheckedChanged(object sender, EventArgs e)
+        private async void chkModifier_CheckedChanged(object _, EventArgs e)
         {
             await cboType.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
             if (_intSkipRefresh > 0)
@@ -559,7 +559,7 @@ namespace Chummer
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void chkRestricted_CheckedChanged(object sender, EventArgs e)
+        private async void chkRestricted_CheckedChanged(object _, EventArgs e)
         {
             await chkVeryRestricted.DoThreadSafeAsync(x => x.Enabled = !chkRestricted.Checked).ConfigureAwait(false);
             await CalculateDrain().ConfigureAwait(false);
@@ -571,7 +571,7 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private async void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
+        private async void chkVeryRestricted_CheckedChanged(object _, EventArgs e)
         {
             await chkRestricted.DoThreadSafeAsync(x => x.Enabled = !chkVeryRestricted.Checked).ConfigureAwait(false);
             await CalculateDrain().ConfigureAwait(false);
@@ -583,22 +583,22 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private async void nudNumberOfEffects_ValueChanged(object sender, EventArgs e)
+        private async void nudNumberOfEffects_ValueChanged(object _, EventArgs e)
         {
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void chkArea_CheckedChanged(object sender, EventArgs e)
+        private async void chkArea_CheckedChanged(object _, EventArgs e)
         {
             await CalculateDrain().ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

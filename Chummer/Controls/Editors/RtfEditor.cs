@@ -114,7 +114,7 @@ namespace Chummer.UI.Editors
             rtbContent.Focus();
         }
 
-        private void UpdateButtons(object sender, EventArgs e)
+        private void UpdateButtons(object _, EventArgs e)
         {
             if (rtbContent.SelectionFont != null)
             {
@@ -196,7 +196,7 @@ namespace Chummer.UI.Editors
             UpdateButtons(sender, e);
         }
 
-        private void tsbForeColor_Click(object sender, EventArgs e)
+        private void tsbForeColor_Click(object _, EventArgs e)
         {
             using (ColorDialog dlgNewColor = new ColorDialog())
             {
@@ -207,7 +207,7 @@ namespace Chummer.UI.Editors
             }
         }
 
-        private void tsbBackColor_Click(object sender, EventArgs e)
+        private void tsbBackColor_Click(object _, EventArgs e)
         {
             using (ColorDialog dlgNewColor = new ColorDialog())
             {
@@ -218,7 +218,7 @@ namespace Chummer.UI.Editors
             }
         }
 
-        private void tsbSuperscript_Click(object sender, EventArgs e)
+        private void tsbSuperscript_Click(object _, EventArgs e)
         {
             if (tsbSuperscript.Checked)
             {
@@ -231,7 +231,7 @@ namespace Chummer.UI.Editors
             }
         }
 
-        private void tsbSubscript_Click(object sender, EventArgs e)
+        private void tsbSubscript_Click(object _, EventArgs e)
         {
             if (tsbSubscript.Checked)
             {
@@ -244,7 +244,7 @@ namespace Chummer.UI.Editors
             }
         }
 
-        private void tsbUnorderedList_Click(object sender, EventArgs e)
+        private void tsbUnorderedList_Click(object _, EventArgs e)
         {
             rtbContent.SelectionBullet = tsbUnorderedList.Checked;
         }
@@ -270,22 +270,22 @@ namespace Chummer.UI.Editors
             UpdateFont(sender, e);
         }
 
-        private void tsbAlignLeft_CheckedChanged(object sender, EventArgs e)
+        private void tsbAlignLeft_CheckedChanged(object _, EventArgs e)
         {
             tsbAlignLeft.CheckOnClick = !tsbAlignLeft.Checked;
         }
 
-        private void tsbAlignCenter_CheckedChanged(object sender, EventArgs e)
+        private void tsbAlignCenter_CheckedChanged(object _, EventArgs e)
         {
             tsbAlignCenter.CheckOnClick = !tsbAlignCenter.Checked;
         }
 
-        private void tsbAlignRight_CheckedChanged(object sender, EventArgs e)
+        private void tsbAlignRight_CheckedChanged(object _, EventArgs e)
         {
             tsbAlignRight.CheckOnClick = !tsbAlignRight.Checked;
         }
 
-        private void tsbIncreaseIndent_Click(object sender, EventArgs e)
+        private void tsbIncreaseIndent_Click(object _, EventArgs e)
         {
             if (IsJustifyLeft)
                 rtbContent.SelectionIndent += rtbContent.BulletIndent;
@@ -293,7 +293,7 @@ namespace Chummer.UI.Editors
                 rtbContent.SelectionRightIndent += rtbContent.BulletIndent;
         }
 
-        private void tsbDecreaseIndent_Click(object sender, EventArgs e)
+        private void tsbDecreaseIndent_Click(object _, EventArgs e)
         {
             if (IsJustifyLeft)
                 rtbContent.SelectionIndent = Math.Max(0, rtbContent.SelectionIndent - rtbContent.BulletIndent);
@@ -301,12 +301,12 @@ namespace Chummer.UI.Editors
                 rtbContent.SelectionRightIndent = Math.Max(0, rtbContent.SelectionRightIndent - rtbContent.BulletIndent);
         }
 
-        private void rtbContent_Enter(object sender, EventArgs e)
+        private void rtbContent_Enter(object _, EventArgs e)
         {
             tsControls.Visible = true;
         }
 
-        private void rtbContent_Leave(object sender, EventArgs e)
+        private void rtbContent_Leave(object _, EventArgs e)
         {
             tsControls.Visible = false;
         }

@@ -55,7 +55,7 @@ namespace Chummer
             _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNodeAndCacheExpression("/chummer/techniques");
         }
 
-        private async void SelectMartialArt_Load(object sender, EventArgs e)
+        private async void SelectMartialArt_Load(object _, EventArgs e)
         {
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
@@ -82,13 +82,13 @@ namespace Chummer
             await RefreshArtList().ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -99,7 +99,7 @@ namespace Chummer
             cmdOK_Click(sender, e);
         }
 
-        private async void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMartialArts_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -173,13 +173,13 @@ namespace Chummer
             }
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             AcceptForm();
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await RefreshArtList().ConfigureAwait(false);
         }
@@ -229,7 +229,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

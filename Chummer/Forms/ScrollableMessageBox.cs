@@ -206,7 +206,7 @@ namespace Chummer.Forms
             InitializeComponent();
         }
 
-        private void cmdButton1_Click(object sender, EventArgs e)
+        private void cmdButton1_Click(object _, EventArgs e)
         {
             switch (_eBoxButtons)
             {
@@ -230,7 +230,7 @@ namespace Chummer.Forms
             Close();
         }
 
-        private void cmdButton2_Click(object sender, EventArgs e)
+        private void cmdButton2_Click(object _, EventArgs e)
         {
             switch (_eBoxButtons)
             {
@@ -253,7 +253,7 @@ namespace Chummer.Forms
             Close();
         }
 
-        private void cmdButton3_Click(object sender, EventArgs e)
+        private void cmdButton3_Click(object _, EventArgs e)
         {
             switch (_eBoxButtons)
             {

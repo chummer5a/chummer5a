@@ -83,7 +83,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectArmorMod_Load(object sender, EventArgs e)
+        private async void SelectArmorMod_Load(object _, EventArgs e)
         {
             bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
@@ -116,35 +116,35 @@ namespace Chummer
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void lstMod_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMod_SelectedIndexChanged(object _, EventArgs e)
         {
             await UpdateSelectedArmor().ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object _, EventArgs e)
         {
             await UpdateSelectedArmor().ConfigureAwait(false);
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             AcceptForm();
         }
 
-        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object _, EventArgs e)
         {
             if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
@@ -153,7 +153,7 @@ namespace Chummer
             await UpdateSelectedArmor().ConfigureAwait(false);
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object _, EventArgs e)
         {
             if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
@@ -210,7 +210,7 @@ namespace Chummer
 
         #region Methods
 
-        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object _, EventArgs e)
         {
             await UpdateSelectedArmor().ConfigureAwait(false);
         }
@@ -447,12 +447,12 @@ namespace Chummer
             }
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void CostFilter(object sender, EventArgs e)
+        private async void CostFilter(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -611,7 +611,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

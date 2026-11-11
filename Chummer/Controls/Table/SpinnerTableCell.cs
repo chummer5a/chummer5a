@@ -59,7 +59,7 @@ namespace Chummer.UI.Table
             base.OnEnter(e);
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
+        private void OnLoad(object _, EventArgs eventArgs)
         {
             MinimumSize = nudSpinner.Size;
         }
@@ -245,7 +245,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// spinner value change handler
         /// </summary>
-        private async void nudSpinner_ValueChanged(object sender, EventArgs e)
+        private async void nudSpinner_ValueChanged(object _, EventArgs e)
         {
             if (ValueUpdater == null)
                 return;

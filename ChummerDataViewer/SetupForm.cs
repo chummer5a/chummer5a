@@ -36,14 +36,14 @@ namespace ChummerDataViewer
             InitializeComponent();
         }
 
-        private void SetupForm_Load(object sender, EventArgs e)
+        private void SetupForm_Load(object _, EventArgs e)
         {
             lblDb.Text = Path.Combine(PersistentState.DatabaseFolder, "persistent.db");
 
             txtBulk.Text = $"{PersistentState.DatabaseFolder}";
         }
 
-        private void AnyTextChanged(object sender, EventArgs e)
+        private void AnyTextChanged(object _, EventArgs e)
         {
             lblStatus.Visible = true;
             btnOK.Enabled = false;
@@ -76,13 +76,13 @@ namespace ChummerDataViewer
             btnOK.Enabled = true;
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void btnOK_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void btnCanel_Click(object sender, EventArgs e)
+        private void btnCanel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

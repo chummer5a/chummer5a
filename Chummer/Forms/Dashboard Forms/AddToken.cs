@@ -45,7 +45,7 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private async void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object _, EventArgs e)
         {
             string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + "|"
                 +
@@ -115,7 +115,7 @@ namespace Chummer
             }
         }
 
-        private async void OnDisposed(object sender, EventArgs e)
+        private async void OnDisposed(object _, EventArgs e)
         {
             Character objOldCharacter = Interlocked.Exchange(ref _character, null);
             if (objOldCharacter != null)
@@ -127,7 +127,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object _, EventArgs e)
         {
             Close();
         }
@@ -137,7 +137,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void btnOK_Click(object sender, EventArgs e)
+        private async void btnOK_Click(object _, EventArgs e)
         {
             if (_character == null)
                 _character = new Character();

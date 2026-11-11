@@ -185,7 +185,7 @@ namespace Chummer
             }
         }
 
-        private async void MasterIndex_Load(object sender, EventArgs e)
+        private async void MasterIndex_Load(object _, EventArgs e)
         {
             try
             {
@@ -329,7 +329,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCharacterSetting_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -694,7 +694,7 @@ namespace Chummer
             }
         }
 
-        private async void lblSource_Click(object sender, EventArgs e)
+        private async void lblSource_Click(object sender, EventArgs _)
         {
             try
             {
@@ -706,7 +706,7 @@ namespace Chummer
             }
         }
 
-        private async void RefreshList(object sender, EventArgs e)
+        private async void RefreshList(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -837,7 +837,7 @@ namespace Chummer
             }
         }
 
-        private async void lstItems_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstItems_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -940,7 +940,7 @@ namespace Chummer
             }
         }
 
-        private async void chkFetchNotesFromPdf_CheckedChanged(object sender, EventArgs e)
+        private async void chkFetchNotesFromPdf_CheckedChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;

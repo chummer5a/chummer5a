@@ -439,7 +439,7 @@ namespace Chummer
             await treLifestyleQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode), token: token).ConfigureAwait(false);
         }
 
-        private async void SelectAdvancedLifestyle_Load(object sender, EventArgs e)
+        private async void SelectAdvancedLifestyle_Load(object _, EventArgs e)
         {
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
@@ -693,19 +693,19 @@ namespace Chummer
             await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void chkTrustFund_Changed(object sender, EventArgs e)
+        private void chkTrustFund_Changed(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -718,20 +718,20 @@ namespace Chummer
             nudRoommates.Enabled = !chkTrustFund.Checked;
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboBaseLifestyle_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
             await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
-        private void nudRoommates_ValueChanged(object sender, EventArgs e)
+        private void nudRoommates_ValueChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -746,7 +746,7 @@ namespace Chummer
                 chkSplitCostWithRoommates.Enabled = true;
         }
 
-        private async void cmdAddQuality_Click(object sender, EventArgs e)
+        private async void cmdAddQuality_Click(object _, EventArgs e)
         {
             bool blnAddAgain;
             do
@@ -786,7 +786,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async void cmdDeleteQuality_Click(object sender, EventArgs e)
+        private async void cmdDeleteQuality_Click(object _, EventArgs e)
         {
             // Locate the selected Quality.
             TreeNode objNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
@@ -842,7 +842,7 @@ namespace Chummer
             }
         }
 
-        private async void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
+        private async void chkQualityContributesLP_CheckedChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0 || await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                 return;
@@ -859,7 +859,7 @@ namespace Chummer
             await treLifestyleQualities.DoThreadSafeAsync(() => objNode.Text = strNewTreeNodeText).ConfigureAwait(false);
         }
 
-        private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
+        private async void chkTravelerBonusLPRandomize_CheckedChanged(object _, EventArgs e)
         {
             if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                 return;
@@ -879,7 +879,7 @@ namespace Chummer
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
-        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCity_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_tmrCityChangeTimer == null)
                 return;
@@ -890,7 +890,7 @@ namespace Chummer
             _tmrCityChangeTimer.Start();
         }
 
-        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboDistrict_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_tmrDistrictChangeTimer == null)
                 return;
@@ -901,7 +901,7 @@ namespace Chummer
             _tmrDistrictChangeTimer.Start();
         }
 
-        private void cboBorough_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboBorough_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_tmrBoroughChangeTimer == null)
                 return;
@@ -912,7 +912,7 @@ namespace Chummer
             _tmrBoroughChangeTimer.Start();
         }
 
-        private async void CityChangeTimer_Tick(object sender, EventArgs e)
+        private async void CityChangeTimer_Tick(object _, EventArgs e)
         {
             _tmrCityChangeTimer.Stop();
             Interlocked.Increment(ref _intUpdatingCity);
@@ -929,7 +929,7 @@ namespace Chummer
             await RefreshDistrictList().ConfigureAwait(false);
         }
 
-        private async void DistrictChangeTimer_Tick(object sender, EventArgs e)
+        private async void DistrictChangeTimer_Tick(object _, EventArgs e)
         {
             _tmrDistrictChangeTimer.Stop();
             Interlocked.Increment(ref _intUpdatingDistrict);
@@ -946,7 +946,7 @@ namespace Chummer
             await RefreshBoroughList().ConfigureAwait(false);
         }
 
-        private async void BoroughChangeTimer_Tick(object sender, EventArgs e)
+        private async void BoroughChangeTimer_Tick(object _, EventArgs e)
         {
             _tmrBoroughChangeTimer.Stop();
             Interlocked.Increment(ref _intUpdatingBorough);
@@ -1147,7 +1147,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

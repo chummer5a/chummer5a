@@ -50,7 +50,7 @@ namespace Chummer
             _lstGeneralItems = Utils.ListItemListPool.Get();
         }
 
-        private async void SelectItem_Load(object sender, EventArgs e)
+        private async void SelectItem_Load(object _, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
@@ -396,13 +396,13 @@ namespace Chummer
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             AcceptForm();
         }

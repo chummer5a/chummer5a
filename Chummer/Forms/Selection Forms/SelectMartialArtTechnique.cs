@@ -83,31 +83,31 @@ namespace Chummer
             }
         }
 
-        private async void SelectMartialArtTechnique_Load(object sender, EventArgs e)
+        private async void SelectMartialArtTechnique_Load(object _, EventArgs e)
         {
             _blnLoading = false;
             await RefreshTechniquesList().ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             AcceptForm();
         }
 
-        private async void lstTechniques_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstTechniques_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -138,7 +138,7 @@ namespace Chummer
             }
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await RefreshTechniquesList().ConfigureAwait(false);
         }
@@ -226,7 +226,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

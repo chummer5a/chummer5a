@@ -75,7 +75,7 @@ namespace Chummer
                         .SelectSingleNode("/chummer/powers"), Utils.JoinableTaskFactory);
         }
 
-        private async void SelectMetatypeKarma_Load(object sender, EventArgs e)
+        private async void SelectMetatypeKarma_Load(object _, EventArgs e)
         {
             try
             {
@@ -239,7 +239,7 @@ namespace Chummer
 
         #region Control Events
 
-        private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetatypes_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -276,7 +276,7 @@ namespace Chummer
             return PopulateMetavariants(token);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace Chummer
             }
         }
 
-        private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboMetavariant_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -333,13 +333,13 @@ namespace Chummer
             return RefreshSelectedMetavariant(token);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void RefreshMetatypesControl(object sender, EventArgs e)
+        private async void RefreshMetatypesControl(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -369,7 +369,7 @@ namespace Chummer
             }
         }
 
-        private async void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
+        private async void chkPossessionBased_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -1244,7 +1244,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             try
             {

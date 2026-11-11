@@ -36,7 +36,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void SelectDiceHits_Load(object sender, EventArgs e)
+        private async void SelectDiceHits_Load(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -61,19 +61,19 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try

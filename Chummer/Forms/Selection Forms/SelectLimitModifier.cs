@@ -46,7 +46,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void SelectLimitModifier_Load(object sender, EventArgs e)
+        private async void SelectLimitModifier_Load(object _, EventArgs e)
         {
             // Build the list of Limits.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
@@ -79,7 +79,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strName))
@@ -103,7 +103,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -135,7 +135,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private void ToggleOkEnabled(object sender, EventArgs e)
+        private void ToggleOkEnabled(object _, EventArgs e)
         {
             cmdOK.Enabled = cboLimit.Items.Count > 0 && txtName.TextLength > 0 && !string.IsNullOrEmpty(cboLimit.SelectedValue?.ToString());
         }

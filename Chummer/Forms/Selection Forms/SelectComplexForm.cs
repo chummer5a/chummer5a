@@ -65,13 +65,13 @@ namespace Chummer
             }
         }
 
-        private async void SelectComplexForm_Load(object sender, EventArgs e)
+        private async void SelectComplexForm_Load(object _, EventArgs e)
         {
             _blnLoading = false;
             await BuildComplexFormList().ConfigureAwait(false);
         }
 
-        private async void lstComplexForms_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstComplexForms_SelectedIndexChanged(object _, EventArgs e)
         {
             string strSelectedComplexFormId = await lstComplexForms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (_blnLoading || string.IsNullOrEmpty(strSelectedComplexFormId))
@@ -252,25 +252,25 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             AcceptForm();
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await BuildComplexFormList().ConfigureAwait(false);
         }
@@ -388,7 +388,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

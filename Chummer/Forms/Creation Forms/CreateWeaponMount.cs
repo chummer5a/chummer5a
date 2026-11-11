@@ -75,7 +75,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void CreateWeaponMount_Load(object sender, EventArgs e)
+        private async void CreateWeaponMount_Load(object _, EventArgs e)
         {
             try
             {
@@ -220,7 +220,7 @@ namespace Chummer
             }
         }
 
-        private void CreateWeaponMount_Closing(object sender, FormClosingEventArgs e)
+        private void CreateWeaponMount_Closing(object _, FormClosingEventArgs e)
         {
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateInfoCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
@@ -243,7 +243,7 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             try
             {
@@ -585,13 +585,13 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cboSize_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSize_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -605,7 +605,7 @@ namespace Chummer
             }
         }
 
-        private async void comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBox_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -618,7 +618,7 @@ namespace Chummer
             }
         }
 
-        private async void DoUpdateInfo(object sender, EventArgs e)
+        private async void DoUpdateInfo(object _, EventArgs e)
         {
             try
             {
@@ -902,7 +902,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddMod_Click(object sender, EventArgs e)
+        private async void cmdAddMod_Click(object _, EventArgs e)
         {
             try
             {
@@ -1021,7 +1021,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteMod_Click(object sender, EventArgs e)
+        private async void cmdDeleteMod_Click(object _, EventArgs e)
         {
             try
             {
@@ -1299,7 +1299,7 @@ namespace Chummer
             }
         }
 
-        private async void lblSource_Click(object sender, EventArgs e)
+        private async void lblSource_Click(object sender, EventArgs _)
         {
             try
             {

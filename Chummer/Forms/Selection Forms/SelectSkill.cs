@@ -63,7 +63,7 @@ namespace Chummer
             _objXmlDocument = _objCharacter.LoadDataXPath("skills.xml");
         }
 
-        private async void SelectSkill_Load(object sender, EventArgs e)
+        private async void SelectSkill_Load(object _, EventArgs e)
         {
             bool blnForcedExotic = false;
             string strForcedExoticSkillName = string.Empty;
@@ -400,7 +400,7 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             ValueTuple<string, bool> tupSelected = (ValueTuple<string, bool>)cboSkill.SelectedValue;
             if (tupSelected.Item2)
@@ -411,7 +411,7 @@ namespace Chummer
             Close();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

@@ -325,7 +325,7 @@ namespace Chummer
             RefreshImage();
         }
 
-        private void RefreshImage(object sender, EventArgs e)
+        private void RefreshImage(object _, EventArgs e)
         {
             RefreshImage();
         }

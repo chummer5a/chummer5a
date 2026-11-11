@@ -91,7 +91,7 @@ namespace Chummer.UI.Powers
 
         public Character CachedCharacter { get; set; }
 
-        private async void PowersTabUserControl_Load(object sender, EventArgs e)
+        private async void PowersTabUserControl_Load(object _, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
@@ -332,7 +332,7 @@ namespace Chummer.UI.Powers
             return ret;
         }
 
-        private async void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDisplayFilter_SelectedIndexChanged(object _, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objFilterCancellationTokenSource, objNewSource);
@@ -376,7 +376,7 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private async void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilter_TextUpdate(object _, EventArgs e)
         {
             if (_blnSearchMode)
             {
@@ -425,7 +425,7 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private async void cmdAddPower_Click(object sender, EventArgs e)
+        private async void cmdAddPower_Click(object _, EventArgs e)
         {
             try
             {

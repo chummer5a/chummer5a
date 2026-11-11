@@ -90,7 +90,7 @@ namespace Chummer
             }
         }
 
-        private async void EditGlobalSettings_Load(object sender, EventArgs e)
+        private async void EditGlobalSettings_Load(object _, EventArgs e)
         {
             _dicSourcebookInfos =
                 new ConcurrentDictionary<string, SourcebookInfo>(await GlobalSettings.GetSourcebookInfosAsync()
@@ -136,7 +136,7 @@ namespace Chummer
 
         #region Control Events
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -242,7 +242,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdVerify_Click(object sender, EventArgs e)
+        private async void cmdVerify_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -255,7 +255,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdVerifyData_Click(object sender, EventArgs e)
+        private async void cmdVerifyData_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -295,17 +295,17 @@ namespace Chummer
             }
         }
 
-        private async void cmdPDFAppPath_Click(object sender, EventArgs e)
+        private async void cmdPDFAppPath_Click(object _, EventArgs e)
         {
             await PromptPdfAppPath().ConfigureAwait(false);
         }
 
-        private async void cmdPDFLocation_Click(object sender, EventArgs e)
+        private async void cmdPDFLocation_Click(object _, EventArgs e)
         {
             await PromptPdfLocation().ConfigureAwait(false);
         }
 
-        private void lstGlobalSourcebookInfos_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstGlobalSourcebookInfos_SelectedIndexChanged(object _, EventArgs e)
         {
             string strSelectedCode = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
 
@@ -350,7 +350,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdPDFTest_Click(object sender, EventArgs e)
+        private async void cmdPDFTest_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -461,13 +461,13 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void cboUseLoggingHelp_Click(object sender, EventArgs e)
+        private void cboUseLoggingHelp_Click(object _, EventArgs e)
         {
             //open the telemetry document
             Process.Start(new ProcessStartInfo("https://docs.google.com/document/d/1LThAg6U5qXzHAfIRrH0Kb7griHrPN0hy7ab8FSJDoFY/edit?usp=sharing") { UseShellExecute = true });
         }
 
-        private void cmdPluginsHelp_Click(object sender, EventArgs e)
+        private void cmdPluginsHelp_Click(object _, EventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://docs.google.com/document/d/1WOPB7XJGgcmxg7REWxF6HdP3kQdtHpv6LJOXZtLggxM/edit?usp=sharing") { UseShellExecute = true });
         }
@@ -686,7 +686,7 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private async void cmdAddCustomDirectory_Click(object sender, EventArgs e)
+        private async void cmdAddCustomDirectory_Click(object _, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             string strSelectedPath = string.Empty;
@@ -827,7 +827,7 @@ namespace Chummer
             PopulateCustomDataDirectoryListBox();
         }
 
-        private async void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
+        private async void cmdRenameCustomDataDirectory_Click(object _, EventArgs e)
         {
             if (await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
                 return;
@@ -891,7 +891,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdUpdateCustomDataDirectory_Click(object sender, EventArgs e)
+        private async void cmdUpdateCustomDataDirectory_Click(object _, EventArgs e)
         {
             if (await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
                 return;
@@ -1004,7 +1004,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -1017,7 +1017,7 @@ namespace Chummer
         }
 
 #if DEBUG
-        private async void cmdUploadPastebin_Click(object sender, EventArgs e)
+        private async void cmdUploadPastebin_Click(object _, EventArgs e)
         {
             const string strFilePath = "Insert local file here";
             System.Collections.Specialized.NameValueCollection data
@@ -1062,13 +1062,13 @@ namespace Chummer
             }
         }
 #else
-        private void cmdUploadPastebin_Click(object sender, EventArgs e)
+        private void cmdUploadPastebin_Click(object _, EventArgs e)
         {
             // Method intentionally left empty.
         }
 #endif
 
-        private async void clbPlugins_VisibleChanged(object sender, EventArgs e)
+        private async void clbPlugins_VisibleChanged(object _, EventArgs e)
         {
             await clbPlugins.DoThreadSafeAsync(x => x.Items.Clear()).ConfigureAwait(false);
             if (await Program.PluginLoader.MyPlugins.GetCountAsync().ConfigureAwait(false) == 0)
@@ -1112,7 +1112,7 @@ namespace Chummer
             }
         }
 
-        private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
+        private void clbPlugins_SelectedValueChanged(object _, EventArgs e)
         {
             UserControl pluginControl = (clbPlugins.SelectedItem as IPlugin)?.GetOptionsControl();
             if (pluginControl != null)
@@ -1145,7 +1145,7 @@ namespace Chummer
             OptionsChangedNoRestartNeeded(sender, e);
         }
 
-        private async void lsbCustomDataDirectories_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lsbCustomDataDirectories_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
@@ -2717,7 +2717,7 @@ namespace Chummer
             }
         }
 
-        private void OptionsChanged(object sender, EventArgs e)
+        private void OptionsChanged(object sender, EventArgs _)
         {
             if (_intLoading == 0)
             {
@@ -2732,7 +2732,7 @@ namespace Chummer
             }
         }
 
-        private void OptionsChangedNoRestartNeeded(object sender, EventArgs e)
+        private void OptionsChangedNoRestartNeeded(object sender, EventArgs _)
         {
             if (_intLoading == 0)
             {
@@ -3183,13 +3183,13 @@ namespace Chummer
             }
         }
 
-        private void imgLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        private void imgLanguageFlag_DpiChangedAfterParent(object _, EventArgs e)
         {
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2),
                         Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height));
         }
 
-        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object _, EventArgs e)
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2),

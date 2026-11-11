@@ -40,7 +40,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             string strSelectedLimit = cboLimit.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedLimit))
@@ -52,7 +52,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectLimit_Load(object sender, EventArgs e)
+        private async void SelectLimit_Load(object _, EventArgs e)
         {
             // Build the list of Limits.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
@@ -83,7 +83,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

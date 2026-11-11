@@ -37,7 +37,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             string strValue = await txtValue.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if ((PreventXPathErrors && strValue.Contains('"'))
@@ -56,7 +56,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

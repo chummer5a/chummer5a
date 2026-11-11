@@ -88,7 +88,7 @@ namespace Chummer
             _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
         }
 
-        private async void EditCharacterSettings_Load(object sender, EventArgs e)
+        private async void EditCharacterSettings_Load(object _, EventArgs e)
         {
             await RebuildCustomDataDirectoryInfosAsync().ConfigureAwait(false);
             await SetToolTips().ConfigureAwait(false);
@@ -124,7 +124,7 @@ namespace Chummer
 
         #region Control Events
 
-        private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
+        private async void cmdGlobalOptionsCustomData_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -142,7 +142,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdRename_Click(object sender, EventArgs e)
+        private async void cmdRename_Click(object _, EventArgs e)
         {
             string strRename = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename")
                                                     .ConfigureAwait(false);
@@ -203,7 +203,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             // Verify that the user wants to delete this setting
             if (await Program.ShowScrollableMessageBoxAsync(
@@ -429,7 +429,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSave_Click(object sender, EventArgs e)
+        private async void cmdSave_Click(object _, EventArgs e)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -485,7 +485,7 @@ namespace Chummer
             }
         }
 
-        private async void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSetting_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -572,7 +572,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdRestoreDefaults_Click(object sender, EventArgs e)
+        private async void cmdRestoreDefaults_Click(object _, EventArgs e)
         {
             // Verify that the user wants to reset these values.
             if (await Program.ShowScrollableMessageBoxAsync(
@@ -629,7 +629,7 @@ namespace Chummer
             }
         }
 
-        private async void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLimbCount_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0 || _intSkipLimbCountUpdate > 0)
                 return;
@@ -676,7 +676,7 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             Close();
         }
@@ -730,7 +730,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdEnableSourcebooks_Click(object sender, EventArgs e)
+        private async void cmdEnableSourcebooks_Click(object _, EventArgs e)
         {
             Interlocked.Increment(ref _intLoading);
             try
@@ -788,7 +788,7 @@ namespace Chummer
             await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.Books)).ConfigureAwait(false);
         }
 
-        private async void cmdIncreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        private async void cmdIncreaseCustomDirectoryLoadOrder_Click(object _, EventArgs e)
         {
             TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
                                                                  .ConfigureAwait(false);
@@ -803,7 +803,7 @@ namespace Chummer
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
         }
 
-        private async void cmdToTopCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        private async void cmdToTopCustomDirectoryLoadOrder_Click(object _, EventArgs e)
         {
             TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
                                                                  .ConfigureAwait(false);
@@ -847,7 +847,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        private async void cmdDecreaseCustomDirectoryLoadOrder_Click(object _, EventArgs e)
         {
             TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
                                                                  .ConfigureAwait(false);
@@ -891,7 +891,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdToBottomCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        private async void cmdToBottomCustomDirectoryLoadOrder_Click(object _, EventArgs e)
         {
             TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
                                                                  .ConfigureAwait(false);
@@ -1002,7 +1002,7 @@ namespace Chummer
             }
         }
 
-        private async void txtPriorities_TextChanged(object sender, EventArgs e)
+        private async void txtPriorities_TextChanged(object _, EventArgs e)
         {
             Color objWindowTextColor = ColorManager.WindowText;
             await txtPriorities.DoThreadSafeAsync(x => x.ForeColor
@@ -1011,7 +1011,7 @@ namespace Chummer
                                                           : ColorManager.ErrorColor).ConfigureAwait(false);
         }
 
-        private async void txtContactPoints_TextChanged(object sender, EventArgs e)
+        private async void txtContactPoints_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1023,14 +1023,14 @@ namespace Chummer
             await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private void txtGameplayOptionName_TextChanged(object sender, EventArgs e)
+        private void txtGameplayOptionName_TextChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
             _objCharacterSettings.GameplayOptionName = txtGameplayOptionName.Text;
         }
 
-        private async void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
+        private async void txtKnowledgePoints_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1042,7 +1042,7 @@ namespace Chummer
             await txtKnowledgePoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private async void txtNuyenExpression_TextChanged(object sender, EventArgs e)
+        private async void txtNuyenExpression_TextChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1057,7 +1057,7 @@ namespace Chummer
                                        .ConfigureAwait(false); // Not data-bound so that the setter can be asynchronous
         }
 
-        private async void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
+        private async void txtBoundSpiritLimit_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1069,7 +1069,7 @@ namespace Chummer
             await txtBoundSpiritLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private async void txtRegisteredSpriteLimit_TextChanged(object sender, EventArgs e)
+        private async void txtRegisteredSpriteLimit_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1081,7 +1081,7 @@ namespace Chummer
             await txtRegisteredSpriteLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private async void txtEssenceModifierPostExpression_TextChanged(object sender, EventArgs e)
+        private async void txtEssenceModifierPostExpression_TextChanged(object _, EventArgs e)
         {
             string strText = await txtEssenceModifierPostExpression.DoThreadSafeFuncAsync(x => x.Text)
                                                                    .ConfigureAwait(false);
@@ -1093,7 +1093,7 @@ namespace Chummer
             await txtEssenceModifierPostExpression.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private async void txtLiftLimit_TextChanged(object sender, EventArgs e)
+        private async void txtLiftLimit_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1103,7 +1103,7 @@ namespace Chummer
             await txtLiftLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private async void txtCarryLimit_TextChanged(object sender, EventArgs e)
+        private async void txtCarryLimit_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1113,7 +1113,7 @@ namespace Chummer
             await txtCarryLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
         }
 
-        private async void txtEncumbranceInterval_TextChanged(object sender, EventArgs e)
+        private async void txtEncumbranceInterval_TextChanged(object _, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -1144,7 +1144,7 @@ namespace Chummer
             }
         }
 
-        private async void cboPriorityTable_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboPriorityTable_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1154,7 +1154,7 @@ namespace Chummer
             await _objCharacterSettings.SetPriorityTableAsync(strNewPriorityTable).ConfigureAwait(false);
         }
 
-        private async void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treCustomDataDirectories_AfterSelect(object _, TreeViewEventArgs e)
         {
             if (!(e.Node?.Tag is CustomDataDirectoryInfo objSelected))
             {

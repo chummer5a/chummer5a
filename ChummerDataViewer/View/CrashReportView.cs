@@ -105,7 +105,7 @@ namespace ChummerDataViewer
             }
         }
 
-        private void btnAction_Click(object sender, EventArgs e)
+        private void btnAction_Click(object _, EventArgs e)
         {
             switch (_objReport.Progress)
             {

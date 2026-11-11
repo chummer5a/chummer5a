@@ -849,12 +849,12 @@ namespace Chummer
             }
         }
 
-        private void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
+        private void SplitMenuStrip_Opening(object _, CancelEventArgs e)
         {
             _isSplitMenuVisible = true;
         }
 
-        private void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        private void SplitMenuStrip_Closing(object _, ToolStripDropDownClosingEventArgs e)
         {
             _isSplitMenuVisible = false;
 
@@ -867,7 +867,7 @@ namespace Chummer
             }
         }
 
-        private void SplitMenu_Popup(object sender, EventArgs e)
+        private void SplitMenu_Popup(object _, EventArgs e)
         {
             _isSplitMenuVisible = true;
         }

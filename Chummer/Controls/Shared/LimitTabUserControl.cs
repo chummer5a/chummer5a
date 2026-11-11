@@ -63,7 +63,7 @@ namespace Chummer.UI.Shared
             MyToken = objMyToken;
         }
 
-        private async void LimitTabUserControl_Load(object sender, EventArgs e)
+        private async void LimitTabUserControl_Load(object _, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
@@ -138,7 +138,7 @@ namespace Chummer.UI.Shared
 
         #region Click Events
 
-        private async void cmdAddLimitModifier_Click(object sender, EventArgs e)
+        private async void cmdAddLimitModifier_Click(object _, EventArgs e)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private async void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
+        private async void cmdDeleteLimitModifier_Click(object _, EventArgs e)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private async void tssLimitModifierNotes_Click(object sender, EventArgs e)
+        private async void tssLimitModifierNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -263,7 +263,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private async void tssLimitModifierEdit_Click(object sender, EventArgs e)
+        private async void tssLimitModifierEdit_Click(object _, EventArgs e)
         {
             try
             {
@@ -649,7 +649,7 @@ namespace Chummer.UI.Shared
 
         #endregion Properties
 
-        private void treLimit_AfterSelect(object sender, TreeViewEventArgs e)
+        private void treLimit_AfterSelect(object _, TreeViewEventArgs e)
         {
             if (treLimit.SelectedNode?.Tag is LimitModifier objLimitModifier)
             {

@@ -64,7 +64,7 @@ namespace Chummer
             _lstCategory = Utils.ListItemListPool.Get();
         }
 
-        private async void SelectLifestyleQuality_Load(object sender, EventArgs e)
+        private async void SelectLifestyleQuality_Load(object _, EventArgs e)
         {
             if (await _objParentLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
             {
@@ -121,12 +121,12 @@ namespace Chummer
             await RefreshList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async void RefreshListControlWithCurrentCategory(object sender, EventArgs e)
+        private async void RefreshListControlWithCurrentCategory(object _, EventArgs e)
         {
             await RefreshList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstLifestyleQualities_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -297,19 +297,19 @@ namespace Chummer
             return s_LifestylesSorted[intMin];
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -543,7 +543,7 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

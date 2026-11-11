@@ -74,7 +74,7 @@ namespace Chummer
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
 
-        private async void ChummerUpdater_Load(object sender, EventArgs e)
+        private async void ChummerUpdater_Load(object _, EventArgs e)
         {
             Log.Info("ChummerUpdater_Load enter");
             Log.Info("Check Global Mutex for duplicate");
@@ -732,7 +732,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
         }
 
-        private async void cmdUpdate_Click(object sender, EventArgs e)
+        private async void cmdUpdate_Click(object _, EventArgs e)
         {
             Log.Info("cmdUpdate_Click");
             CancellationTokenSource objNewChangelogSource = new CancellationTokenSource();
@@ -815,7 +815,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdRestart_Click(object sender, EventArgs e)
+        private async void cmdRestart_Click(object _, EventArgs e)
         {
             Log.Info("cmdRestart_Click");
             try

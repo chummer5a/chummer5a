@@ -60,7 +60,7 @@ namespace Chummer
             InitializeComponent();
         }
 
-        private async void EditXmlData_Load(object sender, EventArgs e)
+        private async void EditXmlData_Load(object _, EventArgs e)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdLoadXml_Click(object sender, EventArgs e)
+        private async void cmdLoadXml_Click(object _, EventArgs e)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdPreviewAmendment_Click(object sender, EventArgs e)
+        private async void cmdPreviewAmendment_Click(object _, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationToken token = objNewSource.Token;
@@ -128,7 +128,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSaveAmendment_Click(object sender, EventArgs e)
+        private async void cmdSaveAmendment_Click(object _, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationToken token = objNewSource.Token;
@@ -162,7 +162,7 @@ namespace Chummer
             }
         }
 
-        private void txtAmendmentXml_TextChanged(object sender, EventArgs e)
+        private void txtAmendmentXml_TextChanged(object _, EventArgs e)
         {
             if (!_blnLoading)
             {

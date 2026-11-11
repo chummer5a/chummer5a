@@ -55,7 +55,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             try
             {
@@ -126,13 +126,13 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
+        private async void cmdEditCharacterOption_Click(object _, EventArgs e)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectBuildMethod_Load(object sender, EventArgs e)
+        private async void SelectBuildMethod_Load(object _, EventArgs e)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace Chummer
             }
         }
 
-        private void SelectBuildMethod_Closing(object sender, FormClosingEventArgs e)
+        private void SelectBuildMethod_Closing(object _, FormClosingEventArgs e)
         {
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
@@ -314,7 +314,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCharacterSetting_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;

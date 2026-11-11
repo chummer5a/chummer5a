@@ -340,7 +340,7 @@ namespace Chummer
             }
         }
 
-        private async void CharacterRoster_Load(object sender, EventArgs e)
+        private async void CharacterRoster_Load(object _, EventArgs e)
         {
             try
             {
@@ -553,7 +553,7 @@ namespace Chummer
             }
         }
 
-        private async void RefreshWatchList(object sender, EventArgs e)
+        private async void RefreshWatchList(object _, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationToken innerToken = objNewSource.Token;
@@ -2187,7 +2187,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private async void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object _, EventArgs e)
         {
             try
             {
@@ -2225,7 +2225,7 @@ namespace Chummer
 
         #endregion Form Methods
 
-        public async void tsDelete_Click(object sender, EventArgs e)
+        public async void tsDelete_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2244,7 +2244,7 @@ namespace Chummer
             }
         }
 
-        private void tsSort_Click(object sender, EventArgs e)
+        private void tsSort_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2280,7 +2280,7 @@ namespace Chummer
             treCharacterList.SelectedNode = t;
         }
 
-        private async void tsOpen_Click(object sender, EventArgs e)
+        private async void tsOpen_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2329,7 +2329,7 @@ namespace Chummer
             }
         }
 
-        private async void tsOpenForPrinting_Click(object sender, EventArgs e)
+        private async void tsOpenForPrinting_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2376,7 +2376,7 @@ namespace Chummer
             }
         }
 
-        private async void tsOpenForExport_Click(object sender, EventArgs e)
+        private async void tsOpenForExport_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2423,7 +2423,7 @@ namespace Chummer
             }
         }
 
-        private async void tsToggleFav_Click(object sender, EventArgs e)
+        private async void tsToggleFav_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2500,7 +2500,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCloseOpenCharacter_Click(object sender, EventArgs e)
+        private async void tsCloseOpenCharacter_Click(object _, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed() || _objGenericToken.IsCancellationRequested)
                 return;
@@ -2607,7 +2607,7 @@ namespace Chummer
         /// </summary>
         public bool IsFinishedLoading { get; private set; }
 
-        private void treCharacterList_DpiChangedAfterParent(object sender, EventArgs e)
+        private void treCharacterList_DpiChangedAfterParent(object _, EventArgs e)
         {
             int intItemHeight = treCharacterList.ItemHeight;
             if (intItemHeight >= 32)

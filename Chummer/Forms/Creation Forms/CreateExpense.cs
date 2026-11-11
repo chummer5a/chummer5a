@@ -65,7 +65,7 @@ namespace Chummer
             datDate.Value = DateTime.Now;
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen)
             {
@@ -101,7 +101,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -247,7 +247,7 @@ namespace Chummer
 
         #endregion Methods
 
-        private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
+        private void chkKarmaNuyenExchange_CheckedChanged(object _, EventArgs e)
         {
             if (chkKarmaNuyenExchange.Checked && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString))
             {
@@ -272,7 +272,7 @@ namespace Chummer
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
-        private async void CreateExpanse_Load(object sender, EventArgs e)
+        private async void CreateExpanse_Load(object _, EventArgs e)
         {
             if (!IsInEditMode)
             {

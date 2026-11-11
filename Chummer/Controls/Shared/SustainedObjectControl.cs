@@ -50,7 +50,7 @@ namespace Chummer
             }
         }
 
-        private async void SustainedObjectControl_Load(object sender, EventArgs e)
+        private async void SustainedObjectControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -106,7 +106,7 @@ namespace Chummer
             }
         }
 
-        private async void SustainedObject_ControlStateChanged(object sender, EventArgs e)
+        private async void SustainedObject_ControlStateChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;

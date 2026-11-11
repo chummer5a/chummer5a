@@ -655,7 +655,7 @@ namespace Translator
             }
         }
 
-        private void FinishDataProcessing(object sender, RunWorkerCompletedEventArgs e)
+        private void FinishDataProcessing(object _, RunWorkerCompletedEventArgs e)
         {
             if (!_workerStringsProcessor.IsBusy)
             {
@@ -663,14 +663,14 @@ namespace Translator
             }
         }
 
-        private void StepProgressBar(object sender, ProgressChangedEventArgs e)
+        private void StepProgressBar(object _, ProgressChangedEventArgs e)
         {
             pbProcessProgress.PerformStep();
         }
 
         private ValueTuple<XmlDocument, string> _objDataDocWithPath;
 
-        private void DoDataProcessing(object sender, DoWorkEventArgs e)
+        private void DoDataProcessing(object _, DoWorkEventArgs e)
         {
             if (Interlocked.CompareExchange(ref _intQueueDataProcessorRun, 0, 1) == 0)
             {

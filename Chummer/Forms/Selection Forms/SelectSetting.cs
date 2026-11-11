@@ -37,7 +37,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void SelectSetting_Load(object sender, EventArgs e)
+        private async void SelectSetting_Load(object _, EventArgs e)
         {
             // Build the list of XML files found in the settings directory.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSettings))
@@ -68,7 +68,7 @@ namespace Chummer
             Close();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _strSettingsKey = cboSetting.SelectedValue.ToString();
             DialogResult = DialogResult.OK;

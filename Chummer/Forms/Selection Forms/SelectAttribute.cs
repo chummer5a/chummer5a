@@ -59,7 +59,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             _strReturnValue = cboAttribute.SelectedValue.ToString();
             _blnDoNotAffectMetatypeMaximum = chkDoNotAffectMetatypeMaximum.Checked;
@@ -67,7 +67,7 @@ namespace Chummer
             Close();
         }
 
-        private async void SelectAttribute_Load(object sender, EventArgs e)
+        private async void SelectAttribute_Load(object _, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
             {
@@ -97,7 +97,7 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

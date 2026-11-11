@@ -69,7 +69,7 @@ namespace Chummer.UI.Charts
             chtCartesian.AxisY.Add(_objYAxis);
         }
 
-        private async void ExpenseChart_Load(object sender, EventArgs e)
+        private async void ExpenseChart_Load(object _, EventArgs e)
         {
             if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
             {

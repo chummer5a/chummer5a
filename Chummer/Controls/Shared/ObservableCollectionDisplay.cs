@@ -154,7 +154,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void ObservableCollectionDisplay_Load(object sender, EventArgs e)
+        private void ObservableCollectionDisplay_Load(object _, EventArgs e)
         {
             Application.Idle += ApplicationOnIdle;
             Disposed += (o, args) => Application.Idle -= ApplicationOnIdle;
@@ -854,7 +854,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void ObservableCollectionDisplay_SizeChanged(object sender, EventArgs e)
+        private void ObservableCollectionDisplay_SizeChanged(object _, EventArgs e)
         {
             if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                 pnlDisplay.SuspendLayout();
@@ -1466,7 +1466,7 @@ namespace Chummer.Controls.Shared
                 : Task.FromResult(predicate.Invoke(x));
         }
 
-        private async void ObservableCollectionDisplay_DpiChangedAfterParent(object sender, EventArgs e)
+        private async void ObservableCollectionDisplay_DpiChangedAfterParent(object _, EventArgs e)
         {
             int intMaxControlHeight = 0;
             foreach (ControlWithMetaData objControl in _lstContentList)

@@ -353,12 +353,12 @@ namespace WpfApplication1
             return ret;
         }
 
-        private void CreateSpirit(object sender, RoutedEventArgs e)
+        private void CreateSpirit(object _, RoutedEventArgs e)
         {
             ConvertString(false);
         }
 
-        private void CreateCritter(object sender, RoutedEventArgs e)
+        private void CreateCritter(object _, RoutedEventArgs e)
         {
             ConvertString();
         }

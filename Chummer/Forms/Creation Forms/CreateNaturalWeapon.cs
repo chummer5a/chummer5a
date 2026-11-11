@@ -53,7 +53,7 @@ namespace Chummer
             MoveControls();
         }
 
-        private async void CreateNaturalWeapon_Load(object sender, EventArgs e)
+        private async void CreateNaturalWeapon_Load(object _, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
@@ -96,13 +96,13 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             await AcceptForm().ConfigureAwait(false);
         }

@@ -106,7 +106,7 @@ namespace Chummer
             }
         }
 
-        private async void CharacterSheetViewer_Load(object sender, EventArgs e)
+        private async void CharacterSheetViewer_Load(object _, EventArgs e)
         {
             Interlocked.Increment(ref _intLoading);
             try
@@ -239,7 +239,7 @@ namespace Chummer
             await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
         }
 
-        private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboXSLT_SelectedIndexChanged(object _, EventArgs e)
         {
             // Re-generate the output when a new sheet is selected.
             if (_intLoading == 0)
@@ -256,17 +256,17 @@ namespace Chummer
             }
         }
 
-        private void cmdPrint_Click(object sender, EventArgs e)
+        private void cmdPrint_Click(object _, EventArgs e)
         {
             webViewer.ShowPrintDialog();
         }
 
-        private void tsPrintPreview_Click(object sender, EventArgs e)
+        private void tsPrintPreview_Click(object _, EventArgs e)
         {
             webViewer.ShowPrintPreviewDialog();
         }
 
-        private async void tsSaveAsHTML_Click(object sender, EventArgs e)
+        private async void tsSaveAsHTML_Click(object _, EventArgs e)
         {
             try
             {
@@ -294,7 +294,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSaveAsXml_Click(object sender, EventArgs e)
+        private async void tsSaveAsXml_Click(object _, EventArgs e)
         {
             try
             {
@@ -390,7 +390,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
+        private async void cmdSaveAsPdf_Click(object _, EventArgs e)
         {
             try
             {
@@ -535,7 +535,7 @@ namespace Chummer
             }
         }
 
-        private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLanguage_SelectedIndexChanged(object _, EventArgs e)
         {
             string strOldPrintLanguage;
             try
@@ -1548,7 +1548,7 @@ namespace Chummer
 
         #endregion Methods
 
-        private void imgSheetLanguageFlag_DpiChangedAfterParent(object sender, EventArgs e)
+        private void imgSheetLanguageFlag_DpiChangedAfterParent(object _, EventArgs e)
         {
             try
             {

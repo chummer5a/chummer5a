@@ -312,7 +312,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async void SkillGroupControl_Load(object sender, EventArgs e)
+        private async void SkillGroupControl_Load(object _, EventArgs e)
         {
             try
             {
@@ -339,7 +339,7 @@ namespace Chummer.UI.Skills
 
         #region Control Events
 
-        private async void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object _, EventArgs e)
         {
             try
             {
@@ -443,19 +443,19 @@ namespace Chummer.UI.Skills
             return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.ClientRectangle.Contains(pt));
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object _, MouseEventArgs e)
         {
             ActiveButton = FindToolTipControl(e.Location);
         }
 
-        private void OnMouseLeave(object sender, EventArgs e)
+        private void OnMouseLeave(object _, EventArgs e)
         {
             ActiveButton = null;
         }
 
         #endregion ButtonWithToolTip Visibility workaround
 
-        private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
+        private void SkillGroupControl_DpiChangedAfterParent(object _, EventArgs e)
         {
             AdjustForDpi();
         }

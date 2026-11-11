@@ -87,7 +87,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectArt_Load(object sender, EventArgs e)
+        private async void SelectArt_Load(object _, EventArgs e)
         {
             string strText = StringExtensions.FastFormat(
                                            await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strLocalName);
@@ -102,7 +102,7 @@ namespace Chummer
             await BuildList().ConfigureAwait(false);
         }
 
-        private async void lstArt_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstArt_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -131,28 +131,28 @@ namespace Chummer
             await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             await AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void lstArt_DoubleClick(object sender, EventArgs e)
+        private async void lstArt_DoubleClick(object _, EventArgs e)
         {
             await AcceptForm();
         }
 
-        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object _, EventArgs e)
         {
             await BuildList().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await BuildList().ConfigureAwait(false);
         }
@@ -237,7 +237,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

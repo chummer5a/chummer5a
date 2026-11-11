@@ -62,7 +62,7 @@ namespace Chummer
                 _colNotes = ColorManager.HasNotesColor;
         }
 
-        private async void EditNotes_Load(object sender, EventArgs e)
+        private async void EditNotes_Load(object _, EventArgs e)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Chummer
             }
         }
 
-        private void EditNotes_Resize(object sender, EventArgs e)
+        private void EditNotes_Resize(object _, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -113,27 +113,27 @@ namespace Chummer
             _intHeight = Height;
         }
 
-        private void EditNotes_Shown(object sender, EventArgs e)
+        private void EditNotes_Shown(object _, EventArgs e)
         {
             txtNotes.Focus();
             txtNotes.SelectionLength = 0;
             txtNotes.SelectionStart = txtNotes.TextLength;
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void btnOK_Click(object _, EventArgs e)
         {
             _strNotes = txtNotes.Text;
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void btnColorSelect_Click(object sender, EventArgs e)
+        private async void btnColorSelect_Click(object _, EventArgs e)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace Chummer
             }
         }
 
-        private void txtNotes_TextChanged(object sender, EventArgs e)
+        private void txtNotes_TextChanged(object _, EventArgs e)
         {
             btnColorSelect.Enabled = txtNotes.TextLength > 0;
         }

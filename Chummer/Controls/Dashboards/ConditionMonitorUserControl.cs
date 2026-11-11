@@ -69,7 +69,7 @@ namespace Chummer
             InitializeComponent();
         }
 
-        private void _btnPhysical_Click(object sender, EventArgs e)
+        private void _btnPhysical_Click(object _, EventArgs e)
         {
             int val = _nudPhysical.ValueAsInt;
             if (val + _progressBarPhysical.Value < 0)
@@ -81,7 +81,7 @@ namespace Chummer
                     _progressBarPhysical.Maximum : val;
         }
 
-        private void _btnApplyStun_Click(object sender, EventArgs e)
+        private void _btnApplyStun_Click(object _, EventArgs e)
         {
             int val = nudStun.ValueAsInt;
             if (val + _progressBarStun.Value < 0)

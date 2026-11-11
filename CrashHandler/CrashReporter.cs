@@ -56,17 +56,17 @@ namespace CrashHandler
             _objDumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
         }
 
-        private void frmCrashReporter_Load(object sender, EventArgs e)
+        private void frmCrashReporter_Load(object _, EventArgs e)
         {
             _objDumper.StartCollecting();
         }
 
-        private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e)
+        private void frmCrashReporter_FormClosing(object _, FormClosingEventArgs e)
         {
             _objDumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
         }
 
-        private void DumperOnCrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
+        private void DumperOnCrashDumperProgressChanged(object _, CrashDumperProgressChangedEventArgs args)
         {
             Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
         }

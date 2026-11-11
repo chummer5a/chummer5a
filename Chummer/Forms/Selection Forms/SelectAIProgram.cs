@@ -60,7 +60,7 @@ namespace Chummer
             _lstCategory = Utils.ListItemListPool.Get();
         }
 
-        private async void SelectAIProgram_Load(object sender, EventArgs e)
+        private async void SelectAIProgram_Load(object _, EventArgs e)
         {
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category"))
@@ -99,40 +99,40 @@ namespace Chummer
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void lstAIPrograms_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstAIPrograms_SelectedIndexChanged(object _, EventArgs e)
         {
             await UpdateProgramInfo().ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
@@ -403,7 +403,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

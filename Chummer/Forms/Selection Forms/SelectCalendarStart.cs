@@ -65,12 +65,12 @@ namespace Chummer
             nudWeek.ValueChanged += UpdateDateSpan;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -98,7 +98,7 @@ namespace Chummer
         }
 
 
-        private void UpdateDateSpan(object sender, EventArgs e)
+        private void UpdateDateSpan(object _, EventArgs e)
         {
             string strFormat = _strCachedDateSpanFormat;
             int intYear = nudYear.ValueAsInt;

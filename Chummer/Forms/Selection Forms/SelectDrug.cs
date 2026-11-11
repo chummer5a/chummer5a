@@ -88,7 +88,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectDrug_Load(object sender, EventArgs e)
+        private async void SelectDrug_Load(object _, EventArgs e)
         {
             bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync().ConfigureAwait(false);
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount).ConfigureAwait(false);
@@ -143,7 +143,7 @@ namespace Chummer
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGrade_SelectedIndexChanged(object _, EventArgs e)
         {
             await ProcessGradeChanged().ConfigureAwait(false);
         }
@@ -189,7 +189,7 @@ namespace Chummer
                 await UpdateDrugInfo(token).ConfigureAwait(false);
         }
 
-        private async void cboGrade_EnabledChanged(object sender, EventArgs e)
+        private async void cboGrade_EnabledChanged(object _, EventArgs e)
         {
             if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled).ConfigureAwait(false) != _blnOldGradeEnabled)
             {
@@ -205,7 +205,7 @@ namespace Chummer
             }
         }
 
-        private async void lstDrug_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstDrug_SelectedIndexChanged(object _, EventArgs e)
         {
             if (Interlocked.CompareExchange(ref _intLoading, 1, 0) > 0)
                 return;
@@ -413,19 +413,19 @@ namespace Chummer
             await UpdateDrugInfo().ConfigureAwait(false);
         }
 
-        private async void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
             await UpdateDrugInfo().ConfigureAwait(false);
         }
 
-        private async void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        private async void chkHideOverAvailLimit_CheckedChanged(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -436,19 +436,19 @@ namespace Chummer
             await UpdateDrugInfo().ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void chkHideBannedGrades_CheckedChanged(object sender, EventArgs e)
+        private async void chkHideBannedGrades_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -457,18 +457,18 @@ namespace Chummer
             await PopulateGrades().ConfigureAwait(false);
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
         }
 
-        private async void chkFree_CheckedChanged(object sender, EventArgs e)
+        private async void chkFree_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -479,7 +479,7 @@ namespace Chummer
             await UpdateDrugInfo().ConfigureAwait(false);
         }
 
-        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -1123,7 +1123,7 @@ namespace Chummer
             _blnPopulatingGrades = false;
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }

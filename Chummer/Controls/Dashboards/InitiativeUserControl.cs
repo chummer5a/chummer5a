@@ -66,7 +66,7 @@ namespace Chummer
          * Queries the user for the chummer to add to the list
          */
 
-        private async void btnAdd_Click(object sender, EventArgs e)
+        private async void btnAdd_Click(object _, EventArgs e)
         {
             using (ThreadSafeForm<AddToken> frmAdd = await ThreadSafeForm<AddToken>.GetAsync(() => new AddToken(this)).ConfigureAwait(false))
                 await frmAdd.ShowDialogSafeAsync(this).ConfigureAwait(false);
@@ -76,7 +76,7 @@ namespace Chummer
          * Removes the chosen chummer from the list
          */
 
-        private async void btnRemove_Click(object sender, EventArgs e)
+        private async void btnRemove_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false) == null)
@@ -100,7 +100,7 @@ namespace Chummer
          * Subtracts 1 init
          */
 
-        private void btnMinusInit1_Click(object sender, EventArgs e)
+        private void btnMinusInit1_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -115,7 +115,7 @@ namespace Chummer
          * Subtracts 5 init
          */
 
-        private void btnMinus5Init_Click(object sender, EventArgs e)
+        private void btnMinus5Init_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -130,7 +130,7 @@ namespace Chummer
          * Subtracts 10 init
          */
 
-        private void btnMinus10Init_Click(object sender, EventArgs e)
+        private void btnMinus10Init_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -145,7 +145,7 @@ namespace Chummer
          * Adds 1 init
          */
 
-        private void btnAdd1Init_Click(object sender, EventArgs e)
+        private void btnAdd1Init_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -160,7 +160,7 @@ namespace Chummer
          * Adds 5 init
          */
 
-        private void btnAdd5Init_Click(object sender, EventArgs e)
+        private void btnAdd5Init_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -175,7 +175,7 @@ namespace Chummer
          * Adds 10 init
          */
 
-        private void btnAdd10Init_Click(object sender, EventArgs e)
+        private void btnAdd10Init_Click(object _, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -190,7 +190,7 @@ namespace Chummer
          * Applies the specified interrupt action
          */
 
-        private void btnApplyInterrupt_Click(object sender, EventArgs e)
+        private void btnApplyInterrupt_Click(object _, EventArgs e)
         {
             // TODO edward
         }
@@ -199,7 +199,7 @@ namespace Chummer
          * goes to the next chummer in the list
          */
 
-        private async void btnNext_Click(object sender, EventArgs e)
+        private async void btnNext_Click(object _, EventArgs e)
         {
             if (_blnFinishedCombatTurn)
                 return; // cannot go to "next"
@@ -251,7 +251,7 @@ namespace Chummer
          * Sorts the _lstCharacters based on Initiative
          */
 
-        private void btnSort_Click(object sender, EventArgs e)
+        private void btnSort_Click(object _, EventArgs e)
         {
             _lstCharacters.Sort((a, b) => -a.InitRoll.CompareTo(b.InitRoll));
             chkBoxChummer.Items.Clear();
@@ -265,7 +265,7 @@ namespace Chummer
          * Delays the chosen character
          */
 
-        private void btnDelay_Click(object sender, EventArgs e)
+        private void btnDelay_Click(object _, EventArgs e)
         {
             // make sure a chummer is selected
             if (chkBoxChummer.SelectedItem == null)
@@ -302,7 +302,7 @@ namespace Chummer
          * Reset button pressed
          */
 
-        private async void btnReset_Click(object sender, EventArgs e)
+        private async void btnReset_Click(object _, EventArgs e)
         {
             // for every checked character, we re-roll init
             for (int i = 0; i < _lstCharacters.Count; i++)
@@ -354,7 +354,7 @@ namespace Chummer
          * When the index has changed for the check box list
          */
 
-        private void listBoxChummers_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBoxChummers_SelectedIndexChanged(object _, EventArgs e)
         {
             // confirm if we are delaying the selected chummer, if we are, ask user if they
             // wish for the chummer to perform a delayed action
@@ -397,7 +397,7 @@ namespace Chummer
          * When the user right-clicks somewhere in the check box list.
          */
 
-        private async void chkBoxChummer_MouseClick(object sender, MouseEventArgs e)
+        private async void chkBoxChummer_MouseClick(object _, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {

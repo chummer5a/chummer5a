@@ -86,7 +86,7 @@ namespace Chummer
             nudExactCost.KeyDown += NumericUpDown_KeyDown;
         }
 
-        private async void SelectArmor_Load(object sender, EventArgs e)
+        private async void SelectArmor_Load(object _, EventArgs e)
         {
             try
             {
@@ -191,19 +191,19 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             await AcceptForm(_objGenericToken).ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstArmor_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -379,7 +379,7 @@ namespace Chummer
             }
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object _, EventArgs e)
         {
             try
             {
@@ -391,7 +391,7 @@ namespace Chummer
             }
         }
 
-        private async void CostFilter(object sender, EventArgs e)
+        private async void CostFilter(object sender, EventArgs _)
         {
             if (_intLoading > 0)
                 return;
@@ -467,13 +467,13 @@ namespace Chummer
             }
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             await AcceptForm(_objGenericToken).ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             try
             {
@@ -485,7 +485,7 @@ namespace Chummer
             }
         }
 
-        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -501,7 +501,7 @@ namespace Chummer
             }
         }
 
-        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -513,7 +513,7 @@ namespace Chummer
             }
         }
 
-        private async void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object _, EventArgs e)
         {
             try
             {
@@ -525,7 +525,7 @@ namespace Chummer
             }
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object _, EventArgs e)
         {
             try
             {
@@ -581,7 +581,7 @@ namespace Chummer
                 txtSearch.Select(txtSearch.TextLength, 0);
         }
 
-        private async void dgvArmor_DoubleClick(object sender, EventArgs e)
+        private async void dgvArmor_DoubleClick(object _, EventArgs e)
         {
             await AcceptForm(_objGenericToken).ConfigureAwait(false);
         }
@@ -1073,7 +1073,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             try
             {

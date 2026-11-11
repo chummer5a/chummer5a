@@ -47,7 +47,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             _strSelectedExoticSkill = (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false))?.ToString() ?? string.Empty;
             _strSelectedExoticSkillSpecialization = (await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false))?.ToString()
@@ -59,13 +59,13 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void SelectExoticSkill_Load(object sender, EventArgs e)
+        private async void SelectExoticSkill_Load(object _, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
@@ -107,7 +107,7 @@ namespace Chummer
             await BuildList().ConfigureAwait(false);
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             await BuildList().ConfigureAwait(false);
         }

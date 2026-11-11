@@ -907,12 +907,12 @@ namespace Translator
             }
         }
 
-        private void RefreshProgressBar(object sender, ProgressChangedEventArgs e)
+        private void RefreshProgressBar(object _, ProgressChangedEventArgs e)
         {
             pbTranslateProgressBar.Value = e.ProgressPercentage * pbTranslateProgressBar.Maximum / 100;
         }
 
-        private void FinishLoadingSection(object sender, RunWorkerCompletedEventArgs e)
+        private void FinishLoadingSection(object _, RunWorkerCompletedEventArgs e)
         {
             try
             {

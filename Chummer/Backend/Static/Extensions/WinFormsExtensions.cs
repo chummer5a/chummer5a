@@ -1110,7 +1110,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1177,7 +1177,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1245,7 +1245,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1315,7 +1315,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1393,7 +1393,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1428,7 +1428,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -1508,7 +1508,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1543,7 +1543,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -1623,7 +1623,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1658,7 +1658,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -1738,7 +1738,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1773,7 +1773,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -1854,7 +1854,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -1891,7 +1891,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -1972,7 +1972,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2009,7 +2009,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2090,7 +2090,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2127,7 +2127,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2208,7 +2208,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2245,7 +2245,7 @@ namespace Chummer
                 }
             }
 
-            async void FuncControlEventHandler(object sender, EventArgs e)
+            async void FuncControlEventHandler(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2326,7 +2326,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2369,7 +2369,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2397,7 +2397,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -2467,7 +2467,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2510,7 +2510,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2538,7 +2538,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -2608,7 +2608,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2651,7 +2651,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2679,7 +2679,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -2749,7 +2749,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2792,7 +2792,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2820,7 +2820,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -2891,7 +2891,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -2936,7 +2936,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -2964,7 +2964,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -3035,7 +3035,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -3080,7 +3080,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -3108,7 +3108,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -3179,7 +3179,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -3224,7 +3224,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -3252,7 +3252,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {
@@ -3323,7 +3323,7 @@ namespace Chummer
                 RemoveEvent(null, default);
                 throw;
             }
-            void RemoveEvent(object sender, EventArgs e)
+            void RemoveEvent(object _, EventArgs e)
             {
                 try
                 {
@@ -3368,7 +3368,7 @@ namespace Chummer
                 }
             }
 
-            async void TmrDelayOnTick(object sender, EventArgs e)
+            async void TmrDelayOnTick(object _, EventArgs e)
             {
                 if (intSkipDataSetter > 0)
                     return;
@@ -3396,7 +3396,7 @@ namespace Chummer
                 }
             }
 
-            void FuncControlEventHandler(object sender, EventArgs e)
+            void FuncControlEventHandler(object _, EventArgs e)
             {
                 try
                 {

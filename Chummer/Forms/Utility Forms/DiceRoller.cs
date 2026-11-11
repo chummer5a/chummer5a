@@ -47,7 +47,7 @@ namespace Chummer
             _objRollDiceSemaphore = Utils.SemaphorePool.Get();
         }
 
-        private async void DiceRoller_Load(object sender, EventArgs e)
+        private async void DiceRoller_Load(object _, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethod))
             {
@@ -60,7 +60,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdRollDice_Click(object sender, EventArgs e)
+        private async void cmdRollDice_Click(object _, EventArgs e)
         {
             await _objRollDiceSemaphore.WaitAsync().ConfigureAwait(false);
             try
@@ -239,7 +239,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdReroll_Click(object sender, EventArgs e)
+        private async void cmdReroll_Click(object _, EventArgs e)
         {
             await _objRollDiceSemaphore.WaitAsync().ConfigureAwait(false);
             try

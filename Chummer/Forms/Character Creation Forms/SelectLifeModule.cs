@@ -55,7 +55,7 @@ namespace Chummer
                 = _objCharacter.LoadDataXPath("lifemodules.xml").SelectSingleNode("/chummer");
         }
 
-        private async void SelectLifeModule_Load(object sender, EventArgs e)
+        private async void SelectLifeModule_Load(object _, EventArgs e)
         {
             string strSelectString = "stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + "]";
 
@@ -129,21 +129,21 @@ namespace Chummer
             return lstTreeNodes.ToArray();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -207,7 +207,7 @@ namespace Chummer
             }
         }
 
-        private async void chkLimitList_Click(object sender, EventArgs e)
+        private async void chkLimitList_Click(object _, EventArgs e)
         {
             bool blnLimitListChecked = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
             await lblStage.DoThreadSafeAsync(x => x.Visible = blnLimitListChecked).ConfigureAwait(false);
@@ -271,7 +271,7 @@ namespace Chummer
             }
         }
 
-        private async void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
+        private async void cboStage_SelectionChangeCommitted(object _, EventArgs e)
         {
             string strSelected = await cboStage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
             _strWorkStage = strSelected == "0"

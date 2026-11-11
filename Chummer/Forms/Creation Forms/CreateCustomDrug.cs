@@ -65,7 +65,7 @@ namespace Chummer
             _lstGrade = Utils.ListItemListPool.Get();
         }
 
-        private async void CreateCustomDrug_Load(object sender, EventArgs e)
+        private async void CreateCustomDrug_Load(object _, EventArgs e)
         {
             string strLevelString = await LanguageManager.GetStringAsync("String_Level").ConfigureAwait(false);
             string strSpaceString = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
@@ -285,7 +285,7 @@ namespace Chummer
             }
         }
 
-        private async void btnAddComponent_Click(object sender, EventArgs e)
+        private async void btnAddComponent_Click(object _, EventArgs e)
         {
             await AddSelectedComponent().ConfigureAwait(false);
         }
@@ -295,7 +295,7 @@ namespace Chummer
             await AddSelectedComponent().ConfigureAwait(false);
         }
 
-        private async void btnRemoveComponent_Click(object sender, EventArgs e)
+        private async void btnRemoveComponent_Click(object _, EventArgs e)
         {
             if (!(await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is DrugNodeData objNodeData))
                 return;
@@ -308,26 +308,26 @@ namespace Chummer
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }
 
-        private async void txtDrugName_TextChanged(object sender, EventArgs e)
+        private async void txtDrugName_TextChanged(object _, EventArgs e)
         {
             await _objDrug.SetNameAsync(await txtDrugName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false);
             string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }
 
-        private async void btnOk_Click(object sender, EventArgs e)
+        private async void btnOk_Click(object _, EventArgs e)
         {
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object _, EventArgs e)
         {
             Interlocked.Exchange(ref _objDrug, null)?.Dispose();
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGrade_SelectedIndexChanged(object _, EventArgs e)
         {
             if (cboGrade.SelectedValue == null)
                 return;

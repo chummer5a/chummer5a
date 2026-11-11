@@ -173,7 +173,7 @@ namespace Chummer.UI.Table
 
         private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
 
-        private async void checked_changed(object sender, EventArgs e)
+        private async void checked_changed(object _, EventArgs e)
         {
             if (ValueUpdater == null)
                 return;

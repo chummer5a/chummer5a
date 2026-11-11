@@ -53,7 +53,7 @@ namespace Chummer.UI.Table
 
         private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
 
-        private async void OnButtonClick(object sender, EventArgs e)
+        private async void OnButtonClick(object _, EventArgs e)
         {
             if (ClickHandler != null)
             {
@@ -80,7 +80,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
+        private void OnLoad(object _, EventArgs eventArgs)
         {
             MinimumSize = _button.Size;
         }

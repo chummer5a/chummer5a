@@ -49,24 +49,24 @@ namespace Chummer
             InitializeComponent();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void SelectLifestyleStartingNuyen_Load(object sender, EventArgs e)
+        private async void SelectLifestyleStartingNuyen_Load(object _, EventArgs e)
         {
             await RefreshSelectLifestyle().ConfigureAwait(false);
         }
 
-        private async void nudDiceResult_ValueChanged(object sender, EventArgs e)
+        private async void nudDiceResult_ValueChanged(object _, EventArgs e)
         {
             await RefreshResultLabel().ConfigureAwait(false);
         }
@@ -96,7 +96,7 @@ namespace Chummer
             }
         }
 
-        private async void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
+        private async void cboSelectLifestyle_SelectionChanged(object _, EventArgs e)
         {
             await RefreshBaseLifestyle().ConfigureAwait(false);
         }
@@ -228,7 +228,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object _, EventArgs e)
         {
             if (SelectedLifestyle == null)
                 return;

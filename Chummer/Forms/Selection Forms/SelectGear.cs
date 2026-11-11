@@ -112,7 +112,7 @@ namespace Chummer
             }
         }
 
-        private async void SelectGear_Load(object sender, EventArgs e)
+        private async void SelectGear_Load(object _, EventArgs e)
         {
             try
             {
@@ -262,7 +262,7 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -289,7 +289,7 @@ namespace Chummer
             }
         }
 
-        private async void lstGear_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstGear_SelectedIndexChanged(object _, EventArgs e)
         {
             if (_intLoading > 0)
                 return;
@@ -430,7 +430,7 @@ namespace Chummer
             }
         }
 
-        private async void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object _, EventArgs e)
         {
             try
             {
@@ -442,7 +442,7 @@ namespace Chummer
             }
         }
 
-        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -454,19 +454,19 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object _, EventArgs e)
         {
             AddAgain = false;
             AcceptForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             try
             {
@@ -478,13 +478,13 @@ namespace Chummer
             }
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private void cmdOKAdd_Click(object _, EventArgs e)
         {
             AddAgain = true;
             AcceptForm();
         }
 
-        private async void nudGearQty_ValueChanged(object sender, EventArgs e)
+        private async void nudGearQty_ValueChanged(object _, EventArgs e)
         {
             try
             {
@@ -496,7 +496,7 @@ namespace Chummer
             }
         }
 
-        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace Chummer
             }
         }
 
-        private async void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
+        private async void chkDoItYourself_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -529,7 +529,7 @@ namespace Chummer
             }
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object _, EventArgs e)
         {
             try
             {
@@ -546,7 +546,7 @@ namespace Chummer
             }
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object _, EventArgs e)
         {
             try
             {
@@ -558,7 +558,7 @@ namespace Chummer
             }
         }
 
-        private async void CostFilter(object sender, EventArgs e)
+        private async void CostFilter(object sender, EventArgs _)
         {
             if (_intLoading > 0)
                 return;
@@ -1664,7 +1664,7 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             try
             {

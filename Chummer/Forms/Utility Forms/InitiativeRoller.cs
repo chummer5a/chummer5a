@@ -34,7 +34,7 @@ namespace Chummer
             this.UpdateParentForToolTipControls();
         }
 
-        private async void InitiativeRoller_Load(object sender, EventArgs e)
+        private async void InitiativeRoller_Load(object _, EventArgs e)
         {
             string strText = StringExtensions.FastFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf").ConfigureAwait(false), Dice);
             await lblDice.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);

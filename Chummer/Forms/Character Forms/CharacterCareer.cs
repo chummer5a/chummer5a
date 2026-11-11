@@ -416,7 +416,7 @@ namespace Chummer
             }
         }
 
-        private void TreeView_DragEnter(object sender, DragEventArgs e)
+        private void TreeView_DragEnter(object _, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -444,7 +444,7 @@ namespace Chummer
             treView.ClearNodeBackground(objNode);
         }
 
-        private async void CharacterCareer_Load(object sender, EventArgs e)
+        private async void CharacterCareer_Load(object _, EventArgs e)
         {
             try
             {
@@ -2673,12 +2673,12 @@ namespace Chummer
             }
         }
 
-        private void CharacterCareer_Activated(object sender, EventArgs e)
+        private void CharacterCareer_Activated(object _, EventArgs e)
         {
             ToolStripManager.Merge(tsMain, Program.MainForm.MainToolStrip);
         }
 
-        private void CharacterCareer_Deactivate(object sender, EventArgs e)
+        private void CharacterCareer_Deactivate(object _, EventArgs e)
         {
             ToolStripManager.RevertMerge(Program.MainForm.MainToolStrip, tsMain);
         }
@@ -3811,7 +3811,7 @@ namespace Chummer
 
         #region Menu Events
 
-        private async void mnuFileSave_Click(object sender, EventArgs e)
+        private async void mnuFileSave_Click(object _, EventArgs e)
         {
             try
             {
@@ -3823,7 +3823,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuFileSaveAs_Click(object sender, EventArgs e)
+        private async void mnuFileSaveAs_Click(object _, EventArgs e)
         {
             try
             {
@@ -3835,12 +3835,12 @@ namespace Chummer
             }
         }
 
-        private void mnuFileClose_Click(object sender, EventArgs e)
+        private void mnuFileClose_Click(object _, EventArgs e)
         {
             Close();
         }
 
-        private async void mnuFilePrint_Click(object sender, EventArgs e)
+        private async void mnuFilePrint_Click(object _, EventArgs e)
         {
             try
             {
@@ -3852,7 +3852,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuFileExport_Click(object sender, EventArgs e)
+        private async void mnuFileExport_Click(object _, EventArgs e)
         {
             try
             {
@@ -3864,7 +3864,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
+        private async void mnuSpecialCyberzombie_Click(object _, EventArgs e)
         {
             try
             {
@@ -3876,7 +3876,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
+        private async void mnuSpecialReduceAttribute_Click(object _, EventArgs e)
         {
             try
             {
@@ -3945,7 +3945,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
+        private async void mnuSpecialCloningMachine_Click(object _, EventArgs e)
         {
             try
             {
@@ -4016,7 +4016,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
+        private async void mnuSpecialReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4039,7 +4039,7 @@ namespace Chummer
             }
         }
 
-        private async void tsQualityReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsQualityReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4058,7 +4058,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsCyberwareReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4077,7 +4077,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsArmorReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4096,7 +4096,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsWeaponReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4115,7 +4115,7 @@ namespace Chummer
             }
         }
 
-        private async void tsGearReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsGearReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4134,7 +4134,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMartialArtsReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsMartialArtsReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4153,7 +4153,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSpellReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsSpellReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4172,7 +4172,7 @@ namespace Chummer
             }
         }
 
-        private async void tsComplexFormReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsComplexFormReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4191,7 +4191,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAIProgramReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsAIProgramReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4210,7 +4210,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCritterPowersReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsCritterPowersReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -4229,7 +4229,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicReapplyImprovements_Click(object sender, EventArgs e)
+        private async void tsMetamagicReapplyImprovements_Click(object _, EventArgs e)
         {
             try
             {
@@ -5114,7 +5114,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void mnuSpecialPossess_Click(object sender, EventArgs e)
+        private async void mnuSpecialPossess_Click(object _, EventArgs e)
         {
             try
             {
@@ -5400,7 +5400,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialPossessInanimate_Click(object sender, EventArgs e)
+        private async void mnuSpecialPossessInanimate_Click(object _, EventArgs e)
         {
             try
             {
@@ -5726,7 +5726,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuEditCopy_Click(object sender, EventArgs e)
+        private async void mnuEditCopy_Click(object _, EventArgs e)
         {
             try
             {
@@ -5784,7 +5784,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
+        private async void mnuSpecialConvertToFreeSprite_Click(object _, EventArgs e)
         {
             try
             {
@@ -5808,7 +5808,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialAddCyberwareSuite_Click(object sender, EventArgs e)
+        private async void mnuSpecialAddCyberwareSuite_Click(object _, EventArgs e)
         {
             try
             {
@@ -5820,7 +5820,7 @@ namespace Chummer
             }
         }
 
-        private async void mnuSpecialAddBiowareSuite_Click(object sender, EventArgs e)
+        private async void mnuSpecialAddBiowareSuite_Click(object _, EventArgs e)
         {
             try
             {
@@ -5899,7 +5899,7 @@ namespace Chummer
         #endregion Martial Tab Control Events
 
         #region Button Events
-        private async void cmdAddSpell_Click(object sender, EventArgs e)
+        private async void cmdAddSpell_Click(object _, EventArgs e)
         {
             try
             {
@@ -6045,7 +6045,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteSpell_Click(object sender, EventArgs e)
+        private async void cmdDeleteSpell_Click(object _, EventArgs e)
         {
             try
             {
@@ -6059,7 +6059,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddSpirit_Click(object sender, EventArgs e)
+        private async void cmdAddSpirit_Click(object _, EventArgs e)
         {
             try
             {
@@ -6071,7 +6071,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddSprite_Click(object sender, EventArgs e)
+        private async void cmdAddSprite_Click(object _, EventArgs e)
         {
             try
             {
@@ -6083,7 +6083,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddContact_Click(object sender, EventArgs e)
+        private async void cmdAddContact_Click(object _, EventArgs e)
         {
             try
             {
@@ -6095,7 +6095,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddEnemy_Click(object sender, EventArgs e)
+        private async void cmdAddEnemy_Click(object _, EventArgs e)
         {
             try
             {
@@ -6107,7 +6107,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddPet_Click(object sender, EventArgs e)
+        private async void cmdAddPet_Click(object _, EventArgs e)
         {
             try
             {
@@ -6119,7 +6119,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddCyberware_Click(object sender, EventArgs e)
+        private async void cmdAddCyberware_Click(object _, EventArgs e)
         {
             try
             {
@@ -6135,7 +6135,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteCyberware_Click(object sender, EventArgs e)
+        private async void cmdDeleteCyberware_Click(object _, EventArgs e)
         {
             try
             {
@@ -6149,7 +6149,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddComplexForm_Click(object sender, EventArgs e)
+        private async void cmdAddComplexForm_Click(object _, EventArgs e)
         {
             try
             {
@@ -6262,7 +6262,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddArmor_Click(object sender, EventArgs e)
+        private async void cmdAddArmor_Click(object _, EventArgs e)
         {
             try
             {
@@ -6274,7 +6274,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteArmor_Click(object sender, EventArgs e)
+        private async void cmdDeleteArmor_Click(object _, EventArgs e)
         {
             try
             {
@@ -6288,7 +6288,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteCustomDrug_Click(object sender, EventArgs e)
+        private async void cmdDeleteCustomDrug_Click(object _, EventArgs e)
         {
             try
             {
@@ -6302,7 +6302,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddBioware_Click(object sender, EventArgs e)
+        private async void cmdAddBioware_Click(object _, EventArgs e)
         {
             try
             {
@@ -6446,7 +6446,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddWeapon_Click(object sender, EventArgs e)
+        private async void cmdAddWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -6458,7 +6458,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteWeapon_Click(object sender, EventArgs e)
+        private async void cmdDeleteWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -6472,7 +6472,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddLifestyle_Click(object sender, EventArgs e)
+        private async void cmdAddLifestyle_Click(object _, EventArgs e)
         {
             try
             {
@@ -6528,7 +6528,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteLifestyle_Click(object sender, EventArgs e)
+        private async void cmdDeleteLifestyle_Click(object _, EventArgs e)
         {
             try
             {
@@ -6542,7 +6542,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddGear_Click(object sender, EventArgs e)
+        private async void cmdAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -6561,7 +6561,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteGear_Click(object sender, EventArgs e)
+        private async void cmdDeleteGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -6678,7 +6678,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddVehicle_Click(object sender, EventArgs e)
+        private async void cmdAddVehicle_Click(object _, EventArgs e)
         {
             try
             {
@@ -6697,7 +6697,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteVehicle_Click(object sender, EventArgs e)
+        private async void cmdDeleteVehicle_Click(object _, EventArgs e)
         {
             try
             {
@@ -6711,7 +6711,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddMartialArt_Click(object sender, EventArgs e)
+        private async void cmdAddMartialArt_Click(object _, EventArgs e)
         {
             try
             {
@@ -6731,7 +6731,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteMartialArt_Click(object sender, EventArgs e)
+        private async void cmdDeleteMartialArt_Click(object _, EventArgs e)
         {
             try
             {
@@ -6745,7 +6745,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddMugshot_Click(object sender, EventArgs e)
+        private async void cmdAddMugshot_Click(object _, EventArgs e)
         {
             try
             {
@@ -6770,7 +6770,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteMugshot_Click(object sender, EventArgs e)
+        private async void cmdDeleteMugshot_Click(object _, EventArgs e)
         {
             try
             {
@@ -6815,7 +6815,7 @@ namespace Chummer
             }
         }
 
-        private async void nudMugshotIndex_ValueChanged(object sender, EventArgs e)
+        private async void nudMugshotIndex_ValueChanged(object _, EventArgs e)
         {
             try
             {
@@ -6862,7 +6862,7 @@ namespace Chummer
             }
         }
 
-        private async void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
+        private async void chkIsMainMugshot_CheckedChanged(object _, EventArgs e)
         {
             bool blnStatusChanged = false;
             try
@@ -6894,7 +6894,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddMetamagic_Click(object sender, EventArgs e)
+        private async void cmdAddMetamagic_Click(object _, EventArgs e)
         {
             try
             {
@@ -7212,7 +7212,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteMetamagic_Click(object sender, EventArgs e)
+        private async void cmdDeleteMetamagic_Click(object _, EventArgs e)
         {
             try
             {
@@ -7226,7 +7226,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdKarmaGained_Click(object sender, EventArgs e)
+        private async void cmdKarmaGained_Click(object _, EventArgs e)
         {
             try
             {
@@ -7308,7 +7308,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdKarmaSpent_Click(object sender, EventArgs e)
+        private async void cmdKarmaSpent_Click(object _, EventArgs e)
         {
             try
             {
@@ -7405,7 +7405,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdNuyenGained_Click(object sender, EventArgs e)
+        private async void cmdNuyenGained_Click(object _, EventArgs e)
         {
             try
             {
@@ -7484,7 +7484,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdNuyenSpent_Click(object sender, EventArgs e)
+        private async void cmdNuyenSpent_Click(object _, EventArgs e)
         {
             try
             {
@@ -7577,7 +7577,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDecreaseLifestyleMonths_Click(object sender, EventArgs e)
+        private async void cmdDecreaseLifestyleMonths_Click(object _, EventArgs e)
         {
             try
             {
@@ -7606,7 +7606,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdIncreaseLifestyleMonths_Click(object sender, EventArgs e)
+        private async void cmdIncreaseLifestyleMonths_Click(object _, EventArgs e)
         {
             try
             {
@@ -7625,7 +7625,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddCritterPower_Click(object sender, EventArgs e)
+        private async void cmdAddCritterPower_Click(object _, EventArgs e)
         {
             try
             {
@@ -7705,7 +7705,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteCritterPower_Click(object sender, EventArgs e)
+        private async void cmdDeleteCritterPower_Click(object _, EventArgs e)
         {
             try
             {
@@ -7719,7 +7719,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteComplexForm_Click(object sender, EventArgs e)
+        private async void cmdDeleteComplexForm_Click(object _, EventArgs e)
         {
             try
             {
@@ -7733,7 +7733,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdGearReduceQty_Click(object sender, EventArgs e)
+        private async void cmdGearReduceQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -7797,7 +7797,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdGearSplitQty_Click(object sender, EventArgs e)
+        private async void cmdGearSplitQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -7873,7 +7873,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdGearMergeQty_Click(object sender, EventArgs e)
+        private async void cmdGearMergeQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -7981,7 +7981,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdGearMoveToVehicle_Click(object sender, EventArgs e)
+        private async void cmdGearMoveToVehicle_Click(object _, EventArgs e)
         {
             try
             {
@@ -8262,7 +8262,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdGearIncreaseQty_Click(object sender, EventArgs e)
+        private async void cmdGearIncreaseQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -8285,7 +8285,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
+        private async void cmdVehicleGearReduceQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -8352,7 +8352,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddQuality_Click(object sender, EventArgs e)
+        private async void cmdAddQuality_Click(object _, EventArgs e)
         {
             try
             {
@@ -8588,7 +8588,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteQuality_Click(object sender, EventArgs e)
+        private async void cmdDeleteQuality_Click(object _, EventArgs e)
         {
             try
             {
@@ -8613,7 +8613,7 @@ namespace Chummer
             await RemoveQuality(objQualityToRemove, token: token).ConfigureAwait(false);
         }
 
-        private async void cmdSwapQuality_Click(object sender, EventArgs e)
+        private async void cmdSwapQuality_Click(object _, EventArgs e)
         {
             try
             {
@@ -9076,7 +9076,7 @@ namespace Chummer
 
         private int _intSkipQualityLevelChanged;
 
-        private async void nudQualityLevel_ValueChanged(object sender, EventArgs e)
+        private async void nudQualityLevel_ValueChanged(object _, EventArgs e)
         {
             if (_intSkipQualityLevelChanged > 0)
                 return;
@@ -9362,7 +9362,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddLocation_Click(object sender, EventArgs e)
+        private async void cmdAddLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -9390,7 +9390,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddWeaponLocation_Click(object sender, EventArgs e)
+        private async void cmdAddWeaponLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -9418,7 +9418,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddWeek_Click(object sender, EventArgs e)
+        private async void cmdAddWeek_Click(object _, EventArgs e)
         {
             try
             {
@@ -9462,7 +9462,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteWeek_Click(object sender, EventArgs e)
+        private async void cmdDeleteWeek_Click(object _, EventArgs e)
         {
             try
             {
@@ -9495,7 +9495,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdEditWeek_Click(object sender, EventArgs e)
+        private async void cmdEditWeek_Click(object _, EventArgs e)
         {
             try
             {
@@ -9535,7 +9535,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdChangeStartWeek_Click(object sender, EventArgs e)
+        private async void cmdChangeStartWeek_Click(object _, EventArgs e)
         {
             try
             {
@@ -9584,7 +9584,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddImprovement_Click(object sender, EventArgs e)
+        private async void cmdAddImprovement_Click(object _, EventArgs e)
         {
             try
             {
@@ -9617,7 +9617,7 @@ namespace Chummer
                 .ConfigureAwait(false);
         }
 
-        private async void cmdCreateStackedFocus_Click(object sender, EventArgs e)
+        private async void cmdCreateStackedFocus_Click(object _, EventArgs e)
         {
             try
             {
@@ -9730,7 +9730,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdBurnStreetCred_Click(object sender, EventArgs e)
+        private async void cmdBurnStreetCred_Click(object _, EventArgs e)
         {
             try
             {
@@ -9751,7 +9751,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdEditImprovement_Click(object sender, EventArgs e)
+        private async void cmdEditImprovement_Click(object _, EventArgs e)
         {
             try
             {
@@ -9817,7 +9817,7 @@ namespace Chummer
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
-        private async void cmdDeleteImprovement_Click(object sender, EventArgs e)
+        private async void cmdDeleteImprovement_Click(object _, EventArgs e)
         {
             try
             {
@@ -9862,7 +9862,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddArmorBundle_Click(object sender, EventArgs e)
+        private async void cmdAddArmorBundle_Click(object _, EventArgs e)
         {
             try
             {
@@ -9891,7 +9891,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdArmorEquipAll_Click(object sender, EventArgs e)
+        private async void cmdArmorEquipAll_Click(object _, EventArgs e)
         {
             try
             {
@@ -9937,7 +9937,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
+        private async void cmdArmorUnEquipAll_Click(object _, EventArgs e)
         {
             try
             {
@@ -9983,7 +9983,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdImprovementsEnableAll_Click(object sender, EventArgs e)
+        private async void cmdImprovementsEnableAll_Click(object _, EventArgs e)
         {
             try
             {
@@ -10046,7 +10046,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdImprovementsDisableAll_Click(object sender, EventArgs e)
+        private async void cmdImprovementsDisableAll_Click(object _, EventArgs e)
         {
             try
             {
@@ -10110,7 +10110,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddVehicleLocation_Click(object sender, EventArgs e)
+        private async void cmdAddVehicleLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -10168,7 +10168,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdQuickenSpell_Click(object sender, EventArgs e)
+        private async void cmdQuickenSpell_Click(object _, EventArgs e)
         {
             try
             {
@@ -10240,7 +10240,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddSustainedSpell_Click(object sender, EventArgs e)
+        private async void cmdAddSustainedSpell_Click(object _, EventArgs e)
         {
             try
             {
@@ -10252,7 +10252,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddSustainedForm_Click(object sender, EventArgs e)
+        private async void cmdAddSustainedForm_Click(object _, EventArgs e)
         {
             try
             {
@@ -10264,7 +10264,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddSustainedCritterPower_Click(object sender, EventArgs e)
+        private async void cmdAddSustainedCritterPower_Click(object _, EventArgs e)
         {
             try
             {
@@ -10309,7 +10309,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsCyberwareAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -10330,7 +10330,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -10351,7 +10351,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponAddAccessory_Click(object sender, EventArgs e)
+        private async void tsWeaponAddAccessory_Click(object _, EventArgs e)
         {
             try
             {
@@ -10536,7 +10536,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
+        private async void tsArmorLocationAddArmor_Click(object _, EventArgs e)
         {
             try
             {
@@ -10548,7 +10548,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAddArmorMod_Click(object sender, EventArgs e)
+        private async void tsAddArmorMod_Click(object _, EventArgs e)
         {
             try
             {
@@ -10753,7 +10753,7 @@ namespace Chummer
             }
         }
 
-        private async void tsGearAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsGearAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -10781,7 +10781,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddMod_Click(object sender, EventArgs e)
+        private async void tsVehicleAddMod_Click(object _, EventArgs e)
         {
             try
             {
@@ -10810,7 +10810,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -10870,7 +10870,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponMount_Click(object _, EventArgs e)
         {
             try
             {
@@ -10942,7 +10942,7 @@ namespace Chummer
             }
         }
 
-        private async void tsEditWeaponMount_Click(object sender, EventArgs e)
+        private async void tsEditWeaponMount_Click(object _, EventArgs e)
         {
             try
             {
@@ -11018,7 +11018,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
+        private async void tsVehicleAddWeaponAccessory_Click(object _, EventArgs e)
         {
             try
             {
@@ -11057,7 +11057,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
+        private async void tsVehicleAddUnderbarrelWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -11085,7 +11085,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
+        private async void tsMartialArtsAddTechnique_Click(object _, EventArgs e)
         {
             try
             {
@@ -11174,7 +11174,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -11212,7 +11212,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleSensorAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -11390,7 +11390,7 @@ namespace Chummer
             }
         }
 
-        private async void cmsAmmoSingleShot_Click(object sender, EventArgs e)
+        private async void cmsAmmoSingleShot_Click(object _, EventArgs e)
         {
             try
             {
@@ -11427,7 +11427,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void cmsAmmoShortBurst_Click(object sender, EventArgs e)
+        private async void cmsAmmoShortBurst_Click(object _, EventArgs e)
         {
             try
             {
@@ -11491,7 +11491,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void cmsAmmoLongBurst_Click(object sender, EventArgs e)
+        private async void cmsAmmoLongBurst_Click(object _, EventArgs e)
         {
             try
             {
@@ -11571,7 +11571,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void cmsAmmoFullBurst_Click(object sender, EventArgs e)
+        private async void cmsAmmoFullBurst_Click(object _, EventArgs e)
         {
             try
             {
@@ -11614,7 +11614,7 @@ namespace Chummer
             }
         }
 
-        private async void cmsAmmoSuppressiveFire_Click(object sender, EventArgs e)
+        private async void cmsAmmoSuppressiveFire_Click(object _, EventArgs e)
         {
             try
             {
@@ -11659,7 +11659,7 @@ namespace Chummer
             }
         }
 
-        private async void cmsVehicleAmmoSingleShot_Click(object sender, EventArgs e)
+        private async void cmsVehicleAmmoSingleShot_Click(object _, EventArgs e)
         {
             try
             {
@@ -11695,7 +11695,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void cmsVehicleAmmoShortBurst_Click(object sender, EventArgs e)
+        private async void cmsVehicleAmmoShortBurst_Click(object _, EventArgs e)
         {
             try
             {
@@ -11753,7 +11753,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void cmsVehicleAmmoLongBurst_Click(object sender, EventArgs e)
+        private async void cmsVehicleAmmoLongBurst_Click(object _, EventArgs e)
         {
             try
             {
@@ -11833,7 +11833,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void cmsVehicleAmmoFullBurst_Click(object sender, EventArgs e)
+        private async void cmsVehicleAmmoFullBurst_Click(object _, EventArgs e)
         {
             try
             {
@@ -11877,7 +11877,7 @@ namespace Chummer
             }
         }
 
-        private async void cmsVehicleAmmoSuppressiveFire_Click(object sender, EventArgs e)
+        private async void cmsVehicleAmmoSuppressiveFire_Click(object _, EventArgs e)
         {
             try
             {
@@ -11923,7 +11923,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareSell_Click(object sender, EventArgs e)
+        private async void tsCyberwareSell_Click(object _, EventArgs e)
         {
             try
             {
@@ -11964,7 +11964,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorSell_Click(object sender, EventArgs e)
+        private async void tsArmorSell_Click(object _, EventArgs e)
         {
             try
             {
@@ -11992,7 +11992,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponSell_Click(object sender, EventArgs e)
+        private async void tsWeaponSell_Click(object _, EventArgs e)
         {
             try
             {
@@ -12022,7 +12022,7 @@ namespace Chummer
             }
         }
 
-        private async void sellItemToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void sellItemToolStripMenuItem_Click(object _, EventArgs e)
         {
             try
             {
@@ -12051,7 +12051,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleSell_Click(object sender, EventArgs e)
+        private async void tsVehicleSell_Click(object _, EventArgs e)
         {
             try
             {
@@ -12081,7 +12081,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAdvancedLifestyle_Click(object sender, EventArgs e)
+        private async void tsAdvancedLifestyle_Click(object _, EventArgs e)
         {
             try
             {
@@ -12137,7 +12137,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponName_Click(object sender, EventArgs e)
+        private async void tsWeaponName_Click(object _, EventArgs e)
         {
             try
             {
@@ -12181,7 +12181,7 @@ namespace Chummer
             }
         }
 
-        private async void tsGearName_Click(object sender, EventArgs e)
+        private async void tsGearName_Click(object _, EventArgs e)
         {
             try
             {
@@ -12224,7 +12224,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
+        private async void tsWeaponAddUnderbarrel_Click(object _, EventArgs e)
         {
             try
             {
@@ -12262,7 +12262,7 @@ namespace Chummer
             }
         }
 
-        private async void tsUndoKarmaExpense_Click(object sender, EventArgs e)
+        private async void tsUndoKarmaExpense_Click(object _, EventArgs e)
         {
             try
             {
@@ -12855,7 +12855,7 @@ namespace Chummer
             }
         }
 
-        private async void tsUndoNuyenExpense_Click(object sender, EventArgs e)
+        private async void tsUndoNuyenExpense_Click(object _, EventArgs e)
         {
             try
             {
@@ -13295,7 +13295,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAddArmorGear_Click(object sender, EventArgs e)
+        private async void tsAddArmorGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -13323,7 +13323,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsArmorGearAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -13375,7 +13375,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorNotes_Click(object sender, EventArgs e)
+        private async void tsArmorNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13389,7 +13389,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponNotes_Click(object sender, EventArgs e)
+        private async void tsWeaponNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13403,7 +13403,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareNotes_Click(object sender, EventArgs e)
+        private async void tsCyberwareNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13417,7 +13417,7 @@ namespace Chummer
             }
         }
 
-        private async void tsQualityNotes_Click(object sender, EventArgs e)
+        private async void tsQualityNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13431,7 +13431,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMartialArtsNotes_Click(object sender, EventArgs e)
+        private async void tsMartialArtsNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13445,7 +13445,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSpellNotes_Click(object sender, EventArgs e)
+        private async void tsSpellNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13459,7 +13459,7 @@ namespace Chummer
             }
         }
 
-        private async void tsComplexFormNotes_Click(object sender, EventArgs e)
+        private async void tsComplexFormNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13473,7 +13473,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCritterPowersNotes_Click(object sender, EventArgs e)
+        private async void tsCritterPowersNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13487,7 +13487,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicNotes_Click(object sender, EventArgs e)
+        private async void tsMetamagicNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13501,7 +13501,7 @@ namespace Chummer
             }
         }
 
-        private async void tsGearNotes_Click(object sender, EventArgs e)
+        private async void tsGearNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13515,7 +13515,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleNotes_Click(object sender, EventArgs e)
+        private async void tsVehicleNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13529,7 +13529,7 @@ namespace Chummer
             }
         }
 
-        private async void tsLifestyleNotes_Click(object sender, EventArgs e)
+        private async void tsLifestyleNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13543,7 +13543,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleName_Click(object sender, EventArgs e)
+        private async void tsVehicleName_Click(object _, EventArgs e)
         {
             try
             {
@@ -13601,7 +13601,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleAddCyberware_Click(object sender, EventArgs e)
+        private async void tsVehicleAddCyberware_Click(object _, EventArgs e)
         {
             try
             {
@@ -13613,7 +13613,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorName_Click(object sender, EventArgs e)
+        private async void tsArmorName_Click(object _, EventArgs e)
         {
             try
             {
@@ -13666,7 +13666,7 @@ namespace Chummer
             }
         }
 
-        private async void tsLifestyleName_Click(object sender, EventArgs e)
+        private async void tsLifestyleName_Click(object _, EventArgs e)
         {
             try
             {
@@ -13713,7 +13713,7 @@ namespace Chummer
             }
         }
 
-        private async void tsGearRenameLocation_Click(object sender, EventArgs e)
+        private async void tsGearRenameLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -13749,7 +13749,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponRenameLocation_Click(object sender, EventArgs e)
+        private async void tsWeaponRenameLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -13784,7 +13784,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCreateSpell_Click(object sender, EventArgs e)
+        private async void tsCreateSpell_Click(object _, EventArgs e)
         {
             try
             {
@@ -13885,7 +13885,7 @@ namespace Chummer
             }
         }
 
-        private async void tsImprovementNotes_Click(object sender, EventArgs e)
+        private async void tsImprovementNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -13899,7 +13899,7 @@ namespace Chummer
             }
         }
 
-        private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
+        private async void tsArmorRenameLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -13934,7 +13934,7 @@ namespace Chummer
             }
         }
 
-        private async void tsImprovementRenameLocation_Click(object sender, EventArgs e)
+        private async void tsImprovementRenameLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -13988,7 +13988,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
+        private async void tsCyberwareAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -14031,7 +14031,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareAddDrug_Click(object sender, EventArgs e)
+        private async void tsCyberwareAddDrug_Click(object _, EventArgs e)
         {
             try
             {
@@ -14071,7 +14071,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -14114,7 +14114,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleCyberwareAddDrug_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareAddDrug_Click(object _, EventArgs e)
         {
             try
             {
@@ -14154,7 +14154,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsCyberwareGearMenuAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -14343,7 +14343,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -14514,7 +14514,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
+        private async void tsWeaponAccessoryAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -14680,7 +14680,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -14855,7 +14855,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleRenameLocation_Click(object sender, EventArgs e)
+        private async void tsVehicleRenameLocation_Click(object _, EventArgs e)
         {
             try
             {
@@ -14892,7 +14892,7 @@ namespace Chummer
             }
         }
 
-        private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
+        private async void tsCreateNaturalWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -14932,7 +14932,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
+        private async void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object _, EventArgs e)
         {
             try
             {
@@ -15107,7 +15107,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
+        private async void tsVehicleWeaponAccessoryAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -15416,7 +15416,7 @@ namespace Chummer
             }
         }
 
-        private async void treLifestyles_DoubleClick(object sender, EventArgs e)
+        private async void treLifestyles_DoubleClick(object _, EventArgs e)
         {
             try
             {
@@ -15606,7 +15606,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdFireWeapon_Click(object sender, EventArgs e)
+        private async void cmdFireWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -15634,7 +15634,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdReloadWeapon_Click(object sender, EventArgs e)
+        private async void cmdReloadWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -15659,7 +15659,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdUnloadWeapon_Click(object sender, EventArgs e)
+        private async void cmdUnloadWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -15684,7 +15684,7 @@ namespace Chummer
             }
         }
 
-        private async void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponEquipped_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15737,7 +15737,7 @@ namespace Chummer
             }
         }
 
-        private async void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
+        private async void chkIncludedInWeapon_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15768,7 +15768,7 @@ namespace Chummer
             }
         }
 
-        private async void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearEquipped_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15793,7 +15793,7 @@ namespace Chummer
             }
         }
 
-        private async void cboWeaponAmmo_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboWeaponAmmo_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15817,7 +15817,7 @@ namespace Chummer
             }
         }
 
-        private async void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearHomeNode_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15838,7 +15838,7 @@ namespace Chummer
             }
         }
 
-        private async void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorHomeNode_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15859,7 +15859,7 @@ namespace Chummer
             }
         }
 
-        private async void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponHomeNode_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15880,7 +15880,7 @@ namespace Chummer
             }
         }
 
-        private async void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
+        private async void chkCyberwareHomeNode_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15901,7 +15901,7 @@ namespace Chummer
             }
         }
 
-        private async void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleHomeNode_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -15922,7 +15922,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdWeaponBuyAmmo_Click(object sender, EventArgs e)
+        private async void cmdWeaponBuyAmmo_Click(object _, EventArgs e)
         {
             try
             {
@@ -15942,7 +15942,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdWeaponMoveToVehicle_Click(object sender, EventArgs e)
+        private async void cmdWeaponMoveToVehicle_Click(object _, EventArgs e)
         {
             try
             {
@@ -16143,7 +16143,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdArmorIncrease_Click(object sender, EventArgs e)
+        private async void cmdArmorIncrease_Click(object _, EventArgs e)
         {
             try
             {
@@ -16161,7 +16161,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdArmorDecrease_Click(object sender, EventArgs e)
+        private async void cmdArmorDecrease_Click(object _, EventArgs e)
         {
             try
             {
@@ -16179,7 +16179,7 @@ namespace Chummer
             }
         }
 
-        private async void chkCommlinks_CheckedChanged(object sender, EventArgs e)
+        private async void chkCommlinks_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -16191,7 +16191,7 @@ namespace Chummer
             }
         }
 
-        private async void chkHideLoadedAmmo_CheckedChanged(object sender, EventArgs e)
+        private async void chkHideLoadedAmmo_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -16212,7 +16212,7 @@ namespace Chummer
                 .ConfigureAwait(false);
         }
 
-        private async void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearActiveCommlink_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -16235,7 +16235,7 @@ namespace Chummer
             }
         }
 
-        private async void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorActiveCommlink_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -16258,7 +16258,7 @@ namespace Chummer
             }
         }
 
-        private async void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponActiveCommlink_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -16281,7 +16281,7 @@ namespace Chummer
             }
         }
 
-        private async void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkCyberwareActiveCommlink_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -16304,7 +16304,7 @@ namespace Chummer
             }
         }
 
-        private async void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleActiveCommlink_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -16327,7 +16327,7 @@ namespace Chummer
             }
         }
 
-        private async void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearAttack_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16361,7 +16361,7 @@ namespace Chummer
             }
         }
 
-        private async void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearSleaze_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16395,7 +16395,7 @@ namespace Chummer
             }
         }
 
-        private async void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearDataProcessing_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16429,7 +16429,7 @@ namespace Chummer
             }
         }
 
-        private async void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearFirewall_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16463,7 +16463,7 @@ namespace Chummer
             }
         }
 
-        private async void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleAttack_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16497,7 +16497,7 @@ namespace Chummer
             }
         }
 
-        private async void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleSleaze_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16531,7 +16531,7 @@ namespace Chummer
             }
         }
 
-        private async void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleFirewall_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16565,7 +16565,7 @@ namespace Chummer
             }
         }
 
-        private async void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleDataProcessing_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16599,7 +16599,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareAttack_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16633,7 +16633,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareSleaze_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16667,7 +16667,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareDataProcessing_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16702,7 +16702,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareFirewall_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16736,7 +16736,7 @@ namespace Chummer
             }
         }
 
-        private async void cboArmorAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboArmorAttack_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16770,7 +16770,7 @@ namespace Chummer
             }
         }
 
-        private async void cboArmorSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboArmorSleaze_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16804,7 +16804,7 @@ namespace Chummer
             }
         }
 
-        private async void cboArmorDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboArmorDataProcessing_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16839,7 +16839,7 @@ namespace Chummer
             }
         }
 
-        private async void cboArmorFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboArmorFirewall_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16873,7 +16873,7 @@ namespace Chummer
             }
         }
 
-        private async void cboWeaponGearAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboWeaponGearAttack_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16907,7 +16907,7 @@ namespace Chummer
             }
         }
 
-        private async void cboWeaponGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboWeaponGearSleaze_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16941,7 +16941,7 @@ namespace Chummer
             }
         }
 
-        private async void cboWeaponGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboWeaponGearDataProcessing_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -16976,7 +16976,7 @@ namespace Chummer
             }
         }
 
-        private async void cboWeaponGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboWeaponGearFirewall_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -17029,7 +17029,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdFireVehicleWeapon_Click(object sender, EventArgs e)
+        private async void cmdFireVehicleWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -17049,7 +17049,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdReloadVehicleWeapon_Click(object sender, EventArgs e)
+        private async void cmdReloadVehicleWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -17076,7 +17076,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdUnloadVehicleWeapon_Click(object sender, EventArgs e)
+        private async void cmdUnloadVehicleWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -17103,7 +17103,7 @@ namespace Chummer
             }
         }
 
-        private async void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17133,7 +17133,7 @@ namespace Chummer
             }
         }
 
-        private async void cboVehicleWeaponAmmo_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleWeaponAmmo_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -17187,7 +17187,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSpiritNotes_Click(object sender, EventArgs e)
+        private async void tsSpiritNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -17201,7 +17201,7 @@ namespace Chummer
             }
         }
 
-        private async void cboSpiritType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSpiritType_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17233,7 +17233,7 @@ namespace Chummer
             }
         }
 
-        private async void nudSpiritForce_ValueChanged(object sender, EventArgs e)
+        private async void nudSpiritForce_ValueChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17265,7 +17265,7 @@ namespace Chummer
             }
         }
 
-        private async void chkSpiritBound_CheckedChanged(object sender, EventArgs e)
+        private async void chkSpiritBound_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17297,7 +17297,7 @@ namespace Chummer
             }
         }
 
-        private async void chkSpiritFettered_CheckedChanged(object sender, EventArgs e)
+        private async void chkSpiritFettered_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17329,7 +17329,7 @@ namespace Chummer
             }
         }
 
-        private void txtSpiritName_TextChanged(object sender, EventArgs e)
+        private void txtSpiritName_TextChanged(object _, EventArgs e)
         {
             if (_tmrSpiritName.Enabled)
                 _tmrSpiritName.Stop();
@@ -17338,7 +17338,7 @@ namespace Chummer
             _tmrSpiritName.Start();
         }
 
-        private async void UpdateSpiritName(object sender, EventArgs e)
+        private async void UpdateSpiritName(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17371,7 +17371,7 @@ namespace Chummer
             }
         }
 
-        private async void nudSpiritServicesOwed_ValueChanged(object sender, EventArgs e)
+        private async void nudSpiritServicesOwed_ValueChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17403,7 +17403,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSpiritLinkToFile_Click(object sender, EventArgs e)
+        private async void cmdSpiritLinkToFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17434,7 +17434,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSpiritOpenLinkedFile_Click(object sender, EventArgs e)
+        private async void cmdSpiritOpenLinkedFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17465,7 +17465,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSpiritRemoveLinkedFile_Click(object sender, EventArgs e)
+        private async void cmdSpiritRemoveLinkedFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -17496,7 +17496,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteSpirit_Click(object sender, EventArgs e)
+        private async void cmdDeleteSpirit_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18343,7 +18343,7 @@ namespace Chummer
             }
         }
 
-        private async void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTradition_SelectedIndexChanged(object _, EventArgs e)
         {
             //TODO: Why can't IsInitialized be used here? Throws an error when trying to use chummer.helpers.
             if (IsLoading || IsRefreshing || IsDisposed)
@@ -18568,7 +18568,7 @@ namespace Chummer
             }
         }
 
-        private async void tsSpriteNotes_Click(object sender, EventArgs e)
+        private async void tsSpriteNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -18582,7 +18582,7 @@ namespace Chummer
             }
         }
 
-        private async void cboSpriteType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSpriteType_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18614,7 +18614,7 @@ namespace Chummer
             }
         }
 
-        private async void nudSpriteLevel_ValueChanged(object sender, EventArgs e)
+        private async void nudSpriteLevel_ValueChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18646,7 +18646,7 @@ namespace Chummer
             }
         }
 
-        private async void chkSpriteRegistered_CheckedChanged(object sender, EventArgs e)
+        private async void chkSpriteRegistered_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18678,7 +18678,7 @@ namespace Chummer
             }
         }
 
-        private async void chkSpritePet_CheckedChanged(object sender, EventArgs e)
+        private async void chkSpritePet_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18710,7 +18710,7 @@ namespace Chummer
             }
         }
 
-        private void txtSpriteName_TextChanged(object sender, EventArgs e)
+        private void txtSpriteName_TextChanged(object _, EventArgs e)
         {
             if (_tmrSpriteName.Enabled)
                 _tmrSpriteName.Stop();
@@ -18719,7 +18719,7 @@ namespace Chummer
             _tmrSpriteName.Start();
         }
 
-        private async void UpdateSpriteName(object sender, EventArgs e)
+        private async void UpdateSpriteName(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18752,7 +18752,7 @@ namespace Chummer
             }
         }
 
-        private async void nudSpriteTasksOwed_ValueChanged(object sender, EventArgs e)
+        private async void nudSpriteTasksOwed_ValueChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18784,7 +18784,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSpriteLinkToFile_Click(object sender, EventArgs e)
+        private async void cmdSpriteLinkToFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18815,7 +18815,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSpriteOpenLinkedFile_Click(object sender, EventArgs e)
+        private async void cmdSpriteOpenLinkedFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18846,7 +18846,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdSpriteRemoveLinkedFile_Click(object sender, EventArgs e)
+        private async void cmdSpriteRemoveLinkedFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18877,7 +18877,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteSprite_Click(object sender, EventArgs e)
+        private async void cmdDeleteSprite_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -18912,7 +18912,7 @@ namespace Chummer
 
         #region Additional Initiation Tab Control Events
 
-        private void chkInitiationGroup_EnabledChanged(object sender, EventArgs e)
+        private void chkInitiationGroup_EnabledChanged(object _, EventArgs e)
         {
             if (!chkInitiationGroup.Enabled)
             {
@@ -18920,7 +18920,7 @@ namespace Chummer
             }
         }
 
-        private void chkInitiationSchooling_EnabledChanged(object sender, EventArgs e)
+        private void chkInitiationSchooling_EnabledChanged(object _, EventArgs e)
         {
             if (!chkInitiationSchooling.Enabled)
             {
@@ -19064,7 +19064,7 @@ namespace Chummer
             }
         }
 
-        private async void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
+        private async void chkJoinGroup_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -19319,7 +19319,7 @@ namespace Chummer
             }
         }
 
-        private async void chkCritterPowerCount_CheckedChanged(object sender, EventArgs e)
+        private async void chkCritterPowerCount_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19612,7 +19612,7 @@ namespace Chummer
             }
         }
 
-        private async void tsContactNotes_Click(object sender, EventArgs e)
+        private async void tsContactNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -19626,7 +19626,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAddContactFromFile_Click(object sender, EventArgs e)
+        private async void tsAddContactFromFile_Click(object _, EventArgs e)
         {
             try
             {
@@ -19638,7 +19638,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAddEnemyFromFile_Click(object sender, EventArgs e)
+        private async void tsAddEnemyFromFile_Click(object _, EventArgs e)
         {
             try
             {
@@ -19650,7 +19650,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAddPetFromFile_Click(object sender, EventArgs e)
+        private async void tsAddPetFromFile_Click(object _, EventArgs e)
         {
             try
             {
@@ -19662,7 +19662,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteRelationship_Click(object sender, EventArgs e)
+        private async void cmdDeleteRelationship_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19693,7 +19693,7 @@ namespace Chummer
             }
         }
 
-        private async void nudContactConnection_ValueChanged(object sender, EventArgs e)
+        private async void nudContactConnection_ValueChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19724,7 +19724,7 @@ namespace Chummer
             }
         }
 
-        private async void nudContactLoyalty_ValueChanged(object sender, EventArgs e)
+        private async void nudContactLoyalty_ValueChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19755,7 +19755,7 @@ namespace Chummer
             }
         }
 
-        private async void chkContactFree_CheckedChanged(object sender, EventArgs e)
+        private async void chkContactFree_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19786,7 +19786,7 @@ namespace Chummer
             }
         }
 
-        private async void chkContactGroup_CheckedChanged(object sender, EventArgs e)
+        private async void chkContactGroup_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19817,7 +19817,7 @@ namespace Chummer
             }
         }
 
-        private async void chkContactBlackmail_CheckedChanged(object sender, EventArgs e)
+        private async void chkContactBlackmail_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19848,7 +19848,7 @@ namespace Chummer
             }
         }
 
-        private async void chkContactFamily_CheckedChanged(object sender, EventArgs e)
+        private async void chkContactFamily_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19879,7 +19879,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdContactLinkToFile_Click(object sender, EventArgs e)
+        private async void cmdContactLinkToFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19910,7 +19910,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdContactOpenLinkedFile_Click(object sender, EventArgs e)
+        private async void cmdContactOpenLinkedFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19941,7 +19941,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdContactRemoveLinkedFile_Click(object sender, EventArgs e)
+        private async void cmdContactRemoveLinkedFile_Click(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -19972,7 +19972,7 @@ namespace Chummer
             }
         }
 
-        private void txtContactName_TextChanged(object sender, EventArgs e)
+        private void txtContactName_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactName.Enabled)
                 _tmrContactName.Stop();
@@ -19981,7 +19981,7 @@ namespace Chummer
             _tmrContactName.Start();
         }
 
-        private async void UpdateContactName(object sender, EventArgs e)
+        private async void UpdateContactName(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20014,7 +20014,7 @@ namespace Chummer
             }
         }
 
-        private void txtContactLocation_TextChanged(object sender, EventArgs e)
+        private void txtContactLocation_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactLocation.Enabled)
                 _tmrContactLocation.Stop();
@@ -20023,7 +20023,7 @@ namespace Chummer
             _tmrContactLocation.Start();
         }
 
-        private async void UpdateContactLocation(object sender, EventArgs e)
+        private async void UpdateContactLocation(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20056,7 +20056,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactMetatype_TextChanged(object sender, EventArgs e)
+        private void cboContactMetatype_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactMetatype.Enabled)
                 _tmrContactMetatype.Stop();
@@ -20065,7 +20065,7 @@ namespace Chummer
             _tmrContactMetatype.Start();
         }
 
-        private async void UpdateContactMetatype(object sender, EventArgs e)
+        private async void UpdateContactMetatype(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20119,7 +20119,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactGender_TextChanged(object sender, EventArgs e)
+        private void cboContactGender_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactGender.Enabled)
                 _tmrContactGender.Stop();
@@ -20128,7 +20128,7 @@ namespace Chummer
             _tmrContactGender.Start();
         }
 
-        private async void UpdateContactGender(object sender, EventArgs e)
+        private async void UpdateContactGender(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20179,7 +20179,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactAge_TextChanged(object sender, EventArgs e)
+        private void cboContactAge_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactAge.Enabled)
                 _tmrContactAge.Stop();
@@ -20188,7 +20188,7 @@ namespace Chummer
             _tmrContactAge.Start();
         }
 
-        private async void UpdateContactAge(object sender, EventArgs e)
+        private async void UpdateContactAge(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20238,7 +20238,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactPersonalLife_TextChanged(object sender, EventArgs e)
+        private void cboContactPersonalLife_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactPersonalLife.Enabled)
                 _tmrContactPersonalLife.Stop();
@@ -20247,7 +20247,7 @@ namespace Chummer
             _tmrContactPersonalLife.Start();
         }
 
-        private async void UpdateContactPersonalLife(object sender, EventArgs e)
+        private async void UpdateContactPersonalLife(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20298,7 +20298,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactType_TextChanged(object sender, EventArgs e)
+        private void cboContactType_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactType.Enabled)
                 _tmrContactType.Stop();
@@ -20307,7 +20307,7 @@ namespace Chummer
             _tmrContactType.Start();
         }
 
-        private async void UpdateContactType(object sender, EventArgs e)
+        private async void UpdateContactType(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20357,7 +20357,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactPreferredPayment_TextChanged(object sender, EventArgs e)
+        private void cboContactPreferredPayment_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactPreferredPayment.Enabled)
                 _tmrContactPreferredPayment.Stop();
@@ -20366,7 +20366,7 @@ namespace Chummer
             _tmrContactPreferredPayment.Start();
         }
 
-        private async void UpdateContactPreferredPayment(object sender, EventArgs e)
+        private async void UpdateContactPreferredPayment(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20417,7 +20417,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactHobbiesVice_TextChanged(object sender, EventArgs e)
+        private void cboContactHobbiesVice_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactHobbiesVice.Enabled)
                 _tmrContactHobbiesVice.Stop();
@@ -20426,7 +20426,7 @@ namespace Chummer
             _tmrContactHobbiesVice.Start();
         }
 
-        private async void UpdateContactHobbiesVice(object sender, EventArgs e)
+        private async void UpdateContactHobbiesVice(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20477,7 +20477,7 @@ namespace Chummer
             }
         }
 
-        private void cboContactRole_TextChanged(object sender, EventArgs e)
+        private void cboContactRole_TextChanged(object _, EventArgs e)
         {
             if (_tmrContactRole.Enabled)
                 _tmrContactRole.Stop();
@@ -20486,7 +20486,7 @@ namespace Chummer
             _tmrContactRole.Start();
         }
 
-        private async void UpdateContactRole(object sender, EventArgs e)
+        private async void UpdateContactRole(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20541,7 +20541,7 @@ namespace Chummer
 
         #region Additional Karma and Nuyen Tab Control Events
 
-        private async void lstKarma_DoubleClick(object sender, EventArgs e)
+        private async void lstKarma_DoubleClick(object _, EventArgs e)
         {
             try
             {
@@ -20615,7 +20615,7 @@ namespace Chummer
             }
         }
 
-        private async void lstNuyen_DoubleClick(object sender, EventArgs e)
+        private async void lstNuyen_DoubleClick(object _, EventArgs e)
         {
             try
             {
@@ -20850,7 +20850,7 @@ namespace Chummer
             }
         }
 
-        private async void treImprovements_DoubleClick(object sender, EventArgs e)
+        private async void treImprovements_DoubleClick(object _, EventArgs e)
         {
             try
             {
@@ -20870,7 +20870,7 @@ namespace Chummer
             }
         }
 
-        private async void chkImprovementActive_CheckedChanged(object sender, EventArgs e)
+        private async void chkImprovementActive_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -20913,7 +20913,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddImprovementGroup_Click(object sender, EventArgs e)
+        private async void cmdAddImprovementGroup_Click(object _, EventArgs e)
         {
             try
             {
@@ -21000,7 +21000,7 @@ namespace Chummer
 
         #region Splitter Resize Events
 
-        private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
+        private void splitKarmaNuyen_Panel1_Resize(object _, EventArgs e)
         {
             if (lstKarma.Columns.Count >= 2 && lstKarma.Width > 409)
             {
@@ -21008,7 +21008,7 @@ namespace Chummer
             }
         }
 
-        private void splitKarmaNuyen_Panel2_Resize(object sender, EventArgs e)
+        private void splitKarmaNuyen_Panel2_Resize(object _, EventArgs e)
         {
             if (lstNuyen.Columns.Count >= 2 && lstNuyen.Width > 409)
             {
@@ -21020,7 +21020,7 @@ namespace Chummer
 
         #region Other Control Events
 
-        private async void cmdEdgeSpent_Click(object sender, EventArgs e)
+        private async void cmdEdgeSpent_Click(object _, EventArgs e)
         {
             try
             {
@@ -21067,7 +21067,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdEdgeGained_Click(object sender, EventArgs e)
+        private async void cmdEdgeGained_Click(object _, EventArgs e)
         {
             try
             {
@@ -21108,7 +21108,7 @@ namespace Chummer
             }
         }
 
-        private async void ProcessSelectedTabChanged(object sender, EventArgs e)
+        private async void ProcessSelectedTabChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -21237,7 +21237,7 @@ namespace Chummer
 
         #region Condition Monitors
 
-        private async void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkPhysicalCM_CheckedChanged(object sender, EventArgs _)
         {
             try
             {
@@ -21251,7 +21251,7 @@ namespace Chummer
             }
         }
 
-        private async void chkStunCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkStunCM_CheckedChanged(object sender, EventArgs _)
         {
             try
             {
@@ -21669,7 +21669,7 @@ namespace Chummer
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
-        private async void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkCyberwareCM_CheckedChanged(object sender, EventArgs _)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -21690,7 +21690,7 @@ namespace Chummer
             }
         }
 
-        private async void chkGearCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearCM_CheckedChanged(object sender, EventArgs _)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -21719,7 +21719,7 @@ namespace Chummer
             }
         }
 
-        private async void chkArmorMatrixCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorMatrixCM_CheckedChanged(object sender, EventArgs _)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -21740,7 +21740,7 @@ namespace Chummer
             }
         }
 
-        private async void chkWeaponCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponCM_CheckedChanged(object sender, EventArgs _)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -21761,7 +21761,7 @@ namespace Chummer
             }
         }
 
-        private async void chkVehicleCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleCM_CheckedChanged(object sender, EventArgs _)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -27718,7 +27718,7 @@ namespace Chummer
                 await RepopulateNuyenExpenseList(token).ConfigureAwait(false);
         }
 
-        private async void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
+        private async void chkShowFreeKarma_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -27846,7 +27846,7 @@ namespace Chummer
             }
         }
 
-        private async void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
+        private async void chkShowFreeNuyen_CheckedChanged(object _, EventArgs e)
         {
             try
             {
@@ -27974,7 +27974,7 @@ namespace Chummer
             }
         }
 
-        private async void UpdateInitiationCostEvent(object sender, EventArgs e)
+        private async void UpdateInitiationCostEvent(object _, EventArgs e)
         {
             try
             {
@@ -28994,7 +28994,7 @@ namespace Chummer
 
         #endregion Custom Methods
 
-        private async void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
+        private async void cmdIncreasePowerPoints_Click(object _, EventArgs e)
         {
             try
             {
@@ -29078,7 +29078,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddMetamagic_Click(object _, EventArgs e)
         {
             try
             {
@@ -29233,7 +29233,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddArt_Click(object _, EventArgs e)
         {
             try
             {
@@ -29322,7 +29322,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddEnchantment_Click(object _, EventArgs e)
         {
             try
             {
@@ -29454,7 +29454,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddRitual_Click(object _, EventArgs e)
         {
             try
             {
@@ -29586,7 +29586,7 @@ namespace Chummer
             }
         }
 
-        private async void tsInitiationNotes_Click(object sender, EventArgs e)
+        private async void tsInitiationNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -29599,7 +29599,7 @@ namespace Chummer
             }
         }
 
-        private async void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
+        private async void tsMetamagicAddEnhancement_Click(object _, EventArgs e)
         {
             try
             {
@@ -29729,7 +29729,7 @@ namespace Chummer
             }
         }
 
-        private async void cboGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearOverclocker_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsLoading || IsRefreshing)
                 return;
@@ -29803,7 +29803,7 @@ namespace Chummer
             }
         }
 
-        private async void cboArmorOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboArmorOverclocker_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsLoading || IsRefreshing)
                 return;
@@ -29877,7 +29877,7 @@ namespace Chummer
             }
         }
 
-        private async void cboWeaponOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboWeaponOverclocker_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsLoading || IsRefreshing)
                 return;
@@ -29953,7 +29953,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCyberwareOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareOverclocker_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsLoading || IsRefreshing)
                 return;
@@ -30028,7 +30028,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdAddAIProgram_Click(object sender, EventArgs e)
+        private async void cmdAddAIProgram_Click(object _, EventArgs e)
         {
             try
             {
@@ -30174,7 +30174,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdDeleteAIProgram_Click(object sender, EventArgs e)
+        private async void cmdDeleteAIProgram_Click(object _, EventArgs e)
         {
             try
             {
@@ -30230,7 +30230,7 @@ namespace Chummer
             }
         }
 
-        private async void tsAIProgramNotes_Click(object sender, EventArgs e)
+        private async void tsAIProgramNotes_Click(object _, EventArgs e)
         {
             try
             {
@@ -30244,7 +30244,7 @@ namespace Chummer
             }
         }
 
-        private async void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboPrimaryArm_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -30263,7 +30263,7 @@ namespace Chummer
             }
         }
 
-        private async void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object _, EventArgs e)
         {
             try
             {
@@ -30299,7 +30299,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
         }
 
-        private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
+        private async void cmdCyberwareChangeMount_Click(object _, EventArgs e)
         {
             try
             {
@@ -30314,7 +30314,7 @@ namespace Chummer
             }
         }
 
-        private async void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
+        private async void cmdVehicleCyberwareChangeMount_Click(object _, EventArgs e)
         {
             try
             {
@@ -30329,7 +30329,7 @@ namespace Chummer
             }
         }
 
-        private async void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboAttributeCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             try
             {
@@ -30353,7 +30353,7 @@ namespace Chummer
             }
         }
 
-        private async void tsGearLocationAddGear_Click(object sender, EventArgs e)
+        private async void tsGearLocationAddGear_Click(object _, EventArgs e)
         {
             try
             {
@@ -30373,7 +30373,7 @@ namespace Chummer
             }
         }
 
-        private async void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
+        private async void tsVehicleLocationAddVehicle_Click(object _, EventArgs e)
         {
             try
             {
@@ -30392,7 +30392,7 @@ namespace Chummer
             }
         }
 
-        private async void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
+        private async void tsWeaponLocationAddWeapon_Click(object _, EventArgs e)
         {
             try
             {
@@ -30442,13 +30442,13 @@ namespace Chummer
             } while (blnAddAgain);
         }
 
-        private void tsVehicleLocationAddWeapon_Click(object sender, EventArgs e)
+        private void tsVehicleLocationAddWeapon_Click(object _, EventArgs e)
         {
             //TODO: Where should weapons attached to locations of vehicles go?
             //PickWeapon(treVehicles.SelectedNode);
         }
 
-        private async void cboVehicleWeaponFiringMode_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleWeaponFiringMode_SelectedIndexChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -30472,12 +30472,12 @@ namespace Chummer
             }
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender, GenericToken).ConfigureAwait(false);
         }
 
-        private async void btnCreateCustomDrug_Click(object sender, EventArgs e)
+        private async void btnCreateCustomDrug_Click(object _, EventArgs e)
         {
             try
             {
@@ -30499,7 +30499,7 @@ namespace Chummer
             }
         }
 
-        private async void btnIncreaseDrugQty_Click(object sender, EventArgs e)
+        private async void btnIncreaseDrugQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -30566,7 +30566,7 @@ namespace Chummer
             }
         }
 
-        private async void btnDecreaseDrugQty_Click(object sender, EventArgs e)
+        private async void btnDecreaseDrugQty_Click(object _, EventArgs e)
         {
             try
             {
@@ -30633,7 +30633,7 @@ namespace Chummer
 
         #region Wireless Toggles
 
-        private void chkGearWireless_CheckedChanged(object sender, EventArgs e)
+        private void chkGearWireless_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -30643,7 +30643,7 @@ namespace Chummer
             }
         }
 
-        private void chkCyberwareWireless_CheckedChanged(object sender, EventArgs e)
+        private void chkCyberwareWireless_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -30653,7 +30653,7 @@ namespace Chummer
             }
         }
 
-        private void chkWeaponWireless_CheckedChanged(object sender, EventArgs e)
+        private void chkWeaponWireless_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -30663,7 +30663,7 @@ namespace Chummer
             }
         }
 
-        private void chkArmorWireless_CheckedChanged(object sender, EventArgs e)
+        private void chkArmorWireless_CheckedChanged(object _, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
                 return;
@@ -30694,7 +30694,7 @@ namespace Chummer
             pnlAttributes.ResumeLayout();
         }
 
-        private async void tsCyberwareUpgrade_Click(object sender, EventArgs e)
+        private async void tsCyberwareUpgrade_Click(object _, EventArgs e)
         {
             try
             {
@@ -30829,17 +30829,17 @@ namespace Chummer
 
         // Data binding doesn't work for some reason, so handle visibility toggles through events
 
-        private void chkShowKarmaChart_CheckedChanged(object sender, EventArgs e)
+        private void chkShowKarmaChart_CheckedChanged(object _, EventArgs e)
         {
             chtKarma.Visible = chkShowKarmaChart.Checked;
         }
 
-        private void chkShowNuyenChart_CheckedChanged(object sender, EventArgs e)
+        private void chkShowNuyenChart_CheckedChanged(object _, EventArgs e)
         {
             chtNuyen.Visible = chkShowNuyenChart.Checked;
         }
 
-        private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
+        private async void mnuSpecialChangeOptions_Click(object _, EventArgs e)
         {
             try
             {

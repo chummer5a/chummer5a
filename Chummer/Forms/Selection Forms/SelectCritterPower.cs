@@ -63,7 +63,7 @@ namespace Chummer
             _lstCategory = Utils.ListItemListPool.Get();
         }
 
-        private async void SelectCritterPower_Load(object sender, EventArgs e)
+        private async void SelectCritterPower_Load(object _, EventArgs e)
         {
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))
@@ -122,13 +122,13 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object _, EventArgs e)
         {
             _blnAddAgain = false;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdCancel_Click(object _, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -274,7 +274,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object _, EventArgs e)
         {
             await RefreshCategory().ConfigureAwait(false);
         }
@@ -428,13 +428,13 @@ namespace Chummer
             await trePowers.DoThreadSafeAsync(x => x.Sort(), token: token).ConfigureAwait(false);
         }
 
-        private async void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object _, EventArgs e)
         {
             _blnAddAgain = true;
             await AcceptForm().ConfigureAwait(false);
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object _, EventArgs e)
         {
             await RefreshCategory().ConfigureAwait(false);
         }
@@ -484,7 +484,7 @@ namespace Chummer
             }).ConfigureAwait(false);
         }
 
-        private async void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs _)
         {
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
