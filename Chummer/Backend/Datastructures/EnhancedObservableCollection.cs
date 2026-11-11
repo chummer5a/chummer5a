@@ -52,7 +52,6 @@ namespace Chummer
         /// To make things easy, all the collections elements will be present in e.OldItems.
         /// Use this event instead of BeforeClearCollectionChanged for tasks that will be awaited before completion.
         /// </summary>
-        [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event AsyncNotifyCollectionChangedEventHandler BeforeClearCollectionChangedAsync
         {
             add => _setBeforeClearCollectionChangedAsync.TryAdd(value);
@@ -131,6 +130,7 @@ namespace Chummer
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         protected virtual event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
 
         event MultiplePropertiesChangedEventHandler INotifyMultiplePropertiesChanged.MultiplePropertiesChanged
@@ -181,7 +181,7 @@ namespace Chummer
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public virtual void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             if (!_setMultiplePropertiesChangedAsync.IsEmpty)
             {
@@ -256,7 +256,7 @@ namespace Chummer
             }
         }
 
-        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async virtual Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             if (!_setMultiplePropertiesChangedAsync.IsEmpty)
             {
@@ -521,24 +521,23 @@ namespace Chummer
         /// Like CollectionChanged, occurs when an item is added, removed, changed, moved, or the entire list is refreshed.
         /// Use this event instead of CollectionChanged for tasks that will be awaited before completion.
         /// </summary>
-        [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event AsyncNotifyCollectionChangedEventHandler CollectionChangedAsync
         {
             add => _setCollectionChangedAsync.TryAdd(value);
             remove => _setCollectionChangedAsync.Remove(value);
         }
 
-        public Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
+        public virtual Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
             return token.IsCancellationRequested ? Task.FromCanceled<IEnumerator<T>>(token) : Task.FromResult(GetEnumerator());
         }
 
-        public Task<int> GetCountAsync(CancellationToken token = default)
+        public virtual Task<int> GetCountAsync(CancellationToken token = default)
         {
             return token.IsCancellationRequested ? Task.FromCanceled<int>(token) : Task.FromResult(Count);
         }
 
-        public async Task AddAsync(T item, CancellationToken token = default)
+        public async virtual Task AddAsync(T item, CancellationToken token = default)
         {
             await InsertItemAsync(await GetCountAsync(token).ConfigureAwait(false), item, token).ConfigureAwait(false);
         }
@@ -548,12 +547,12 @@ namespace Chummer
             return ClearItemsAsync(token);
         }
 
-        public Task<bool> ContainsAsync(T item, CancellationToken token = default)
+        public virtual Task<bool> ContainsAsync(T item, CancellationToken token = default)
         {
             return token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(Contains(item));
         }
 
-        public Task CopyToAsync(T[] array, int index, CancellationToken token = default)
+        public virtual Task CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
@@ -561,7 +560,7 @@ namespace Chummer
             return Task.CompletedTask;
         }
 
-        public async Task<bool> RemoveAsync(T item, CancellationToken token = default)
+        public async virtual Task<bool> RemoveAsync(T item, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int index = await IndexOfAsync(item, token).ConfigureAwait(false);
@@ -571,7 +570,7 @@ namespace Chummer
             return true;
         }
 
-        public Task<T> GetValueAtAsync(int index, CancellationToken token = default)
+        public virtual Task<T> GetValueAtAsync(int index, CancellationToken token = default)
         {
             return token.IsCancellationRequested ? Task.FromCanceled<T>(token) : Task.FromResult(this[index]);
         }
@@ -581,7 +580,7 @@ namespace Chummer
             return SetItemAsync(index, value, token);
         }
 
-        public Task<int> IndexOfAsync(T item, CancellationToken token = default)
+        public virtual Task<int> IndexOfAsync(T item, CancellationToken token = default)
         {
             return token.IsCancellationRequested ? Task.FromCanceled<int>(token) : Task.FromResult(IndexOf(item));
         }

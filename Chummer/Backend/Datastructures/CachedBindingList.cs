@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,10 +36,10 @@ namespace Chummer
         [NonSerialized]
         private PropertyChangedAsyncEventHandler propertyChangedAsyncEventHandler;
 
-#pragma warning disable CA1070
         /// <summary>
         /// ListChanged event subscription that will fire right before an item is removed or the list is cleared.
         /// </summary>
+        [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event EventHandler<RemovingOldEventArgs> BeforeRemove;
 
         private readonly ConcurrentHashSet<AsyncBeforeRemoveEventHandler> _setBeforeRemoveAsync =
@@ -77,7 +78,6 @@ namespace Chummer
             add => _setListChangedAsync.TryAdd(value);
             remove => _setListChangedAsync.Remove(value);
         }
-#pragma warning restore CA1070
 
         public CachedBindingList()
         {
@@ -356,7 +356,7 @@ namespace Chummer
             await InsertAsync(await GetCountAsync(token).ConfigureAwait(false), item, token).ConfigureAwait(false);
         }
 
-        public async Task ClearAsync(CancellationToken token = default)
+        public async virtual Task ClearAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!RaiseListChangedEvents)
@@ -455,7 +455,7 @@ namespace Chummer
         public Task SetItemAsync(int index, T value, CancellationToken token = default) =>
             SetValueAtAsync(index, value, token);
 
-        public async Task SetValueAtAsync(int index, T value, CancellationToken token = default)
+        public async virtual Task SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             T objOldItem = this[index];
@@ -543,7 +543,7 @@ namespace Chummer
             await FireListChangedAsync(ListChangedType.ItemAdded, index, token).ConfigureAwait(false);
         }
 
-        public async Task RemoveAtAsync(int index, CancellationToken token = default)
+        public async virtual Task RemoveAtAsync(int index, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!RaiseListChangedEvents)

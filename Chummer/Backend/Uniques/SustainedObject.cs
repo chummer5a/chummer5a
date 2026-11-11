@@ -35,7 +35,7 @@ namespace Chummer
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
-        private Guid _guiID;
+        private readonly Guid _guiID;
         private readonly Character _objCharacter;
         private bool _blnSelfSustained = true;
         private int _intForce;

@@ -78,6 +78,7 @@ namespace Chummer
         /// <inheritdoc />
         protected override async Task OnCollectionChangedAsync(NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_intSkipCollectionChanged > 0)
                 return;
             if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -105,8 +106,14 @@ namespace Chummer
         protected override void InsertItem(int index, T item)
         {
             if (index >= _intMaxSize)
-                return;
-            base.InsertItem(index, item);
+            {
+                int intCount = Count;
+                if (intCount >= _intMaxSize)
+                    return;
+                base.InsertItem(intCount, item);
+            }
+            else
+                base.InsertItem(index, item);
             while (Count > _intMaxSize)
                 RemoveAt(Count - 1);
         }
@@ -114,9 +121,16 @@ namespace Chummer
         /// <inheritdoc />
         public override async Task InsertItemAsync(int index, T item, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (index >= _intMaxSize)
-                return;
-            await base.InsertItemAsync(index, item, token).ConfigureAwait(false);
+            {
+                int intCount = await GetCountAsync(token).ConfigureAwait(false);
+                if (intCount >= _intMaxSize)
+                    return;
+                await base.InsertItemAsync(intCount, item, token).ConfigureAwait(false);
+            }
+            else
+                await base.InsertItemAsync(index, item, token).ConfigureAwait(false);
             while (await GetCountAsync(token).ConfigureAwait(false) > _intMaxSize)
                 await RemoveItemAsync(await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
         }

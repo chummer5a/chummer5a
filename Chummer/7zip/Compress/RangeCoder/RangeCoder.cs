@@ -399,7 +399,7 @@ namespace SevenZip.Compression.RangeCoder
             return Code / (Range /= total);
         }
 
-        public void Decode(uint start, uint size, uint total)
+        public void Decode(uint start, uint size)
         {
             unchecked
             {
@@ -409,7 +409,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public Task DecodeAsync(uint start, uint size, uint total, CancellationToken token = default)
+        public Task DecodeAsync(uint start, uint size, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
