@@ -343,11 +343,12 @@ namespace Chummer
             new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
 
         private static readonly AsyncFriendlyReaderWriterLock s_objDataDirectoriesLock = new AsyncFriendlyReaderWriterLock();
-        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(2)
+        private static readonly IReadOnlyCollection<string> s_SetBaseDataDirectories = new HashSet<string>(2)
         {
             Utils.GetDataFolderPath,
             Utils.GetPacksFolderPath
         };
+        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(s_SetBaseDataDirectories);
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
         private static readonly ConcurrentDictionary<string, Exception> s_DicCustomFilePathsWithExceptions = new ConcurrentDictionary<string, Exception>();
 
@@ -375,6 +376,72 @@ namespace Chummer
 
         public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            // Quick sanity checks to make sure our new custom directories are indeed different from our old ones and require a rebuild
+            if (lstCustomDirectories == null)
+            {
+                using (s_objDataDirectoriesLock.EnterReadLock(token))
+                {
+                    if (s_SetDataDirectories.SetEquals(s_SetBaseDataDirectories))
+                        return;
+                }
+            }
+            else if (lstCustomDirectories is IReadOnlyCollection<CustomDataDirectoryInfo> lstCollection1)
+            {
+                int intCount = lstCollection1.Count;
+                if (intCount == 0)
+                {
+                    using (s_objDataDirectoriesLock.EnterReadLock(token))
+                    {
+                        if (s_SetDataDirectories.SetEquals(s_SetBaseDataDirectories))
+                            return;
+                    }
+                }
+                else
+                {
+                    using (s_objDataDirectoriesLock.EnterReadLock(token))
+                    {
+                        if (s_SetDataDirectories.Count == s_SetBaseDataDirectories.Count + intCount)
+                        {
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setTemp))
+                            {
+                                setTemp.AddRange(s_SetBaseDataDirectories);
+                                setTemp.AddRange(lstCollection1.Select(x => x.DirectoryPath));
+                                if (s_SetDataDirectories.SetEquals(setTemp))
+                                    return;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (lstCustomDirectories is ICollection<CustomDataDirectoryInfo> lstCollection2)
+            {
+                int intCount = lstCollection2.Count;
+                if (intCount == 0)
+                {
+                    using (s_objDataDirectoriesLock.EnterReadLock(token))
+                    {
+                        if (s_SetDataDirectories.SetEquals(s_SetBaseDataDirectories))
+                            return;
+                    }
+                }
+                else
+                {
+                    using (s_objDataDirectoriesLock.EnterReadLock(token))
+                    {
+                        if (s_SetDataDirectories.Count == s_SetBaseDataDirectories.Count + intCount)
+                        {
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setTemp))
+                            {
+                                setTemp.AddRange(s_SetBaseDataDirectories);
+                                setTemp.AddRange(lstCollection2.Select(x => x.DirectoryPath));
+                                if (s_SetDataDirectories.SetEquals(setTemp))
+                                    return;
+                            }
+                        }
+                    }
+                }
+            }
             using (s_objDataDirectoriesLock.EnterWriteLock(token))
             {
                 token.ThrowIfCancellationRequested();
@@ -392,14 +459,15 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
-                s_SetDataDirectories.Add(Utils.GetDataFolderPath);
+                s_SetDataDirectories.AddRange(s_SetBaseDataDirectories);
                 token.ThrowIfCancellationRequested();
-                s_SetDataDirectories.Add(Utils.GetPacksFolderPath);
-                token.ThrowIfCancellationRequested();
-                foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
+                if (lstCustomDirectories != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
+                    foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
+                    }
                 }
 
                 if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
@@ -423,6 +491,102 @@ namespace Chummer
 
         public static async Task RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            // Quick sanity checks to make sure our new custom directories are indeed different from our old ones and require a rebuild
+            if (lstCustomDirectories == null)
+            {
+                IAsyncDisposable objReadLocker = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (s_SetDataDirectories.SetEquals(s_SetBaseDataDirectories))
+                        return;
+                }
+                finally
+                {
+                    await objReadLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            else if (lstCustomDirectories is IReadOnlyCollection<CustomDataDirectoryInfo> lstCollection1)
+            {
+                int intCount = lstCollection1.Count;
+                if (intCount == 0)
+                {
+                    IAsyncDisposable objReadLocker = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (s_SetDataDirectories.SetEquals(s_SetBaseDataDirectories))
+                            return;
+                    }
+                    finally
+                    {
+                        await objReadLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objReadLocker = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (s_SetDataDirectories.Count == s_SetBaseDataDirectories.Count + intCount)
+                        {
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setTemp))
+                            {
+                                setTemp.AddRange(s_SetBaseDataDirectories);
+                                setTemp.AddRange(lstCollection1.Select(x => x.DirectoryPath));
+                                if (s_SetDataDirectories.SetEquals(setTemp))
+                                    return;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objReadLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            else if (lstCustomDirectories is ICollection<CustomDataDirectoryInfo> lstCollection2)
+            {
+                int intCount = lstCollection2.Count;
+                if (intCount == 0)
+                {
+                    IAsyncDisposable objReadLocker = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (s_SetDataDirectories.SetEquals(s_SetBaseDataDirectories))
+                            return;
+                    }
+                    finally
+                    {
+                        await objReadLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objReadLocker = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (s_SetDataDirectories.Count == s_SetBaseDataDirectories.Count + intCount)
+                        {
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setTemp))
+                            {
+                                setTemp.AddRange(s_SetBaseDataDirectories);
+                                setTemp.AddRange(lstCollection2.Select(x => x.DirectoryPath));
+                                if (s_SetDataDirectories.SetEquals(setTemp))
+                                    return;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objReadLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -441,14 +605,15 @@ namespace Chummer
                 s_DicXmlDocuments.Clear();
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
-                s_SetDataDirectories.Add(Utils.GetDataFolderPath);
+                s_SetDataDirectories.AddRange(s_SetBaseDataDirectories);
                 token.ThrowIfCancellationRequested();
-                s_SetDataDirectories.Add(Utils.GetPacksFolderPath);
-                token.ThrowIfCancellationRequested();
-                foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
+                if (lstCustomDirectories != null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
+                    foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
+                    }
                 }
 
                 if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
