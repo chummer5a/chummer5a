@@ -146,6 +146,7 @@ namespace Chummer
         private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage,
                                                             bool blnDoResumeLayout, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             if (blnDoResumeLayout)
@@ -206,6 +207,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                    || Utils.SafelyRunSynchronously(t => LoadLanguageCoreAsync(true, strLanguage, t), token);
         }
