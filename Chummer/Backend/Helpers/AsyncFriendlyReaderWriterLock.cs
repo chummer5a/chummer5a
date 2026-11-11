@@ -1134,16 +1134,18 @@ namespace Chummer
                 bool blnIsInReadLock, AsyncFriendlyReaderWriterLock objReaderWriterLock,
                 bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
+#if DEBUG
                 if (objCurrentHelper == null)
                     throw new ArgumentNullException(nameof(objCurrentHelper));
-#if DEBUG
                 LinkedAsyncRWLockHelper objLastHelper = objCurrentHelper.ParentLinkedHelper;
                 if (objLastHelper != null && objLastHelper == objCurrentHelper)
                     throw new InvalidOperationException(
                         "Last and current helpers are identical, this should not happen.");
-#endif
 
                 _objCurrentHelper = objCurrentHelper;
+#else
+                _objCurrentHelper = objCurrentHelper ?? throw new ArgumentNullException(nameof(objCurrentHelper));
+#endif
                 _blnOldIsInReadLock = blnIsInReadLock;
                 _objReaderWriterLock = objReaderWriterLock;
                 _blnSkipUnlockOnDispose = blnSkipUnlockOnDispose;
@@ -1269,9 +1271,9 @@ namespace Chummer
                 LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
                 bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
+#if DEBUG
                 if (objNextHelper == null)
                     throw new ArgumentNullException(nameof(objNextHelper));
-#if DEBUG
                 LinkedAsyncRWLockHelper objCurrentHelper = objNextHelper.ParentLinkedHelper;
                 if (objCurrentHelper != null)
                 {
@@ -1289,9 +1291,11 @@ namespace Chummer
                                 "Last and next helpers are identical, this should not happen.");
                     }
                 }
-#endif
 
                 _objNextHelper = objNextHelper;
+#else
+                _objNextHelper = objNextHelper ?? throw new ArgumentNullException(nameof(objNextHelper));
+#endif
                 _objPreviousTopMostHeldUReader = objPreviousTopMostHeldUReader;
                 _objPreviousTopMostHeldWriter = objPreviousTopMostHeldWriter;
                 _objReaderWriterLock = objReaderWriterLock;
@@ -1542,9 +1546,9 @@ namespace Chummer
                 LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
                 bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
+#if DEBUG
                 if (objNextHelper == null)
                     throw new ArgumentNullException(nameof(objNextHelper));
-#if DEBUG
                 LinkedAsyncRWLockHelper objCurrentHelper = objNextHelper.ParentLinkedHelper;
                 if (objCurrentHelper != null)
                 {
@@ -1562,9 +1566,11 @@ namespace Chummer
                                 "Last and next helpers are identical, this should not happen.");
                     }
                 }
-#endif
 
                 _objNextHelper = objNextHelper;
+#else
+                _objNextHelper = objNextHelper ?? throw new ArgumentNullException(nameof(objNextHelper));
+#endif
                 _objPreviousTopMostHeldUReader = objPreviousTopMostHeldUReader;
                 _objPreviousTopMostHeldWriter = objPreviousTopMostHeldWriter;
                 _objReaderWriterLock = objReaderWriterLock;
