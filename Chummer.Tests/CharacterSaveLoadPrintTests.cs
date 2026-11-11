@@ -449,22 +449,13 @@ namespace Chummer.Tests
                 List<string> lstExportLanguages = new List<string>(11);
                 foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                 {
+                    if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
+                        continue;
                     string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                    if (!strExportLanguage.Contains("data") && strExportLanguage != GlobalSettings.DefaultLanguage)
+                    if (strExportLanguage != GlobalSettings.DefaultLanguage)
                         lstExportLanguages.Add(strExportLanguage);
                 }
-
                 lstExportLanguages.Sort();
-
-                Debug.WriteLine("Started pre-loading language files");
-                Debug.WriteLine("Pre-loading language file: " + GlobalSettings.DefaultLanguage);
-                LanguageManager.LoadLanguage(GlobalSettings.DefaultLanguage, TestContext.CancellationToken);
-                foreach (string strExportLanguage in lstExportLanguages)
-                {
-                    Debug.WriteLine("Pre-loading language file: " + strExportLanguage);
-                    LanguageManager.LoadLanguage(strExportLanguage, TestContext.CancellationToken);
-                }
-                Debug.WriteLine("Finished pre-loading language files");
                 int intLanguageIndex = 0;
                 foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
                 {
