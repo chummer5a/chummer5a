@@ -275,6 +275,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Version of <see cref="LoadLanguage(string, CancellationToken)"/> or <see cref="LoadLanguageAsync(string, CancellationToken)"/> that only checks to see if the language has been successfully loaded, not loading the language if it isn't.
+        /// Potentially useful especially for the async case to help avoid creating an async state machine unless absolutely necessary.
+        /// </summary>
+        /// <param name="strLanguage">Language whose data should be checked.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <returns>True if the language has been loaded successfully, false otherwise.</returns>
+        private static bool IsLanguageLoaded(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return s_DicLanguageData.TryGetValue(strLanguage.ToUpperInvariant(), out LanguageData objLanguageData)
+                && string.IsNullOrEmpty(objLanguageData.ErrorMessage);
+        }
+
+        /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
         /// <param name="objParent">Control container to translate.</param>
@@ -844,8 +860,23 @@ namespace Chummer
         public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true,
                                        CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(
-                t => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, t), token);
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return strKey;
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            if (!string.Equals(strLanguage, GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                && LoadLanguage(strLanguage, token)
+                && LoadedLanguageData.TryGetValue(strLanguage.ToUpperInvariant(), out LanguageData objLanguageData)
+                && objLanguageData.TranslatedStrings.TryGetValue(strKey, out string strInnerReturn))
+            {
+                return strInnerReturn;
+            }
+            token.ThrowIfCancellationRequested();
+            if (s_DicEnglishStrings.TryGetValue(strKey, out string strReturn))
+                return strReturn;
+            token.ThrowIfCancellationRequested();
+            return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
         /// <summary>
@@ -872,7 +903,52 @@ namespace Chummer
         public static Task<string> GetStringAsync(string strKey, string strLanguage = "", bool blnReturnError = true,
                                                   CancellationToken token = default)
         {
-            return GetStringCoreAsync(false, strKey, strLanguage, blnReturnError, token);
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return Task.FromResult(strKey);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            if (string.Equals(strLanguage, GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                if (s_DicEnglishStrings.TryGetValue(strKey, out string strReturn))
+                    return Task.FromResult(strReturn);
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled<string>(token);
+                return Task.FromResult(!blnReturnError ? string.Empty : strKey + " not found; check language file for string");
+            }
+            // Set up this way so that we avoid having to create an async state machine unless absolutely necessary
+            if (IsLanguageLoaded(strLanguage, token))
+            {
+                if (LoadedLanguageData.TryGetValue(strLanguage.ToUpperInvariant(), out LanguageData objLanguageData)
+                    && objLanguageData.TranslatedStrings.TryGetValue(strKey, out string strInnerReturn))
+                {
+                    return Task.FromResult(strInnerReturn);
+                }
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled<string>(token);
+                if (s_DicEnglishStrings.TryGetValue(strKey, out string strReturn))
+                    return Task.FromResult(strReturn);
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled<string>(token);
+                return Task.FromResult(!blnReturnError ? string.Empty : strKey + " not found; check language file for string");
+            }
+            return InnerReturn(strKey, strLanguage, blnReturnError, token);
+            async Task<string> InnerReturn(string strInnerKey, string strInnerLanguage, bool blnInnerReturnError, CancellationToken innerToken)
+            {
+                if (await LoadLanguageAsync(strInnerLanguage, innerToken).ConfigureAwait(false)
+                    && LoadedLanguageData.TryGetValue(strInnerLanguage.ToUpperInvariant(), out LanguageData objLanguageData)
+                    && objLanguageData.TranslatedStrings.TryGetValue(strInnerKey, out string strInnerReturn))
+                {
+                    return strInnerReturn;
+                }
+
+                innerToken.ThrowIfCancellationRequested();
+                if (s_DicEnglishStrings.TryGetValue(strInnerKey, out string strReturn))
+                    return strReturn;
+                innerToken.ThrowIfCancellationRequested();
+                return !blnInnerReturnError ? string.Empty : strInnerKey + " not found; check language file for string";
+            }
         }
 
         /// <summary>
@@ -896,8 +972,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
-            string strReturn
-                = Utils.SafelyRunSynchronously(t => GetStringCoreAsync(true, strKey, strLanguage, false, t), token);
+            string strReturn = GetString(strKey, strLanguage, false, token);
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -923,46 +998,8 @@ namespace Chummer
         public static async Task<char> GetCharAsync(string strKey, string strLanguage,
                                                     CancellationToken token = default)
         {
-            string strResult = await GetStringCoreAsync(false, strKey, strLanguage, false, token).ConfigureAwait(false);
+            string strResult = await GetStringAsync(strKey, strLanguage, false, token).ConfigureAwait(false);
             return string.IsNullOrWhiteSpace(strResult) ? default : strResult[0];
-        }
-
-        /// <summary>
-        /// Retrieve a string from the language file.
-        /// Uses flag hack method design outlined here to avoid locking:
-        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
-        /// </summary>
-        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strKey">Key to retrieve.</param>
-        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
-        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
-        /// <param name="token">CancellationToken to listen to.</param>
-        private static async Task<string> GetStringCoreAsync(bool blnSync, string strKey, string strLanguage,
-                                                             bool blnReturnError, CancellationToken token = default)
-        {
-            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                return strKey;
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            string strReturn;
-            bool blnLanguageLoaded = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? LoadLanguage(strLanguage, token)
-                : await LoadLanguageAsync(strLanguage, token).ConfigureAwait(false);
-            if (blnLanguageLoaded)
-            {
-                string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
-                    && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                {
-                    return strReturn;
-                }
-            }
-
-            if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
-                return strReturn;
-
-            return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
         // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
