@@ -1521,6 +1521,7 @@ namespace Chummer
                                                                   Character objCharacter, string strPreferFile,
                                                                   CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExtra))
                 return string.Empty;
             if (string.IsNullOrEmpty(strIntoLanguage))
@@ -2089,6 +2090,7 @@ namespace Chummer
                                                                         Character objCharacter, string strPreferFile,
                                                                         CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strFromLanguage))
                 strFromLanguage = GlobalSettings.Language;
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
