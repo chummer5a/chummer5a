@@ -47,6 +47,10 @@ namespace Chummer.Tests
                     }
 
                     await XmlManager.LoadXPathAsync(strFile, token: TestContext.CancellationToken).ConfigureAwait(false);
+                    if (string.Equals(strFile, "settings.xml", Utils.PathStringComparison))
+                    {
+                        _ = await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false);
+                    }
                 }
             }
             catch (Exception ex)
