@@ -385,22 +385,14 @@ namespace Chummer
                 foreach (string strLoopDirectoryPath in Directory.EnumerateDirectories(strCustomDataRootPath))
                     s_SetDataDirectories.Add(strLoopDirectoryPath);
             }
-            foreach (string strFileName in Utils.BasicDataFileNames)
-            {
-                if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
-                {
-                    setLoop = new HashSet<string>();
-                    s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
-                }
-                else
-                    setLoop.Clear();
-                setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
-            }
+            ReassemblePathsWithCustomFiles();
         }
 
         public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                lstCustomDirectories = null;
             // Quick sanity checks to make sure our new custom directories are indeed different from our old ones and require a rebuild
             if (lstCustomDirectories == null)
             {
@@ -493,29 +485,17 @@ namespace Chummer
                         s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                     }
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
-                {
-                    foreach (string strFileName in Utils.BasicDataFileNames)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
-                        {
-                            setLoop = new HashSet<string>();
-                            s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
-                        }
-                        else
-                            setLoop.Clear();
-                        token.ThrowIfCancellationRequested();
-                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories, token));
-                    }
-                }
+                    ReassemblePathsWithCustomFiles(token);
             }
         }
 
         public static async Task RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                lstCustomDirectories = null;
             // Quick sanity checks to make sure our new custom directories are indeed different from our old ones and require a rebuild
             if (lstCustomDirectories == null)
             {
@@ -639,23 +619,9 @@ namespace Chummer
                         s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                     }
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
-                {
-                    foreach (string strFileName in Utils.BasicDataFileNames)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
-                        {
-                            setLoop = new HashSet<string>();
-                            s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
-                        }
-                        else
-                            setLoop.Clear();
-                        token.ThrowIfCancellationRequested();
-                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories, token));
-                    }
-                }
+                    await ReassemblePathsWithCustomFilesAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -1713,6 +1679,102 @@ namespace Chummer
                 }
             }
             return string.Empty;
+        }
+
+        private static void ReassemblePathsWithCustomFiles(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (s_objDataDirectoriesLock.EnterWriteLock(token))
+            {
+                // Set up the dictionary for paths first, since its keys will double as a check for if a given file corresponds to a basic data file
+                foreach (string strFileName in Utils.BasicDataFileNames)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                    {
+                        setLoop = new HashSet<string>();
+                        s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                    }
+                    else
+                        setLoop.Clear();
+                }
+                // Because of the way file enumeration works, it's faster to enumerate by folder and slot each folder's entries into the right base file's hashset
+                // than to enumerate by base file and go through data directories looking for matching files via enumeration
+                foreach (string strLoopPath in s_SetDataDirectories)
+                {
+                    if (Directory.Exists(strLoopPath))
+                    {
+                        foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_*.xml",
+                                                                                    SearchOption.AllDirectories))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strInnerFileName = Path.GetFileName(strLoopFile);
+                            if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                                || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                                || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                            {
+                                int intLastUnderscore = strInnerFileName.LastIndexOf('_') + 1;
+                                if (s_DicPathsWithCustomFiles.TryGetValue(strInnerFileName.Substring(intLastUnderscore), out HashSet<string> setLoop))
+                                {
+                                    setLoop.Add(strLoopPath);
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static async Task ReassemblePathsWithCustomFilesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Set up the dictionary for paths first, since its keys will double as a check for if a given file corresponds to a basic data file
+                foreach (string strFileName in Utils.BasicDataFileNames)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
+                    {
+                        setLoop = new HashSet<string>();
+                        s_DicPathsWithCustomFiles.Add(strFileName, setLoop);
+                    }
+                    else
+                        setLoop.Clear();
+                }
+                // Because of the way file enumeration works, it's faster to enumerate by folder and slot each folder's entries into the right base file's hashset
+                // than to enumerate by base file and go through data directories looking for matching files via enumeration
+                foreach (string strLoopPath in s_SetDataDirectories)
+                {
+                    if (Directory.Exists(strLoopPath))
+                    {
+                        foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_*.xml",
+                                                                                SearchOption.AllDirectories))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strInnerFileName = Path.GetFileName(strLoopFile);
+                            if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                                || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                                || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                            {
+                                int intLastUnderscore = strInnerFileName.LastIndexOf('_') + 1;
+                                if (s_DicPathsWithCustomFiles.TryGetValue(strInnerFileName.Substring(intLastUnderscore), out HashSet<string> setLoop))
+                                {
+                                    setLoop.Add(strLoopPath);
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
