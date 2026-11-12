@@ -378,6 +378,13 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
+            // Add in default customdata directory's paths pre-emptively, since we know they're going to be loaded in as custom data directories
+            string strCustomDataRootPath = Utils.GetCustomDataFolderPath;
+            if (Directory.Exists(strCustomDataRootPath))
+            {
+                foreach (string strLoopDirectoryPath in Directory.EnumerateDirectories(strCustomDataRootPath))
+                    s_SetDataDirectories.Add(strLoopDirectoryPath);
+            }
             foreach (string strFileName in Utils.BasicDataFileNames)
             {
                 if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
