@@ -1532,7 +1532,7 @@ namespace Chummer
             }
 
             // Then try custom data books
-            foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
+            foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
             {
                 CharacterSettings objCustomSettings = kvpCustomSettings.Value;
                 foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync("books.xml",

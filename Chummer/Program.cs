@@ -602,7 +602,7 @@ namespace Chummer
                                     }
 
                                     await XmlManager.LoadXPathAsync(strFile).ConfigureAwait(false);
-                                    if (strFile == "settings.xml")
+                                    if (string.Equals(strFile, "settings.xml", Utils.PathStringComparison))
                                     {
                                         _ = await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false);
                                     }

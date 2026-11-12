@@ -3517,7 +3517,7 @@ namespace Chummer
                                                             GlobalSettings.InvariantCultureInfo) + " + {PriorityNuyen}";
                 }
                 // A very hacky legacy shim, but also works as a bit of a sanity check
-                else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}", StringComparison.Ordinal))
                 {
                     _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                 }
@@ -4377,7 +4377,7 @@ namespace Chummer
                                                             GlobalSettings.InvariantCultureInfo) + " + {PriorityNuyen}";
                 }
                 // A very hacky legacy shim, but also works as a bit of a sanity check
-                else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}", StringComparison.Ordinal))
                 {
                     _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                 }
@@ -8645,16 +8645,25 @@ namespace Chummer
             {
                 value = value.CleanXPath().TrimNoAlloc('\"');
                 // A safety check to make sure that we always still account for Priority-given Nuyen
-                if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey)
-                    && !value.Contains("{PriorityNuyen}"))
+                if (value.Contains("{PriorityNuyen}", StringComparison.Ordinal))
                 {
-                    value = "(" + value + ") + {PriorityNuyen}";
+                    using (LockObject.EnterUpgradeableReadLock())
+                    {
+                        if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
+                            return;
+                        OnPropertyChanged();
+                    }
                 }
-                using (LockObject.EnterUpgradeableReadLock())
+                else
                 {
-                    if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
-                        return;
-                    OnPropertyChanged();
+                    using (LockObject.EnterUpgradeableReadLock())
+                    {
+                        if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey))
+                            value = "(" + value + ") + {PriorityNuyen}";
+                        if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
+                            return;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -8683,24 +8692,38 @@ namespace Chummer
         {
             value = value.CleanXPath().TrimNoAlloc('\"');
             // A safety check to make sure that we always still account for Priority-given Nuyen
-            if ((await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
-                .ContainsKey(await GetDictionaryKeyAsync(token).ConfigureAwait(false))
-                && !value.Contains("{PriorityNuyen}"))
+            if (value.Contains("{PriorityNuyen}", StringComparison.Ordinal))
             {
-                value = "(" + value + ") + {PriorityNuyen}";
+                IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
+                        return;
+                    await OnPropertyChangedAsync(nameof(ChargenKarmaToNuyenExpression), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
-
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            else
             {
-                token.ThrowIfCancellationRequested();
-                if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
-                    return;
-                await OnPropertyChangedAsync(nameof(ChargenKarmaToNuyenExpression), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if ((await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
+                        .ContainsKey(await GetDictionaryKeyAsync(token).ConfigureAwait(false)))
+                        value = "(" + value + ") + {PriorityNuyen}";
+                    if (Interlocked.Exchange(ref _strChargenKarmaToNuyenExpression, value) == value)
+                        return;
+                    await OnPropertyChangedAsync(nameof(ChargenKarmaToNuyenExpression), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 

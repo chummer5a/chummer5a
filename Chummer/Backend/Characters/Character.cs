@@ -6912,7 +6912,9 @@ namespace Chummer
                                         string strReplacementSettingsKey = string.Empty;
                                         int intMostSuitable = int.MinValue;
                                         foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
-                                                 SettingsManager.LoadedCharacterSettings)
+                                                 (blnSync
+                                                    ? SettingsManager.LoadedCharacterSettings
+                                                    : await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                                         {
                                             token.ThrowIfCancellationRequested();
                                             int intLoopScore
@@ -7020,7 +7022,10 @@ namespace Chummer
                                         // Set up interim options for selection by build method
                                         string strReplacementSettingsKey = string.Empty;
                                         int intMostSuitable = int.MinValue;
-                                        foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in SettingsManager.LoadedCharacterSettings)
+                                        foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
+                                            (blnSync
+                                                ? SettingsManager.LoadedCharacterSettings
+                                                : await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                                         {
                                             token.ThrowIfCancellationRequested();
                                             int intLoopScore
