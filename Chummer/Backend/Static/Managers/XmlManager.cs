@@ -160,6 +160,11 @@ namespace Chummer
             public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
+                using (LockObject.EnterReadLock(token))
+                {
+                    if (ReferenceEquals(_xmlContent, objContent))
+                        return;
+                }
                 using (LockObject.EnterUpgradeableReadLock(token))
                 {
                     if (ReferenceEquals(_xmlContent, objContent))
@@ -207,6 +212,18 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker =
+                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (ReferenceEquals(_xmlContent, objContent))
+                        return;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+                objLocker =
                     await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
