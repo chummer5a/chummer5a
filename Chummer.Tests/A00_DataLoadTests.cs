@@ -36,7 +36,7 @@ namespace Chummer.Tests
         {
             try
             {
-                GC.KeepAlive(GlobalSettings.DefaultLanguage); // Do this here so we fire the constructor for GlobalSettings separately
+                GC.KeepAlive(GlobalSettings.SafeXmlReaderSettings); // Do this here so we fire the constructor for GlobalSettings separately
                 // Attempt to cache all XML files that are used the most.
                 Utils.RunWithoutThreadLock(t => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, CacheCommonFileAsync, t), token: TestContext.CancellationToken);
                 async Task CacheCommonFileAsync(string strFile, CancellationToken token)

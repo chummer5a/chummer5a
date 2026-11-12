@@ -706,7 +706,7 @@ namespace Chummer
             }
 
             // Ensure GlobalSettings is initialized first, otherwise the initial loading of data directories in its constructor is going to cause a locking issue
-            GC.KeepAlive(GlobalSettings.DefaultLanguage);
+            GC.KeepAlive(GlobalSettings.SafeXmlReaderSettings);
 
             string[] astrRelevantCustomDataPaths = Array.Empty<string>();
             if (lstEnabledCustomDataPaths != null)
@@ -946,7 +946,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             // Ensure GlobalSettings is initialized first, otherwise the initial loading of data directories in its constructor is going to cause a locking issue
-            GC.KeepAlive(GlobalSettings.DefaultLanguage);
+            GC.KeepAlive(GlobalSettings.SafeXmlReaderSettings);
 
             IDisposable objLocker = null;
             IAsyncDisposable objLockerAsync = null;
