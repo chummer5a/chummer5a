@@ -704,6 +704,10 @@ namespace Chummer
                         : await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
                 }
             }
+
+            // Ensure GlobalSettings is initialized first, otherwise the initial loading of data directories in its constructor is going to cause a locking issue
+            GC.KeepAlive(GlobalSettings.DefaultLanguage);
+
             string[] astrRelevantCustomDataPaths = Array.Empty<string>();
             if (lstEnabledCustomDataPaths != null)
             {
@@ -940,6 +944,10 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             token.ThrowIfCancellationRequested();
+
+            // Ensure GlobalSettings is initialized first, otherwise the initial loading of data directories in its constructor is going to cause a locking issue
+            GC.KeepAlive(GlobalSettings.DefaultLanguage);
+
             IDisposable objLocker = null;
             IAsyncDisposable objLockerAsync = null;
             if (blnSync)

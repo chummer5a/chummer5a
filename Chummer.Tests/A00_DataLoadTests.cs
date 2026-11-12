@@ -20,6 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -35,21 +36,15 @@ namespace Chummer.Tests
         {
             try
             {
+                GC.KeepAlive(GlobalSettings.DefaultLanguage); // Do this here so we fire the constructor for GlobalSettings separately
                 // Attempt to cache all XML files that are used the most.
-                Utils.RunWithoutThreadLock(() => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, CacheCommonFileAsync, TestContext.CancellationToken), token: TestContext.CancellationToken);
-                async Task CacheCommonFileAsync(string strFile)
+                Utils.RunWithoutThreadLock(t => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, CacheCommonFileAsync, t), token: TestContext.CancellationToken);
+                async Task CacheCommonFileAsync(string strFile, CancellationToken token)
                 {
-                    // Load default language data first for performance reasons
-                    if (!GlobalSettings.Language.Equals(
-                            GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    {
-                        await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage, token: TestContext.CancellationToken).ConfigureAwait(false);
-                    }
-
-                    await XmlManager.LoadXPathAsync(strFile, token: TestContext.CancellationToken).ConfigureAwait(false);
+                    await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
                     if (string.Equals(strFile, "settings.xml", Utils.PathStringComparison))
                     {
-                        _ = await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false);
+                        _ = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                     }
                 }
             }
