@@ -906,8 +906,8 @@
       <xsl:sort select="fullname" />
       <br /><xsl:value-of select="fullname" />
       <xsl:for-each select="martialarttechniques/martialarttechnique">
-        <xsl:sort select="fullname" />
-        <br />&#160;&#160;&#160;+ <xsl:value-of select="fullname" />
+        <xsl:sort select="name" />
+        <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>

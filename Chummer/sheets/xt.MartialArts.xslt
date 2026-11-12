@@ -41,13 +41,13 @@
         </xsl:if>
       </xsl:if>
       <xsl:for-each select="martialarttechniques/martialarttechnique">
-        <xsl:sort select="fullname" />
+        <xsl:sort select="name" />
         <tr>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
           <td class="indent">
-            <xsl:value-of select="fullname" />
+            <xsl:value-of select="name" />
           </td>
           <td style="text-align: center">
             <xsl:value-of select="source" />
