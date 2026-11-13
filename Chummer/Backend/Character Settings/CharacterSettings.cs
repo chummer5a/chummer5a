@@ -8230,17 +8230,14 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        bool blnTemp = false;
                         using (LockObject.EnterWriteLock())
                         {
                             _blnMysAdeptAllowPpCareer = true;
                             if (MysAdeptSecondMAGAttribute)
                             {
                                 _blnMysAdeptSecondMAGAttribute = false;
-                                blnTemp = true;
-                            }
-                            if (blnTemp)
                                 this.OnMultiplePropertyChanged(nameof(MysAdeptAllowPpCareer), nameof(MysAdeptSecondMAGAttribute));
+                            }
                             else
                                 OnPropertyChanged();
                         }
@@ -8301,20 +8298,17 @@ namespace Chummer
                     return;
                 if (value)
                 {
-                    bool blnTemp = false;
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _blnPrioritySpellsAsAdeptPowers = true;
+                        _blnMysAdeptAllowPpCareer = true;
                         if (await GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                         {
                             _blnMysAdeptSecondMAGAttribute = false;
-                            blnTemp = true;
-                        }
-                        if (blnTemp)
                             await this.OnMultiplePropertyChangedAsync(token, nameof(MysAdeptAllowPpCareer),
                                 nameof(MysAdeptSecondMAGAttribute)).ConfigureAwait(false);
+                        }
                         else
                             await OnPropertyChangedAsync(nameof(MysAdeptAllowPpCareer), token)
                                 .ConfigureAwait(false);
