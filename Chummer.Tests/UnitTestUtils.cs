@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -64,6 +65,40 @@ namespace Chummer.Tests
             public static FileInfo[] TestFileInfos { get; }
 
             public static Character[] Characters { get; }
+        }
+
+        public static void LoadAllTestCharacters(CancellationToken token = default)
+        {
+            if (CommonTestData.Characters.All(x => x != null))
+                return;
+            ParallelOptions objOptions = new ParallelOptions
+            {
+                CancellationToken = token
+            };
+            Parallel.For(0, CommonTestData.TestFileInfos.Length, objOptions, i =>
+            {
+                Character objLoopCharacter = CommonTestData.Characters[i];
+                if (objLoopCharacter == null)
+                {
+                    objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i]);
+                    CommonTestData.Characters[i] = objLoopCharacter;
+                }
+            });
+        }
+
+        public static Task LoadAllTestCharactersAsync(CancellationToken token = default)
+        {
+            if (CommonTestData.Characters.All(x => x != null))
+                return Task.CompletedTask;
+            return ParallelExtensions.ForAsync(0, CommonTestData.TestFileInfos.Length, async i =>
+            {
+                Character objLoopCharacter = CommonTestData.Characters[i];
+                if (objLoopCharacter == null)
+                {
+                    objLoopCharacter = await LoadCharacterAsync(CommonTestData.TestFileInfos[i], token: token).ConfigureAwait(false);
+                    CommonTestData.Characters[i] = objLoopCharacter;
+                }
+            }, token);
         }
 
         public static IEnumerable<Character> GetTestCharacters(CancellationToken token = default)
