@@ -1708,9 +1708,9 @@ namespace Chummer
                     {
                         // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
                         if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison)
-                            && s_DicPathsWithCustomFiles.TryGetValue("packs.xml", out HashSet<string> setLoop))
+                            && s_DicPathsWithCustomFiles.TryGetValue("packs.xml", out HashSet<string> setPacks))
                         {
-                            setLoop.Add(strLoopPath);
+                            setPacks.Add(strLoopPath);
                         }
 
                         foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_*.xml",
@@ -1763,9 +1763,9 @@ namespace Chummer
                     {
                         // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
                         if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison)
-                            && s_DicPathsWithCustomFiles.TryGetValue("packs.xml", out HashSet<string> setLoop))
+                            && s_DicPathsWithCustomFiles.TryGetValue("packs.xml", out HashSet<string> setPacks))
                         {
-                            setLoop.Add(strLoopPath);
+                            setPacks.Add(strLoopPath);
                         }
 
                         foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_*.xml",
