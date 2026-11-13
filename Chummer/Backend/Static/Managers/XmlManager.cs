@@ -1690,6 +1690,8 @@ namespace Chummer
                 foreach (string strFileName in Utils.BasicDataFileNames)
                 {
                     token.ThrowIfCancellationRequested();
+                    if (strFileName == "improvements.xml") // This is a special data file, it should not get custom modifications
+                        continue;
                     if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
                     {
                         setLoop = new HashSet<string>();
@@ -1704,6 +1706,13 @@ namespace Chummer
                 {
                     if (Directory.Exists(strLoopPath))
                     {
+                        // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                        if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison)
+                            && s_DicPathsWithCustomFiles.TryGetValue("packs.xml", out HashSet<string> setLoop))
+                        {
+                            setLoop.Add(strLoopPath);
+                        }
+
                         foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_*.xml",
                                                                                     SearchOption.AllDirectories))
                         {
@@ -1736,6 +1745,8 @@ namespace Chummer
                 foreach (string strFileName in Utils.BasicDataFileNames)
                 {
                     token.ThrowIfCancellationRequested();
+                    if (strFileName == "improvements.xml") // This is a special data file, it should not get custom modifications
+                        continue;
                     if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
                     {
                         setLoop = new HashSet<string>();
@@ -1750,6 +1761,13 @@ namespace Chummer
                 {
                     if (Directory.Exists(strLoopPath))
                     {
+                        // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                        if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison)
+                            && s_DicPathsWithCustomFiles.TryGetValue("packs.xml", out HashSet<string> setLoop))
+                        {
+                            setLoop.Add(strLoopPath);
+                        }
+
                         foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_*.xml",
                                                                                 SearchOption.AllDirectories))
                         {
