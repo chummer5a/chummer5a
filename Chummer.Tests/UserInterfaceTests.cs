@@ -101,7 +101,7 @@ namespace Chummer.Tests
         {
             try
             {
-                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(t), TestContext.CancellationToken);
+                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
 
                 ChummerMainForm frmOldMainForm = Program.MainForm;
                 ChummerMainForm frmTestForm = null;

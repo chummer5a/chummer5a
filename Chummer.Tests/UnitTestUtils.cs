@@ -67,38 +67,68 @@ namespace Chummer.Tests
             public static Character[] Characters { get; }
         }
 
-        public static void LoadAllTestCharacters(CancellationToken token = default)
+        public static void LoadAllTestCharacters(bool blnParallelize = true, CancellationToken token = default)
         {
             if (CommonTestData.Characters.All(x => x != null))
                 return;
-            ParallelOptions objOptions = new ParallelOptions
+            if (blnParallelize)
             {
-                CancellationToken = token
-            };
-            Parallel.For(0, CommonTestData.TestFileInfos.Length, objOptions, i =>
-            {
-                Character objLoopCharacter = CommonTestData.Characters[i];
-                if (objLoopCharacter == null)
+                ParallelOptions objOptions = new ParallelOptions
                 {
-                    objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i]);
-                    CommonTestData.Characters[i] = objLoopCharacter;
+                    CancellationToken = token
+                };
+                Parallel.For(0, CommonTestData.TestFileInfos.Length, objOptions, i =>
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i], token: token);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
+                });
+            }
+            else
+            {
+                for (int i = 0;  i < CommonTestData.TestFileInfos.Length; ++i)
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i], token: token);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
                 }
-            });
+            }
         }
 
-        public static Task LoadAllTestCharactersAsync(CancellationToken token = default)
+        public static async Task LoadAllTestCharactersAsync(bool blnParallelize = true, CancellationToken token = default)
         {
             if (CommonTestData.Characters.All(x => x != null))
-                return Task.CompletedTask;
-            return ParallelExtensions.ForAsync(0, CommonTestData.TestFileInfos.Length, async i =>
+                return;
+            if (blnParallelize)
             {
-                Character objLoopCharacter = CommonTestData.Characters[i];
-                if (objLoopCharacter == null)
+                await ParallelExtensions.ForAsync(0, CommonTestData.TestFileInfos.Length, async i =>
                 {
-                    objLoopCharacter = await LoadCharacterAsync(CommonTestData.TestFileInfos[i], token: token).ConfigureAwait(false);
-                    CommonTestData.Characters[i] = objLoopCharacter;
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = await LoadCharacterAsync(CommonTestData.TestFileInfos[i], token: token).ConfigureAwait(false);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
+                }, token).ConfigureAwait(false);
+            }
+            else
+            {
+                for (int i = 0; i < CommonTestData.TestFileInfos.Length; ++i)
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = await LoadCharacterAsync(CommonTestData.TestFileInfos[i], token: token).ConfigureAwait(false);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
                 }
-            }, token);
+            }
         }
 
         public static IEnumerable<Character> GetTestCharacters(CancellationToken token = default)

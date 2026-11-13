@@ -251,7 +251,7 @@ namespace Chummer.Tests
         {
             try
             {
-                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(t), TestContext.CancellationToken);
+                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
             }
             catch (Exception ex)
             {
@@ -268,7 +268,7 @@ namespace Chummer.Tests
             {
                 Utils.SafelyRunSynchronously(async t =>
                 {
-                    await UnitTestUtils.LoadAllTestCharactersAsync(t).ConfigureAwait(false);
+                    await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
                     using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
                     {
                         foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
@@ -314,7 +314,7 @@ namespace Chummer.Tests
                 DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
                 Utils.SafelyRunSynchronously(async t =>
                 {
-                    await UnitTestUtils.LoadAllTestCharactersAsync(t).ConfigureAwait(false);
+                    await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
 
                     foreach (Character objCharacterControl in UnitTestUtils.GetTestCharacters(t))
                     {
@@ -450,7 +450,7 @@ namespace Chummer.Tests
             {
                 Utils.SafelyRunSynchronously(async t =>
                 {
-                    await UnitTestUtils.LoadAllTestCharactersAsync(t).ConfigureAwait(false);
+                    await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
 
                     List<string> lstExportLanguages = new List<string>(11);
                     foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
