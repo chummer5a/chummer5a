@@ -1717,7 +1717,6 @@ namespace Chummer
                                 if (s_DicPathsWithCustomFiles.TryGetValue(strInnerFileName.Substring(intLastUnderscore), out HashSet<string> setLoop))
                                 {
                                     setLoop.Add(strLoopPath);
-                                    continue;
                                 }
                             }
                         }
@@ -1764,7 +1763,6 @@ namespace Chummer
                                 if (s_DicPathsWithCustomFiles.TryGetValue(strInnerFileName.Substring(intLastUnderscore), out HashSet<string> setLoop))
                                 {
                                     setLoop.Add(strLoopPath);
-                                    continue;
                                 }
                             }
                         }
