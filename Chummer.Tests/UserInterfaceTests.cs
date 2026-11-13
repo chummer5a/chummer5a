@@ -101,6 +101,8 @@ namespace Chummer.Tests
         {
             try
             {
+                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(t), TestContext.CancellationToken);
+
                 ChummerMainForm frmOldMainForm = Program.MainForm;
                 ChummerMainForm frmTestForm = null;
                 // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
