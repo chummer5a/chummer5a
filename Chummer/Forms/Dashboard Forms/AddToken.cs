@@ -125,8 +125,6 @@ namespace Chummer
         /// <summary>
         /// Closes the add token dialog
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnCancel_Click(object _, EventArgs e)
         {
             Close();
@@ -135,8 +133,6 @@ namespace Chummer
         /// <summary>
         /// passes the character back to the dashboard init user control
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void btnOK_Click(object _, EventArgs e)
         {
             if (_character == null)
