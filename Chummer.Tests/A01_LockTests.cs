@@ -91,32 +91,14 @@ namespace Chummer.Tests
         {
             using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
             {
-                using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
-                {
-                    EnterReadLockRecursively(0, objSource.Token);
-                }
-
-                using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
-                {
-                    EnterUpgradeableReadLockRecursively(0, objSource.Token);
-                }
+                EnterReadLockRecursively(0, TestContext.CancellationToken);
+                EnterUpgradeableReadLockRecursively(0, TestContext.CancellationToken);
 
                 // Make sure the async versions also work
                 Utils.SafelyRunSynchronously(async t =>
                 {
-                    t.ThrowIfCancellationRequested();
-                    using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
-                    {
-                        t.ThrowIfCancellationRequested();
-                        await EnterReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
-                    }
-
-                    t.ThrowIfCancellationRequested();
-                    using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
-                    {
-                        t.ThrowIfCancellationRequested();
-                        await EnterUpgradeableReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
-                    }
+                    await EnterReadLockRecursivelyAsync(0, t).ConfigureAwait(false);
+                    await EnterUpgradeableReadLockRecursivelyAsync(0, t).ConfigureAwait(false);
                 }, TestContext.CancellationToken);
 
                 void EnterReadLockRecursively(int intLevel, CancellationToken token = default)
