@@ -357,6 +357,7 @@ Changed/New Strings:
 - Button_AddContact
 - Message_DeletePet
 - Label_Roster_Build_Method
+- Label_LifestyleCNS
 
 Build 226
 Application Changes:
