@@ -54,8 +54,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -64,8 +63,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -74,8 +72,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -96,8 +93,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -106,8 +102,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -116,8 +111,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -156,8 +150,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -166,8 +159,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -177,8 +169,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -216,8 +207,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -226,8 +216,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (OperationCanceledException)
             {
@@ -241,8 +230,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -256,8 +244,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
         }
 
@@ -295,8 +282,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -370,8 +356,7 @@ namespace Chummer.Tests
                         catch (XmlSchemaException e)
                         {
                             e = e.Demystify();
-                            Assert.Fail("Unexpected validation failure: " + e.Message);
-                            throw e;
+                            throw;
                         }
 #if MEMORYTESTING
                     }
@@ -432,8 +417,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -476,8 +460,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally

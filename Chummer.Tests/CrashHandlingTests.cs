@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -31,8 +30,6 @@ namespace Chummer.Tests
     [TestClass]
     public class CrashHandlingTests
     {
-        public TestContext TestContext { get; set; }
-
         private readonly string[] _astrKnownErrorLogKeys =
         {
             "visible-crash-id",
@@ -53,7 +50,7 @@ namespace Chummer.Tests
 
         private const string TestExceptionMessage = "This is a test exception that the crash handler is supposed to be able to process.";
 
-        [TestMethod, Timeout(60 * 1000, CooperativeCancellation = true)]
+        [TestMethod]
         public void GenerateJsonCrashReportFromException()
         {
             try
@@ -63,6 +60,7 @@ namespace Chummer.Tests
                     // We need to throw our exception to generate the members we'll need to check in our JSON, just passing it is not enough
                     throw new ArgumentException(TestExceptionMessage);
                 }
+#pragma warning disable MSTEST0058 // Do not use asserts in catch blocks
                 catch (ArgumentException exTest)
                 {
                     string strJsonPath = Backend.CrashHandler.GenerateCrashDumpJson(exTest, DateTime.UtcNow);
@@ -107,21 +105,15 @@ namespace Chummer.Tests
                         }
                     }
                     else
-                        Assert.Fail();
+                        Assert.Fail("Attributes dictionary is not the expected type of IDictionary<string, object>.");
                 }
+#pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
             }
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         // Taken from https://stackoverflow.com/a/6417753 with some modifications

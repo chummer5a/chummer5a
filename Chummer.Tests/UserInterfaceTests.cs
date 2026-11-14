@@ -85,8 +85,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -219,8 +218,7 @@ namespace Chummer.Tests
                                 strErrorMessage += Environment.NewLine + e;
                                 Debug.WriteLine(strErrorMessage);
                                 Console.WriteLine(strErrorMessage);
-                                Assert.Fail(strErrorMessage);
-                                throw e;
+                                throw;
                             }
                         }
                     }
@@ -250,8 +248,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally

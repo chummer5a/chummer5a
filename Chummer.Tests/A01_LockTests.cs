@@ -91,8 +91,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -252,8 +251,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -395,8 +393,7 @@ namespace Chummer.Tests
             catch (Exception ex)
             {
                 ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally

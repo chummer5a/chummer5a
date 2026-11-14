@@ -188,8 +188,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -202,8 +201,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
 
             return objCharacter;
@@ -241,8 +239,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -255,8 +252,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
 
             return objCharacter;
