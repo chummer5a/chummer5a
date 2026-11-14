@@ -237,86 +237,60 @@ namespace Chummer.Tests
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharacters()
         {
-            try
-            {
-                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
+            Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveAsChum5lz()
         {
-            try
+            Utils.SafelyRunSynchronously(async t =>
             {
-                Utils.SafelyRunSynchronously(async t =>
+                await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
+                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
                 {
-                    await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
-                    using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
+                    foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
                     {
-                        foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
+                        string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
+                        Debug.WriteLine("Checking " + strFileName);
+                        string strDestination =
+                            Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
+                        if (!strDestination.EndsWith(".chum5lz", Utils.PathStringComparison))
                         {
-                            string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
-                            Debug.WriteLine("Checking " + strFileName);
-                            string strDestination =
-                                Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
-                            if (!strDestination.EndsWith(".chum5lz", Utils.PathStringComparison))
-                            {
-                                if (strDestination.EndsWith(".chum5", Utils.PathStringComparison))
-                                    strDestination += "lz";
-                                else
-                                    strDestination += ".chum5lz";
-                            }
-
-                            await SaveCharacterAsync(objCharacter, strDestination, token: t).ConfigureAwait(false);
-                            // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
-                            await objXmlDocument.LoadStandardFromLzmaCompressedAsync(strDestination, token: t).ConfigureAwait(false);
+                            if (strDestination.EndsWith(".chum5", Utils.PathStringComparison))
+                                strDestination += "lz";
+                            else
+                                strDestination += ".chum5lz";
                         }
+
+                        await SaveCharacterAsync(objCharacter, strDestination, token: t).ConfigureAwait(false);
+                        // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
+                        await objXmlDocument.LoadStandardFromLzmaCompressedAsync(strDestination, token: t).ConfigureAwait(false);
                     }
-                }, TestContext.CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+                }
+            }, TestContext.CancellationToken);
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveIsDeterministic()
         {
-            try
+            DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
+            Utils.SafelyRunSynchronously(async t =>
             {
-                DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
-                Utils.SafelyRunSynchronously(async t =>
-                {
-                    await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
+                await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
 
-                    foreach (Character objCharacterControl in UnitTestUtils.GetTestCharacters(t))
-                    {
-                        string strFileName = (Path.GetFileName(objCharacterControl.FileName) ?? "Unknown").CleanForFileName();
-                        Debug.WriteLine("Saving Control for " + strFileName);
-                        // First Load-Save cycle
-                        string strDestinationControl = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Control) " + strFileName);
-                        await SaveCharacterAsync(objCharacterControl, strDestinationControl, token: t).ConfigureAwait(false);
-                        Debug.WriteLine("Checking " + strFileName);
-                        // Second Load-Save cycle
-                        string strDestinationTest = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Test) " + strFileName);
-                        Character objCharacterTest = await UnitTestUtils.LoadCharacterAsync(new FileInfo(strDestinationControl), token: t).ConfigureAwait(false);
-#if MEMORYTESTING
+                foreach (Character objCharacterControl in UnitTestUtils.GetTestCharacters(t))
+                {
+                    string strFileName = (Path.GetFileName(objCharacterControl.FileName) ?? "Unknown").CleanForFileName();
+                    Debug.WriteLine("Saving Control for " + strFileName);
+                    // First Load-Save cycle
+                    string strDestinationControl = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Control) " + strFileName);
+                    await SaveCharacterAsync(objCharacterControl, strDestinationControl, token: t).ConfigureAwait(false);
+                    Debug.WriteLine("Checking " + strFileName);
+                    // Second Load-Save cycle
+                    string strDestinationTest = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Test) " + strFileName);
+                    Character objCharacterTest = await UnitTestUtils.LoadCharacterAsync(new FileInfo(strDestinationControl), token: t).ConfigureAwait(false);
                     try
                     {
-#endif
                         await SaveCharacterAsync(objCharacterTest, strDestinationTest, token: t).ConfigureAwait(false);
 
                         try
@@ -358,116 +332,88 @@ namespace Chummer.Tests
                             e = e.Demystify();
                             throw;
                         }
-#if MEMORYTESTING
                     }
                     finally
                     {
-                        objCharacterTest.Dispose();
+                        await objCharacterTest.DisposeAsync().ConfigureAwait(false);
                     }
-#endif
-                    }
-                }, TestContext.CancellationToken);
-
-                ComparisonResult EvaluateNodeWithChildrenIgnoringOrder(Comparison objComparison, ComparisonResult eOutcome)
-                {
-                    if (eOutcome == ComparisonResult.EQUAL)
-                        return eOutcome;
-                    // First check for true equality, in which case we don't need to mess around with checking in an out-of-order way
-                    if (DifferenceEvaluators.Default(objComparison, eOutcome) == ComparisonResult.EQUAL)
-                        return ComparisonResult.EQUAL;
-                    XmlNode xmlParentControl = objComparison.ControlDetails.Target;
-                    XmlNode xmlParentTest = objComparison.TestDetails.Target;
-                    if (!string.Equals(xmlParentControl.Name, xmlParentTest.Name, StringComparison.OrdinalIgnoreCase))
-                        return ComparisonResult.DIFFERENT;
-                    int intTestChildCount = xmlParentTest.ChildNodes.Count;
-                    if (xmlParentControl.ChildNodes.Count != intTestChildCount)
-                        return ComparisonResult.DIFFERENT;
-                    List<XmlNode> lstXmlChildrenTest =
-                        new List<XmlNode>(intTestChildCount);
-                    foreach (XmlNode xmlChildTest in xmlParentTest.ChildNodes)
-                        lstXmlChildrenTest.Add(xmlChildTest);
-                    foreach (XmlNode xmlLoopChildControl in xmlParentControl.ChildNodes)
-                    {
-                        bool blnFoundMatch = false;
-                        for (int i = 0; i < lstXmlChildrenTest.Count; ++i)
-                        {
-                            XmlNode xmlLoopChildTest = lstXmlChildrenTest[i];
-                            Diff objLoopDiff = DiffBuilder
-                                .Compare(xmlLoopChildControl)
-                                .WithTest(xmlLoopChildTest)
-                                .CheckForSimilar()
-                                .WithNodeMatcher(objDiffNodeMatcher)
-                                .IgnoreWhitespace()
-                                .Build();
-                            if (!objLoopDiff.HasDifferences())
-                            {
-                                blnFoundMatch = true;
-                                lstXmlChildrenTest.RemoveAt(i);
-                                break;
-                            }
-                        }
-
-                        if (!blnFoundMatch)
-                            return ComparisonResult.DIFFERENT;
-                    }
-                    // Because we already checked to make sure the number of children is the same, if every control child matches to a test child, we must be similar
-                    return ComparisonResult.SIMILAR;
                 }
-            }
-            catch (Exception ex)
+            }, TestContext.CancellationToken);
+
+            ComparisonResult EvaluateNodeWithChildrenIgnoringOrder(Comparison objComparison, ComparisonResult eOutcome)
             {
-                ex = ex.Demystify();
-                throw;
+                if (eOutcome == ComparisonResult.EQUAL)
+                    return eOutcome;
+                // First check for true equality, in which case we don't need to mess around with checking in an out-of-order way
+                if (DifferenceEvaluators.Default(objComparison, eOutcome) == ComparisonResult.EQUAL)
+                    return ComparisonResult.EQUAL;
+                XmlNode xmlParentControl = objComparison.ControlDetails.Target;
+                XmlNode xmlParentTest = objComparison.TestDetails.Target;
+                if (!string.Equals(xmlParentControl.Name, xmlParentTest.Name, StringComparison.OrdinalIgnoreCase))
+                    return ComparisonResult.DIFFERENT;
+                int intTestChildCount = xmlParentTest.ChildNodes.Count;
+                if (xmlParentControl.ChildNodes.Count != intTestChildCount)
+                    return ComparisonResult.DIFFERENT;
+                List<XmlNode> lstXmlChildrenTest =
+                    new List<XmlNode>(intTestChildCount);
+                foreach (XmlNode xmlChildTest in xmlParentTest.ChildNodes)
+                    lstXmlChildrenTest.Add(xmlChildTest);
+                foreach (XmlNode xmlLoopChildControl in xmlParentControl.ChildNodes)
+                {
+                    bool blnFoundMatch = false;
+                    for (int i = 0; i < lstXmlChildrenTest.Count; ++i)
+                    {
+                        XmlNode xmlLoopChildTest = lstXmlChildrenTest[i];
+                        Diff objLoopDiff = DiffBuilder
+                            .Compare(xmlLoopChildControl)
+                            .WithTest(xmlLoopChildTest)
+                            .CheckForSimilar()
+                            .WithNodeMatcher(objDiffNodeMatcher)
+                            .IgnoreWhitespace()
+                            .Build();
+                        if (!objLoopDiff.HasDifferences())
+                        {
+                            blnFoundMatch = true;
+                            lstXmlChildrenTest.RemoveAt(i);
+                            break;
+                        }
+                    }
+
+                    if (!blnFoundMatch)
+                        return ComparisonResult.DIFFERENT;
+                }
+                // Because we already checked to make sure the number of children is the same, if every control child matches to a test child, we must be similar
+                return ComparisonResult.SIMILAR;
             }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenPrint()
         {
-            try
+            Utils.SafelyRunSynchronously(async t =>
             {
-                Utils.SafelyRunSynchronously(async t =>
-                {
-                    await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
+                await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
 
-                    List<string> lstExportLanguages = new List<string>(11);
-                    foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
-                    {
-                        if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
-                            continue;
-                        string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                        if (strExportLanguage != GlobalSettings.DefaultLanguage)
-                            lstExportLanguages.Add(strExportLanguage);
-                    }
-                    lstExportLanguages.Sort();
-                    int intLanguageIndex = 0;
-                    foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
-                    {
-                        Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName) ?? "Unknown"));
-                        // Always try to export in English because this will cover most export code
-                        await DoAndSaveExportAsync(objCharacter, GlobalSettings.DefaultLanguage, t).ConfigureAwait(false);
-                        // Rotate through languages instead of testing every one for every character to save on execution time
-                        await DoAndSaveExportAsync(objCharacter, lstExportLanguages[intLanguageIndex++ % lstExportLanguages.Count], t).ConfigureAwait(false);
-                    }
-                }, TestContext.CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+                List<string> lstExportLanguages = new List<string>(11);
+                foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+                {
+                    if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
+                        continue;
+                    string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                    if (strExportLanguage != GlobalSettings.DefaultLanguage)
+                        lstExportLanguages.Add(strExportLanguage);
+                }
+                lstExportLanguages.Sort();
+                int intLanguageIndex = 0;
+                foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
+                {
+                    Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName) ?? "Unknown"));
+                    // Always try to export in English because this will cover most export code
+                    await DoAndSaveExportAsync(objCharacter, GlobalSettings.DefaultLanguage, t).ConfigureAwait(false);
+                    // Rotate through languages instead of testing every one for every character to save on execution time
+                    await DoAndSaveExportAsync(objCharacter, lstExportLanguages[intLanguageIndex++ % lstExportLanguages.Count], t).ConfigureAwait(false);
+                }
+            }, TestContext.CancellationToken);
         }
     }
 }

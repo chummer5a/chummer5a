@@ -17,9 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// Uncomment this define to turn on code that is useful for trying to find, diagnose, and squash memory leaks, though it will slow down unit tests considerably
-//#define MEMORYTESTING
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +32,7 @@ namespace Chummer.Tests
     public static class UnitTestUtils
     {
         [AssemblyInitialize]
-        public static void Initialize(TestContext context)
+        public static void Initialize(TestContext _)
         {
             Utils.IsUnitTest = true;
             Utils.IsUnitTestForUI = false;

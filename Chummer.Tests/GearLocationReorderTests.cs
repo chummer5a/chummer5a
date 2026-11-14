@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,135 +30,93 @@ namespace Chummer.Tests
         [TestMethod, Timeout(3 * 60 * 1000, CooperativeCancellation = true)]
         public void MoveGearRootAsync_SelectedGearHeader_ReordersOntoLaterLocation()
         {
-            try
+            using (Character objCharacter = new Character())
             {
-                using (Character objCharacter = new Character())
+                Location objAlpha = new Location(objCharacter, objCharacter.GearLocations, "Alpha");
+                Location objBeta = new Location(objCharacter, objCharacter.GearLocations, "Beta");
+                objCharacter.GearLocations.Add(objAlpha);
+                objCharacter.GearLocations.Add(objBeta);
+                using (TreeView treGear = Utils.RunOnMainThread(async t =>
                 {
-                    Location objAlpha = new Location(objCharacter, objCharacter.GearLocations, "Alpha");
-                    Location objBeta = new Location(objCharacter, objCharacter.GearLocations, "Beta");
-                    objCharacter.GearLocations.Add(objAlpha);
-                    objCharacter.GearLocations.Add(objBeta);
-                    using (TreeView treGear = Utils.RunOnMainThread(async t =>
-                    {
-                        t.ThrowIfCancellationRequested();
-                        TreeView treInner = new TreeView();
-                        treInner.Nodes.Add("Selected Gear").Tag = "Node_SelectedGear";
-                        return treInner;
-                    }, token: TestContext.CancellationToken))
-                    {
-                        TreeNode nodAlpha = Utils.RunOnMainThread(() => treGear.Nodes.Add("Alpha"), token: TestContext.CancellationToken);
-                        nodAlpha.Tag = objAlpha;
-                        TreeNode nodBeta = Utils.RunOnMainThread(() => treGear.Nodes.Add("Beta"), token: TestContext.CancellationToken);
-                        nodBeta.Tag = objBeta;
+                    t.ThrowIfCancellationRequested();
+                    TreeView treInner = new TreeView();
+                    treInner.Nodes.Add("Selected Gear").Tag = "Node_SelectedGear";
+                    return treInner;
+                }, token: TestContext.CancellationToken))
+                {
+                    TreeNode nodAlpha = Utils.RunOnMainThread(() => treGear.Nodes.Add("Alpha"), token: TestContext.CancellationToken);
+                    nodAlpha.Tag = objAlpha;
+                    TreeNode nodBeta = Utils.RunOnMainThread(() => treGear.Nodes.Add("Beta"), token: TestContext.CancellationToken);
+                    nodBeta.Tag = objBeta;
 
-                        // Beta's tree index is 2, which is past GearLocations.Count and used to throw.
-                        objCharacter.MoveGearRoot(nodBeta.Index, nodBeta, nodAlpha, TestContext.CancellationToken);
-                    }
-                    Assert.AreEqual(objBeta, objCharacter.GearLocations[0]);
-                    Assert.AreEqual(objAlpha, objCharacter.GearLocations[1]);
+                    // Beta's tree index is 2, which is past GearLocations.Count and used to throw.
+                    objCharacter.MoveGearRoot(nodBeta.Index, nodBeta, nodAlpha, TestContext.CancellationToken);
                 }
+                Assert.AreEqual(objBeta, objCharacter.GearLocations[0]);
+                Assert.AreEqual(objAlpha, objCharacter.GearLocations[1]);
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod, Timeout(3 * 60 * 1000, CooperativeCancellation = true)]
         public void MoveGearRoot_SelectedGearHeader_ReordersOntoEarlierLocation()
         {
-            try
+            using (Character objCharacter = new Character())
             {
-                using (Character objCharacter = new Character())
+                Location objAlpha = new Location(objCharacter, objCharacter.GearLocations, "Alpha");
+                Location objBeta = new Location(objCharacter, objCharacter.GearLocations, "Beta");
+                objCharacter.GearLocations.Add(objAlpha);
+                objCharacter.GearLocations.Add(objBeta);
+
+                using (TreeView treGear = Utils.RunOnMainThread(async t =>
                 {
-                    Location objAlpha = new Location(objCharacter, objCharacter.GearLocations, "Alpha");
-                    Location objBeta = new Location(objCharacter, objCharacter.GearLocations, "Beta");
-                    objCharacter.GearLocations.Add(objAlpha);
-                    objCharacter.GearLocations.Add(objBeta);
+                    t.ThrowIfCancellationRequested();
+                    TreeView treInner = new TreeView();
+                    treInner.Nodes.Add("Selected Gear").Tag = "Node_SelectedGear";
+                    return treInner;
+                }, token: TestContext.CancellationToken))
+                {
+                    TreeNode nodAlpha = Utils.RunOnMainThread(() => treGear.Nodes.Add("Alpha"), token: TestContext.CancellationToken);
+                    nodAlpha.Tag = objAlpha;
+                    _ = Utils.RunOnMainThread(() => nodAlpha.Nodes.Add("Loose gear"), token: TestContext.CancellationToken);
+                    TreeNode nodBeta = Utils.RunOnMainThread(() => treGear.Nodes.Add("Beta"), token: TestContext.CancellationToken);
+                    nodBeta.Tag = objBeta;
 
-                    using (TreeView treGear = Utils.RunOnMainThread(async t =>
-                    {
-                        t.ThrowIfCancellationRequested();
-                        TreeView treInner = new TreeView();
-                        treInner.Nodes.Add("Selected Gear").Tag = "Node_SelectedGear";
-                        return treInner;
-                    }, token: TestContext.CancellationToken))
-                    {
-                        TreeNode nodAlpha = Utils.RunOnMainThread(() => treGear.Nodes.Add("Alpha"), token: TestContext.CancellationToken);
-                        nodAlpha.Tag = objAlpha;
-                        _ = Utils.RunOnMainThread(() => nodAlpha.Nodes.Add("Loose gear"), token: TestContext.CancellationToken);
-                        TreeNode nodBeta = Utils.RunOnMainThread(() => treGear.Nodes.Add("Beta"), token: TestContext.CancellationToken);
-                        nodBeta.Tag = objBeta;
-
-                        // Beta's tree index is 2, which is past GearLocations.Count and used to throw.
-                        objCharacter.MoveGearRoot(nodAlpha.Nodes[0].Index, nodAlpha.Nodes[0], nodBeta, TestContext.CancellationToken);
-                    }
-
-                    Assert.AreEqual(objBeta, objCharacter.GearLocations[0]);
-                    Assert.AreEqual(objAlpha, objCharacter.GearLocations[1]);
+                    // Beta's tree index is 2, which is past GearLocations.Count and used to throw.
+                    objCharacter.MoveGearRoot(nodAlpha.Nodes[0].Index, nodAlpha.Nodes[0], nodBeta, TestContext.CancellationToken);
                 }
+
+                Assert.AreEqual(objBeta, objCharacter.GearLocations[0]);
+                Assert.AreEqual(objAlpha, objCharacter.GearLocations[1]);
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod, Timeout(3 * 60 * 1000, CooperativeCancellation = true)]
         public void MoveGearRoot_WithoutHeader_UsesLocationOrder()
         {
-            try
+            using (Character objCharacter = new Character())
             {
-                using (Character objCharacter = new Character())
+                Location objAlpha = new Location(objCharacter, objCharacter.GearLocations, "Alpha");
+                Location objBeta = new Location(objCharacter, objCharacter.GearLocations, "Beta");
+                objCharacter.GearLocations.Add(objAlpha);
+                objCharacter.GearLocations.Add(objBeta);
+                using (TreeView treGear = Utils.RunOnMainThread(async t =>
                 {
-                    Location objAlpha = new Location(objCharacter, objCharacter.GearLocations, "Alpha");
-                    Location objBeta = new Location(objCharacter, objCharacter.GearLocations, "Beta");
-                    objCharacter.GearLocations.Add(objAlpha);
-                    objCharacter.GearLocations.Add(objBeta);
-                    using (TreeView treGear = Utils.RunOnMainThread(async t =>
-                    {
-                        t.ThrowIfCancellationRequested();
-                        return new TreeView();
-                    }, token: TestContext.CancellationToken))
-                    {
-                        TreeNode nodAlpha = Utils.RunOnMainThread(() => treGear.Nodes.Add("Alpha"), token: TestContext.CancellationToken);
-                        nodAlpha.Tag = objAlpha;
-                        TreeNode nodBeta = Utils.RunOnMainThread(() => treGear.Nodes.Add("Beta"), token: TestContext.CancellationToken);
-                        nodBeta.Tag = objBeta;
+                    t.ThrowIfCancellationRequested();
+                    return new TreeView();
+                }, token: TestContext.CancellationToken))
+                {
+                    TreeNode nodAlpha = Utils.RunOnMainThread(() => treGear.Nodes.Add("Alpha"), token: TestContext.CancellationToken);
+                    nodAlpha.Tag = objAlpha;
+                    TreeNode nodBeta = Utils.RunOnMainThread(() => treGear.Nodes.Add("Beta"), token: TestContext.CancellationToken);
+                    nodBeta.Tag = objBeta;
 
-                        // Beta's tree index is 2, which is past GearLocations.Count and used to throw.
-                        objCharacter.MoveGearRoot(nodBeta.Index, nodBeta, nodAlpha, TestContext.CancellationToken);
-                    }
-
-                    Assert.AreEqual(objBeta, objCharacter.GearLocations[0]);
-                    Assert.AreEqual(objAlpha, objCharacter.GearLocations[1]);
+                    // Beta's tree index is 2, which is past GearLocations.Count and used to throw.
+                    objCharacter.MoveGearRoot(nodBeta.Index, nodBeta, nodAlpha, TestContext.CancellationToken);
                 }
+
+                Assert.AreEqual(objBeta, objCharacter.GearLocations[0]);
+                Assert.AreEqual(objAlpha, objCharacter.GearLocations[1]);
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
     }
 }

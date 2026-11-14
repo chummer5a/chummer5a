@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -55,65 +54,57 @@ namespace Chummer.Tests
         {
             try
             {
-                try
-                {
-                    // We need to throw our exception to generate the members we'll need to check in our JSON, just passing it is not enough
-                    throw new ArgumentException(TestExceptionMessage);
-                }
+                // We need to throw our exception to generate the members we'll need to check in our JSON, just passing it is not enough
+                throw new ArgumentException(TestExceptionMessage);
+            }
 #pragma warning disable MSTEST0058 // Do not use asserts in catch blocks
-                catch (ArgumentException exTest)
+            catch (ArgumentException exTest)
+            {
+                string strJsonPath = Backend.CrashHandler.GenerateCrashDumpJson(exTest, DateTime.UtcNow);
+                Assert.IsTrue(File.Exists(strJsonPath));
+
+                JsonSerializerSettings objSerializerSettings = new JsonSerializerSettings
                 {
-                    string strJsonPath = Backend.CrashHandler.GenerateCrashDumpJson(exTest, DateTime.UtcNow);
-                    Assert.IsTrue(File.Exists(strJsonPath));
+                    Converters = new JsonConverter[] { new JsonDictionaryConverter() }
+                };
+                JsonSerializer objSerializer = JsonSerializer.Create(objSerializerSettings);
+                IDictionary<string, object> dicParts;
 
-                    JsonSerializerSettings objSerializerSettings = new JsonSerializerSettings
+                using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (StreamReader objStreamReader = new StreamReader(objFileStream))
+                using (JsonReader objJsonReader = new JsonTextReader(objStreamReader))
+                {
+                    dicParts = objSerializer.Deserialize<IDictionary<string, object>>(objJsonReader);
+                }
+
+                Assert.IsTrue(dicParts.TryGetValue("_dicAttributes", out object objAttributes));
+                if (objAttributes is IDictionary<string, object> dicAttributes)
+                {
+                    foreach (string strKnownKey in s_astrKnownErrorLogKeys)
+                        Assert.IsTrue(dicAttributes.ContainsKey(strKnownKey));
+
+                    foreach (KeyValuePair<string, object> kvpEntry in dicAttributes)
                     {
-                        Converters = new JsonConverter[] { new JsonDictionaryConverter() }
-                    };
-                    JsonSerializer objSerializer = JsonSerializer.Create(objSerializerSettings);
-                    IDictionary<string, object> dicParts;
-
-                    using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    using (StreamReader objStreamReader = new StreamReader(objFileStream))
-                    using (JsonReader objJsonReader = new JsonTextReader(objStreamReader))
-                    {
-                        dicParts = objSerializer.Deserialize<IDictionary<string, object>>(objJsonReader);
-                    }
-
-                    Assert.IsTrue(dicParts.TryGetValue("_dicAttributes", out object objAttributes));
-                    if (objAttributes is IDictionary<string, object> dicAttributes)
-                    {
-                        foreach (string strKnownKey in s_astrKnownErrorLogKeys)
-                            Assert.IsTrue(dicAttributes.ContainsKey(strKnownKey));
-
-                        foreach (KeyValuePair<string, object> kvpEntry in dicAttributes)
+                        string strKey = kvpEntry.Key;
+                        string strValue = kvpEntry.Value?.ToString() ?? string.Empty;
+                        switch (strKey)
                         {
-                            string strKey = kvpEntry.Key;
-                            string strValue = kvpEntry.Value?.ToString() ?? string.Empty;
-                            switch (strKey)
-                            {
-                                case "visible-error-friendly":
-                                    Assert.AreEqual(strValue, TestExceptionMessage.AnonymizePath());
-                                    break;
-                                case "visible-stacktrace":
-                                    Assert.AreEqual(strValue, exTest.StackTrace.AnonymizePath());
-                                    break;
-                                default:
-                                    Assert.IsFalse(string.IsNullOrEmpty(strValue));
-                                    break;
-                            }
+                            case "visible-error-friendly":
+                                Assert.AreEqual(strValue, TestExceptionMessage.AnonymizePath());
+                                break;
+                            case "visible-stacktrace":
+                                Assert.AreEqual(strValue, exTest.StackTrace.AnonymizePath());
+                                break;
+                            default:
+                                Assert.IsFalse(string.IsNullOrEmpty(strValue));
+                                break;
                         }
                     }
-                    else
-                        Assert.Fail("Attributes dictionary is not the expected type of IDictionary<string, object>.");
                 }
+                else
+                    Assert.Fail("Attributes dictionary is not the expected type of IDictionary<string, object>.");
+            }
 #pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
         }
 
         // Taken from https://stackoverflow.com/a/6417753 with some modifications

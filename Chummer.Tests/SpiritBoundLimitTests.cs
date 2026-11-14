@@ -17,9 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Diagnostics;
-using System.IO;
 using System.Xml.XPath;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -33,37 +30,23 @@ namespace Chummer.Tests
         [TestMethod]
         public void TraditionsXml_WatcherAndHomunculus_IgnoreBoundSpiritLimit()
         {
-            try
-            {
-                XPathNavigator objRoot = XmlManager.LoadXPath("traditions.xml", token: TestContext.CancellationToken);
+            XPathNavigator objRoot = XmlManager.LoadXPath("traditions.xml", token: TestContext.CancellationToken);
 
-                Assert.AreEqual("True",
-                    objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Watcher']/ignoreboundspiritlimit")?.Value);
+            Assert.AreEqual("True",
+                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Watcher']/ignoreboundspiritlimit")?.Value);
 
-                Assert.IsEmpty(
-                    objRoot.Select(
-                        "/chummer/spirits/spirit[starts-with(name, 'Homunculus') and not(ignoreboundspiritlimit = 'True')]"),
-                    "Every Homunculus spirit should set ignoreboundspiritlimit");
+            Assert.IsEmpty(
+                objRoot.Select(
+                    "/chummer/spirits/spirit[starts-with(name, 'Homunculus') and not(ignoreboundspiritlimit = 'True')]"),
+                "Every Homunculus spirit should set ignoreboundspiritlimit");
 
-                Assert.IsNull(
-                    objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Spirit of Fire']/ignoreboundspiritlimit"),
-                    "Normal spirits should not set ignoreboundspiritlimit");
+            Assert.IsNull(
+                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Spirit of Fire']/ignoreboundspiritlimit"),
+                "Normal spirits should not set ignoreboundspiritlimit");
 
-                Assert.AreEqual("True",
-                    objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Ally Spirit']/ignoreboundspiritlimit")?.Value,
-                    "Ally Spirit should ignore the bound spirit limit");
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            Assert.AreEqual("True",
+                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Ally Spirit']/ignoreboundspiritlimit")?.Value,
+                "Ally Spirit should ignore the bound spirit limit");
         }
     }
 }

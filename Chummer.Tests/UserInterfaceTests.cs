@@ -33,229 +33,201 @@ namespace Chummer.Tests
         [TestMethod, Timeout(30 * 1000, CooperativeCancellation = true)]
         public void DoBasicStartup()
         {
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
+            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                ChummerMainForm frmOldMainForm = Program.MainForm;
-                ChummerMainForm frmTestForm = null;
-                // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
-                try
+                Utils.IsUnitTestForUI = true;
+                frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                 {
-                    Utils.IsUnitTestForUI = true;
-                    frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
-                    {
-                        ShowInTaskbar =
-                            false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
-                    }, token: TestContext.CancellationToken);
-                    Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                    frmTestForm.DoThreadSafe(x =>
-                    {
-                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
+                }, token: TestContext.CancellationToken);
+                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                frmTestForm.DoThreadSafe(x =>
+                {
+                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
 #if DEBUG
-                        x.SendToBack();
+                    x.SendToBack();
 #endif
-                    }, TestContext.CancellationToken);
-                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                    {
-                        Utils.SafeSleep(TestContext.CancellationToken);
-                    }
-                }
-                finally
+                }, TestContext.CancellationToken);
+                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    try
-                    {
-                        frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
-                    catch (Exception e)
-                    {
-                        e = e.Demystify();
-                        string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
-                            + e.Message;
-                        Debug.WriteLine(strErrorMessage);
-                        Console.WriteLine(strErrorMessage);
-                        Utils.BreakIfDebug();
-                    }
-                    Program.MainForm = frmOldMainForm;
-                    Utils.IsUnitTestForUI = false;
+                    Utils.SafeSleep(TestContext.CancellationToken);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                try
+                {
+                    frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+                catch (Exception e)
+                {
+                    e = e.Demystify();
+                    string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
+                        + e.Message;
+                    Debug.WriteLine(strErrorMessage);
+                    Console.WriteLine(strErrorMessage);
+                    Utils.BreakIfDebug();
+                }
+                Program.MainForm = frmOldMainForm;
+                Utils.IsUnitTestForUI = false;
             }
-#endif
         }
 
         [TestMethod, Timeout(30 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadAllCharacterForms()
         {
+            Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
+
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
+            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
-
-                ChummerMainForm frmOldMainForm = Program.MainForm;
-                ChummerMainForm frmTestForm = null;
-                // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
-                try
+                Utils.IsUnitTestForUI = true;
+                frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                 {
-                    Utils.IsUnitTestForUI = true;
-                    frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
-                    {
-                        ShowInTaskbar =
-                            false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
-                    }, token: TestContext.CancellationToken);
-                    Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                    frmTestForm.DoThreadSafe(x =>
-                    {
-                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
+                }, token: TestContext.CancellationToken);
+                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                frmTestForm.DoThreadSafe(x =>
+                {
+                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
 #if DEBUG
-                        x.SendToBack();
+                    x.SendToBack();
 #endif
-                    }, TestContext.CancellationToken);
-                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                    {
-                        Utils.SafeSleep(TestContext.CancellationToken);
-                    }
+                }, TestContext.CancellationToken);
+                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                {
+                    Utils.SafeSleep(TestContext.CancellationToken);
+                }
 
-                    Debug.WriteLine("Main form loaded");
-                    foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
+                Debug.WriteLine("Main form loaded");
+                foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
+                {
+                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
+                    Debug.WriteLine("Checking " + strFileName);
+                    string strDummyFileName = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName,
+                        "(UnitTest07Dummy) "
+                        + Path.GetFileNameWithoutExtension(objCharacter.FileName)
+                        + ".txt");
+                    using (File.Create(strDummyFileName, byte.MaxValue,
+                               FileOptions
+                                   .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
                     {
-                        string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
-                        Debug.WriteLine("Checking " + strFileName);
-                        string strDummyFileName = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName,
-                            "(UnitTest07Dummy) "
-                            + Path.GetFileNameWithoutExtension(objCharacter.FileName)
-                            + ".txt");
-                        using (File.Create(strDummyFileName, byte.MaxValue,
-                                   FileOptions
-                                       .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
+                        try
                         {
+                            bool blnFormClosed = false;
+                            bool blnCreated = objCharacter.Created;
+                            // ReSharper disable once AccessToDisposedClosure
+                            CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
+                                () => blnCreated
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    ? (CharacterShared)new CharacterCareer(objCharacter)
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    : new CharacterCreate(objCharacter), TestContext.CancellationToken);
                             try
                             {
-                                bool blnFormClosed = false;
-                                bool blnCreated = objCharacter.Created;
-                                // ReSharper disable once AccessToDisposedClosure
-                                CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
-                                    () => blnCreated
-                                        // ReSharper disable once AccessToDisposedClosure
-                                        ? (CharacterShared)new CharacterCareer(objCharacter)
-                                        // ReSharper disable once AccessToDisposedClosure
-                                        : new CharacterCreate(objCharacter), TestContext.CancellationToken);
+                                frmCharacterForm.DoThreadSafe(x =>
+                                {
+                                    x.FormClosed += (sender, args) => blnFormClosed = true;
+                                    x.MdiParent = frmTestForm;
+                                    x.ShowInTaskbar = false;
+                                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                                    x.SendToBack();
+#endif
+                                }, TestContext.CancellationToken);
+                                while
+                                    (!frmCharacterForm
+                                        .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                {
+                                    Utils.SafeSleep(TestContext.CancellationToken);
+                                }
+                            }
+                            finally
+                            {
                                 try
                                 {
-                                    frmCharacterForm.DoThreadSafe(x =>
-                                    {
-                                        x.FormClosed += (sender, args) => blnFormClosed = true;
-                                        x.MdiParent = frmTestForm;
-                                        x.ShowInTaskbar = false;
-                                        x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-#if DEBUG
-                                        x.SendToBack();
-#endif
-                                    }, TestContext.CancellationToken);
+                                    frmCharacterForm.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
                                     while
-                                        (!frmCharacterForm
-                                            .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                        (!blnFormClosed &&
+                                         !frmCharacterForm
+                                             .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
                                         Utils.SafeSleep(TestContext.CancellationToken);
                                     }
                                 }
-                                finally
+                                catch (OperationCanceledException)
                                 {
-                                    try
-                                    {
-                                        frmCharacterForm.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
-                                        while
-                                            (!blnFormClosed &&
-                                             !frmCharacterForm
-                                                 .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                                        {
-                                            Utils.SafeSleep(TestContext.CancellationToken);
-                                        }
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        //swallow this
-                                    }
-                                    catch (ApplicationException e)
-                                    {
-                                        e = e.Demystify();
-                                        string strErrorMessage
-                                            = "Encountered (non-fatal) exception while disposing of character form."
-                                              + Environment.NewLine
-                                              + e.Message;
-                                        Debug.WriteLine(strErrorMessage);
-                                        Console.WriteLine(strErrorMessage);
-                                        Program.OpenCharacters.Remove(objCharacter);
-                                    }
-                                    catch (InvalidOperationException e)
-                                    {
-                                        e = e.Demystify();
-                                        string strErrorMessage
-                                            = "Encountered (non-fatal) exception while disposing of character form."
-                                              + Environment.NewLine
-                                              + e.Message;
-                                        Debug.WriteLine(strErrorMessage);
-                                        Console.WriteLine(strErrorMessage);
-                                        Program.OpenCharacters.Remove(objCharacter);
-                                    }
+                                    //swallow this
+                                }
+                                catch (ApplicationException e)
+                                {
+                                    e = e.Demystify();
+                                    string strErrorMessage
+                                        = "Encountered (non-fatal) exception while disposing of character form."
+                                          + Environment.NewLine
+                                          + e.Message;
+                                    Debug.WriteLine(strErrorMessage);
+                                    Console.WriteLine(strErrorMessage);
+                                    Program.OpenCharacters.Remove(objCharacter);
+                                }
+                                catch (InvalidOperationException e)
+                                {
+                                    e = e.Demystify();
+                                    string strErrorMessage
+                                        = "Encountered (non-fatal) exception while disposing of character form."
+                                          + Environment.NewLine
+                                          + e.Message;
+                                    Debug.WriteLine(strErrorMessage);
+                                    Console.WriteLine(strErrorMessage);
+                                    Program.OpenCharacters.Remove(objCharacter);
                                 }
                             }
-                            catch (Exception e)
-                            {
-                                e = e.Demystify();
-                                string strErrorMessage
-                                    = "Exception while loading form for " + strFileName + ":";
-                                strErrorMessage += Environment.NewLine + e;
-                                Debug.WriteLine(strErrorMessage);
-                                Console.WriteLine(strErrorMessage);
-                                throw;
-                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e = e.Demystify();
+                            string strErrorMessage
+                                = "Exception while loading form for " + strFileName + ":";
+                            strErrorMessage += Environment.NewLine + e;
+                            Debug.WriteLine(strErrorMessage);
+                            Console.WriteLine(strErrorMessage);
+                            throw;
                         }
                     }
                 }
-                finally
-                {
-                    try
-                    {
-                        frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
-                    catch (Exception e)
-                    {
-                        string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
-                            + e.Message;
-                        Debug.WriteLine(strErrorMessage);
-                        Console.WriteLine(strErrorMessage);
-                        Utils.BreakIfDebug();
-                    }
-                    Program.MainForm = frmOldMainForm;
-                    Utils.IsUnitTestForUI = false;
-                }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                try
+                {
+                    frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+                catch (Exception e)
+                {
+                    string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
+                        + e.Message;
+                    Debug.WriteLine(strErrorMessage);
+                    Console.WriteLine(strErrorMessage);
+                    Utils.BreakIfDebug();
+                }
+                Program.MainForm = frmOldMainForm;
+                Utils.IsUnitTestForUI = false;
             }
-#endif
         }
     }
 }

@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Diagnostics;
 using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,66 +28,50 @@ namespace Chummer.Tests
         [TestMethod]
         public void DarkModeIsDark()
         {
-            try
-            {
-                Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
-                float fltLightGrayLightness = Color.LightGray.GetBrightness();
-                float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
-                Assert.IsGreaterThan(fltLightGrayDarkModeLightness, fltLightGrayLightness);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
+            Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
+            float fltLightGrayLightness = Color.LightGray.GetBrightness();
+            float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
+            Assert.IsGreaterThan(fltLightGrayDarkModeLightness, fltLightGrayLightness);
         }
 
         [TestMethod]
         public void DarkModeColorGenerationIsConsistent()
         {
-            try
-            {
-                Color objColorBlackInvert = ColorManager.GenerateInverseDarkModeColor(Color.Black);
-                Color objColorBlackInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvert);
-                float fltBlackHue = Color.Black.GetHue();
-                float fltBlackInvertDarkHue = objColorBlackInvertDark.GetHue();
-                Assert.AreEqual(fltBlackInvertDarkHue, fltBlackHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-                Color objColorBlackInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorBlackInvertDark);
-                Color objColorBlackInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvertDarkInvert);
-                Assert.IsTrue(objColorBlackInvertDark == objColorBlackInvertDarkInvertDark);
+            Color objColorBlackInvert = ColorManager.GenerateInverseDarkModeColor(Color.Black);
+            Color objColorBlackInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvert);
+            float fltBlackHue = Color.Black.GetHue();
+            float fltBlackInvertDarkHue = objColorBlackInvertDark.GetHue();
+            Assert.AreEqual(fltBlackInvertDarkHue, fltBlackHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorBlackInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorBlackInvertDark);
+            Color objColorBlackInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvertDarkInvert);
+            Assert.IsTrue(objColorBlackInvertDark == objColorBlackInvertDarkInvertDark);
 
-                Color objColorWhiteInvert = ColorManager.GenerateInverseDarkModeColor(Color.White);
-                Color objColorWhiteInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvert);
-                float fltWhiteHue = Color.White.GetHue();
-                float fltWhiteInvertDarkHue = objColorWhiteInvertDark.GetHue();
-                Assert.AreEqual(fltWhiteInvertDarkHue, fltWhiteHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-                Color objColorWhiteInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorWhiteInvertDark);
-                Color objColorWhiteInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvertDarkInvert);
-                Assert.IsTrue(objColorWhiteInvertDark == objColorWhiteInvertDarkInvertDark);
+            Color objColorWhiteInvert = ColorManager.GenerateInverseDarkModeColor(Color.White);
+            Color objColorWhiteInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvert);
+            float fltWhiteHue = Color.White.GetHue();
+            float fltWhiteInvertDarkHue = objColorWhiteInvertDark.GetHue();
+            Assert.AreEqual(fltWhiteInvertDarkHue, fltWhiteHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorWhiteInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorWhiteInvertDark);
+            Color objColorWhiteInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvertDarkInvert);
+            Assert.IsTrue(objColorWhiteInvertDark == objColorWhiteInvertDarkInvertDark);
 
-                Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
-                Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
-                float fltRedHue = Color.Red.GetHue();
-                float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
-                Assert.AreEqual(fltRedInvertDarkHue, fltRedHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-                Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
-                Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
-                Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
+            Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
+            Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
+            float fltRedHue = Color.Red.GetHue();
+            float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
+            Assert.AreEqual(fltRedInvertDarkHue, fltRedHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
+            Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
+            Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
 
-                Color objColorChocolateInvert = ColorManager.GenerateInverseDarkModeColor(Color.Chocolate);
-                Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
-                float fltChocolateHue = Color.Chocolate.GetHue();
-                float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
-                Assert.AreEqual(fltChocolateInvertDarkHue, fltChocolateHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
-                Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
-                Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
-                Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
+            Color objColorChocolateInvert = ColorManager.GenerateInverseDarkModeColor(Color.Chocolate);
+            Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
+            float fltChocolateHue = Color.Chocolate.GetHue();
+            float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
+            Assert.AreEqual(fltChocolateInvertDarkHue, fltChocolateHue, 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
+            Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
+            Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
         }
     }
 }

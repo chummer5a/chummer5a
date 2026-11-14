@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,374 +32,332 @@ namespace Chummer.Tests
         [TestMethod, Timeout(10 * 1000, CooperativeCancellation = true)]
         public void AsyncFriendlyReaderWriterLock_ReadLockExcludesWriteLockButNotUpgradeableRead()
         {
-            try
+            using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
             {
-                using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
-                {
-                    int intStage = 0;
-                    Parallel.Invoke(
-                        () =>
+                int intStage = 0;
+                Parallel.Invoke(
+                    () =>
+                    {
+                        using (objLock.EnterReadLock(TestContext.CancellationToken))
                         {
-                            using (objLock.EnterReadLock(TestContext.CancellationToken))
-                            {
-                                Interlocked.Increment(ref intStage); // Signal the other thread that the read lock has been acquired
-                                while (intStage < 2) // Wait for other thread to signal this read lock should be released
-                                    Utils.SafeSleep(TestContext.CancellationToken);
-                            }
-                        },
-                        () =>
+                            Interlocked.Increment(ref intStage); // Signal the other thread that the read lock has been acquired
+                            while (intStage < 2) // Wait for other thread to signal this read lock should be released
+                                Utils.SafeSleep(TestContext.CancellationToken);
+                        }
+                    },
+                    () =>
+                    {
+                        try
                         {
-                            try
+                            while (intStage == 0) // Wait for read lock to be acquired in the other thread
+                                Utils.SafeSleep(TestContext.CancellationToken);
+                            using (objLock.EnterUpgradeableReadLock(TestContext.CancellationToken))
                             {
-                                while (intStage == 0) // Wait for read lock to be acquired in the other thread
-                                    Utils.SafeSleep(TestContext.CancellationToken);
-                                using (objLock.EnterUpgradeableReadLock(TestContext.CancellationToken))
+                                try
                                 {
-                                    try
+                                    using (CancellationTokenSource objSource = new CancellationTokenSource(100))
                                     {
-                                        using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                                        try
                                         {
-                                            try
-                                            {
-                                                using (objLock.EnterWriteLock(objSource.Token))
-                                                    Assert.Fail("Can acquire write lock while a read lock is active.");
-                                            }
-                                            catch (OperationCanceledException)
-                                            {
-                                                // Swallow this, this is intended behavior
-                                            }
+                                            using (objLock.EnterWriteLock(objSource.Token))
+                                                Assert.Fail("Can acquire write lock while a read lock is active.");
+                                        }
+                                        catch (OperationCanceledException)
+                                        {
+                                            // Swallow this, this is intended behavior
                                         }
                                     }
-                                    finally
-                                    {
-                                        Interlocked.Increment(ref intStage); // Signal the other thread to release the read lock
-                                    }
-                                    using (objLock.EnterWriteLock(TestContext.CancellationToken))
-                                    {
-                                        GC.KeepAlive(objLock); // No-op to make sure this doesn't get optimized away
-                                    }
+                                }
+                                finally
+                                {
+                                    Interlocked.Increment(ref intStage); // Signal the other thread to release the read lock
+                                }
+                                using (objLock.EnterWriteLock(TestContext.CancellationToken))
+                                {
+                                    GC.KeepAlive(objLock); // No-op to make sure this doesn't get optimized away
                                 }
                             }
-                            finally
-                            {
-                                Interlocked.Increment(ref intStage); // If we get an exception in this thread, allow the other thread to release its lock and exit early
-                            }
-                        });
-                }
+                        }
+                        finally
+                        {
+                            Interlocked.Increment(ref intStage); // If we get an exception in this thread, allow the other thread to release its lock and exit early
+                        }
+                    });
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod, Timeout(10 * 1000, CooperativeCancellation = true)]
         public void AsyncFriendlyReaderWriterLock_LocksAreReentrantAndUpgradeProperly()
         {
-            try
+            using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
             {
-                using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
+                using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
                 {
+                    EnterReadLockRecursively(0, objSource.Token);
+                }
+
+                using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
+                {
+                    EnterUpgradeableReadLockRecursively(0, objSource.Token);
+                }
+
+                // Make sure the async versions also work
+                Utils.SafelyRunSynchronously(async t =>
+                {
+                    t.ThrowIfCancellationRequested();
                     using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
                     {
-                        EnterReadLockRecursively(0, objSource.Token);
+                        t.ThrowIfCancellationRequested();
+                        await EnterReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
                     }
 
+                    t.ThrowIfCancellationRequested();
                     using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
                     {
-                        EnterUpgradeableReadLockRecursively(0, objSource.Token);
-                    }
-
-                    // Make sure the async versions also work
-                    Utils.SafelyRunSynchronously(async t =>
-                    {
                         t.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
-                        {
-                            t.ThrowIfCancellationRequested();
-                            await EnterReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
-                        }
-
-                        t.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
-                        {
-                            t.ThrowIfCancellationRequested();
-                            await EnterUpgradeableReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
-                        }
-                    }, TestContext.CancellationToken);
-
-                    void EnterReadLockRecursively(int intLevel, CancellationToken token = default)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        using (objLock.EnterReadLock(token))
-                        {
-                            if (++intLevel < 2)
-                                EnterReadLockRecursively(intLevel, token);
-                        }
+                        await EnterUpgradeableReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
                     }
+                }, TestContext.CancellationToken);
 
-                    void EnterUpgradeableReadLockRecursively(int intLevel, CancellationToken token = default)
+                void EnterReadLockRecursively(int intLevel, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (objLock.EnterReadLock(token))
                     {
-                        token.ThrowIfCancellationRequested();
-                        using (objLock.EnterUpgradeableReadLock(token))
+                        if (++intLevel < 2)
+                            EnterReadLockRecursively(intLevel, token);
+                    }
+                }
+
+                void EnterUpgradeableReadLockRecursively(int intLevel, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (objLock.EnterUpgradeableReadLock(token))
+                    {
+                        if (++intLevel < 5)
                         {
-                            if (++intLevel < 5)
-                            {
-                                if ((intLevel & 1) == 0)
-                                    EnterWriteLockRecursively(intLevel, token);
-                                else
-                                    EnterUpgradeableReadLockRecursively(intLevel, token);
-                            }
+                            if ((intLevel & 1) == 0)
+                                EnterWriteLockRecursively(intLevel, token);
                             else
-                            {
-                                EnterReadLockRecursively(intLevel, token);
-                            }
+                                EnterUpgradeableReadLockRecursively(intLevel, token);
                         }
-                    }
-
-                    void EnterWriteLockRecursively(int intLevel, CancellationToken token = default)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        using (objLock.EnterWriteLock(token))
+                        else
                         {
-                            if (++intLevel < 5)
-                            {
-                                if ((intLevel & 1) == 0)
-                                    EnterWriteLockRecursively(intLevel, token);
-                                else
-                                    EnterUpgradeableReadLockRecursively(intLevel, token);
-                            }
-                            else
-                            {
-                                EnterReadLockRecursively(intLevel, token);
-                            }
-                        }
-                    }
-
-                    async Task EnterReadLockRecursivelyAsync(int intLevel, CancellationToken token = default)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker = await objLock.EnterReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            if (++intLevel < 2)
-                                await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-
-                    async Task EnterUpgradeableReadLockRecursivelyAsync(int intLevel, CancellationToken token = default)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker = await objLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            if (++intLevel < 5)
-                            {
-                                if ((intLevel & 1) == 0)
-                                    await EnterWriteLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                                else
-                                    await EnterUpgradeableReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                            }
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-
-                    async Task EnterWriteLockRecursivelyAsync(int intLevel, CancellationToken token = default)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker = await objLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            if (++intLevel < 5)
-                            {
-                                if ((intLevel & 1) == 0)
-                                    await EnterWriteLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                                else
-                                    await EnterUpgradeableReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
-                            }
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            EnterReadLockRecursively(intLevel, token);
                         }
                     }
                 }
+
+                void EnterWriteLockRecursively(int intLevel, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (objLock.EnterWriteLock(token))
+                    {
+                        if (++intLevel < 5)
+                        {
+                            if ((intLevel & 1) == 0)
+                                EnterWriteLockRecursively(intLevel, token);
+                            else
+                                EnterUpgradeableReadLockRecursively(intLevel, token);
+                        }
+                        else
+                        {
+                            EnterReadLockRecursively(intLevel, token);
+                        }
+                    }
+                }
+
+                async Task EnterReadLockRecursivelyAsync(int intLevel, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    IAsyncDisposable objLocker = await objLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (++intLevel < 2)
+                            await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                async Task EnterUpgradeableReadLockRecursivelyAsync(int intLevel, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    IAsyncDisposable objLocker = await objLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (++intLevel < 5)
+                        {
+                            if ((intLevel & 1) == 0)
+                                await EnterWriteLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                            else
+                                await EnterUpgradeableReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                async Task EnterWriteLockRecursivelyAsync(int intLevel, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    IAsyncDisposable objLocker = await objLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (++intLevel < 5)
+                        {
+                            if ((intLevel & 1) == 0)
+                                await EnterWriteLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                            else
+                                await EnterUpgradeableReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod, Timeout(10 * 1000, CooperativeCancellation = true)]
         public void AsyncFriendlyReaderWriterLock_LocksCanCancel()
         {
-            try
+            using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
             {
-                using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
-                {
-                    int intStage = 0;
-                    Parallel.Invoke(
-                        () =>
+                int intStage = 0;
+                Parallel.Invoke(
+                    () =>
+                    {
+                        using (objLock.EnterWriteLock(TestContext.CancellationToken))
                         {
-                            using (objLock.EnterWriteLock(TestContext.CancellationToken))
-                            {
-                                Interlocked.Increment(ref intStage); // Signal the other thread that the write lock has been acquired
-                                while (intStage < 2) // Wait for other thread to signal this lock should be released
-                                    Utils.SafeSleep(TestContext.CancellationToken);
-                            }
-                        },
-                        () =>
-                        {
-                            while (intStage == 0) // Wait for write lock to be acquired in the other thread
+                            Interlocked.Increment(ref intStage); // Signal the other thread that the write lock has been acquired
+                            while (intStage < 2) // Wait for other thread to signal this lock should be released
                                 Utils.SafeSleep(TestContext.CancellationToken);
-                            try
+                        }
+                    },
+                    () =>
+                    {
+                        while (intStage == 0) // Wait for write lock to be acquired in the other thread
+                            Utils.SafeSleep(TestContext.CancellationToken);
+                        try
+                        {
+                            // Try to wait for and then cancel out of various locks
+                            using (CancellationTokenSource objSource = new CancellationTokenSource(100))
                             {
-                                // Try to wait for and then cancel out of various locks
-                                using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                                try
                                 {
-                                    try
-                                    {
-                                        using (objLock.EnterReadLock(objSource.Token))
-                                            Assert.Fail("Acquired a lock we weren't supposed to.");
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        // Swallow this, this is intended behavior
-                                    }
+                                    using (objLock.EnterReadLock(objSource.Token))
+                                        Assert.Fail("Acquired a lock we weren't supposed to.");
                                 }
-                                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                                using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                                catch (OperationCanceledException)
                                 {
-                                    try
-                                    {
-                                        using (objLock.EnterWriteLock(objSource.Token))
-                                            Assert.Fail("Acquired a lock we weren't supposed to.");
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        // Swallow this, this is intended behavior
-                                    }
+                                    // Swallow this, this is intended behavior
                                 }
-                                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                                using (CancellationTokenSource objSource = new CancellationTokenSource(100))
-                                {
-                                    try
-                                    {
-                                        using (objLock.EnterUpgradeableReadLock(objSource.Token))
-                                            Assert.Fail("Acquired a lock we weren't supposed to.");
-                                    }
-                                    catch (OperationCanceledException)
-                                    {
-                                        // Swallow this, this is intended behavior
-                                    }
-                                }
-                                // Same, but async versions
-                                Utils.SafelyRunSynchronously(async t =>
-                                {
-                                    t.ThrowIfCancellationRequested();
-                                    using (CancellationTokenSource objSource = new CancellationTokenSource(100))
-                                    {
-                                        IAsyncDisposable objLocker = await objLock.EnterReadLockAsync(objSource.Token).ConfigureAwait(false);
-                                        try
-                                        {
-                                            objSource.Token.ThrowIfCancellationRequested();
-                                            Assert.Fail("Acquired a lock we weren't supposed to.");
-                                        }
-                                        catch (OperationCanceledException)
-                                        {
-                                            // Swallow this, this is intended behavior
-                                        }
-                                        finally
-                                        {
-                                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                                        }
-                                    }
-                                    t.ThrowIfCancellationRequested();
-                                    using (CancellationTokenSource objSource = new CancellationTokenSource(100))
-                                    {
-                                        IAsyncDisposable objLocker = await objLock.EnterWriteLockAsync(objSource.Token).ConfigureAwait(false);
-                                        try
-                                        {
-                                            objSource.Token.ThrowIfCancellationRequested();
-                                            Assert.Fail("Acquired a lock we weren't supposed to.");
-                                        }
-                                        catch (OperationCanceledException)
-                                        {
-                                            // Swallow this, this is intended behavior
-                                        }
-                                        finally
-                                        {
-                                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                                        }
-                                    }
-                                    t.ThrowIfCancellationRequested();
-                                    using (CancellationTokenSource objSource = new CancellationTokenSource(100))
-                                    {
-                                        IAsyncDisposable objLocker = await objLock.EnterUpgradeableReadLockAsync(objSource.Token).ConfigureAwait(false);
-                                        try
-                                        {
-                                            objSource.Token.ThrowIfCancellationRequested();
-                                            Assert.Fail("Acquired a lock we weren't supposed to.");
-                                        }
-                                        catch (OperationCanceledException)
-                                        {
-                                            // Swallow this, this is intended behavior
-                                        }
-                                        finally
-                                        {
-                                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                                        }
-                                    }
-                                }, TestContext.CancellationToken);
                             }
-                            finally
+                            TestContext.CancellationToken.ThrowIfCancellationRequested();
+                            using (CancellationTokenSource objSource = new CancellationTokenSource(100))
                             {
-                                Interlocked.Increment(ref intStage); // We are done with our tests on this thread, signal the other thread to release its lock
+                                try
+                                {
+                                    using (objLock.EnterWriteLock(objSource.Token))
+                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    // Swallow this, this is intended behavior
+                                }
                             }
-                        });
-                }
+                            TestContext.CancellationToken.ThrowIfCancellationRequested();
+                            using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                            {
+                                try
+                                {
+                                    using (objLock.EnterUpgradeableReadLock(objSource.Token))
+                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    // Swallow this, this is intended behavior
+                                }
+                            }
+                            // Same, but async versions
+                            Utils.SafelyRunSynchronously(async t =>
+                            {
+                                t.ThrowIfCancellationRequested();
+                                using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                                {
+                                    IAsyncDisposable objLocker = await objLock.EnterReadLockAsync(objSource.Token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        objSource.Token.ThrowIfCancellationRequested();
+                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        // Swallow this, this is intended behavior
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
+                                }
+                                t.ThrowIfCancellationRequested();
+                                using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                                {
+                                    IAsyncDisposable objLocker = await objLock.EnterWriteLockAsync(objSource.Token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        objSource.Token.ThrowIfCancellationRequested();
+                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        // Swallow this, this is intended behavior
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
+                                }
+                                t.ThrowIfCancellationRequested();
+                                using (CancellationTokenSource objSource = new CancellationTokenSource(100))
+                                {
+                                    IAsyncDisposable objLocker = await objLock.EnterUpgradeableReadLockAsync(objSource.Token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        objSource.Token.ThrowIfCancellationRequested();
+                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        // Swallow this, this is intended behavior
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
+                                }
+                            }, TestContext.CancellationToken);
+                        }
+                        finally
+                        {
+                            Interlocked.Increment(ref intStage); // We are done with our tests on this thread, signal the other thread to release its lock
+                        }
+                    });
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
     }
 }

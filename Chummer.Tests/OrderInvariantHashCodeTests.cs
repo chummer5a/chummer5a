@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests
@@ -39,124 +38,80 @@ namespace Chummer.Tests
         [TestMethod]
         public void EmptyOrderInvariantHashCodeMatchesEmptyHashCode()
         {
-            try
-            {
-                HashCode hashCode = new HashCode();
-                OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
-                int emptyHashCode1 = hashCode.ToHashCode();
-                int emptyHashCode2 = invariantHashCode.ToHashCode();
-                Assert.AreEqual(emptyHashCode1, emptyHashCode2);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            HashCode hashCode = new HashCode();
+            OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
+            int emptyHashCode1 = hashCode.ToHashCode();
+            int emptyHashCode2 = invariantHashCode.ToHashCode();
+            Assert.AreEqual(emptyHashCode1, emptyHashCode2);
         }
 
         [TestMethod]
         public void OneElementOrderInvariantHashCodeMatchesOneElementHashCode()
         {
-            try
-            {
-                OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
-                invariantHashCode.Add(dummyData1);
-                int hashCode1 = HashCode.Combine(dummyData1);
-                int hashCode2 = invariantHashCode.ToHashCode();
-                Assert.AreEqual(hashCode1, hashCode2);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
+            invariantHashCode.Add(dummyData1);
+            int hashCode1 = HashCode.Combine(dummyData1);
+            int hashCode2 = invariantHashCode.ToHashCode();
+            Assert.AreEqual(hashCode1, hashCode2);
         }
 
         [TestMethod]
         public void OrderInvariantHashCodeCombineMatchesAdd()
         {
-            try
-            {
-                OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
-                invariantHashCode.Add(dummyData1);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData2);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData3);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData4);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData5);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData6);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData7);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6, dummyData7), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-                invariantHashCode.Add(dummyData8);
-                Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6, dummyData7, dummyData8), invariantHashCode.ToHashCode());
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
+            invariantHashCode.Add(dummyData1);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData2);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData3);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData4);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData5);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData6);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData7);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6, dummyData7), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
+            invariantHashCode.Add(dummyData8);
+            Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6, dummyData7, dummyData8), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
         }
 
         [TestMethod]
         public void OrderInvariantHashCodeIsOrderInvariant()
         {
-            try
-            {
-                // Test commutative
-                int hashCode1 = OrderInvariantHashCode.Combine(dummyData1, dummyData2);
-                int hashCode2 = OrderInvariantHashCode.Combine(dummyData2, dummyData1);
-                Assert.AreEqual(hashCode1, hashCode2);
+            // Test commutative
+            int hashCode1 = OrderInvariantHashCode.Combine(dummyData1, dummyData2);
+            int hashCode2 = OrderInvariantHashCode.Combine(dummyData2, dummyData1);
+            Assert.AreEqual(hashCode1, hashCode2);
 
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
 
-                // Test associative
-                OrderInvariantHashCode invariantHashCode1 = new OrderInvariantHashCode();
-                invariantHashCode1.Add(dummyData1);
-                invariantHashCode1.Add(dummyData2);
-                invariantHashCode1.Add(dummyData3);
-                OrderInvariantHashCode invariantHashCode2 = new OrderInvariantHashCode();
-                invariantHashCode2.Add(dummyData2);
-                invariantHashCode2.Add(dummyData3);
-                invariantHashCode2.Add(dummyData1);
-                hashCode1 = invariantHashCode1.ToHashCode();
-                hashCode2 = invariantHashCode2.ToHashCode();
-                Assert.AreEqual(hashCode1, hashCode2);
+            // Test associative
+            OrderInvariantHashCode invariantHashCode1 = new OrderInvariantHashCode();
+            invariantHashCode1.Add(dummyData1);
+            invariantHashCode1.Add(dummyData2);
+            invariantHashCode1.Add(dummyData3);
+            OrderInvariantHashCode invariantHashCode2 = new OrderInvariantHashCode();
+            invariantHashCode2.Add(dummyData2);
+            invariantHashCode2.Add(dummyData3);
+            invariantHashCode2.Add(dummyData1);
+            hashCode1 = invariantHashCode1.ToHashCode();
+            hashCode2 = invariantHashCode2.ToHashCode();
+            Assert.AreEqual(hashCode1, hashCode2);
 
-                TestContext.CancellationToken.ThrowIfCancellationRequested();
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
 
-                // Test associative (parallelized)
-                List<string> lstMiddleData = new List<string>
+            // Test associative (parallelized)
+            List<string> lstMiddleData = new List<string>
             {
                 dummyData2,
                 dummyData3,
@@ -165,29 +120,17 @@ namespace Chummer.Tests
                 dummyData6,
                 dummyData7
             };
-                OrderInvariantHashCode invariantHashCode3 = new OrderInvariantHashCode();
-                invariantHashCode3.Add(dummyData1);
-                invariantHashCode3.AddRange(lstMiddleData);
-                invariantHashCode3.Add(dummyData8);
-                OrderInvariantHashCode invariantHashCode4 = new OrderInvariantHashCode();
-                invariantHashCode4.Add(dummyData8);
-                invariantHashCode4.AddRangeParallel(lstMiddleData, TestContext.CancellationToken);
-                invariantHashCode4.Add(dummyData1);
-                hashCode1 = invariantHashCode3.ToHashCode();
-                hashCode2 = invariantHashCode4.ToHashCode();
-                Assert.AreEqual(hashCode1, hashCode2);
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            OrderInvariantHashCode invariantHashCode3 = new OrderInvariantHashCode();
+            invariantHashCode3.Add(dummyData1);
+            invariantHashCode3.AddRange(lstMiddleData);
+            invariantHashCode3.Add(dummyData8);
+            OrderInvariantHashCode invariantHashCode4 = new OrderInvariantHashCode();
+            invariantHashCode4.Add(dummyData8);
+            invariantHashCode4.AddRangeParallel(lstMiddleData, TestContext.CancellationToken);
+            invariantHashCode4.Add(dummyData1);
+            hashCode1 = invariantHashCode3.ToHashCode();
+            hashCode2 = invariantHashCode4.ToHashCode();
+            Assert.AreEqual(hashCode1, hashCode2);
         }
 
         public TestContext TestContext { get; set; }

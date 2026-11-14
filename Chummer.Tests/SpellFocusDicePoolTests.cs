@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,91 +36,66 @@ namespace Chummer.Tests
         public async Task SpellDicePool_DuplicateHealthFocus_CountsHighestOnce()
         {
             CancellationToken token = TestContext.CancellationToken;
+            token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
+                AddHealthBonuses(objCharacter, token);
+                Spell objSpell = new Spell(objCharacter);
                 try
                 {
-                    AddHealthBonuses(objCharacter, token);
-                    Spell objSpell = new Spell(objCharacter);
-                    try
-                    {
-                        objSpell.Category = SpellCategory;
-                        string strFocusValue = "(" + 6m.ToString(GlobalSettings.CultureInfo) + ")";
-                        Assert.AreEqual(8, objSpell.DicePool);
-                        Assert.AreEqual(1, CountOccurrences(objSpell.DicePoolTooltip, strFocusValue));
-                        Assert.AreEqual(8, await objSpell.GetDicePoolAsync(token).ConfigureAwait(false));
-                        Assert.AreEqual(1, CountOccurrences(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), strFocusValue));
-                    }
-                    finally
-                    {
-                        await objSpell.DisposeAsync().ConfigureAwait(false);
-                    }
+                    objSpell.Category = SpellCategory;
+                    string strFocusValue = "(" + 6m.ToString(GlobalSettings.CultureInfo) + ")";
+                    Assert.AreEqual(8, objSpell.DicePool);
+                    Assert.AreEqual(1, CountOccurrences(objSpell.DicePoolTooltip, strFocusValue));
+                    Assert.AreEqual(8, await objSpell.GetDicePoolAsync(token).ConfigureAwait(false));
+                    Assert.AreEqual(1, CountOccurrences(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), strFocusValue));
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    await objSpell.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         [TestMethod]
         public async Task SpellDicePool_AlchemicalSpell_SkipsSpellcastingFocus()
         {
             CancellationToken token = TestContext.CancellationToken;
+            token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
+                AddHealthBonuses(objCharacter, token);
+                Spell objSpell = new Spell(objCharacter);
                 try
                 {
-                    AddHealthBonuses(objCharacter, token);
-                    Spell objSpell = new Spell(objCharacter);
-                    try
-                    {
-                        objSpell.Category = SpellCategory;
-                        objSpell.Alchemical = true;
-                        string strFocusValue = "(" + 6m.ToString(GlobalSettings.CultureInfo) + ")";
-                        Assert.AreEqual(2, objSpell.DicePool);
-                        Assert.AreEqual(0, CountOccurrences(objSpell.DicePoolTooltip, strFocusValue));
-                        Assert.AreEqual(2, await objSpell.GetDicePoolAsync(token).ConfigureAwait(false));
-                        Assert.AreEqual(0, CountOccurrences(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), strFocusValue));
-                    }
-                    finally
-                    {
-                        await objSpell.DisposeAsync().ConfigureAwait(false);
-                    }
+                    objSpell.Category = SpellCategory;
+                    objSpell.Alchemical = true;
+                    string strFocusValue = "(" + 6m.ToString(GlobalSettings.CultureInfo) + ")";
+                    Assert.AreEqual(2, objSpell.DicePool);
+                    Assert.AreEqual(0, CountOccurrences(objSpell.DicePoolTooltip, strFocusValue));
+                    Assert.AreEqual(2, await objSpell.GetDicePoolAsync(token).ConfigureAwait(false));
+                    Assert.AreEqual(0, CountOccurrences(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), strFocusValue));
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    await objSpell.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                throw;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         private static void AddHealthBonuses(Character objCharacter, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             ImprovementManager.CreateImprovement(
                 objCharacter, SpellCategory, Improvement.ImprovementSource.MentorSpirit, "mentor",
                 Improvement.ImprovementType.SpellCategory, string.Empty, 2, token: token);
