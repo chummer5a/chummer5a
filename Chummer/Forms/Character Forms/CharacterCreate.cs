@@ -195,6 +195,7 @@ namespace Chummer
             };
             tabSkillsUc.CachedCharacter = objCharacter;
             tabPowerUc.CachedCharacter = objCharacter;
+            EnsureLifestyleRatingRow(tlpLifestyleCommon, lblLifestyleComfortsLabel, lblBaseLifestyle);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
@@ -19918,6 +19919,7 @@ namespace Chummer
                         string strName = await objLifestyle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = strName, token)
                                               .ConfigureAwait(false);
+                        await RefreshLifestyleRatingLabelsAsync(objLifestyle, token).ConfigureAwait(false);
                         await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
                         await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -19928,6 +19930,7 @@ namespace Chummer
                         string strError = await LanguageManager.GetStringAsync("String_Error", token: token)
                                                                .ConfigureAwait(false);
                         await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = strError, token).ConfigureAwait(false);
+                        await RefreshLifestyleRatingLabelsAsync(null, token).ConfigureAwait(false);
                         await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                         .ConfigureAwait(false);
                         await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = false, token)

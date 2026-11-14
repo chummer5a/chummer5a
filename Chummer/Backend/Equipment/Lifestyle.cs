@@ -1092,6 +1092,21 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("baselifestyle_english", strBaseLifestyle, token)
                         .ConfigureAwait(false);
                     await objWriter
+                        .WriteElementStringAsync(
+                            "totalcomforts",
+                            (await GetTotalComfortsAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                            token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "totalneighborhood",
+                            (await GetTotalAreaAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                            token).ConfigureAwait(false);
+                    await objWriter
+                        .WriteElementStringAsync(
+                            "totalsecurity",
+                            (await GetTotalSecurityAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                            token).ConfigureAwait(false);
+                    await objWriter
                         .WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo),
                             token).ConfigureAwait(false);
                     await objWriter
@@ -3717,6 +3732,84 @@ namespace Chummer.Backend.Equipment
                                             async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                             lq => lq.Security, token: token)
                                         .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Tooltip showing how <see cref="TotalComforts"/> is built from the base rating, spent points, and qualities.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A dice-pool style breakdown of the Comforts total.</returns>
+        public Task<string> GetTotalComfortsTooltipAsync(CancellationToken token = default)
+        {
+            return GetRatingTooltipAsync(objLifestyle => objLifestyle.BaseComforts, objLifestyle => objLifestyle.Comforts,
+                objQuality => objQuality.Comforts, token);
+        }
+
+        /// <summary>
+        /// Tooltip showing how <see cref="TotalArea"/> (Neighborhood) is built from the base rating, spent points, and qualities.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A dice-pool style breakdown of the Neighborhood total.</returns>
+        public Task<string> GetTotalNeighborhoodTooltipAsync(CancellationToken token = default)
+        {
+            return GetRatingTooltipAsync(objLifestyle => objLifestyle.BaseArea, objLifestyle => objLifestyle.Area,
+                objQuality => objQuality.Area, token);
+        }
+
+        /// <summary>
+        /// Tooltip showing how <see cref="TotalSecurity"/> is built from the base rating, spent points, and qualities.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A dice-pool style breakdown of the Security total.</returns>
+        public Task<string> GetTotalSecurityTooltipAsync(CancellationToken token = default)
+        {
+            return GetRatingTooltipAsync(objLifestyle => objLifestyle.BaseSecurity, objLifestyle => objLifestyle.Security,
+                objQuality => objQuality.Security, token);
+        }
+
+        private async Task<string> GetRatingTooltipAsync(Func<Lifestyle, int> funcBase, Func<Lifestyle, int> funcExtra,
+            Func<LifestyleQuality, int> funcQuality, CancellationToken token)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
+            string strRightPar = await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
+            string strBase = await LanguageManager.GetStringAsync("Label_Base", token: token).ConfigureAwait(false);
+            string strPoints = await LanguageManager.GetStringAsync("Label_LP", token: token).ConfigureAwait(false);
+            strPoints = strPoints.TrimEnd(':', ' ');
+            string strSeparator = strSpace + "+" + strSpace;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                List<string> lstTerms = new List<string>
+                {
+                    strBase + strSpace + strLeftPar + funcBase(this).ToString(GlobalSettings.CultureInfo) + strRightPar
+                };
+                int intExtra = funcExtra(this);
+                if (intExtra != 0)
+                {
+                    lstTerms.Add(strPoints + strSpace + strLeftPar + intExtra.ToString(GlobalSettings.CultureInfo) + strRightPar);
+                }
+
+                List<LifestyleQuality> lstQualities = new List<LifestyleQuality>();
+                await LifestyleQualities.ForEachAsync(objQuality => lstQualities.Add(objQuality), token).ConfigureAwait(false);
+                foreach (LifestyleQuality objQuality in lstQualities)
+                {
+                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn)
+                        continue;
+                    int intValue = funcQuality(objQuality);
+                    if (intValue == 0)
+                        continue;
+                    string strName = await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                    lstTerms.Add(strName + strSpace + strLeftPar + intValue.ToString(GlobalSettings.CultureInfo) + strRightPar);
+                }
+
+                return string.Join(strSeparator, lstTerms);
             }
             finally
             {

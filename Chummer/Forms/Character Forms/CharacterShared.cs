@@ -64,6 +64,12 @@ namespace Chummer
         private FileSystemWatcher _objCharacterFileWatcher;
         protected readonly SaveFileDialog dlgSaveFile;
 
+        private Label _lblLifestyleRatingsLabel;
+        private FlowLayoutPanel _flpLifestyleRatings;
+        private LabelWithToolTip _lblLifestyleComfortsValue;
+        private LabelWithToolTip _lblLifestyleNeighborhoodValue;
+        private LabelWithToolTip _lblLifestyleSecurityValue;
+
         private CancellationTokenSource _objGenericCancellationTokenSource;
 
         private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
@@ -9227,6 +9233,133 @@ namespace Chummer
             {
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Adds a row of Comforts, Neighborhood, and Security values under the lifestyle name.
+        /// </summary>
+        /// <param name="tlpLifestyleCommon">Lifestyle info table.</param>
+        /// <param name="lblNameCaption">Existing caption for the lifestyle name, used to match alignment.</param>
+        /// <param name="lblName">Existing lifestyle name label. The new row is inserted directly beneath it.</param>
+        protected void EnsureLifestyleRatingRow(TableLayoutPanel tlpLifestyleCommon, Control lblNameCaption, Control lblName)
+        {
+            if (tlpLifestyleCommon == null)
+                throw new ArgumentNullException(nameof(tlpLifestyleCommon));
+            if (lblNameCaption == null)
+                throw new ArgumentNullException(nameof(lblNameCaption));
+            if (lblName == null)
+                throw new ArgumentNullException(nameof(lblName));
+            if (_lblLifestyleComfortsValue != null)
+                return;
+
+            int intInsertRow = tlpLifestyleCommon.GetRow(lblName) + 1;
+            tlpLifestyleCommon.SuspendLayout();
+            try
+            {
+                Control[] aobjControls = new Control[tlpLifestyleCommon.Controls.Count];
+                tlpLifestyleCommon.Controls.CopyTo(aobjControls, 0);
+                tlpLifestyleCommon.RowCount++;
+                tlpLifestyleCommon.RowStyles.Insert(intInsertRow, new RowStyle(SizeType.AutoSize));
+                foreach (Control objControl in aobjControls)
+                {
+                    int intRow = tlpLifestyleCommon.GetRow(objControl);
+                    if (intRow >= intInsertRow)
+                        tlpLifestyleCommon.SetRow(objControl, intRow + 1);
+                }
+
+                _lblLifestyleRatingsLabel = new Label
+                {
+                    AutoSize = true,
+                    Anchor = lblNameCaption.Anchor,
+                    Margin = lblNameCaption.Margin,
+                    Name = "lblLifestyleRatingsLabel",
+                    Tag = "Label_LifestyleCNS",
+                    Text = "C/N/S",
+                    Visible = false
+                };
+                _flpLifestyleRatings = new FlowLayoutPanel
+                {
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    WrapContents = true,
+                    Margin = new Padding(0),
+                    Name = "flpLifestyleRatings",
+                    Visible = false
+                };
+                _lblLifestyleComfortsValue = CreateLifestyleRatingLabel("lblLifestyleComfortsValue");
+                _lblLifestyleNeighborhoodValue = CreateLifestyleRatingLabel("lblLifestyleNeighborhoodValue");
+                _lblLifestyleSecurityValue = CreateLifestyleRatingLabel("lblLifestyleSecurityValue");
+                _flpLifestyleRatings.Controls.Add(_lblLifestyleComfortsValue);
+                _flpLifestyleRatings.Controls.Add(_lblLifestyleNeighborhoodValue);
+                _flpLifestyleRatings.Controls.Add(_lblLifestyleSecurityValue);
+
+                tlpLifestyleCommon.Controls.Add(_lblLifestyleRatingsLabel, 0, intInsertRow);
+                tlpLifestyleCommon.SetColumnSpan(_lblLifestyleRatingsLabel, tlpLifestyleCommon.GetColumnSpan(lblNameCaption));
+                tlpLifestyleCommon.Controls.Add(_flpLifestyleRatings, tlpLifestyleCommon.GetColumn(lblName), intInsertRow);
+                tlpLifestyleCommon.SetColumnSpan(_flpLifestyleRatings, tlpLifestyleCommon.GetColumnSpan(lblName));
+            }
+            finally
+            {
+                tlpLifestyleCommon.ResumeLayout();
+            }
+        }
+
+        private static LabelWithToolTip CreateLifestyleRatingLabel(string strName)
+        {
+            return new LabelWithToolTip
+            {
+                AutoSize = true,
+                Margin = new Padding(3, 6, 12, 6),
+                Name = strName,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+        }
+
+        /// <summary>
+        /// Shows Comforts, Neighborhood, and Security for <paramref name="objLifestyle"/>, each with a breakdown tooltip.
+        /// </summary>
+        /// <param name="objLifestyle">Selected lifestyle. The row is hidden when this is null.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        protected async Task RefreshLifestyleRatingLabelsAsync(Lifestyle objLifestyle, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_lblLifestyleComfortsValue == null)
+                return;
+            if (objLifestyle == null)
+            {
+                await _lblLifestyleRatingsLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await _flpLifestyleRatings.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await _lblLifestyleComfortsValue.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
+                await _lblLifestyleNeighborhoodValue.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
+                await _lblLifestyleSecurityValue.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
+                return;
+            }
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strComfortsLabel = await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Comforts", token: token)
+                .ConfigureAwait(false);
+            string strNeighborhoodLabel = await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Neighborhood", token: token)
+                .ConfigureAwait(false);
+            string strSecurityLabel = await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Security", token: token)
+                .ConfigureAwait(false);
+            int intComforts = await objLifestyle.GetTotalComfortsAsync(token).ConfigureAwait(false);
+            int intNeighborhood = await objLifestyle.GetTotalAreaAsync(token).ConfigureAwait(false);
+            int intSecurity = await objLifestyle.GetTotalSecurityAsync(token).ConfigureAwait(false);
+            string strComfortsText = strComfortsLabel + strSpace + intComforts.ToString(GlobalSettings.CultureInfo);
+            string strNeighborhoodText = strNeighborhoodLabel + strSpace + intNeighborhood.ToString(GlobalSettings.CultureInfo);
+            string strSecurityText = strSecurityLabel + strSpace + intSecurity.ToString(GlobalSettings.CultureInfo);
+            string strComfortsTip = await objLifestyle.GetTotalComfortsTooltipAsync(token).ConfigureAwait(false);
+            string strNeighborhoodTip = await objLifestyle.GetTotalNeighborhoodTooltipAsync(token).ConfigureAwait(false);
+            string strSecurityTip = await objLifestyle.GetTotalSecurityTooltipAsync(token).ConfigureAwait(false);
+
+            await _lblLifestyleRatingsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+            await _flpLifestyleRatings.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+            await _lblLifestyleComfortsValue.DoThreadSafeAsync(x => x.Text = strComfortsText, token).ConfigureAwait(false);
+            await _lblLifestyleNeighborhoodValue.DoThreadSafeAsync(x => x.Text = strNeighborhoodText, token).ConfigureAwait(false);
+            await _lblLifestyleSecurityValue.DoThreadSafeAsync(x => x.Text = strSecurityText, token).ConfigureAwait(false);
+            await _lblLifestyleComfortsValue.SetToolTipTextAsync(strComfortsTip, token).ConfigureAwait(false);
+            await _lblLifestyleNeighborhoodValue.SetToolTipTextAsync(strNeighborhoodTip, token).ConfigureAwait(false);
+            await _lblLifestyleSecurityValue.SetToolTipTextAsync(strSecurityTip, token).ConfigureAwait(false);
         }
 
         protected async Task RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,

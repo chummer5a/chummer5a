@@ -18,7 +18,9 @@
       <th width="20%" style="text-align: center">
         <xsl:value-of select="$lang.Duration" />
       </th>
-      <th width="10%" />
+      <th width="10%" style="text-align: center">
+        <xsl:value-of select="$lang.Label_LifestyleCNS" />
+      </th>
       <th width="10%" />
     </tr>
 
@@ -121,7 +123,13 @@
             </xsl:otherwise>
           </xsl:choose>
         </td>
-        <td />
+        <td style="text-align: center;white-space: nowrap;">
+          <xsl:value-of select="totalcomforts" />
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="totalneighborhood" />
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="totalsecurity" />
+        </td>
         <td style="text-align: center">
           <xsl:value-of select="source" />
           <xsl:text> </xsl:text>

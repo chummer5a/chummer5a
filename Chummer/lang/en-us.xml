@@ -5455,6 +5455,10 @@
       <key>Label_LifestyleBorough</key>
       <text>Borough:</text>
     </string>
+    <string>
+      <key>Label_LifestyleCNS</key>
+      <text>C/N/S</text>
+    </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->
     <string>
