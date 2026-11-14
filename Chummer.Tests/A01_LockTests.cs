@@ -173,6 +173,7 @@ namespace Chummer.Tests
                     IAsyncDisposable objLocker = await objLock.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (++intLevel < 2)
                             await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
                     }
@@ -188,6 +189,7 @@ namespace Chummer.Tests
                     IAsyncDisposable objLocker = await objLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (++intLevel < 5)
                         {
                             if ((intLevel & 1) == 0)
@@ -212,6 +214,7 @@ namespace Chummer.Tests
                     IAsyncDisposable objLocker = await objLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (++intLevel < 5)
                         {
                             if ((intLevel & 1) == 0)
