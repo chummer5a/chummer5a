@@ -30,7 +30,7 @@ namespace Chummer.Tests
     [TestClass]
     public class CrashHandlingTests
     {
-        private readonly string[] _astrKnownErrorLogKeys =
+        private static readonly string[] s_astrKnownErrorLogKeys =
         {
             "visible-crash-id",
             "visible-build-type",
@@ -83,7 +83,7 @@ namespace Chummer.Tests
                     Assert.IsTrue(dicParts.TryGetValue("_dicAttributes", out object objAttributes));
                     if (objAttributes is IDictionary<string, object> dicAttributes)
                     {
-                        foreach (string strKnownKey in _astrKnownErrorLogKeys)
+                        foreach (string strKnownKey in s_astrKnownErrorLogKeys)
                             Assert.IsTrue(dicAttributes.ContainsKey(strKnownKey));
 
                         foreach (KeyValuePair<string, object> kvpEntry in dicAttributes)
