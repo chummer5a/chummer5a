@@ -54,8 +54,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -64,8 +63,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -74,8 +72,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -96,8 +93,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -106,8 +102,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -116,8 +111,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -156,8 +150,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -166,8 +159,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -177,8 +169,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -216,8 +207,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -226,8 +216,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (OperationCanceledException)
             {
@@ -241,41 +230,25 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharacters()
         {
-            try
-            {
-                List<Character> lstCharacters = new List<Character>(UnitTestUtils.CommonTestData.TestFileInfos.Length);
-                foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
-                {
-                    Debug.WriteLine("Finished loading " + objCharacter.FileName);
-                    lstCharacters.Add(objCharacter);
-                }
-
-                lstCharacters.Capacity = lstCharacters.Count; // Dummy command to make sure the test isn't optimized away.
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
+            Utils.SafelyRunSynchronously(t => UnitTestUtils.LoadAllTestCharactersAsync(token: t), TestContext.CancellationToken);
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveAsChum5lz()
         {
-            try
+            Utils.SafelyRunSynchronously(async t =>
             {
+                await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
                 using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objXmlDocument))
                 {
-                    foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
+                    foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
                     {
                         string strFileName = Path.GetFileName(objCharacter.FileName) ?? "Unknown";
                         Debug.WriteLine("Checking " + strFileName);
@@ -289,163 +262,138 @@ namespace Chummer.Tests
                                 strDestination += ".chum5lz";
                         }
 
-                        SaveCharacter(objCharacter, strDestination, token: TestContext.CancellationToken);
+                        await SaveCharacterAsync(objCharacter, strDestination, token: t).ConfigureAwait(false);
                         // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
-                        objXmlDocument.LoadStandardFromLzmaCompressed(strDestination, token: TestContext.CancellationToken);
+                        await objXmlDocument.LoadStandardFromLzmaCompressedAsync(strDestination, token: t).ConfigureAwait(false);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            }, TestContext.CancellationToken);
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenSaveIsDeterministic()
         {
-            try
+            DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
+            Utils.SafelyRunSynchronously(async t =>
             {
-                DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
-                foreach (Character objCharacterControl in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
+                await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
+
+                foreach (Character objCharacterControl in UnitTestUtils.GetTestCharacters(t))
                 {
                     string strFileName = (Path.GetFileName(objCharacterControl.FileName) ?? "Unknown").CleanForFileName();
                     Debug.WriteLine("Saving Control for " + strFileName);
                     // First Load-Save cycle
                     string strDestinationControl = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Control) " + strFileName);
-                    SaveCharacter(objCharacterControl, strDestinationControl, token: TestContext.CancellationToken);
+                    await SaveCharacterAsync(objCharacterControl, strDestinationControl, token: t).ConfigureAwait(false);
                     Debug.WriteLine("Checking " + strFileName);
                     // Second Load-Save cycle
                     string strDestinationTest = Path.Combine(UnitTestUtils.CommonTestData.TestPathInfo.FullName, "(Test) " + strFileName);
-                    Character objCharacterTest = UnitTestUtils.LoadCharacter(new FileInfo(strDestinationControl), token: TestContext.CancellationToken);
-#if MEMORYTESTING
+                    Character objCharacterTest = await UnitTestUtils.LoadCharacterAsync(new FileInfo(strDestinationControl), token: t).ConfigureAwait(false);
                     try
                     {
-#endif
-                    SaveCharacter(objCharacterTest, strDestinationTest, token: TestContext.CancellationToken);
+                        await SaveCharacterAsync(objCharacterTest, strDestinationTest, token: t).ConfigureAwait(false);
 
-                    try
-                    {
-                        // Check to see that character after first load cycle is consistent with character after second
-                        using (FileStream controlFileStream =
-                               File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
-                        using (FileStream testFileStream =
-                               File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                        try
                         {
-                            Diff myDiff = DiffBuilder
-                                .Compare(controlFileStream)
-                                .WithTest(testFileStream)
-                                .CheckForSimilar()
-                                .WithNodeFilter(x =>
-                                    // image loading and unloading is not going to be deterministic due to compression algorithms
-                                    x.Name != "mugshot"
-                                    // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
-                                    && x.Name != "improvement")
-                                .WithNodeMatcher(objDiffNodeMatcher)
-                                // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
-                                .WithDifferenceEvaluator((x, y) =>
-                                    string.Equals(x.ControlDetails.Target?.Name, "improvements", StringComparison.OrdinalIgnoreCase)
-                                        ? EvaluateNodeWithChildrenIgnoringOrder(x, y)
-                                        : DifferenceEvaluators.Default(x, y))
-                                .IgnoreWhitespace()
-                                .Build();
-                            foreach (Difference diff in myDiff.Differences)
+                            // Check to see that character after first load cycle is consistent with character after second
+                            using (FileStream controlFileStream =
+                                   File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                            using (FileStream testFileStream =
+                                   File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
                             {
-                                Console.WriteLine(diff.Comparison);
-                                Console.WriteLine();
-                            }
+                                Diff myDiff = DiffBuilder
+                                    .Compare(controlFileStream)
+                                    .WithTest(testFileStream)
+                                    .CheckForSimilar()
+                                    .WithNodeFilter(x =>
+                                        // image loading and unloading is not going to be deterministic due to compression algorithms
+                                        x.Name != "mugshot"
+                                        // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                                        && x.Name != "improvement")
+                                    .WithNodeMatcher(objDiffNodeMatcher)
+                                    // Improvements list's order can be nondeterministic because improvements that get (re)generated on character load happen in a parallelized way
+                                    .WithDifferenceEvaluator((x, y) =>
+                                        string.Equals(x.ControlDetails.Target?.Name, "improvements", StringComparison.OrdinalIgnoreCase)
+                                            ? EvaluateNodeWithChildrenIgnoringOrder(x, y)
+                                            : DifferenceEvaluators.Default(x, y))
+                                    .IgnoreWhitespace()
+                                    .Build();
+                                foreach (Difference diff in myDiff.Differences)
+                                {
+                                    Console.WriteLine(diff.Comparison);
+                                    Console.WriteLine();
+                                }
 
-                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                                Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                            }
                         }
-                    }
-                    catch (XmlSchemaException e)
-                    {
-                        e = e.Demystify();
-                        Assert.Fail("Unexpected validation failure: " + e.Message);
-                        throw e;
-                    }
-#if MEMORYTESTING
+                        catch (XmlSchemaException e)
+                        {
+                            e = e.Demystify();
+                            throw;
+                        }
                     }
                     finally
                     {
-                        objCharacterTest.Dispose();
+                        await objCharacterTest.DisposeAsync().ConfigureAwait(false);
                     }
-#endif
                 }
+            }, TestContext.CancellationToken);
 
-                ComparisonResult EvaluateNodeWithChildrenIgnoringOrder(Comparison objComparison, ComparisonResult eOutcome)
+            ComparisonResult EvaluateNodeWithChildrenIgnoringOrder(Comparison objComparison, ComparisonResult eOutcome)
+            {
+                if (eOutcome == ComparisonResult.EQUAL)
+                    return eOutcome;
+                // First check for true equality, in which case we don't need to mess around with checking in an out-of-order way
+                if (DifferenceEvaluators.Default(objComparison, eOutcome) == ComparisonResult.EQUAL)
+                    return ComparisonResult.EQUAL;
+                XmlNode xmlParentControl = objComparison.ControlDetails.Target;
+                XmlNode xmlParentTest = objComparison.TestDetails.Target;
+                if (!string.Equals(xmlParentControl.Name, xmlParentTest.Name, StringComparison.OrdinalIgnoreCase))
+                    return ComparisonResult.DIFFERENT;
+                int intTestChildCount = xmlParentTest.ChildNodes.Count;
+                if (xmlParentControl.ChildNodes.Count != intTestChildCount)
+                    return ComparisonResult.DIFFERENT;
+                List<XmlNode> lstXmlChildrenTest =
+                    new List<XmlNode>(intTestChildCount);
+                foreach (XmlNode xmlChildTest in xmlParentTest.ChildNodes)
+                    lstXmlChildrenTest.Add(xmlChildTest);
+                foreach (XmlNode xmlLoopChildControl in xmlParentControl.ChildNodes)
                 {
-                    if (eOutcome == ComparisonResult.EQUAL)
-                        return eOutcome;
-                    // First check for true equality, in which case we don't need to mess around with checking in an out-of-order way
-                    if (DifferenceEvaluators.Default(objComparison, eOutcome) == ComparisonResult.EQUAL)
-                        return ComparisonResult.EQUAL;
-                    XmlNode xmlParentControl = objComparison.ControlDetails.Target;
-                    XmlNode xmlParentTest = objComparison.TestDetails.Target;
-                    if (!string.Equals(xmlParentControl.Name, xmlParentTest.Name, StringComparison.OrdinalIgnoreCase))
-                        return ComparisonResult.DIFFERENT;
-                    int intTestChildCount = xmlParentTest.ChildNodes.Count;
-                    if (xmlParentControl.ChildNodes.Count != intTestChildCount)
-                        return ComparisonResult.DIFFERENT;
-                    List<XmlNode> lstXmlChildrenTest =
-                        new List<XmlNode>(intTestChildCount);
-                    foreach (XmlNode xmlChildTest in xmlParentTest.ChildNodes)
-                        lstXmlChildrenTest.Add(xmlChildTest);
-                    foreach (XmlNode xmlLoopChildControl in xmlParentControl.ChildNodes)
+                    bool blnFoundMatch = false;
+                    for (int i = 0; i < lstXmlChildrenTest.Count; ++i)
                     {
-                        bool blnFoundMatch = false;
-                        for (int i = 0; i < lstXmlChildrenTest.Count; ++i)
+                        XmlNode xmlLoopChildTest = lstXmlChildrenTest[i];
+                        Diff objLoopDiff = DiffBuilder
+                            .Compare(xmlLoopChildControl)
+                            .WithTest(xmlLoopChildTest)
+                            .CheckForSimilar()
+                            .WithNodeMatcher(objDiffNodeMatcher)
+                            .IgnoreWhitespace()
+                            .Build();
+                        if (!objLoopDiff.HasDifferences())
                         {
-                            XmlNode xmlLoopChildTest = lstXmlChildrenTest[i];
-                            Diff objLoopDiff = DiffBuilder
-                                .Compare(xmlLoopChildControl)
-                                .WithTest(xmlLoopChildTest)
-                                .CheckForSimilar()
-                                .WithNodeMatcher(objDiffNodeMatcher)
-                                .IgnoreWhitespace()
-                                .Build();
-                            if (!objLoopDiff.HasDifferences())
-                            {
-                                blnFoundMatch = true;
-                                lstXmlChildrenTest.RemoveAt(i);
-                                break;
-                            }
+                            blnFoundMatch = true;
+                            lstXmlChildrenTest.RemoveAt(i);
+                            break;
                         }
-
-                        if (!blnFoundMatch)
-                            return ComparisonResult.DIFFERENT;
                     }
-                    // Because we already checked to make sure the number of children is the same, if every control child matches to a test child, we must be similar
-                    return ComparisonResult.SIMILAR;
+
+                    if (!blnFoundMatch)
+                        return ComparisonResult.DIFFERENT;
                 }
+                // Because we already checked to make sure the number of children is the same, if every control child matches to a test child, we must be similar
+                return ComparisonResult.SIMILAR;
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod, Timeout(5 * 60 * 1000, CooperativeCancellation = true)]
         public void LoadCharactersThenPrint()
         {
-            try
+            Utils.SafelyRunSynchronously(async t =>
             {
+                await UnitTestUtils.LoadAllTestCharactersAsync(token: t).ConfigureAwait(false);
+
                 List<string> lstExportLanguages = new List<string>(11);
                 foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                 {
@@ -457,27 +405,15 @@ namespace Chummer.Tests
                 }
                 lstExportLanguages.Sort();
                 int intLanguageIndex = 0;
-                foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(TestContext.CancellationToken))
+                foreach (Character objCharacter in UnitTestUtils.GetTestCharacters(t))
                 {
                     Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName) ?? "Unknown"));
                     // Always try to export in English because this will cover most export code
-                    DoAndSaveExport(objCharacter, GlobalSettings.DefaultLanguage, TestContext.CancellationToken);
+                    await DoAndSaveExportAsync(objCharacter, GlobalSettings.DefaultLanguage, t).ConfigureAwait(false);
                     // Rotate through languages instead of testing every one for every character to save on execution time
-                    DoAndSaveExport(objCharacter, lstExportLanguages[intLanguageIndex++ % lstExportLanguages.Count], TestContext.CancellationToken);
+                    await DoAndSaveExportAsync(objCharacter, lstExportLanguages[intLanguageIndex++ % lstExportLanguages.Count], t).ConfigureAwait(false);
                 }
-            }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
+            }, TestContext.CancellationToken);
         }
     }
 }

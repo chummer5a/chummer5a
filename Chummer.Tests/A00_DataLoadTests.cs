@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,64 +33,34 @@ namespace Chummer.Tests
         [TestMethod]
         public void LoadAllBasicDataFiles()
         {
-            try
+            GC.KeepAlive(GlobalSettings.SafeXmlReaderSettings); // Do this here so we fire the constructor for GlobalSettings separately
+                                                                // Attempt to cache all XML files that are used the most.
+            Utils.RunWithoutThreadLock(t => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, CacheCommonFileAsync, t), token: TestContext.CancellationToken);
+            async Task CacheCommonFileAsync(string strFile, CancellationToken token)
             {
-                GC.KeepAlive(GlobalSettings.SafeXmlReaderSettings); // Do this here so we fire the constructor for GlobalSettings separately
-                // Attempt to cache all XML files that are used the most.
-                Utils.RunWithoutThreadLock(t => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, CacheCommonFileAsync, t), token: TestContext.CancellationToken);
-                async Task CacheCommonFileAsync(string strFile, CancellationToken token)
+                await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+                if (string.Equals(strFile, "settings.xml", Utils.PathStringComparison))
                 {
-                    await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
-                    if (string.Equals(strFile, "settings.xml", Utils.PathStringComparison))
-                    {
-                        _ = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                    }
+                    _ = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
 
         [TestMethod]
         public void LoadAllLanguageDataFiles()
         {
-            try
+            // Attempt to load all languages to make sure they work properly
+            // Start with the default language, just in case.
+            Assert.IsTrue(LanguageManager.LoadLanguage(GlobalSettings.DefaultLanguage, TestContext.CancellationToken));
+            Assert.IsTrue(string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage));
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
-                // Attempt to load all languages to make sure they work properly
-                // Start with the default language, just in case.
-                Assert.IsTrue(LanguageManager.LoadLanguage(GlobalSettings.DefaultLanguage, TestContext.CancellationToken));
-                Assert.IsTrue(string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage));
-                foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
-                {
-                    if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
-                        continue;
-                    string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                    if (strExportLanguage != GlobalSettings.DefaultLanguage)
-                        Assert.IsTrue(LanguageManager.LoadLanguage(strExportLanguage, TestContext.CancellationToken));
-                }
+                if (strFilePath.EndsWith("_data.xml", Utils.PathStringComparison))
+                    continue;
+                string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                if (strExportLanguage != GlobalSettings.DefaultLanguage)
+                    Assert.IsTrue(LanguageManager.LoadLanguage(strExportLanguage, TestContext.CancellationToken));
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
     }
 }

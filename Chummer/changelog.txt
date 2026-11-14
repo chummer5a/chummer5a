@@ -49,6 +49,7 @@ Application:
 - Fixed an issue where certain languages that did not use Latin space characters for their spaces could not properly deal with PDF-related code.
 - The program will now also warn about potential handle issues when attempting to create a new character, not just when opening an existing one.
 - The character roster now displays small icons next to each entry in the roster depicting the entry type, and character build methods are now only shown when an entry is selected instead of being put into the name of each entry.
+- Fixed a bug preventing the Mystic Adept PPs Can Be Purchased In Career Mode setting from being saved properly.
 
 Critters:
 - Added 58 Parazoologie 2075 (PZG) critters, including alternate forms and book-specific profiles.

@@ -1812,22 +1812,21 @@ namespace Chummer
                 {
                     if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
                         yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
-                    else
-                        continue;
                 }
-                else if (!Directory.Exists(strLoopPath))
-                    continue;
-                foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
-                                                                        SearchOption.AllDirectories))
+                else if (Directory.Exists(strLoopPath))
                 {
-                    token.ThrowIfCancellationRequested();
-                    string strInnerFileName = Path.GetFileName(strLoopFile);
-                    if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
-                        || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
-                        || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                            SearchOption.AllDirectories))
                     {
-                        yield return strLoopPath;
-                        break;
+                        token.ThrowIfCancellationRequested();
+                        string strInnerFileName = Path.GetFileName(strLoopFile);
+                        if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                            || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                            || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                        {
+                            yield return strLoopPath;
+                            break;
+                        }
                     }
                 }
             }
@@ -1845,34 +1844,67 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (strFileName == "improvements.xml" || lstPaths == null)
                 yield break;
-            if (lstPaths.Count > Utils.ThresholdToParallelizeForSmartMethods / 4) // We don't know how many files each directory will have, so we'll assume 4
+            int intEstimatedFileCount = lstPaths.Count * 4; // We don't know how many files each directory will have, so we'll assume 4 to be on the safe side (less = safer)
+            if (intEstimatedFileCount > Utils.ThresholdToParallelizeForSmartMethods)
             {
-                foreach (string strLoopPath in lstPaths.AsParallel())
+                List<string> lstReturn = new List<string>(intEstimatedFileCount);
+                DebuggableSemaphoreSlim objListAddSemaphore = Utils.SemaphorePool.Get();
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-                    if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison))
+                    ParallelOptions objOptions = new ParallelOptions
                     {
-                        if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
-                            yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
-                        else
-                            continue;
-                    }
-                    else if (!Directory.Exists(strLoopPath))
-                        continue;
-                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
-                                                                            SearchOption.AllDirectories))
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(lstPaths, objOptions, strLoopPath =>
                     {
                         token.ThrowIfCancellationRequested();
-                        string strInnerFileName = Path.GetFileName(strLoopFile);
-                        if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
-                            || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
-                            || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                        if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, Utils.PathStringComparison))
                         {
-                            yield return strLoopPath;
-                            break;
+                            if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
+                            {
+                                objListAddSemaphore.SafeWait(token);
+                                try
+                                {
+                                    lstReturn.Add(strLoopPath); // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
+                                }
+                                finally
+                                {
+                                    objListAddSemaphore.Release();
+                                }
+                            }
                         }
-                    }
+                        else if (Directory.Exists(strLoopPath))
+                        {
+                            foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                                    SearchOption.AllDirectories))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                string strInnerFileName = Path.GetFileName(strLoopFile);
+                                if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                                    || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                                    || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                                {
+                                    objListAddSemaphore.SafeWait(token);
+                                    try
+                                    {
+                                        lstReturn.Add(strLoopPath);
+                                    }
+                                    finally
+                                    {
+                                        objListAddSemaphore.Release();
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                    });
                 }
+                finally
+                {
+                    Utils.SemaphorePool.Return(ref objListAddSemaphore);
+                }
+                foreach (string strReturn in lstReturn)
+                    yield return strReturn;
             }
             else
             {
@@ -1883,22 +1915,21 @@ namespace Chummer
                     {
                         if (strFileName == "packs.xml" && Directory.Exists(strLoopPath))
                             yield return strLoopPath; // Always keep packs folder present for packs, even if it is currently empty (because we can add or remove files from editing PACKS in-program)
-                        else
-                            continue;
                     }
-                    else if (!Directory.Exists(strLoopPath))
-                        continue;
-                    foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
-                                                                            SearchOption.AllDirectories))
+                    else if (Directory.Exists(strLoopPath))
                     {
-                        token.ThrowIfCancellationRequested();
-                        string strInnerFileName = Path.GetFileName(strLoopFile);
-                        if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
-                            || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
-                            || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                        foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                                SearchOption.AllDirectories))
                         {
-                            yield return strLoopPath;
-                            break;
+                            token.ThrowIfCancellationRequested();
+                            string strInnerFileName = Path.GetFileName(strLoopFile);
+                            if (strInnerFileName.StartsWith("override_", Utils.PathStringComparison)
+                                || strInnerFileName.StartsWith("custom_", Utils.PathStringComparison)
+                                || strInnerFileName.StartsWith("amend_", Utils.PathStringComparison))
+                            {
+                                yield return strLoopPath;
+                                break;
+                            }
                         }
                     }
                 }

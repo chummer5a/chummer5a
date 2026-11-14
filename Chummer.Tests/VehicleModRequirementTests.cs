@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -38,50 +36,35 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
-                try
+                Vehicle objVehicle = new Vehicle(objCharacter);
+                Vehicle objOtherVehicle = new Vehicle(objCharacter);
+                await objCharacter.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+                await objCharacter.Vehicles.AddAsync(objOtherVehicle, token).ConfigureAwait(false);
+
+                VehicleMod objInstalled = new VehicleMod(objCharacter)
                 {
-                    Vehicle objVehicle = new Vehicle(objCharacter);
-                    Vehicle objOtherVehicle = new Vehicle(objCharacter);
-                    await objCharacter.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
-                    await objCharacter.Vehicles.AddAsync(objOtherVehicle, token).ConfigureAwait(false);
+                    Name = "Rigger Interface"
+                };
+                await objVehicle.Mods.AddAsync(objInstalled, token).ConfigureAwait(false);
 
-                    VehicleMod objInstalled = new VehicleMod(objCharacter)
-                    {
-                        Name = "Rigger Interface"
-                    };
-                    await objVehicle.Mods.AddAsync(objInstalled, token).ConfigureAwait(false);
+                XPathNavigator objSameParent = LoadModRequirement(true);
+                XPathNavigator objAnyVehicle = LoadModRequirement(false);
 
-                    XPathNavigator objSameParent = LoadModRequirement(true);
-                    XPathNavigator objAnyVehicle = LoadModRequirement(false);
+                Assert.IsTrue(await objVehicle.CheckModRequirementsAsync(objSameParent, token).ConfigureAwait(false));
+                Assert.IsFalse(await objOtherVehicle.CheckModRequirementsAsync(objSameParent, token).ConfigureAwait(false));
+                Assert.IsTrue(await objOtherVehicle.CheckModRequirementsAsync(objAnyVehicle, token).ConfigureAwait(false));
 
-                    Assert.IsTrue(await objVehicle.CheckModRequirementsAsync(objSameParent, token).ConfigureAwait(false));
-                    Assert.IsFalse(await objOtherVehicle.CheckModRequirementsAsync(objSameParent, token).ConfigureAwait(false));
-                    Assert.IsTrue(await objOtherVehicle.CheckModRequirementsAsync(objAnyVehicle, token).ConfigureAwait(false));
-
-                    await objVehicle.Mods.RemoveAsync(objInstalled, token).ConfigureAwait(false);
-                    Assert.IsFalse(await objVehicle.CheckModRequirementsAsync(objSameParent, token).ConfigureAwait(false));
-                    Assert.IsFalse(await objOtherVehicle.CheckModRequirementsAsync(objAnyVehicle, token).ConfigureAwait(false));
-                }
-                finally
-                {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
-                }
+                await objVehicle.Mods.RemoveAsync(objInstalled, token).ConfigureAwait(false);
+                Assert.IsFalse(await objVehicle.CheckModRequirementsAsync(objSameParent, token).ConfigureAwait(false));
+                Assert.IsFalse(await objOtherVehicle.CheckModRequirementsAsync(objAnyVehicle, token).ConfigureAwait(false));
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         private static XPathNavigator LoadModRequirement(bool blnSameParent)

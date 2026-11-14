@@ -113,7 +113,7 @@ namespace ChummerDataViewer.Model
 
         private void WriteAndForget(byte[] buffer, string destinationPath, Guid guid)
         {
-            ThreadPool.QueueUserWorkItem(a =>
+            ThreadPool.QueueUserWorkItem(_ =>
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? string.Empty);
                 File.WriteAllBytes(destinationPath, buffer);

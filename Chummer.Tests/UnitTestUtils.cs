@@ -17,13 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// Uncomment this define to turn on code that is useful for trying to find, diagnose, and squash memory leaks, though it will slow down unit tests considerably
-//#define MEMORYTESTING
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -34,7 +32,7 @@ namespace Chummer.Tests
     public static class UnitTestUtils
     {
         [AssemblyInitialize]
-        public static void Initialize(TestContext context)
+        public static void Initialize(TestContext _)
         {
             Utils.IsUnitTest = true;
             Utils.IsUnitTestForUI = false;
@@ -64,6 +62,70 @@ namespace Chummer.Tests
             public static FileInfo[] TestFileInfos { get; }
 
             public static Character[] Characters { get; }
+        }
+
+        public static void LoadAllTestCharacters(bool blnParallelize = true, CancellationToken token = default)
+        {
+            if (CommonTestData.Characters.All(x => x != null))
+                return;
+            if (blnParallelize)
+            {
+                ParallelOptions objOptions = new ParallelOptions
+                {
+                    CancellationToken = token
+                };
+                Parallel.For(0, CommonTestData.TestFileInfos.Length, objOptions, i =>
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i], token: token);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
+                });
+            }
+            else
+            {
+                for (int i = 0;  i < CommonTestData.TestFileInfos.Length; ++i)
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = LoadCharacter(CommonTestData.TestFileInfos[i], token: token);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
+                }
+            }
+        }
+
+        public static async Task LoadAllTestCharactersAsync(bool blnParallelize = true, CancellationToken token = default)
+        {
+            if (CommonTestData.Characters.All(x => x != null))
+                return;
+            if (blnParallelize)
+            {
+                await ParallelExtensions.ForAsync(0, CommonTestData.TestFileInfos.Length, async i =>
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = await LoadCharacterAsync(CommonTestData.TestFileInfos[i], token: token).ConfigureAwait(false);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
+                }, token).ConfigureAwait(false);
+            }
+            else
+            {
+                for (int i = 0; i < CommonTestData.TestFileInfos.Length; ++i)
+                {
+                    Character objLoopCharacter = CommonTestData.Characters[i];
+                    if (objLoopCharacter == null)
+                    {
+                        objLoopCharacter = await LoadCharacterAsync(CommonTestData.TestFileInfos[i], token: token).ConfigureAwait(false);
+                        CommonTestData.Characters[i] = objLoopCharacter;
+                    }
+                }
+            }
         }
 
         public static IEnumerable<Character> GetTestCharacters(CancellationToken token = default)
@@ -123,8 +185,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -137,8 +198,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
 
             return objCharacter;
@@ -176,8 +236,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -190,8 +249,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
 
             return objCharacter;

@@ -41,49 +41,34 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = await CreateAiCharacterAsync(token).ConfigureAwait(false);
             try
             {
-                Character objCharacter = await CreateAiCharacterAsync(token).ConfigureAwait(false);
-                try
-                {
-                    CharacterAttrib objDepth = objCharacter.DEP;
-                    CharacterAttrib objEdge = objCharacter.EDG;
+                CharacterAttrib objDepth = objCharacter.DEP;
+                CharacterAttrib objEdge = objCharacter.EDG;
 
-                    Assert.AreEqual(DepthMetatypeMinimum, await objDepth.GetTotalValueAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetMetatypeMaximumAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(DepthMetatypeMinimum, await objDepth.GetTotalValueAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetMetatypeMaximumAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false));
 
-                    await objDepth.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
+                await objDepth.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
 
-                    int intDepth = await objDepth.GetTotalValueAsync(token).ConfigureAwait(false);
-                    Assert.AreEqual(DepthMetatypeMinimum + EdgeMetatypeMaximum, intDepth);
-                    Assert.AreEqual(intDepth, await objEdge.GetMetatypeMaximumAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(intDepth, await objEdge.GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(intDepth, objEdge.MetatypeMaximum);
-                    Assert.AreEqual(intDepth, objEdge.MetatypeAugmentedMaximum);
+                int intDepth = await objDepth.GetTotalValueAsync(token).ConfigureAwait(false);
+                Assert.AreEqual(DepthMetatypeMinimum + EdgeMetatypeMaximum, intDepth);
+                Assert.AreEqual(intDepth, await objEdge.GetMetatypeMaximumAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(intDepth, await objEdge.GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(intDepth, objEdge.MetatypeMaximum);
+                Assert.AreEqual(intDepth, objEdge.MetatypeAugmentedMaximum);
 
-                    await objEdge.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
-                    Assert.AreEqual(intDepth, await objEdge.GetValueAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(intDepth, await objEdge.GetTotalValueAsync(token).ConfigureAwait(false));
-                }
-                finally
-                {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
-                }
+                await objEdge.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
+                Assert.AreEqual(intDepth, await objEdge.GetValueAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(intDepth, await objEdge.GetTotalValueAsync(token).ConfigureAwait(false));
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         [TestMethod]
@@ -91,43 +76,28 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = await CreateAiCharacterAsync(token).ConfigureAwait(false);
             try
             {
-                Character objCharacter = await CreateAiCharacterAsync(token).ConfigureAwait(false);
-                try
-                {
-                    CharacterAttrib objDepth = objCharacter.DEP;
-                    CharacterAttrib objEdge = objCharacter.EDG;
-                    await objEdge.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
+                CharacterAttrib objDepth = objCharacter.DEP;
+                CharacterAttrib objEdge = objCharacter.EDG;
+                await objEdge.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
 
-                    Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetValueAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(DepthMetatypeMinimum, await objEdge.GetValueAsync(token).ConfigureAwait(false));
 
-                    await objDepth.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
+                await objDepth.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
 
-                    int intDepth = await objDepth.GetTotalValueAsync(token).ConfigureAwait(false);
-                    Assert.AreEqual(intDepth, await objEdge.GetValueAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(intDepth, await objEdge.GetTotalValueAsync(token).ConfigureAwait(false));
+                int intDepth = await objDepth.GetTotalValueAsync(token).ConfigureAwait(false);
+                Assert.AreEqual(intDepth, await objEdge.GetValueAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(intDepth, await objEdge.GetTotalValueAsync(token).ConfigureAwait(false));
 
-                    await objCharacter.SetKarmaAsync(100, token).ConfigureAwait(false);
-                    Assert.IsFalse(await objEdge.GetCanUpgradeCareerAsync(token).ConfigureAwait(false));
-                }
-                finally
-                {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
-                }
+                await objCharacter.SetKarmaAsync(100, token).ConfigureAwait(false);
+                Assert.IsFalse(await objEdge.GetCanUpgradeCareerAsync(token).ConfigureAwait(false));
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         [TestMethod]
@@ -135,38 +105,23 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
-                try
-                {
-                    await objCharacter.EDG.AssignLimitsAsync(EdgeMetatypeMinimum, EdgeMetatypeMaximum, EdgeMetatypeMaximum, token)
-                        .ConfigureAwait(false);
-                    await objCharacter.DEP.AssignLimitsAsync(DepthMetatypeMinimum, DepthRoomAboveMetatypeMaximum, DepthRoomAboveMetatypeMaximum, token)
-                        .ConfigureAwait(false);
-                    await objCharacter.DEP.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
+                await objCharacter.EDG.AssignLimitsAsync(EdgeMetatypeMinimum, EdgeMetatypeMaximum, EdgeMetatypeMaximum, token)
+                    .ConfigureAwait(false);
+                await objCharacter.DEP.AssignLimitsAsync(DepthMetatypeMinimum, DepthRoomAboveMetatypeMaximum, DepthRoomAboveMetatypeMaximum, token)
+                    .ConfigureAwait(false);
+                await objCharacter.DEP.SetKarmaAsync(EdgeMetatypeMaximum, token).ConfigureAwait(false);
 
-                    Assert.IsFalse(await objCharacter.GetIsAIAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(EdgeMetatypeMaximum, await objCharacter.EDG.GetMetatypeMaximumAsync(token).ConfigureAwait(false));
-                    Assert.AreEqual(EdgeMetatypeMaximum, await objCharacter.EDG.GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false));
-                }
-                finally
-                {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
-                }
+                Assert.IsFalse(await objCharacter.GetIsAIAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(EdgeMetatypeMaximum, await objCharacter.EDG.GetMetatypeMaximumAsync(token).ConfigureAwait(false));
+                Assert.AreEqual(EdgeMetatypeMaximum, await objCharacter.EDG.GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false));
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         private static async Task<Character> CreateAiCharacterAsync(CancellationToken token)
@@ -188,12 +143,6 @@ namespace Chummer.Tests
                 await objCharacter.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
-#if MEMORYTESTING
-            finally
-            {
-                TestContext.CancellationTokenSource.Dispose();
-            }
-#endif
         }
     }
 }

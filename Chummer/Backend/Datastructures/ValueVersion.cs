@@ -168,8 +168,8 @@ namespace Chummer
 
         /// <summary>Compares the current ValueVersion struct to a specified object and returns an indication of their relative values.</summary>
         /// <param name="obj">An object to compare, or <see langword="null" />.</param>
-        /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
-        ///  Return value
+        /// <returns><para>A signed integer that indicates the relative values of the two objects, as shown in the following table.</para>
+        ///  <para>Return value
         /// 
         ///  Meaning
         /// 
@@ -187,7 +187,7 @@ namespace Chummer
         /// 
         /// -or-
         /// 
-        /// <paramref name="obj" /> is <see langword="null" />.</returns>
+        /// <paramref name="obj" /> is <see langword="null" />.</para></returns>
         /// <exception cref="System.ArgumentException">
         /// <paramref name="obj" /> is not of type <see cref="Version" />.</exception>
         public int CompareTo(object obj)
@@ -203,8 +203,8 @@ namespace Chummer
 
         /// <summary>Compares the current ValueVersion struct to a specified ValueVersion struct and returns an indication of their relative values.</summary>
         /// <param name="obj">A ValueVersion struct to compare to the current ValueVersion struct.</param>
-        /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
-        ///  Return value
+        /// <returns><para>A signed integer that indicates the relative values of the two objects, as shown in the following table.</para>
+        ///  <para>Return value
         /// 
         ///  Meaning
         /// 
@@ -222,7 +222,7 @@ namespace Chummer
         /// 
         /// -or-
         /// 
-        /// <paramref name="obj" /> is <see langword="null" />.</returns>
+        /// <paramref name="obj" /> is <see langword="null" />.</para></returns>
         public int CompareTo(ValueVersion obj)
         {
             if (_Major != obj.Major)
@@ -238,8 +238,8 @@ namespace Chummer
 
         /// <summary>Compares the current ValueVersion struct to a specified <see cref="Version" /> object and returns an indication of their relative values.</summary>
         /// <param name="obj">A ValueVersion struct to compare to the current <see cref="Version" /> object, or <see langword="null" />.</param>
-        /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
-        ///  Return value
+        /// <returns><para>A signed integer that indicates the relative values of the two objects, as shown in the following table.</para>
+        ///  <para>Return value
         /// 
         ///  Meaning
         /// 
@@ -257,7 +257,7 @@ namespace Chummer
         /// 
         /// -or-
         /// 
-        /// <paramref name="obj" /> is <see langword="null" />.</returns>
+        /// <paramref name="obj" /> is <see langword="null" />.</para></returns>
         public int CompareTo(Version obj)
         {
             if (obj == null)
@@ -320,8 +320,8 @@ namespace Chummer
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="System.String" /> representation. A specified count indicates the number of components to return.</summary>
         /// <param name="fieldCount">The number of components to return. The <paramref name="fieldCount" /> ranges from 0 to 4.</param>
-        /// <returns>The <see cref="System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, each separated by a period character ('.'). The <paramref name="fieldCount" /> parameter determines how many components are returned.
-        ///  fieldCount
+        /// <returns><para>The <see cref="System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, each separated by a period character ('.'). The <paramref name="fieldCount" /> parameter determines how many components are returned.</para>
+        ///  <para>fieldCount
         /// 
         ///  Return Value
         /// 
@@ -346,8 +346,8 @@ namespace Chummer
         ///  major.minor.build.revision
         /// 
         /// 
-        /// 
-        /// For example, if you create ValueVersion struct using the constructor ValueVersion(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
+        /// </para>
+        /// <para>For example, if you create ValueVersion struct using the constructor ValueVersion(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</para></returns>
         /// <exception cref="System.ArgumentException">
         ///         <paramref name="fieldCount" /> is less than 0, or more than 4.
         /// -or-

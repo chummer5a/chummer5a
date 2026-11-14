@@ -1605,7 +1605,7 @@ namespace Chummer
             using (objSettings.LockObject.EnterReadLock(token))
             {
                 string strNotes = int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage)
-                    ? GetTextFromPdf(strSource, intPage, strEnglishNameOnPage, objSettings, token)
+                    ? GetTextFromPdf(strSource, intPage, strEnglishNameOnPage, token)
                     : GetTextFromPdf(strSource + " " + strPage, strEnglishNameOnPage, objSettings, GlobalSettings.InvariantCultureInfo, token);
 
                 if (!string.IsNullOrEmpty(strNotes)
@@ -1625,7 +1625,7 @@ namespace Chummer
 
                 return int.TryParse(strDisplayPage, NumberStyles.Integer, GlobalSettings.CultureInfo, out int intDisplayPage)
                     ? GetTextFromPdf(strSource, intDisplayPage,
-                                      strTranslatedNameOnPage, objSettings, token)
+                                      strTranslatedNameOnPage, token)
                     : GetTextFromPdf(strSource + " " + strDisplayPage,
                                       strTranslatedNameOnPage, objSettings, GlobalSettings.CultureInfo, token);
             }
@@ -1658,7 +1658,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strNotes = int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage)
-                    ? await GetTextFromPdfAsync(strSource, intPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false)
+                    ? await GetTextFromPdfAsync(strSource, intPage, strEnglishNameOnPage, token).ConfigureAwait(false)
                     : await GetTextFromPdfAsync(strSource + " " + strPage, strEnglishNameOnPage, objSettings, GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strNotes)
@@ -1678,7 +1678,7 @@ namespace Chummer
 
                 return int.TryParse(strDisplayPage, NumberStyles.Integer, GlobalSettings.CultureInfo, out int intDisplayPage)
                     ? await GetTextFromPdfAsync(strSource, intDisplayPage,
-                                                 strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false)
+                                                 strTranslatedNameOnPage, token).ConfigureAwait(false)
                     : await GetTextFromPdfAsync(strSource + " " + strDisplayPage,
                                                  strTranslatedNameOnPage, objSettings, GlobalSettings.CultureInfo, token).ConfigureAwait(false);
             }
@@ -2634,7 +2634,7 @@ namespace Chummer
 
             (string strBook, int intPage) = SourceStringToBookPagePair(strSource, true, objSettings, objCultureInfo, token: token);
 
-            return GetTextFromPdf(strBook, intPage, strText, objSettings, token);
+            return GetTextFromPdf(strBook, intPage, strText, token);
         }
 
         /// <summary>
@@ -2643,11 +2643,10 @@ namespace Chummer
         /// <param name="strBook">Book code to search.</param>
         /// <param name="intPage">Page to search.</param>
         /// <param name="strText">String to search for as an opener</param>
-        /// <param name="objSettings">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static string GetTextFromPdf(string strBook, int intPage, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        public static string GetTextFromPdf(string strBook, int intPage, string strText, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strBook, intPage, strText, objSettings, t), token);
+            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strBook, intPage, strText, t), token);
         }
 
         /// <summary>
@@ -2668,7 +2667,7 @@ namespace Chummer
 
             (string strBook, int intPage) = await SourceStringToBookPagePairAsync(strSource, true, objSettings, objCultureInfo, token: token).ConfigureAwait(false);
 
-            return await GetTextFromPdfAsync(strBook, intPage, strText, objSettings, token).ConfigureAwait(false);
+            return await GetTextFromPdfAsync(strBook, intPage, strText, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2677,11 +2676,10 @@ namespace Chummer
         /// <param name="strBook">Book code to search.</param>
         /// <param name="intPage">Page to search.</param>
         /// <param name="strText">String to search for as an opener</param>
-        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<string> GetTextFromPdfAsync(string strBook, int intPage, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
+        public static Task<string> GetTextFromPdfAsync(string strBook, int intPage, string strText, CancellationToken token = default)
         {
-            return GetTextFromPdfCoreAsync(false, strBook, intPage, strText, objSettings, token);
+            return GetTextFromPdfCoreAsync(false, strBook, intPage, strText, token);
         }
 
         private static readonly ConcurrentHashSet<PdfDocument> _setDocumentsProcessing = new ConcurrentHashSet<PdfDocument>();
@@ -2744,11 +2742,11 @@ namespace Chummer
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strBook">Book code to search, e.g., SR5.</param>
+        /// <param name="intPage">Page number to search.</param>
         /// <param name="strText">String to search for as an opener</param>
-        /// <param name="objSettings">Settings whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strBook, int intPage, string strText, CharacterSettings objSettings, CancellationToken token = default)
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strBook, int intPage, string strText, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strText))

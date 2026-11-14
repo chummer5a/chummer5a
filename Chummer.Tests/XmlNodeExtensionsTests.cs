@@ -17,9 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
 using System.Xml;
-using Chummer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests

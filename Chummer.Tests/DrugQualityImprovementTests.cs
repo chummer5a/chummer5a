@@ -17,10 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -41,45 +38,30 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
+                Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                 try
                 {
-                    Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
-                    try
-                    {
-                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
+                    await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
 
-                        Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
-                            "Drug qualities should not appear until the custom group is enabled");
-                        Assert.IsTrue(await objCharacter.Improvements.AnyAsync(x =>
-                            x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                            && x.SourceName == objDrug.InternalId
-                            && !x.Enabled, token).ConfigureAwait(false));
-                    }
-                    finally
-                    {
-                        await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
-                    }
+                    Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
+                        "Drug qualities should not appear until the custom group is enabled");
+                    Assert.IsTrue(await objCharacter.Improvements.AnyAsync(x =>
+                        x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                        && x.SourceName == objDrug.InternalId
+                        && !x.Enabled, token).ConfigureAwait(false));
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         [TestMethod]
@@ -87,51 +69,36 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
+                Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
                 try
                 {
-                    Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
-                    try
-                    {
-                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
-                        List<Improvement> lstDrugImprovements = await objCharacter.Improvements
-                            .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
+                    await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
+                    List<Improvement> lstDrugImprovements = await objCharacter.Improvements
+                        .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
 
-                        await ImprovementManager.EnableImprovementsAsync(objCharacter, lstDrugImprovements, token)
-                            .ConfigureAwait(false);
-                        Assert.IsTrue(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName
-                                                                      && x.OriginSource == QualitySource.Improvement, token).ConfigureAwait(false),
-                            "Enabling the drug should grant " + GrantedQualityName);
+                    await ImprovementManager.EnableImprovementsAsync(objCharacter, lstDrugImprovements, token)
+                        .ConfigureAwait(false);
+                    Assert.IsTrue(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName
+                                                                  && x.OriginSource == QualitySource.Improvement, token).ConfigureAwait(false),
+                        "Enabling the drug should grant " + GrantedQualityName);
 
-                        await ImprovementManager.DisableImprovementsAsync(objCharacter, lstDrugImprovements, token)
-                            .ConfigureAwait(false);
-                        Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
-                            "Disabling the drug should remove the granted quality");
-                    }
-                    finally
-                    {
-                        await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
-                    }
+                    await ImprovementManager.DisableImprovementsAsync(objCharacter, lstDrugImprovements, token)
+                        .ConfigureAwait(false);
+                    Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
+                        "Disabling the drug should remove the granted quality");
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         [TestMethod]
@@ -139,44 +106,29 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
-                try
-                {
-                    Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
-                    await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
-                    List<Improvement> lstDrugImprovements = await objCharacter.Improvements
-                        .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
-                    await ImprovementManager.EnableImprovementsAsync(objCharacter, lstDrugImprovements, token)
-                        .ConfigureAwait(false);
-                    Assert.IsTrue(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false));
+                Drug objDrug = await CreateTestDrugAsync(objCharacter, token: token).ConfigureAwait(false);
+                await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
+                List<Improvement> lstDrugImprovements = await objCharacter.Improvements
+                    .ToListAsync(x => x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
+                await ImprovementManager.EnableImprovementsAsync(objCharacter, lstDrugImprovements, token)
+                    .ConfigureAwait(false);
+                Assert.IsTrue(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false));
 
-                    Assert.IsTrue(await objDrug.RemoveAsync(false, token).ConfigureAwait(false));
+                Assert.IsTrue(await objDrug.RemoveAsync(false, token).ConfigureAwait(false));
 
-                    Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
-                        "Deleting the drug should remove the granted quality");
-                    Assert.IsFalse(await objCharacter.Improvements.AnyAsync(x =>
-                        x.ImproveSource == Improvement.ImprovementSource.Drug
-                        && x.CustomGroup == DrugName, token).ConfigureAwait(false));
-                }
-                finally
-                {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
-                }
+                Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false),
+                    "Deleting the drug should remove the granted quality");
+                Assert.IsFalse(await objCharacter.Improvements.AnyAsync(x =>
+                    x.ImproveSource == Improvement.ImprovementSource.Drug
+                    && x.CustomGroup == DrugName, token).ConfigureAwait(false));
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         [TestMethod]
@@ -184,59 +136,44 @@ namespace Chummer.Tests
         {
             CancellationToken token = TestContext.CancellationToken;
             token.ThrowIfCancellationRequested();
+            Character objCharacter = new Character();
             try
             {
-                Character objCharacter = new Character();
+                Drug objDrug = await CreateTestDrugAsync(objCharacter, 3, token).ConfigureAwait(false);
                 try
                 {
-                    Drug objDrug = await CreateTestDrugAsync(objCharacter, 3, token).ConfigureAwait(false);
-                    try
-                    {
-                        await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
-                        List<Improvement> lstQualityImprovements = await objCharacter.Improvements
-                            .ToListAsync(x => x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                              && x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
-                        Assert.HasCount(1, lstQualityImprovements,
-                            "rating=N should be one SpecificQuality stub, not N stubs");
-                        Assert.AreEqual(3, lstQualityImprovements[0].Rating);
+                    await objDrug.GenerateImprovementsAsync(token).ConfigureAwait(false);
+                    List<Improvement> lstQualityImprovements = await objCharacter.Improvements
+                        .ToListAsync(x => x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                          && x.SourceName == objDrug.InternalId, token).ConfigureAwait(false);
+                    Assert.HasCount(1, lstQualityImprovements,
+                        "rating=N should be one SpecificQuality stub, not N stubs");
+                    Assert.AreEqual(3, lstQualityImprovements[0].Rating);
 
-                        await ImprovementManager.EnableImprovementsAsync(objCharacter,
-                                await objCharacter.Improvements.ToListAsync(x => x.SourceName == objDrug.InternalId, token)
-                                    .ConfigureAwait(false), token)
-                            .ConfigureAwait(false);
-                        Assert.AreEqual(3,
-                            await objCharacter.Qualities.CountAsync(x => x.Name == GrantedQualityName
-                                                              && x.OriginSource == QualitySource.Improvement, token).ConfigureAwait(false),
-                            "Enabling should add Rating stacked quality instances");
+                    await ImprovementManager.EnableImprovementsAsync(objCharacter,
+                            await objCharacter.Improvements.ToListAsync(x => x.SourceName == objDrug.InternalId, token)
+                                .ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
+                    Assert.AreEqual(3,
+                        await objCharacter.Qualities.CountAsync(x => x.Name == GrantedQualityName
+                                                          && x.OriginSource == QualitySource.Improvement, token).ConfigureAwait(false),
+                        "Enabling should add Rating stacked quality instances");
 
-                        await ImprovementManager.DisableImprovementsAsync(objCharacter,
-                                await objCharacter.Improvements.ToListAsync(x => x.SourceName == objDrug.InternalId, token)
-                                    .ConfigureAwait(false), token)
-                            .ConfigureAwait(false);
-                        Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false));
-                    }
-                    finally
-                    {
-                        await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
-                    }
+                    await ImprovementManager.DisableImprovementsAsync(objCharacter,
+                            await objCharacter.Improvements.ToListAsync(x => x.SourceName == objDrug.InternalId, token)
+                                .ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
+                    Assert.IsFalse(await objCharacter.Qualities.AnyAsync(x => x.Name == GrantedQualityName, token).ConfigureAwait(false));
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
                 }
             }
-            catch (Exception ex)
-            {
-                ex = ex.Demystify();
-                Assert.Fail(ex.Message);
-                throw ex;
-            }
-#if MEMORYTESTING
             finally
             {
-                TestContext.CancellationTokenSource.Dispose();
+                await objCharacter.DisposeAsync().ConfigureAwait(false);
             }
-#endif
         }
 
         private static async Task<Drug> CreateTestDrugAsync(Character objCharacter, int intQualityRating = 1, CancellationToken token = default)

@@ -46,6 +46,8 @@ namespace Chummer
         /// </summary>
         public static string AnonymizePath(this string strPath)
         {
+            if (string.IsNullOrEmpty(strPath))
+                return string.Empty;
             string strAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string strUserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             return strPath
@@ -7457,7 +7459,7 @@ namespace Chummer
         /// <summary>
         /// Normalizes line endings to always be that of Environment.NewLine.
         /// </summary>
-        /// <param name="strInput">String to normalize.</param>
+        /// <param name="sbdInput">StringBuilder containing the string to normalize.</param>
         /// <param name="blnEscaped">If the line endings in the string are defined in an escaped fashion (e.g. as "\\n"), set to true.</param>
         /// <returns></returns>
         public static StringBuilder NormalizeLineEndings(this StringBuilder sbdInput, bool blnEscaped = false)
