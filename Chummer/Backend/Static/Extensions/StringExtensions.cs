@@ -46,6 +46,8 @@ namespace Chummer
         /// </summary>
         public static string AnonymizePath(this string strPath)
         {
+            if (string.IsNullOrEmpty(strPath))
+                return string.Empty;
             string strAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string strUserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             return strPath
