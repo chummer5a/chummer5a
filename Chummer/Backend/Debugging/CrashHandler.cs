@@ -208,29 +208,36 @@ namespace Chummer.Backend
             }
         }
 
+        public static string GenerateCrashDumpJson(Exception ex, DateTime datCrashDateTime)
+        {
+            DumpData dump = new DumpData(ex);
+            foreach (string strSettingFile in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
+            {
+                dump.AddFile(strSettingFile);
+            }
+
+            string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
+            if (File.Exists(strChummerLog))
+                dump.AddFile(strChummerLog);
+
+            string strDateTime = datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture).CleanForFileName();
+            string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + strDateTime + ".json");
+            using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
+            using (JsonTextWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
+            {
+                objJsonWriter.Formatting = Formatting.Indented;
+                dump.SerializeJson(objJsonWriter);
+            }
+            return strJsonPath;
+        }
+
         public static void WebMiniDumpHandler(Exception ex, DateTime datCrashDateTime)
         {
             try
             {
-                DumpData dump = new DumpData(ex);
-                foreach (string strSettingFile in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
-                {
-                    dump.AddFile(strSettingFile);
-                }
-
-                string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
-                if (File.Exists(strChummerLog))
-                    dump.AddFile(strChummerLog);
-
                 string strDateTime = datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture).CleanForFileName();
-                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + strDateTime + ".json");
-                using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
-                using (JsonTextWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
-                {
-                    objJsonWriter.Formatting = Formatting.Indented;
-                    dump.SerializeJson(objJsonWriter);
-                }
+                string strJsonPath = GenerateCrashDumpJson(ex, datCrashDateTime);
 
                 string strCrashHandler = Path.Combine(Utils.GetStartupPath, "CrashHandler.exe");
                 if (File.Exists(strCrashHandler))
