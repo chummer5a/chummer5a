@@ -30,6 +30,71 @@ namespace Chummer.Tests
         public TestContext TestContext { get; set; }
 
         [TestMethod, Timeout(10 * 1000, CooperativeCancellation = true)]
+        public void AsyncFriendlyReaderWriterLock_GettingWriteLockOrPotentialWriteLockInReadLockThrows()
+        {
+            using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
+            using (objLock.EnterReadLock(TestContext.CancellationToken))
+            {
+                try
+                {
+                    using (objLock.EnterWriteLock(TestContext.CancellationToken))
+                        Assert.Fail("Acquired a write lock from inside a non-upgradeable read lock.");
+                }
+                catch (InvalidOperationException)
+                {
+                    // Swallow this, this is intended behavior
+                }
+                try
+                {
+                    using (objLock.EnterUpgradeableReadLock(TestContext.CancellationToken))
+                        Assert.Fail("Acquired an upgradeable read lock from inside a non-upgradeable read lock.");
+                }
+                catch (InvalidOperationException)
+                {
+                    // Swallow this, this is intended behavior
+                }
+                // Make sure async versions also don't work, including if we pass through a sync->async transition
+                Utils.SafelyRunSynchronously(async t =>
+                {
+                    try
+                    {
+                        IAsyncDisposable objLocker = await objLock.EnterWriteLockAsync(t).ConfigureAwait(false);
+                        try
+                        {
+                            t.ThrowIfCancellationRequested();
+                            Assert.Fail("Acquired a write lock asynchronously from inside a non-upgradeable read lock.");
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Swallow this, this is intended behavior
+                    }
+                    try
+                    {
+                        IAsyncDisposable objLocker = await objLock.EnterUpgradeableReadLockAsync(t).ConfigureAwait(false);
+                        try
+                        {
+                            t.ThrowIfCancellationRequested();
+                            Assert.Fail("Acquired an upgradeable read lock asynchronously from inside a non-upgradeable read lock.");
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Swallow this, this is intended behavior
+                    }
+                }, TestContext.CancellationToken);
+            }
+        }
+
+        [TestMethod, Timeout(10 * 1000, CooperativeCancellation = true)]
         public void AsyncFriendlyReaderWriterLock_ReadLockExcludesWriteLockButNotUpgradeableRead()
         {
             using (AsyncFriendlyReaderWriterLock objLock = new AsyncFriendlyReaderWriterLock())
@@ -60,7 +125,7 @@ namespace Chummer.Tests
                                         try
                                         {
                                             using (objLock.EnterWriteLock(objSource.Token))
-                                                Assert.Fail("Can acquire write lock while a read lock is active.");
+                                                Assert.Fail("Acquired a write lock while a read lock is active.");
                                         }
                                         catch (OperationCanceledException)
                                         {
@@ -108,6 +173,18 @@ namespace Chummer.Tests
                     {
                         if (++intLevel < 2)
                             EnterReadLockRecursively(intLevel, token);
+                        else
+                        {
+                            try
+                            {
+                                EnterUpgradeableReadLockRecursively(intLevel, token); // This should throw an exception, blocking the line below
+                                Assert.Fail("Acquired a re-entrant upgradeable read lock or write lock from inside a non-upgradeable read lock.");
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                // Swallow this, this is intended behavior
+                            }
+                        }
                     }
                 }
 
@@ -158,6 +235,18 @@ namespace Chummer.Tests
                         token.ThrowIfCancellationRequested();
                         if (++intLevel < 2)
                             await EnterReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false);
+                        else
+                        {
+                            try
+                            {
+                                await EnterUpgradeableReadLockRecursivelyAsync(intLevel, token).ConfigureAwait(false); // This should throw an exception, blocking the line below
+                                Assert.Fail("Acquired a re-entrant upgradeable read lock or write lock asynchronously from inside a non-upgradeable read lock.");
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                // Swallow this, this is intended behavior
+                            }
+                        }
                     }
                     finally
                     {
@@ -245,7 +334,7 @@ namespace Chummer.Tests
                                 try
                                 {
                                     using (objLock.EnterReadLock(objSource.Token))
-                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                        Assert.Fail("Acquired a read lock that we weren't supposed to.");
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -258,7 +347,7 @@ namespace Chummer.Tests
                                 try
                                 {
                                     using (objLock.EnterWriteLock(objSource.Token))
-                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                        Assert.Fail("Acquired a write lock that we weren't supposed to.");
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -271,7 +360,7 @@ namespace Chummer.Tests
                                 try
                                 {
                                     using (objLock.EnterUpgradeableReadLock(objSource.Token))
-                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                        Assert.Fail("Acquired an upgradeable lock that we weren't supposed to.");
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -288,7 +377,7 @@ namespace Chummer.Tests
                                     try
                                     {
                                         objSource.Token.ThrowIfCancellationRequested();
-                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                        Assert.Fail("Acquired a read lock asynchronously that we weren't supposed to.");
                                     }
                                     catch (OperationCanceledException)
                                     {
@@ -306,7 +395,7 @@ namespace Chummer.Tests
                                     try
                                     {
                                         objSource.Token.ThrowIfCancellationRequested();
-                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                        Assert.Fail("Acquired a write lock asynchronously that we weren't supposed to.");
                                     }
                                     catch (OperationCanceledException)
                                     {
@@ -324,7 +413,7 @@ namespace Chummer.Tests
                                     try
                                     {
                                         objSource.Token.ThrowIfCancellationRequested();
-                                        Assert.Fail("Acquired a lock we weren't supposed to.");
+                                        Assert.Fail("Acquired an upgradeable read lock asynchronously that we weren't supposed to.");
                                     }
                                     catch (OperationCanceledException)
                                     {
