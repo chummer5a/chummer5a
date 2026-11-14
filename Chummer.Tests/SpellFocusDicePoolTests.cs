@@ -39,17 +39,28 @@ namespace Chummer.Tests
             CancellationToken token = TestContext.CancellationToken;
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     AddHealthBonuses(objCharacter, token);
-                    using (Spell objSpell = new Spell(objCharacter) { Category = SpellCategory })
+                    Spell objSpell = new Spell(objCharacter);
+                    try
                     {
+                        objSpell.Category = SpellCategory;
                         string strFocusValue = "(" + 6m.ToString(GlobalSettings.CultureInfo) + ")";
                         Assert.AreEqual(8, objSpell.DicePool);
                         Assert.AreEqual(1, CountOccurrences(objSpell.DicePoolTooltip, strFocusValue));
                         Assert.AreEqual(8, await objSpell.GetDicePoolAsync(token).ConfigureAwait(false));
                         Assert.AreEqual(1, CountOccurrences(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), strFocusValue));
                     }
+                    finally
+                    {
+                        await objSpell.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -72,21 +83,29 @@ namespace Chummer.Tests
             CancellationToken token = TestContext.CancellationToken;
             try
             {
-                using (Character objCharacter = new Character())
+                Character objCharacter = new Character();
+                try
                 {
                     AddHealthBonuses(objCharacter, token);
-                    using (Spell objSpell = new Spell(objCharacter)
-                           {
-                               Category = SpellCategory,
-                               Alchemical = true
-                           })
+                    Spell objSpell = new Spell(objCharacter);
+                    try
                     {
+                        objSpell.Category = SpellCategory;
+                        objSpell.Alchemical = true;
                         string strFocusValue = "(" + 6m.ToString(GlobalSettings.CultureInfo) + ")";
                         Assert.AreEqual(2, objSpell.DicePool);
                         Assert.AreEqual(0, CountOccurrences(objSpell.DicePoolTooltip, strFocusValue));
                         Assert.AreEqual(2, await objSpell.GetDicePoolAsync(token).ConfigureAwait(false));
                         Assert.AreEqual(0, CountOccurrences(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), strFocusValue));
                     }
+                    finally
+                    {
+                        await objSpell.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

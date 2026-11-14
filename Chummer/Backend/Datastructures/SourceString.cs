@@ -282,7 +282,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = CommonFunctions.LanguageBookCodeFromAltCode(Code, Language, objSettings, token);
-            return CommonFunctions.GetTextFromPdf(strBook, Page, strText, objSettings, token);
+            return CommonFunctions.GetTextFromPdf(strBook, Page, strText, token);
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = await CommonFunctions.LanguageBookCodeFromAltCodeAsync(Code, Language, objSettings, token).ConfigureAwait(false);
-            return await CommonFunctions.GetTextFromPdfAsync(strBook, Page, strText, objSettings, token).ConfigureAwait(false);
+            return await CommonFunctions.GetTextFromPdfAsync(strBook, Page, strText, token).ConfigureAwait(false);
         }
 
         public int CompareTo(object obj)

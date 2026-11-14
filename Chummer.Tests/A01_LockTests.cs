@@ -122,13 +122,17 @@ namespace Chummer.Tests
                     // Make sure the async versions also work
                     Utils.SafelyRunSynchronously(async t =>
                     {
+                        t.ThrowIfCancellationRequested();
                         using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
                         {
+                            t.ThrowIfCancellationRequested();
                             await EnterReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
                         }
 
+                        t.ThrowIfCancellationRequested();
                         using (CancellationTokenSource objSource = new CancellationTokenSource(1000))
                         {
+                            t.ThrowIfCancellationRequested();
                             await EnterUpgradeableReadLockRecursivelyAsync(0, objSource.Token).ConfigureAwait(false);
                         }
                     }, TestContext.CancellationToken);
