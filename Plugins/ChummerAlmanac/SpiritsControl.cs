@@ -187,17 +187,17 @@ namespace ChummerAlmanac
             tlpRight.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tlpRight.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            tlpRight.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.Percent, 55));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.Percent, 45));
-            tlpRight.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpRight.Controls.Add(_lblTitle, 0, 0);
             tlpRight.SetColumnSpan(_lblTitle, 2);
-            tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Attributes"), _lstAttributes), 0, 1);
-            tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Powers"), _lstPowers), 1, 1);
-            tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Skills"), _lstSkills), 0, 2);
-            tlpRight.Controls.Add(_gpbOptionalPowers, 1, 2);
-            tlpRight.Controls.Add(_gpbSummoning, 0, 3);
+            tlpRight.Controls.Add(_gpbSummoning, 0, 1);
             tlpRight.SetColumnSpan(_gpbSummoning, 2);
+            tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Attributes"), _lstAttributes), 0, 2);
+            tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Powers"), _lstPowers), 1, 2);
+            tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Skills"), _lstSkills), 0, 3);
+            tlpRight.Controls.Add(_gpbOptionalPowers, 1, 3);
 
             TableLayoutPanel tlpMain = new TableLayoutPanel
             {
