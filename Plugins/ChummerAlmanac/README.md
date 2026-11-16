@@ -2,18 +2,26 @@
 
 A Chummer5a plugin that adds an "Almanac" tab to character windows.
 
-Planned content:
+The tab has two parts:
 
-- Spirit details: attributes, powers, optional powers and dice pools of a character's spirits at their Force.
-- Calendar: an in-game calendar with a location setting and sunrise/sunset times.
+- **Spirits**: lists the character's spirits and sprites and shows attributes, initiative, powers, weaknesses and skill dice pools of the selected one at its Force. Optional powers can be chosen per spirit. If the time of summoning is entered, the tab shows when the services of an unbound spirit expire.
+- **Calendar**: the current in-game date and time, a month view, a location (a list of cities or free coordinates with a time zone), sunrise and sunset, the phase of the moon and a note for each day.
 
-Current state: the Spirits sub-tab lists the character's spirits and sprites and shows attributes, initiative, powers, weaknesses and skill dice pools of the selected one at its Force. Optional powers can be chosen per spirit; the choice is stored in the character's save file. The calendar is not implemented yet.
+Everything the user enters is stored in the character's save file, inside the plugin's own element.
 
 ## Rules sources
 
 The plugin follows Chummer's order of precedence for rules (see `CONTRIBUTING.md`). Attributes, initiative, powers, optional powers and skills come from Chummer's own data files (`traditions.xml`, `streams.xml`; Edge, Magic and Essence from `critters.xml` where the former lack them), so custom data and optional non-English content apply automatically.
 
-Two rules from SR5 p. 303 are not part of those data files and are therefore set in code: spirits roll 2D6 for Initiative and (Force x 2) + 3D6 for Astral Initiative, and a spirit gets one optional power for every 3 full points of Force.
+Three rules are not part of those data files and are therefore set in code:
+
+- Spirits roll 2D6 for Initiative and (Force x 2) + 3D6 for Astral Initiative (SR5 p. 303).
+- A spirit gets one optional power for every 3 full points of Force (SR5 p. 303).
+- The services of an unbound spirit expire at the next sunrise or sunset, whichever comes first (SR5 p. 300).
+
+## Sun and moon
+
+Sunrise and sunset are calculated offline with the NOAA solar calculator formulas (after Jean Meeus, "Astronomical Algorithms") and are accurate to about a minute outside the polar regions. Daylight saving time follows the rules Windows has for the chosen time zone. The phase of the moon is an approximation that can be off by about half a day.
 
 ## Build
 

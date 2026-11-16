@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using Chummer;
+using Chummer.Backend.Enums;
 
 namespace ChummerAlmanac
 {
@@ -43,6 +44,9 @@ namespace ChummerAlmanac
         private readonly GroupBox _gpbOptionalPowers;
         private readonly CheckedListBox _clbOptionalPowers;
         private readonly ListView _lstSkills;
+        private readonly GroupBox _gpbSummoning;
+        private readonly DateTimePicker _dtpSummoned;
+        private readonly Label _lblExpiry;
 
         // True while the control fills its lists itself, so that change events are not mistaken for user input.
         private bool _blnLoading;
@@ -123,23 +127,77 @@ namespace ChummerAlmanac
 
             _gpbOptionalPowers = CreateGroupBox(AlmanacStrings.Get("Group_OptionalPowers"), _clbOptionalPowers);
 
+            // Time of summoning and the resulting expiry of the spirit's services
+            _dtpSummoned = new DateTimePicker
+            {
+                Format = DateTimePickerFormat.Custom,
+                CustomFormat = AlmanacFormat.DateTimePickerFormat,
+                ShowCheckBox = true,
+                Checked = false,
+                Width = 190
+            };
+            _dtpSummoned.ValueChanged += Summoned_ValueChanged;
+            Button cmdSummonedNow = new Button
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Text = AlmanacStrings.Get("Button_SummonedNow")
+            };
+            cmdSummonedNow.Click += SummonedNow_Click;
+            _lblExpiry = new Label
+            {
+                AutoSize = true,
+                Anchor = AnchorStyles.Left,
+                Margin = new Padding(6, 6, 3, 3)
+            };
+            FlowLayoutPanel flpSummoning = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Dock = DockStyle.Fill,
+                WrapContents = true
+            };
+            flpSummoning.Controls.Add(new Label
+            {
+                AutoSize = true,
+                Text = AlmanacStrings.Get("Label_Summoned"),
+                Anchor = AnchorStyles.Left,
+                Margin = new Padding(3, 6, 3, 3)
+            });
+            flpSummoning.Controls.Add(_dtpSummoned);
+            flpSummoning.Controls.Add(cmdSummonedNow);
+            flpSummoning.Controls.Add(_lblExpiry);
+            _gpbSummoning = new GroupBox
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Dock = DockStyle.Fill,
+                MinimumSize = new Size(0, 56),
+                Text = AlmanacStrings.Get("Group_Summoning"),
+                Enabled = false
+            };
+            _gpbSummoning.Controls.Add(flpSummoning);
+
             TableLayoutPanel tlpRight = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
-                RowCount = 3
+                RowCount = 4
             };
             tlpRight.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tlpRight.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.Percent, 55));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.Percent, 45));
+            tlpRight.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpRight.Controls.Add(_lblTitle, 0, 0);
             tlpRight.SetColumnSpan(_lblTitle, 2);
             tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Attributes"), _lstAttributes), 0, 1);
             tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Powers"), _lstPowers), 1, 1);
             tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Skills"), _lstSkills), 0, 2);
             tlpRight.Controls.Add(_gpbOptionalPowers, 1, 2);
+            tlpRight.Controls.Add(_gpbSummoning, 0, 3);
+            tlpRight.SetColumnSpan(_gpbSummoning, 2);
 
             TableLayoutPanel tlpMain = new TableLayoutPanel
             {
@@ -316,11 +374,19 @@ namespace ChummerAlmanac
                 _clbOptionalPowers.EndUpdate();
                 _clbOptionalPowers.Enabled = objStats.OptionalPowers.Count > 0;
                 UpdateOptionalPowersCaption(intChosen);
+
+                DateTime? dtSummoned = _objData.GetSummoned(objSpirit.InternalId);
+                _dtpSummoned.Value = AlmanacFormat.ClampToPicker(
+                    dtSummoned ?? GameClock.GetCurrentDateTime(_objCharacter, _objData));
+                _dtpSummoned.Checked = dtSummoned.HasValue;
+                // Services of sprites do not depend on sunrise and sunset.
+                _gpbSummoning.Enabled = objSpirit.EntityType == SpiritType.Spirit;
             }
             finally
             {
                 _blnLoading = false;
             }
+            UpdateExpiry();
         }
 
         /// <summary>
@@ -340,11 +406,88 @@ namespace ChummerAlmanac
                 _clbOptionalPowers.Items.Clear();
                 _clbOptionalPowers.Enabled = false;
                 _gpbOptionalPowers.Text = AlmanacStrings.Get("Group_OptionalPowers");
+                _dtpSummoned.Checked = false;
+                _gpbSummoning.Enabled = false;
+                _lblExpiry.Text = string.Empty;
             }
             finally
             {
                 _blnLoading = false;
             }
+        }
+
+        private void Summoned_ValueChanged(object sender, EventArgs e)
+        {
+            // Raised when the date, the time or the check box is changed.
+            if (_blnLoading || _objSelectedSpirit == null)
+                return;
+            StoreSummoned();
+        }
+
+        private void SummonedNow_Click(object sender, EventArgs e)
+        {
+            if (_objSelectedSpirit == null)
+                return;
+            _blnLoading = true;
+            try
+            {
+                _dtpSummoned.Value = AlmanacFormat.ClampToPicker(GameClock.GetCurrentDateTime(_objCharacter, _objData));
+                _dtpSummoned.Checked = true;
+            }
+            finally
+            {
+                _blnLoading = false;
+            }
+            StoreSummoned();
+        }
+
+        private void StoreSummoned()
+        {
+            _objData.SetSummoned(_objSelectedSpirit.InternalId,
+                _dtpSummoned.Checked ? (DateTime?)_dtpSummoned.Value : null);
+            // The time is stored in the character's save file, so the character now has unsaved changes.
+            _frmCharacter.IsDirty = true;
+            UpdateExpiry();
+        }
+
+        /// <summary>
+        /// Show when the services of the selected spirit expire: an unbound spirit leaves at the next sunrise or sunset,
+        /// whichever comes first (SR5 300).
+        /// </summary>
+        private void UpdateExpiry()
+        {
+            _lblExpiry.ForeColor = _gpbSummoning.ForeColor;
+            if (_objSelectedSpirit == null || _objSelectedSpirit.EntityType != SpiritType.Spirit)
+            {
+                _lblExpiry.Text = string.Empty;
+                return;
+            }
+            if (_objSelectedSpirit.Bound)
+            {
+                _lblExpiry.Text = AlmanacStrings.Get("Expiry_Bound");
+                return;
+            }
+            if (!_dtpSummoned.Checked)
+            {
+                _lblExpiry.Text = AlmanacStrings.Get("Expiry_NotSet");
+                return;
+            }
+            SunEvent objEvent = Astronomy.GetNextSunEvent(_dtpSummoned.Value, GameClock.GetLocation(_objData));
+            if (objEvent == null)
+            {
+                _lblExpiry.Text = AlmanacStrings.Get("Expiry_None");
+                return;
+            }
+            CultureInfo objCulture = GlobalSettings.CultureInfo ?? CultureInfo.CurrentCulture;
+            string strText = string.Format(objCulture,
+                AlmanacStrings.Get(objEvent.Kind == SunEventKind.Sunrise ? "Expiry_Sunrise" : "Expiry_Sunset"),
+                AlmanacFormat.ToDisplayString(objEvent.LocalTime));
+            if (GameClock.GetCurrentDateTime(_objCharacter, _objData) >= objEvent.LocalTime)
+            {
+                strText = string.Format(objCulture, AlmanacStrings.Get("Expiry_Expired"), strText);
+                _lblExpiry.ForeColor = Color.Red;
+            }
+            _lblExpiry.Text = strText;
         }
 
         private void UpdateOptionalPowersCaption(int intChosen)

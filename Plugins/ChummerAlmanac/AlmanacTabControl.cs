@@ -48,6 +48,16 @@ namespace ChummerAlmanac
             });
             tabAlmanacTabs.TabPages.Add(tabSpirits);
 
+            TabPage tabCalendar = new TabPage(AlmanacStrings.Get("Tab_Calendar"))
+            {
+                Name = "tabAlmanacCalendar"
+            };
+            tabCalendar.Controls.Add(new CalendarControl(frmCharacter)
+            {
+                Dock = DockStyle.Fill
+            });
+            tabAlmanacTabs.TabPages.Add(tabCalendar);
+
             Controls.Add(tabAlmanacTabs);
         }
     }
