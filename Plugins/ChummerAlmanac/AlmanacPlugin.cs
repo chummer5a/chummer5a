@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,10 +31,25 @@ namespace ChummerAlmanac
 {
     /// <summary>
     /// Plugin entry point. Adds an "Almanac" tab to character windows.
-    /// Spirit details and the calendar with sunrise/sunset times will live in this tab.
+    /// The tab shows details of the character's spirits; a calendar with sunrise/sunset times will follow.
     /// </summary>
     public class AlmanacPlugin : IPlugin
     {
+        // Chummer creates one plugin object for all characters, so the data of each character is kept here.
+        // Entries disappear on their own once a character is closed.
+        private static readonly ConditionalWeakTable<Character, AlmanacData> s_tblCharacterData
+            = new ConditionalWeakTable<Character, AlmanacData>();
+
+        /// <summary>
+        /// The plugin's data for a character. Created empty if the character has none yet.
+        /// </summary>
+        internal static AlmanacData GetData(Character objCharacter)
+        {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            return s_tblCharacterData.GetValue(objCharacter, x => new AlmanacData());
+        }
+
         // Name shown in Chummer's plugin list and used as the key for enabling/disabling the plugin.
         public override string ToString()
         {
@@ -42,7 +58,7 @@ namespace ChummerAlmanac
 
         public void CustomInitialize(ChummerMainForm mainControl)
         {
-            // Nothing to initialize yet.
+            // Nothing to initialize.
         }
 
         public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input, CancellationToken token = default)
@@ -57,13 +73,13 @@ namespace ChummerAlmanac
 
         private static ICollection<TabPage> CreateTabPages(CharacterShared frmCharacter)
         {
-            if (frmCharacter == null)
+            if (frmCharacter?.CharacterObject == null)
                 return null;
             TabPage tabAlmanac = new TabPage("Almanac")
             {
                 Name = "tabAlmanac"
             };
-            tabAlmanac.Controls.Add(new AlmanacTabControl(frmCharacter.CharacterObject)
+            tabAlmanac.Controls.Add(new AlmanacTabControl(frmCharacter)
             {
                 Dock = DockStyle.Fill
             });
@@ -98,13 +114,17 @@ namespace ChummerAlmanac
 
         public string GetSaveToFileElement(Character input)
         {
-            // Nothing is stored in the save file yet.
-            return string.Empty;
+            // Chummer writes this text into the plugin's own element of the save file.
+            if (input == null || !s_tblCharacterData.TryGetValue(input, out AlmanacData objData))
+                return string.Empty;
+            return objData.ToSaveString();
         }
 
         public void LoadFileElement(Character input, string fileElement)
         {
-            // Nothing is stored in the save file yet.
+            if (input == null)
+                return;
+            GetData(input).LoadFromSaveString(fileElement);
         }
 
         public void SetIsUnitTest(bool isUnitTest)

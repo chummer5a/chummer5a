@@ -17,34 +17,38 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Globalization;
+using System;
 using System.Windows.Forms;
 using Chummer;
 
 namespace ChummerAlmanac
 {
     /// <summary>
-    /// Content of the "Almanac" tab. For now it only proves that the plugin is loaded
-    /// and can read the character.
+    /// Content of the "Almanac" tab: one sub-tab per feature.
     /// </summary>
     public sealed class AlmanacTabControl : UserControl
     {
-        public AlmanacTabControl(Character objCharacter)
+        public AlmanacTabControl(CharacterShared frmCharacter)
         {
-            string strVersion = typeof(AlmanacTabControl).Assembly.GetName().Version.ToString(3);
-            string strCharacterName = objCharacter?.CharacterName ?? string.Empty;
-            int intSpirits = objCharacter?.Spirits.Count ?? 0;
+            if (frmCharacter == null)
+                throw new ArgumentNullException(nameof(frmCharacter));
 
-            Label lblInfo = new Label
+            TabControl tabAlmanacTabs = new TabControl
             {
-                AutoSize = true,
-                Dock = DockStyle.Top,
-                Padding = new Padding(6),
-                Text = "Chummer Almanac " + strVersion + " loaded." + System.Environment.NewLine
-                       + "Character: " + strCharacterName + System.Environment.NewLine
-                       + "Spirits and sprites: " + intSpirits.ToString(CultureInfo.InvariantCulture)
+                Dock = DockStyle.Fill
             };
-            Controls.Add(lblInfo);
+
+            TabPage tabSpirits = new TabPage(AlmanacStrings.Get("Tab_Spirits"))
+            {
+                Name = "tabAlmanacSpirits"
+            };
+            tabSpirits.Controls.Add(new SpiritsControl(frmCharacter)
+            {
+                Dock = DockStyle.Fill
+            });
+            tabAlmanacTabs.TabPages.Add(tabSpirits);
+
+            Controls.Add(tabAlmanacTabs);
         }
     }
 }
