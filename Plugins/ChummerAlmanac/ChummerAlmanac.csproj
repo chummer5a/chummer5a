@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AssemblyName>ChummerAlmanac</AssemblyName>
+    <RootNamespace>ChummerAlmanac</RootNamespace>
+    <Version>0.1.0</Version>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Configurations>Debug;Release;Debuggable Release</Configurations>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debuggable Release'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Chummer\Chummer.csproj" />
+  </ItemGroup>
+  <!-- Chummer loads plugins from <Chummer folder>\Plugins\<plugin name>\, so put only this plugin's own files there. -->
+  <Target Name="DeployPluginToChummerOutput" AfterTargets="Build">
+    <ItemGroup>
+      <AlmanacPluginFiles Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AlmanacPluginFiles)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Chummer\bin\$(Configuration)\Plugins\ChummerAlmanac\" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
