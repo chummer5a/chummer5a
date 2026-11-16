@@ -452,7 +452,7 @@ namespace ChummerAlmanac
 
         /// <summary>
         /// Show when the services of the selected spirit expire: an unbound spirit leaves at the next sunrise or sunset,
-        /// whichever comes first (SR5 300).
+        /// whichever comes first (SR5 core rulebook, "Spirit Services").
         /// </summary>
         private void UpdateExpiry()
         {

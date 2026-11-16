@@ -17,7 +17,7 @@ Three rules are not part of those data files and are therefore set in code:
 
 - Spirits roll 2D6 for Initiative and (Force x 2) + 3D6 for Astral Initiative (SR5 p. 303).
 - A spirit gets one optional power for every 3 full points of Force (SR5 p. 303).
-- The services of an unbound spirit expire at the next sunrise or sunset, whichever comes first (SR5 p. 300).
+- The services of an unbound spirit expire at the next sunrise or sunset, whichever comes first (SR5 core rulebook, section "Spirit Services").
 
 ## Sun and moon
 
