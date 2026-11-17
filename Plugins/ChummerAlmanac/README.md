@@ -4,7 +4,7 @@ A Chummer5a plugin that adds an "Almanac" tab to character windows.
 
 The tab has two parts:
 
-- **Spirits**: lists the character's spirits and sprites and shows attributes, initiative, powers, weaknesses and skill dice pools of the selected one at its Force. Optional powers can be chosen per spirit. If the time of summoning is entered, the tab shows when the services of an unbound spirit expire.
+- **Spirits**: lists the character's spirits and sprites and shows attributes, initiative, powers, weaknesses and skill dice pools of the selected one at its Force. Optional powers can be chosen per spirit. Powers show their book and page from the data files, and a right click (or a double click on the list of powers) opens that page in the PDF reader set up in Chummer's options. Each spirit also has a free text note. If the time of summoning is entered, the tab shows when the services of an unbound spirit expire.
 - **Calendar**: the current in-game date and time, a month view, a location (a list of cities or free coordinates with a time zone), sunrise and sunset, the phase of the moon and a note for each day.
 
 Everything the user enters is stored in the character's save file, inside the plugin's own element.

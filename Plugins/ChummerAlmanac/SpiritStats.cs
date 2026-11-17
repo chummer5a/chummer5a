@@ -64,18 +64,24 @@ namespace ChummerAlmanac
     /// </summary>
     internal sealed class SpiritPowerEntry
     {
-        public SpiritPowerEntry(string strKey, string strDisplayName)
+        public SpiritPowerEntry(string strKey, string strDisplayName, string strSource = "")
         {
             Key = strKey;
             DisplayName = strDisplayName;
+            Source = strSource ?? string.Empty;
         }
 
         public string Key { get; }
         public string DisplayName { get; }
 
+        /// <summary>
+        /// Book code and page as Chummer's PDF function expects them, e.g. "SR5 397". Empty if the data has none.
+        /// </summary>
+        public string Source { get; }
+
         public override string ToString()
         {
-            return DisplayName;
+            return string.IsNullOrEmpty(Source) ? DisplayName : DisplayName + "  [" + Source + "]";
         }
     }
 
@@ -103,7 +109,7 @@ namespace ChummerAlmanac
         public string TypeName { get; private set; } = string.Empty;
         public string Source { get; private set; } = string.Empty;
         public List<SpiritStatLine> Attributes { get; } = new List<SpiritStatLine>();
-        public List<string> Powers { get; } = new List<string>();
+        public List<SpiritPowerEntry> Powers { get; } = new List<SpiritPowerEntry>();
         public List<SpiritPowerEntry> OptionalPowers { get; } = new List<SpiritPowerEntry>();
         public List<SpiritSkillLine> Skills { get; } = new List<SpiritSkillLine>();
 
@@ -187,7 +193,9 @@ namespace ChummerAlmanac
                 {
                     if (xmlPower.NodeType != XmlNodeType.Element)
                         continue;
-                    objStats.Powers.Add(GetPowerDisplayName(xmlPower, xmlSpiritPowers, xmlCritterPowers));
+                    string strDisplayName = GetPowerDisplayName(xmlPower, xmlSpiritPowers, xmlCritterPowers);
+                    objStats.Powers.Add(new SpiritPowerEntry(GetPowerKey(xmlPower), strDisplayName,
+                        GetPowerSource(xmlPower, xmlSpiritPowers, xmlCritterPowers, strLanguage)));
                 }
             }
             XmlNode xmlWeaknesses = xmlSpirit["weaknesses"];
@@ -197,8 +205,10 @@ namespace ChummerAlmanac
                 {
                     if (xmlWeakness.NodeType != XmlNodeType.Element)
                         continue;
-                    objStats.Powers.Add(string.Format(objCulture, AlmanacStrings.Get("Label_Weakness"),
-                        GetPowerDisplayName(xmlWeakness, xmlSpiritPowers, xmlCritterPowers)));
+                    objStats.Powers.Add(new SpiritPowerEntry(GetPowerKey(xmlWeakness),
+                        string.Format(objCulture, AlmanacStrings.Get("Label_Weakness"),
+                            GetPowerDisplayName(xmlWeakness, xmlSpiritPowers, xmlCritterPowers)),
+                        GetPowerSource(xmlWeakness, xmlSpiritPowers, xmlCritterPowers, strLanguage)));
                 }
             }
 
@@ -214,7 +224,8 @@ namespace ChummerAlmanac
                     if (string.IsNullOrEmpty(strKey))
                         continue;
                     objStats.OptionalPowers.Add(new SpiritPowerEntry(strKey,
-                        GetPowerDisplayName(xmlPower, xmlSpiritPowers, xmlCritterPowers)));
+                        GetPowerDisplayName(xmlPower, xmlSpiritPowers, xmlCritterPowers),
+                        GetPowerSource(xmlPower, xmlSpiritPowers, xmlCritterPowers, strLanguage)));
                 }
                 // A spirit gets one optional power for every 3 full points of Force (SR5 303).
                 if (blnIsSpirit && objStats.OptionalPowers.Count > 0)
@@ -330,6 +341,45 @@ namespace ChummerAlmanac
             string strSelect = xmlPower.Attributes?["select"]?.Value;
             string strDisplayName = TranslatePower(strName, xmlSpiritPowers, xmlCritterPowers);
             return string.IsNullOrEmpty(strSelect) ? strDisplayName : strDisplayName + " (" + strSelect + ")";
+        }
+
+        /// <summary>
+        /// Book code and page of a power from the data files, e.g. "SR5 397". Like Chummer's own source display this
+        /// uses the page of the translated book when the data has one. Empty if the data has no source for the power.
+        /// </summary>
+        private static string GetPowerSource(XmlNode xmlPower, XPathNavigator xmlSpiritPowers,
+            XPathNavigator xmlCritterPowers, string strLanguage)
+        {
+            string strName = xmlPower.InnerText ?? string.Empty;
+            return GetSourceFromData(xmlSpiritPowers, strName, strLanguage)
+                   ?? GetSourceFromData(xmlCritterPowers, strName, strLanguage)
+                   ?? string.Empty;
+        }
+
+        private static string GetSourceFromData(XPathNavigator xmlData, string strEnglishName, string strLanguage)
+        {
+            if (xmlData == null || string.IsNullOrEmpty(strEnglishName))
+                return null;
+            try
+            {
+                XPathNavigator xmlPower = xmlData.SelectSingleNode("/chummer/powers/power[name = "
+                                                                   + strEnglishName.CleanXPath() + "]");
+                string strSource = xmlPower?.SelectSingleNode("source")?.Value;
+                if (string.IsNullOrEmpty(strSource))
+                    return null;
+                string strPage = xmlPower.SelectSingleNode("page")?.Value;
+                if (!string.Equals(strLanguage, GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    string strAltPage = xmlPower.SelectSingleNode("altpage")?.Value;
+                    if (!string.IsNullOrEmpty(strAltPage))
+                        strPage = strAltPage;
+                }
+                return string.IsNullOrEmpty(strPage) ? strSource : strSource + " " + strPage;
+            }
+            catch (XPathException)
+            {
+                return null;
+            }
         }
 
         private static string TranslatePower(string strEnglishName, XPathNavigator xmlSpiritPowers,

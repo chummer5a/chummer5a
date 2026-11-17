@@ -49,6 +49,7 @@ namespace ChummerAlmanac
         private readonly Label _lblExpiry;
 
         // True while the control fills its lists itself, so that change events are not mistaken for user input.
+        private readonly TextBox _txtSpiritNote;
         private bool _blnLoading;
         private Spirit _objSelectedSpirit;
         private SpiritStats _objSelectedStats;
@@ -119,6 +120,18 @@ namespace ChummerAlmanac
                 CheckOnClick = true
             };
             _clbOptionalPowers.ItemCheck += OptionalPowers_ItemCheck;
+            AttachPdfMenu(_lstPowers, true);
+            AttachPdfMenu(_clbOptionalPowers, false);
+
+            _txtSpiritNote = new TextBox
+            {
+                Dock = DockStyle.Fill,
+                Multiline = true,
+                AcceptsReturn = true,
+                ScrollBars = ScrollBars.Vertical,
+                Enabled = false
+            };
+            _txtSpiritNote.TextChanged += SpiritNote_TextChanged;
 
             _lstSkills = CreateListView();
             _lstSkills.Columns.Add(AlmanacStrings.Get("Column_Skill"), 170);
@@ -182,7 +195,7 @@ namespace ChummerAlmanac
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
-                RowCount = 4
+                RowCount = 5
             };
             tlpRight.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
             tlpRight.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
@@ -190,6 +203,7 @@ namespace ChummerAlmanac
             tlpRight.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.Percent, 55));
             tlpRight.RowStyles.Add(new RowStyle(SizeType.Percent, 45));
+            tlpRight.RowStyles.Add(new RowStyle(SizeType.Absolute, 90));
             tlpRight.Controls.Add(_lblTitle, 0, 0);
             tlpRight.SetColumnSpan(_lblTitle, 2);
             tlpRight.Controls.Add(_gpbSummoning, 0, 1);
@@ -198,6 +212,9 @@ namespace ChummerAlmanac
             tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Powers"), _lstPowers), 1, 2);
             tlpRight.Controls.Add(CreateGroupBox(AlmanacStrings.Get("Group_Skills"), _lstSkills), 0, 3);
             tlpRight.Controls.Add(_gpbOptionalPowers, 1, 3);
+            GroupBox gpbNote = CreateGroupBox(AlmanacStrings.Get("Group_SpiritNote"), _txtSpiritNote);
+            tlpRight.Controls.Add(gpbNote, 0, 4);
+            tlpRight.SetColumnSpan(gpbNote, 2);
 
             TableLayoutPanel tlpMain = new TableLayoutPanel
             {
@@ -350,8 +367,8 @@ namespace ChummerAlmanac
 
                 _lstPowers.BeginUpdate();
                 _lstPowers.Items.Clear();
-                foreach (string strPower in objStats.Powers)
-                    _lstPowers.Items.Add(strPower);
+                foreach (SpiritPowerEntry objPower in objStats.Powers)
+                    _lstPowers.Items.Add(objPower);
                 _lstPowers.EndUpdate();
 
                 _lstSkills.BeginUpdate();
@@ -374,6 +391,9 @@ namespace ChummerAlmanac
                 _clbOptionalPowers.EndUpdate();
                 _clbOptionalPowers.Enabled = objStats.OptionalPowers.Count > 0;
                 UpdateOptionalPowersCaption(intChosen);
+
+                _txtSpiritNote.Text = _objData.GetSpiritNote(objSpirit.InternalId);
+                _txtSpiritNote.Enabled = true;
 
                 DateTime? dtSummoned = _objData.GetSummoned(objSpirit.InternalId);
                 _dtpSummoned.Value = AlmanacFormat.ClampToPicker(
@@ -405,6 +425,8 @@ namespace ChummerAlmanac
                 _lstSkills.Items.Clear();
                 _clbOptionalPowers.Items.Clear();
                 _clbOptionalPowers.Enabled = false;
+                _txtSpiritNote.Text = string.Empty;
+                _txtSpiritNote.Enabled = false;
                 _gpbOptionalPowers.Text = AlmanacStrings.Get("Group_OptionalPowers");
                 _dtpSummoned.Checked = false;
                 _gpbSummoning.Enabled = false;
@@ -413,6 +435,60 @@ namespace ChummerAlmanac
             finally
             {
                 _blnLoading = false;
+            }
+        }
+
+        private void SpiritNote_TextChanged(object sender, EventArgs e)
+        {
+            if (_blnLoading || _objSelectedSpirit == null)
+                return;
+            _objData.SetSpiritNote(_objSelectedSpirit.InternalId, _txtSpiritNote.Text);
+            // The note is stored in the character's save file, so the character now has unsaved changes.
+            _frmCharacter.IsDirty = true;
+        }
+
+        /// <summary>
+        /// Let the user open the book page of a power in their PDF reader, using Chummer's own PDF settings.
+        /// </summary>
+        private void AttachPdfMenu(ListBox lstPowers, bool blnOpenOnDoubleClick)
+        {
+            ContextMenuStrip mnuPdf = new ContextMenuStrip();
+            ToolStripMenuItem tsmOpenPdf = new ToolStripMenuItem(AlmanacStrings.Get("Menu_OpenPdf"));
+            mnuPdf.Items.Add(tsmOpenPdf);
+            SpiritPowerEntry objClicked = null;
+            mnuPdf.Opening += (sender, e) =>
+            {
+                int intIndex = lstPowers.IndexFromPoint(lstPowers.PointToClient(Cursor.Position));
+                objClicked = intIndex >= 0 ? lstPowers.Items[intIndex] as SpiritPowerEntry : null;
+                if (objClicked == null || string.IsNullOrEmpty(objClicked.Source))
+                    e.Cancel = true;
+            };
+            tsmOpenPdf.Click += async (sender, e) => await OpenPdfAsync(objClicked).ConfigureAwait(true);
+            lstPowers.ContextMenuStrip = mnuPdf;
+            // A double click on a check box list would also change the check mark, so only plain lists get it.
+            if (blnOpenOnDoubleClick)
+            {
+                lstPowers.MouseDoubleClick += async (sender, e) =>
+                {
+                    int intIndex = lstPowers.IndexFromPoint(e.Location);
+                    if (intIndex >= 0)
+                        await OpenPdfAsync(lstPowers.Items[intIndex] as SpiritPowerEntry).ConfigureAwait(true);
+                };
+            }
+        }
+
+        private async System.Threading.Tasks.Task OpenPdfAsync(SpiritPowerEntry objPower)
+        {
+            if (objPower == null || string.IsNullOrEmpty(objPower.Source))
+                return;
+            try
+            {
+                await CommonFunctions.OpenPdf(objPower.Source, _objCharacter.Settings, blnOpenOptions: true)
+                    .ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format(CultureInfo.CurrentCulture, AlmanacStrings.Get("Message_PdfError"), e.Message));
             }
         }
 

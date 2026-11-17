@@ -44,7 +44,10 @@ namespace ChummerAlmanac
             // In-game time at which the spirit was summoned, if known.
             public DateTime? Summoned { get; set; }
 
-            public bool IsEmpty => OptionalPowers.Count == 0 && !Summoned.HasValue;
+            // The user's own note on the spirit.
+            public string Note { get; set; } = string.Empty;
+
+            public bool IsEmpty => OptionalPowers.Count == 0 && !Summoned.HasValue && string.IsNullOrEmpty(Note);
         }
 
         private readonly object _objLock = new object();
@@ -109,6 +112,33 @@ namespace ChummerAlmanac
             {
                 SpiritEntry objEntry = GetOrAddSpirit(strSpiritId);
                 objEntry.Summoned = dtSummoned.HasValue ? (DateTime?)TruncateToMinute(dtSummoned.Value) : null;
+                if (objEntry.IsEmpty)
+                    _dicSpirits.Remove(strSpiritId);
+            }
+        }
+
+        /// <summary>
+        /// The user's own note on a spirit. Empty if there is none.
+        /// </summary>
+        public string GetSpiritNote(string strSpiritId)
+        {
+            lock (_objLock)
+            {
+                if (!string.IsNullOrEmpty(strSpiritId)
+                    && _dicSpirits.TryGetValue(strSpiritId, out SpiritEntry objEntry))
+                    return objEntry.Note;
+                return string.Empty;
+            }
+        }
+
+        public void SetSpiritNote(string strSpiritId, string strNote)
+        {
+            if (string.IsNullOrEmpty(strSpiritId))
+                return;
+            lock (_objLock)
+            {
+                SpiritEntry objEntry = GetOrAddSpirit(strSpiritId);
+                objEntry.Note = strNote ?? string.Empty;
                 if (objEntry.IsEmpty)
                     _dicSpirits.Remove(strSpiritId);
             }
@@ -247,6 +277,8 @@ namespace ChummerAlmanac
                     }
                     foreach (string strPower in kvpSpirit.Value.OptionalPowers)
                         xmlSpirit.Add(new XElement("optionalpower", strPower));
+                    if (!string.IsNullOrEmpty(kvpSpirit.Value.Note))
+                        xmlSpirit.Add(new XElement("note", kvpSpirit.Value.Note));
                     xmlRoot.Add(xmlSpirit);
                 }
                 if (blnHasCalendar)
@@ -308,6 +340,7 @@ namespace ChummerAlmanac
                                 if (!string.IsNullOrEmpty(xmlPower.Value))
                                     objEntry.OptionalPowers.Add(xmlPower.Value);
                             }
+                            objEntry.Note = xmlSpirit.Element("note")?.Value ?? string.Empty;
                             if (DateTime.TryParseExact((string)xmlSpirit.Attribute("summoned") ?? string.Empty,
                                     DateTimeFormat, objInvariant, DateTimeStyles.None, out DateTime dtSummoned))
                                 objEntry.Summoned = dtSummoned;
