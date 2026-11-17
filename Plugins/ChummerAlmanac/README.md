@@ -36,3 +36,9 @@ The build copies `ChummerAlmanac.dll` to `Chummer\bin\<Configuration>\Plugins\Ch
 ## Install
 
 Copy `ChummerAlmanac.dll` to `<Chummer folder>\Plugins\ChummerAlmanac\`, enable plugins in Chummer's options, tick "Almanac (Spirits & Calendar)" and restart Chummer.
+
+Notes for installing on another PC:
+
+- Build against the same Chummer version the target PC runs. A plugin built for a clearly different version may fail to load.
+- Unblock the copied file (`Unblock-File`), otherwise Windows may refuse to load a DLL that came from the internet or a mail attachment.
+- Chummer only saves plugin data for active plugins. A character saved on a PC without the active plugin loses its Almanac data (optional powers, summoning times, game date, notes). Opening alone does not change the file.
