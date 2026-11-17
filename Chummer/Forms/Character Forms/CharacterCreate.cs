@@ -16318,19 +16318,18 @@ namespace Chummer
                             }
 
                             await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
-                                    RefreshSelectedArmor(token),
-                                    RefreshSelectedGear(token), RefreshSelectedDrug(token),
-                                    RefreshSelectedLifestyle(token),
-                                    RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
-                                    RefreshSelectedSpell(token),
-                                    RefreshSelectedSpirit(token), RefreshSelectedSprite(token),
-                                    RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
-                                    RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
-                                    RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                                    RefreshSelectedContact(token),
-                                    UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
-                                    CalculateBPandRefreshBPDisplays(true, token), RefreshPasteStatus(token))
-                                .ConfigureAwait(false);
+                                RefreshSelectedArmor(token),
+                                RefreshSelectedGear(token), RefreshSelectedDrug(token),
+                                RefreshSelectedLifestyle(token),
+                                RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
+                                RefreshSelectedSpell(token),
+                                RefreshSelectedSpirit(token), RefreshSelectedSprite(token),
+                                RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
+                                RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
+                                RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                RefreshSelectedContact(token),
+                                UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
+                                CalculateBPandRefreshBPDisplays(true, token), RefreshPasteStatus(token)).ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }
                         finally

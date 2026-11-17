@@ -22182,6 +22182,7 @@ namespace Chummer
                                 RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
                                 RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                 RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                RefreshSelectedContact(token),
                                 RefreshSelectedImprovement(token), RefreshPasteStatus(token)).ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }
