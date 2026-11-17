@@ -5334,7 +5334,7 @@ namespace Chummer
 
                         string strShowFileName = Path.GetFileName(await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false));
                         if (string.IsNullOrEmpty(strShowFileName))
-                            strShowFileName = objMerge.CharacterName;
+                            strShowFileName = await objMerge.GetCharacterNameAsync(GenericToken).ConfigureAwait(false);
                         strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz")
                                           + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
                                           + await LanguageManager.GetStringAsync("String_LeftPar", token: GenericToken).ConfigureAwait(false)
@@ -5350,7 +5350,7 @@ namespace Chummer
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(token: GenericToken).ConfigureAwait(false))
                         {
-                            await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
+                            await frmLoadingBar.MyForm.PerformStepAsync(await objMerge.GetCharacterNameAsync(GenericToken).ConfigureAwait(false),
                                                                         LoadingBar.ProgressBarTextPatterns.Saving,
                                                                         token: GenericToken).ConfigureAwait(false);
                             await objMerge.SetFileNameAsync(dlgSaveFile.FileName, GenericToken).ConfigureAwait(false);
@@ -5672,7 +5672,7 @@ namespace Chummer
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                     = await Program.CreateAndShowProgressBarAsync(token: GenericToken).ConfigureAwait(false))
                             {
-                                await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
+                                await frmLoadingBar.MyForm.PerformStepAsync(await objMerge.GetCharacterNameAsync(GenericToken).ConfigureAwait(false),
                                                                             LoadingBar.ProgressBarTextPatterns.Saving,
                                                                             token: GenericToken).ConfigureAwait(false);
                                 await objMerge.SetFileNameAsync(dlgSaveFile.FileName, GenericToken).ConfigureAwait(false);

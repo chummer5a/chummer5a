@@ -18918,7 +18918,7 @@ namespace Chummer
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {
-                            await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                            await frmLoadingBar.MyForm.PerformStepAsync(await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false),
                                     LoadingBar.ProgressBarTextPatterns.Saving, token)
                                 .ConfigureAwait(false);
                             Interlocked.Increment(ref _intFileUpdateQueued);
@@ -23619,7 +23619,7 @@ namespace Chummer
                                         = await Program.CreateAndShowProgressBarAsync(token: token)
                                             .ConfigureAwait(false))
                                 {
-                                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                                    await frmLoadingBar.MyForm.PerformStepAsync(await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false),
                                         LoadingBar.ProgressBarTextPatterns.Saving,
                                         token).ConfigureAwait(false);
                                     if (!await CharacterObject.SaveAsync(strNewName, token: token)
