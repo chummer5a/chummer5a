@@ -60,10 +60,12 @@ namespace Chummer.Tests
                 // Now load the UI, including the Master Index and Character Roster
                 bool blnOldHideMasterIndex = GlobalSettings.HideMasterIndex;
                 bool blnOldHideCharacterRoster = GlobalSettings.HideCharacterRoster;
+                bool blnOldAutoUpdate = GlobalSettings.AutomaticUpdate;
                 try
                 {
                     GlobalSettings.HideMasterIndex = false;
                     GlobalSettings.HideCharacterRoster = false;
+                    GlobalSettings.AutomaticUpdate = false;
                     ChummerMainForm frmOldMainForm = Program.MainForm;
                     ChummerMainForm frmTestForm = null;
                     // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
@@ -115,6 +117,7 @@ namespace Chummer.Tests
                 {
                     GlobalSettings.HideMasterIndex = blnOldHideMasterIndex;
                     GlobalSettings.HideCharacterRoster = blnOldHideCharacterRoster;
+                    GlobalSettings.AutomaticUpdate = blnOldAutoUpdate;
                 }
             }
             finally
@@ -158,10 +161,12 @@ namespace Chummer.Tests
                 // Now load the UI, including the Master Index and Character Roster
                 bool blnOldHideMasterIndex = GlobalSettings.HideMasterIndex;
                 bool blnOldHideCharacterRoster = GlobalSettings.HideCharacterRoster;
+                bool blnOldAutoUpdate = GlobalSettings.AutomaticUpdate;
                 try
                 {
                     GlobalSettings.HideMasterIndex = false;
                     GlobalSettings.HideCharacterRoster = false;
+                    GlobalSettings.AutomaticUpdate = false;
                     ChummerMainForm frmOldMainForm = Program.MainForm;
                     ChummerMainForm frmTestForm = null;
                     // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
@@ -309,6 +314,7 @@ namespace Chummer.Tests
                 {
                     GlobalSettings.HideMasterIndex = blnOldHideMasterIndex;
                     GlobalSettings.HideCharacterRoster = blnOldHideCharacterRoster;
+                    GlobalSettings.AutomaticUpdate = blnOldAutoUpdate;
                 }
             }
             finally
