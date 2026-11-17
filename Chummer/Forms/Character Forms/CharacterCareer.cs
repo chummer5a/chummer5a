@@ -1814,6 +1814,62 @@ namespace Chummer
 
                                         SetupCommonCollectionDatabindings(true);
                                     }
+
+                                    if (Utils.IsUnitTestForUI)
+                                    {
+                                        // For unit tests, we want to select entries everywhere so that we can properly stress test refreshes
+                                        void SelectFirstChildInTreeView(TreeView treToProcess)
+                                        {
+                                            if (treToProcess != null)
+                                            {
+                                                foreach (TreeNode objParentNode in treToProcess.Nodes)
+                                                {
+                                                    if (objParentNode.Nodes.Count > 0)
+                                                    {
+                                                        treToProcess.SelectedNode = objParentNode.Nodes[0];
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        await this.DoThreadSafeAsync(t =>
+                                        {
+                                            SelectFirstChildInTreeView(treQualities);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treCyberware);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treArmor);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treGear);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treCustomDrugs);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treLifestyles);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treVehicles);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treWeapons);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treSpells);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treSpirits);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treSprites);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treComplexForms);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treCritterPowers);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treAIPrograms);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treMetamagic);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treMartialArts);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treContacts);
+                                        }, GenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 finally
                                 {
