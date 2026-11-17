@@ -20,6 +20,7 @@
 using System;
 using System.Windows.Forms;
 using Chummer;
+using Chummer.Backend.Skills;
 
 namespace ChummerAlmanac
 {
@@ -28,15 +29,19 @@ namespace ChummerAlmanac
     /// </summary>
     public sealed class AlmanacTabControl : UserControl
     {
+        private readonly CharacterShared _frmCharacter;
+        private readonly TabControl _tabAlmanacTabs;
+        private readonly TabPage _tabSpirits;
+
         public AlmanacTabControl(CharacterShared frmCharacter)
         {
-            if (frmCharacter == null)
-                throw new ArgumentNullException(nameof(frmCharacter));
+            _frmCharacter = frmCharacter ?? throw new ArgumentNullException(nameof(frmCharacter));
 
             TabControl tabAlmanacTabs = new TabControl
             {
                 Dock = DockStyle.Fill
             };
+            _tabAlmanacTabs = tabAlmanacTabs;
 
             TabPage tabSpirits = new TabPage(AlmanacStrings.Get("Tab_Spirits"))
             {
@@ -46,7 +51,7 @@ namespace ChummerAlmanac
             {
                 Dock = DockStyle.Fill
             });
-            tabAlmanacTabs.TabPages.Add(tabSpirits);
+            _tabSpirits = tabSpirits;
 
             TabPage tabCalendar = new TabPage(AlmanacStrings.Get("Tab_Calendar"))
             {
@@ -59,6 +64,53 @@ namespace ChummerAlmanac
             tabAlmanacTabs.TabPages.Add(tabCalendar);
 
             Controls.Add(tabAlmanacTabs);
+
+            UpdateSpiritsTab();
+            // The skills can change while the character is open, so check again whenever the tab is shown.
+            VisibleChanged += (sender, e) =>
+            {
+                if (Visible)
+                    UpdateSpiritsTab();
+            };
+        }
+
+        /// <summary>
+        /// Show the spirits sub-tab only for characters who can summon spirits or compile sprites.
+        /// </summary>
+        private void UpdateSpiritsTab()
+        {
+            bool blnShow = CanSummon(_frmCharacter.CharacterObject);
+            bool blnShown = _tabAlmanacTabs.TabPages.Contains(_tabSpirits);
+            if (blnShow == blnShown)
+                return;
+            TabPage tabSelected = _tabAlmanacTabs.SelectedTab;
+            if (blnShow)
+                _tabAlmanacTabs.TabPages.Insert(0, _tabSpirits);
+            else
+                _tabAlmanacTabs.TabPages.Remove(_tabSpirits);
+            if (tabSelected != null && _tabAlmanacTabs.TabPages.Contains(tabSelected))
+                _tabAlmanacTabs.SelectedTab = tabSelected;
+        }
+
+        /// <summary>
+        /// True if the character has at least one rating in the skill for summoning spirits ("Summoning",
+        /// "Herbeirufen" in the German data) or for compiling sprites ("Compiling").
+        /// </summary>
+        private static bool CanSummon(Character objCharacter)
+        {
+            SkillsSection objSkills = objCharacter?.SkillsSection;
+            if (objSkills == null)
+                return true;
+            try
+            {
+                return (objSkills.GetActiveSkill("Summoning")?.Rating ?? 0) > 0
+                       || (objSkills.GetActiveSkill("Compiling")?.Rating ?? 0) > 0;
+            }
+            catch (Exception)
+            {
+                // If the skills cannot be read, rather show the tab than hide it.
+                return true;
+            }
         }
     }
 }
