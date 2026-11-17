@@ -532,7 +532,7 @@ namespace ChummerAlmanac
         /// </summary>
         private void UpdateExpiry()
         {
-            _lblExpiry.ForeColor = _gpbSummoning.ForeColor;
+            _lblExpiry.ForeColor = ColorManager.ControlText;
             if (_objSelectedSpirit == null || _objSelectedSpirit.EntityType != SpiritType.Spirit)
             {
                 _lblExpiry.Text = string.Empty;
@@ -561,7 +561,7 @@ namespace ChummerAlmanac
             if (GameClock.GetCurrentDateTime(_objCharacter, _objData) >= objEvent.LocalTime)
             {
                 strText = string.Format(objCulture, AlmanacStrings.Get("Expiry_Expired"), strText);
-                _lblExpiry.ForeColor = Color.Red;
+                _lblExpiry.ForeColor = ColorManager.ErrorColor;
             }
             _lblExpiry.Text = strText;
         }

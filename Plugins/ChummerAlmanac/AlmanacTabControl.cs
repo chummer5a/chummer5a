@@ -32,6 +32,7 @@ namespace ChummerAlmanac
         private readonly CharacterShared _frmCharacter;
         private readonly TabControl _tabAlmanacTabs;
         private readonly TabPage _tabSpirits;
+        private bool? _blnAppliedLightMode;
 
         public AlmanacTabControl(CharacterShared frmCharacter)
         {
@@ -66,12 +67,34 @@ namespace ChummerAlmanac
             Controls.Add(tabAlmanacTabs);
 
             UpdateSpiritsTab();
-            // The skills can change while the character is open, so check again whenever the tab is shown.
+            // Chummer adds plugin tabs after it has applied its colors to the character window, so the plugin
+            // applies the light or dark mode itself once the control is shown.
+            HandleCreated += (sender, e) => UpdateColors();
+            // The skills and the color mode can change while the character is open, so check again whenever
+            // the tab is shown.
             VisibleChanged += (sender, e) =>
             {
-                if (Visible)
-                    UpdateSpiritsTab();
+                if (!Visible)
+                    return;
+                UpdateSpiritsTab();
+                UpdateColors();
             };
+        }
+
+        /// <summary>
+        /// Apply Chummer's light or dark mode to the whole Almanac tab, including the hidden spirits page.
+        /// Chummer itself updates the visible controls when the user changes the mode in the options.
+        /// </summary>
+        private void UpdateColors()
+        {
+            bool blnLightMode = ColorManager.IsLightMode;
+            if (_blnAppliedLightMode == blnLightMode)
+                return;
+            _blnAppliedLightMode = blnLightMode;
+            Control objTarget = Parent as TabPage ?? (Control)this;
+            objTarget.UpdateLightDarkMode(blnLightMode);
+            if (!_tabAlmanacTabs.TabPages.Contains(_tabSpirits))
+                _tabSpirits.UpdateLightDarkMode(blnLightMode);
         }
 
         /// <summary>
@@ -85,7 +108,11 @@ namespace ChummerAlmanac
                 return;
             TabPage tabSelected = _tabAlmanacTabs.SelectedTab;
             if (blnShow)
+            {
                 _tabAlmanacTabs.TabPages.Insert(0, _tabSpirits);
+                // While hidden, the page missed any change of the color mode.
+                _tabSpirits.UpdateLightDarkMode();
+            }
             else
                 _tabAlmanacTabs.TabPages.Remove(_tabSpirits);
             if (tabSelected != null && _tabAlmanacTabs.TabPages.Contains(tabSelected))
