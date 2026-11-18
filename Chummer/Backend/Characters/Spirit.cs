@@ -599,7 +599,7 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdExtra))
                 {
-                    string strSelect = xmlPowerEntryNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
+                    string strSelect = (await xmlPowerEntryNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@select", token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strSelect))
                         sbdExtra.Append(await CharacterObject
                             .TranslateExtraAsync(strSelect, strLanguageToPrint, token: token)

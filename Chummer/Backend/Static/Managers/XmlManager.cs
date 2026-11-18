@@ -1554,19 +1554,19 @@ namespace Chummer
         private static async Task AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*", token))
+            foreach (XPathNavigator objChild in await xmlTranslationListParentNode.SelectAndCacheExpressionAsync("*", token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
                 string strXPathPrefix = xmlTranslationListParentNode.Name + "/" + objChild.Name;
-                string strChildName = objChild.SelectSingleNodeAndCacheExpression("id", token)?.Value;
+                string strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrEmpty(strChildName))
                 {
                     xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
                 }
                 if (xmlItem == null)
                 {
-                    strChildName = objChild.SelectSingleNodeAndCacheExpression("name", token)?.Value.Replace("&amp;", "&");
+                    strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value.Replace("&amp;", "&");
                     if (!string.IsNullOrEmpty(strChildName))
                     {
                         xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
@@ -1575,39 +1575,39 @@ namespace Chummer
                 // If this is a translatable item, find the proper node and add/update this information.
                 if (xmlItem != null)
                 {
-                    XPathNavigator xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("translate", token);
+                    XPathNavigator xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altpage", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altpage", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altcode", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altcode", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnotes", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altnotes", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altadvantage", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altadvantage", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altdisadvantage", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altdisadvantage", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnameonpage", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altnameonpage", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("alttexts", token);
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("alttexts", token).ConfigureAwait(false);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool(token);
+                    string strTranslate = (await objChild.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.InnerXmlViaPool(token);
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1615,27 +1615,27 @@ namespace Chummer
                     }
 
                     // Sub-children to also process with the translation
-                    XPathNavigator xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("specs", token);
+                    XPathNavigator xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("specs", token).ConfigureAwait(false);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("metavariants", token);
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("metavariants", token).ConfigureAwait(false);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("choices", token);
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("choices", token).ConfigureAwait(false);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("talents", token);
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("talents", token).ConfigureAwait(false);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("versions", token);
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("versions", token).ConfigureAwait(false);
                     if (xmlSubItemsNode != null)
                     {
                         await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
@@ -1643,7 +1643,7 @@ namespace Chummer
                 }
                 else
                 {
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXmlViaPool(token);
+                    string strTranslate = (await objChild.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.InnerXmlViaPool(token);
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -3345,11 +3345,11 @@ namespace Chummer
                         lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
                     // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                     token.ThrowIfCancellationRequested();
-                    foreach (XPathNavigator xmlSheet in (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
-                                 .SelectAndCacheExpression(
+                    foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
+                                 .SelectAndCacheExpressionAsync(
                                      "/chummer/sheets[@lang="
                                      + strLanguage.CleanXPath()
-                                     + "]/sheet[not(hide)]", token: token))
+                                     + "]/sheet[not(hide)]", token: token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value;
@@ -3372,9 +3372,9 @@ namespace Chummer
                 }
                 else
                 {
-                    XPathNodeIterator xmlIterator = (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpression(
-                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token);
+                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
+                        .SelectAndCacheExpressionAsync(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token).ConfigureAwait(false);
                     if (blnDoList)
                         lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
 
@@ -3424,11 +3424,11 @@ namespace Chummer
                     foreach (Character objCharacter in lstCharacters)
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (XPathNavigator xmlSheet in (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
-                                     .SelectAndCacheExpression(
+                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
+                                     .SelectAndCacheExpressionAsync(
                                          "/chummer/sheets[@lang="
                                          + strLanguage.CleanXPath()
-                                         + "]/sheet[not(hide)]", token: token))
+                                         + "]/sheet[not(hide)]", token: token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token: token)?.Value;
@@ -3452,9 +3452,9 @@ namespace Chummer
                 }
                 else
                 {
-                    XPathNodeIterator xmlIterator = (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpression(
-                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token);
+                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
+                        .SelectAndCacheExpressionAsync(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token: token).ConfigureAwait(false);
                     if (blnDoList)
                         lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
 
@@ -3713,8 +3713,8 @@ namespace Chummer
                                                         "metavariants", token: token);
                                                 if (xmlMetavariants != null)
                                                 {
-                                                    foreach (XPathNavigator objMetavariant in xmlMetavariants
-                                                                 .SelectAndCacheExpression("metavariant", token: token))
+                                                    foreach (XPathNavigator objMetavariant in await xmlMetavariants
+                                                                 .SelectAndCacheExpressionAsync("metavariant", token: token).ConfigureAwait(false))
                                                     {
                                                         string strMetavariantName
                                                             = objMetavariant

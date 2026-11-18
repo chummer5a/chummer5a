@@ -364,7 +364,7 @@ namespace Chummer
                     if (xmlDrug.SelectSingleNodeAndCacheExpression("bannedgrades") != null)
                     {
                         setDisallowedGrades = new HashSet<string>();
-                        foreach (XPathNavigator objNode in xmlDrug.SelectAndCacheExpression("bannedgrades/grade"))
+                        foreach (XPathNavigator objNode in await xmlDrug.SelectAndCacheExpressionAsync("bannedgrades/grade").ConfigureAwait(false))
                         {
                             setDisallowedGrades.Add(objNode.Value);
                         }

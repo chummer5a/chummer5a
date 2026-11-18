@@ -5175,7 +5175,7 @@ namespace Chummer
 
                         // Check for SelectText.
                         string strExtra = string.Empty;
-                        XPathNavigator xmlSelectText = objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", GenericToken);
+                        XPathNavigator xmlSelectText = await objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", GenericToken).ConfigureAwait(false);
                         if (xmlSelectText != null)
                         {
                             string strDescription = StringExtensions.FastFormat(
@@ -6431,7 +6431,7 @@ namespace Chummer
                     // Fix for legacy characters with old addqualities improvements.
                     if (objXmlDeleteQuality != null)
                         await RemoveAddedQualities(
-                            objXmlDeleteQuality.SelectAndCacheExpressionAsNavigator("addqualities/addquality", token),
+                            await objXmlDeleteQuality.SelectAndCacheExpressionAsNavigatorAsync("addqualities/addquality", token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false);
                 }
                 finally
@@ -23802,7 +23802,7 @@ namespace Chummer
                     try
                     {
                         string strForced =
-                            xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ??
+                            (await xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@select", token).ConfigureAwait(false))?.Value ??
                             string.Empty;
 
                         await objCyberware.CreateAsync(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles,
@@ -25585,7 +25585,7 @@ namespace Chummer
             }
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
-            string strForceValue = objXmlGear.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
+            string strForceValue = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@select", token).ConfigureAwait(false))?.Value ?? string.Empty;
             Gear objNewGear = new Gear(CharacterObject);
             try
             {

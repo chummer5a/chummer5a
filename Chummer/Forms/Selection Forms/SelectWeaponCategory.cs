@@ -54,7 +54,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + OnlyCategory.CleanXPath() + "]")
-                             : objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+                             : await objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
                 {
                     if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {

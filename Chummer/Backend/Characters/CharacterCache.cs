@@ -903,16 +903,22 @@ namespace Chummer
                         _strSettingsFile = string.Empty;
 
                     string strMugshotBase64
-                        = xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)?.Value
+                        = (blnSync
+                        ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)
+                        : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mugshot", token).ConfigureAwait(false))?.Value
                           ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
-                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token);
+                        XPathNavigator xmlMainMugshotIndex = blnSync
+                            ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token)
+                            : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mainmugshotindex", token).ConfigureAwait(false);
                         if (xmlMainMugshotIndex != null &&
                             int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) &&
                             intMainMugshotIndex >= 0)
                         {
-                            XPathNodeIterator xmlMugshotList = xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token);
+                            XPathNodeIterator xmlMugshotList = blnSync
+                                ? xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token)
+                                : await xmlSourceNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
                             if (xmlMugshotList.Count > intMainMugshotIndex)
                             {
                                 int intIndex = 0;

@@ -28832,7 +28832,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     string strForced =
-                            xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ??
+                            (await xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@select", token).ConfigureAwait(false))?.Value ??
                             string.Empty;
                     // Create the Cyberware object.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -30145,8 +30145,8 @@ namespace Chummer
                                 // Check for SelectText.
                                 string strExtra = string.Empty;
                                 XPathNavigator xmlSelectText =
-                                    objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext",
-                                        GenericToken);
+                                    await objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext",
+                                        GenericToken).ConfigureAwait(false);
                                 if (xmlSelectText != null)
                                 {
                                     string strDescription = StringExtensions.FastFormat(
@@ -30808,7 +30808,7 @@ namespace Chummer
                                 decParentCapacityForUpgrade = await objParentCyberware.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
 
                                 // Add back the capacity currently used by the item being upgraded so the picker reflects "replacement" capacity.
-                                string strCurrentCapacity = objCyberware.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
+                                string strCurrentCapacity = await objCyberware.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, GenericToken).ConfigureAwait(false);
                                 if (!string.IsNullOrEmpty(strCurrentCapacity) && strCurrentCapacity != "*")
                                 {
                                     int intSplitPos = strCurrentCapacity.IndexOf("/[", StringComparison.Ordinal);

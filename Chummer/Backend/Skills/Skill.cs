@@ -1011,11 +1011,12 @@ namespace Chummer.Backend.Skills
                     ?? xmlSkillsDocument.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
 
                 bool blnIsKnowledgeSkill = xmlSkillDataNode != null
-                                           && xmlSkillsDocument
-                                              .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                  "/chummer/categories/category[. = "
-                                                  + xmlSkillDataNode["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
-                                              ?.Value != "active";
+                    && (blnSync
+                        ? xmlSkillsDocument.SelectSingleNodeAndCacheExpressionAsNavigator(
+                            "/chummer/categories/category[. = " + xmlSkillDataNode["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
+                        : await xmlSkillsDocument.SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                            "/chummer/categories/category[. = " + xmlSkillDataNode["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token).ConfigureAwait(false))
+                            ?.Value != "active";
 
                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 objSkill = blnSync ? FromData(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill) : await FromDataAsync(xmlSkillDataNode, objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false);
@@ -1030,7 +1031,7 @@ namespace Chummer.Backend.Skills
                         if (blnSync)
                             objExoticSkill.Specific = xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillspecializations/skillspecialization/name", token)?.Value ?? string.Empty;
                         else
-                            await objExoticSkill.SetSpecificAsync(xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillspecializations/skillspecialization/name", token)?.Value ?? string.Empty, token).ConfigureAwait(false);
+                            await objExoticSkill.SetSpecificAsync((await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("skillspecializations/skillspecialization/name", token).ConfigureAwait(false))?.Value ?? string.Empty, token).ConfigureAwait(false);
                         return objSkill;
                     }
 

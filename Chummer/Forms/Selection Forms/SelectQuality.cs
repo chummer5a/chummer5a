@@ -68,7 +68,7 @@ namespace Chummer
         private async void SelectQuality_Load(object _, EventArgs e)
         {
             // Populate the Quality Category list.
-            foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.SelectAndCacheExpression("categories/category"))
+            foreach (XPathNavigator objXmlCategory in await _xmlBaseQualityDataNode.SelectAndCacheExpressionAsync("categories/category").ConfigureAwait(false))
             {
                 string strInnerText = objXmlCategory.Value;
                 _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
@@ -786,7 +786,7 @@ namespace Chummer
             _lstXPathQueries.Clear();
             
             // Read XPath queries from the qualities.xml file
-            foreach (XPathNavigator objXmlQuery in _xmlBaseQualityDataNode.SelectAndCacheExpression("xpathqueries/query", token: token))
+            foreach (XPathNavigator objXmlQuery in await _xmlBaseQualityDataNode.SelectAndCacheExpressionAsync("xpathqueries/query", token: token).ConfigureAwait(false))
             {
                 string strXPath = objXmlQuery.SelectSingleNodeAndCacheExpression("xpath", token: token)?.Value;
                 

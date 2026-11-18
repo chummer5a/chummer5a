@@ -710,10 +710,10 @@ namespace Chummer.Backend.Skills
                                     else
                                     {
                                         bool blnIsKnowledgeSkill
-                                            = xmlSkillsDocument
-                                                  .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                            = (await xmlSkillsDocument
+                                                  .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
                                                       "/chummer/categories/category[. = "
-                                                      + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
+                                                      + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token).ConfigureAwait(false))
                                                   ?.Value
                                               != "active";
                                         lstReturn.Add(new ValueTuple<Skill, bool>(await Skill
@@ -730,10 +730,10 @@ namespace Chummer.Backend.Skills
                                 else
                                 {
                                     bool blnIsKnowledgeSkill
-                                        = xmlSkillsDocument
-                                              .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                        = (await xmlSkillsDocument
+                                              .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
                                                   "/chummer/categories/category[. = "
-                                                  + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
+                                                  + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token).ConfigureAwait(false))
                                               ?.Value
                                           != "active";
                                     lstReturn.Add(new ValueTuple<Skill, bool>(await Skill
@@ -1289,10 +1289,10 @@ namespace Chummer.Backend.Skills
                                     string strCategoryCleaned =
                                         xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath();
                                     bool blnIsKnowledgeSkill
-                                        = string.IsNullOrEmpty(strCategoryCleaned) || xmlSkillsDocument
-                                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                        = string.IsNullOrEmpty(strCategoryCleaned) || (await xmlSkillsDocument
+                                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
                                                 "/chummer/categories/category[. = "
-                                                + strCategoryCleaned + "]/@type", token)
+                                                + strCategoryCleaned + "]/@type", token).ConfigureAwait(false))
                                             ?.Value
                                         != "active";
                                     if (blnIsKnowledgeSkill)
@@ -3319,11 +3319,11 @@ namespace Chummer.Backend.Skills
                                         foreach (XmlNode xmlSkill in xmlSkillList)
                                         {
                                             bool blnIsKnowledgeSkill
-                                                = xmlSkillsDocument
-                                                      .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                = (await xmlSkillsDocument
+                                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
                                                           "/chummer/categories/category[. = "
                                                           + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath()
-                                                          + "]/@type", token)
+                                                          + "]/@type", token).ConfigureAwait(false))
                                                       ?.Value
                                                   != "active";
                                             Skill objSkill = await Skill.FromDataAsync(xmlSkill, _objCharacter,

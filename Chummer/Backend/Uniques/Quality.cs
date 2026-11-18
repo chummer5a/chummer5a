@@ -349,7 +349,9 @@ namespace Chummer
                     }
                 }
 
-                _nodDiscounts = objXmlQuality.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount", token);
+                _nodDiscounts = blnSync
+                    ? objXmlQuality.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount", token)
+                    : await objXmlQuality.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("costdiscount", token).ConfigureAwait(false);
                 // If the item grants a bonus, pass the information to the Improvement Manager.
                 _nodBonus = objXmlQuality["bonus"];
                 if (_nodBonus?.ChildNodes.Count > 0)
@@ -656,7 +658,9 @@ namespace Chummer
                 objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNode);
                 objNode.TryGetNodeWithSourceFallback("firstlevelbonus", ref _nodFirstLevelBonus, objSourceNode);
                 objNode.TryGetNodeWithSourceFallback("naturalweapons", ref _nodNaturalWeaponsNode, objSourceNode);
-                _nodDiscounts = objNode.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount", token);
+                _nodDiscounts = blnSync
+                    ? objNode.SelectSingleNodeAndCacheExpressionAsNavigator("costdiscount", token)
+                    : await objNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("costdiscount", token).ConfigureAwait(false);
                 objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 

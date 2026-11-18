@@ -1983,14 +1983,16 @@ namespace Chummer
                                                                  "/chummer/knowledgeskills/skill[(not(hide)"
                                                                  + strFilter + ")]"))
                                                     {
-                                                        string strName = xmlSkill
-                                                            .SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                                                        string strName = (blnSync
+                                                            ? xmlSkill.SelectSingleNodeAndCacheExpression("name", token)
+                                                            : await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
                                                         if (!string.IsNullOrEmpty(strName))
                                                             lstDropdownItems.Add(
                                                                 new ListItem(
                                                                     strName,
-                                                                    xmlSkill.SelectSingleNodeAndCacheExpression(
-                                                                            "translate", token)
+                                                                    (blnSync
+                                                                        ? xmlSkill.SelectSingleNodeAndCacheExpression("translate", token)
+                                                                        : await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
                                                                         ?.Value
                                                                     ?? strName));
                                                     }
@@ -2142,7 +2144,9 @@ namespace Chummer
                         xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories", token);
                     if (xmlSkillCategories != null)
                     {
-                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
+                        string strCategory = (blnSync
+                            ? xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)
+                            : await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value
                                              ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strCategory))
                             throw new AbortedException();
@@ -2164,7 +2168,9 @@ namespace Chummer
                         ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
+                        string strCategory = (blnSync
+                            ? xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)
+                            : await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value
                                              ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
                                 .SplitNoAlloc(
@@ -2177,7 +2183,9 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strTemp))
                     {
                         string strSkillGroup =
-                            xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)?.Value
+                            (blnSync
+                                ? xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)
+                                : await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("skillgroup", token).ConfigureAwait(false))?.Value
                             ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
                                 .SplitNoAlloc(
@@ -2190,7 +2198,9 @@ namespace Chummer
                         ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
+                        string strCategory = (blnSync
+                            ? xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)
+                            : await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value
                                              ?? string.Empty;
                         if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
                                 .SplitNoAlloc(
@@ -2204,7 +2214,9 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strTemp))
                     {
                         string strSkillGroup =
-                            xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)?.Value
+                            (blnSync
+                                ? xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)
+                                : await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("skillgroup", token).ConfigureAwait(false))?.Value
                             ?? string.Empty;
                         if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
                                 .SplitNoAlloc(
@@ -2227,7 +2239,9 @@ namespace Chummer
                         ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute", token)?.Value
+                        string strAttribute = (blnSync
+                            ? xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute", token)
+                            : await xmlSkillNode.SelectSingleNodeAndCacheExpressionAsync("attribute", token).ConfigureAwait(false))?.Value
                                               ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
                                 .SplitNoAlloc(
@@ -2635,8 +2649,9 @@ namespace Chummer
                                                     if (string.IsNullOrEmpty(strKey))
                                                     {
                                                         string strName
-                                                            = objNode.SelectSingleNodeAndCacheExpression(
-                                                                  "name", token)?.Value
+                                                            = (blnSync
+                                                                ? objNode.SelectSingleNodeAndCacheExpression("name", token)
+                                                                : await objNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
                                                               ?? string.Empty;
                                                         if (string.IsNullOrWhiteSpace(strName))
                                                         {
@@ -6266,7 +6281,9 @@ namespace Chummer
                                             strImprovedName);
                                     if (objDataNode != null)
                                     {
-                                        switch (objDataNode.SelectSingleNodeAndCacheExpression("id", token)?.Value)
+                                        switch ((blnSync
+                                                ? objDataNode.SelectSingleNodeAndCacheExpression("id", token)
+                                                : await objDataNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value)
                                         {
                                             case Cyberware.EssenceHoleGuidString when blnSync:
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -6958,20 +6975,20 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
             {
-                foreach (XPathNavigator xmlSpirit in (await objCharacter.LoadDataXPathAsync("traditions.xml", token: token).ConfigureAwait(false))
-                             .SelectAndCacheExpression("/chummer/spirits/spirit", token))
+                foreach (XPathNavigator xmlSpirit in await (await objCharacter.LoadDataXPathAsync("traditions.xml", token: token).ConfigureAwait(false))
+                             .SelectAndCacheExpressionAsync("/chummer/spirits/spirit", token).ConfigureAwait(false))
                 {
-                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    string strSpiritName = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
                     lstSpirits.Add(new ListItem(strSpiritName,
-                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? strSpiritName));
+                        (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? strSpiritName));
                 }
 
                 foreach (XPathNavigator xmlSpirit in (await objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
                              .Select("/chummer/critters/critter[category = " + "Spirits".CleanXPath() + "]"))
                 {
-                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    string strSpiritName = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
                     lstSpirits.Add(new ListItem(strSpiritName,
-                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? strSpiritName));
+                        (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? strSpiritName));
                 }
 
                 using (ThreadSafeForm<SelectItem> frmSelect =

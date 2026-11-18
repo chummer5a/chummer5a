@@ -1205,10 +1205,10 @@ namespace Chummer
                                                                  .LoadStandardFromFileAsync(
                                                                      strFilePath, token: innerToken)
                                                                  .ConfigureAwait(false);
-                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
-                                     .SelectAndCacheExpression("/chummer/strings/string", innerToken))
+                        foreach (XPathNavigator objNode in await objEnglishDocument.CreateNavigator()
+                                     .SelectAndCacheExpressionAsync("/chummer/strings/string", innerToken).ConfigureAwait(false))
                         {
-                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", innerToken)?.Value;
+                            string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", innerToken).ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strKey))
                                 setEnglishKeys.Add(strKey);
                         }
@@ -1233,10 +1233,10 @@ namespace Chummer
                                                                   .LoadStandardFromFileAsync(
                                                                       strLangPath, token: innerToken)
                                                                   .ConfigureAwait(false);
-                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
-                                     .SelectAndCacheExpression("/chummer/strings/string", innerToken))
+                        foreach (XPathNavigator objNode in await objLanguageDocument.CreateNavigator()
+                                     .SelectAndCacheExpressionAsync("/chummer/strings/string", innerToken).ConfigureAwait(false))
                         {
-                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", innerToken)?.Value;
+                            string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", innerToken).ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strKey))
                                 setLanguageKeys.Add(strKey);
                         }
@@ -3025,18 +3025,18 @@ namespace Chummer
                     {
                         XPathNavigator objLanguageDocumentNavigator = objLanguageDocument.CreateNavigator();
                         objReturn.IsRightToLeftScript
-                            = objLanguageDocumentNavigator.SelectSingleNodeAndCacheExpression("/chummer/righttoleft", token)
+                            = (await objLanguageDocumentNavigator.SelectSingleNodeAndCacheExpressionAsync("/chummer/righttoleft", token).ConfigureAwait(false))
                                                           ?.Value == bool.TrueString;
                         XPathNodeIterator xmlStringList =
-                            objLanguageDocumentNavigator.SelectAndCacheExpression("/chummer/strings/string", token);
+                            await objLanguageDocumentNavigator.SelectAndCacheExpressionAsync("/chummer/strings/string", token).ConfigureAwait(false);
                         if (xmlStringList.Count > 0)
                         {
                             foreach (XPathNavigator objNode in xmlStringList)
                             {
                                 // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
                                 // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
-                                string strText = objNode.SelectSingleNodeAndCacheExpression("text", token)?.Value;
+                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token).ConfigureAwait(false))?.Value;
+                                string strText = (await objNode.SelectSingleNodeAndCacheExpressionAsync("text", token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                                     objReturn._dicTranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
                             }

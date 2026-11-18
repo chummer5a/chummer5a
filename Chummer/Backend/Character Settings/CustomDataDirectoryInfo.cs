@@ -122,8 +122,8 @@ namespace Chummer
                 {
                     HasManifest = true;
                     XPathDocument xmlObjManifest = await XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFullDirectory, token: token).ConfigureAwait(false);
-                    XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
-                                                           .SelectSingleNodeAndCacheExpression("manifest", token);
+                    XPathNavigator xmlNode = await xmlObjManifest.CreateNavigator()
+                                                           .SelectSingleNodeAndCacheExpressionAsync("manifest", token).ConfigureAwait(false);
 
                     if (!xmlNode.TryGetField("version", ValueVersion.TryParse, out _objMyVersion))
                         _objMyVersion = new ValueVersion(1, 0);

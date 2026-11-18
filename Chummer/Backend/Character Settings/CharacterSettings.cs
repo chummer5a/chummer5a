@@ -3232,12 +3232,12 @@ namespace Chummer
                     // </karmacost>
                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                    XPathNodeIterator lstAllowedBooksCodes = (await XmlManager
+                    XPathNodeIterator lstAllowedBooksCodes = await (await XmlManager
                             .LoadXPathAsync("books.xml",
                                 await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                 token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpression(
-                            "/chummer/books/book[not(hide)]/code", token);
+                        .SelectAndCacheExpressionAsync(
+                            "/chummer/books/book[not(hide)]/code", token).ConfigureAwait(false);
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                 out HashSet<string> setAllowedBooks))
                     {
@@ -4275,7 +4275,7 @@ namespace Chummer
                 if (objXmlDocument == null)
                     return false;
 
-                return await LoadAsync(objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression(".//settings", token), token).ConfigureAwait(false);
+                return await LoadAsync(await objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync(".//settings", token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -4625,7 +4625,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
                 objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
 
-                XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost", token);
+                XPathNavigator xmlKarmaCostNode = await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("karmacost", token).ConfigureAwait(false);
                 // Attempt to populate the Karma values.
                 if (xmlKarmaCostNode != null)
                 {
@@ -4687,8 +4687,8 @@ namespace Chummer
                 XPathNavigator xmlLegacyCharacterNavigator = null;
                 // Legacy sweep by looking at MRU
                 if (!await GetBuiltInOptionAsync(token).ConfigureAwait(false)
-                    && objXmlNode.SelectSingleNodeAndCacheExpression("books/book", token) == null
-                    && objXmlNode.SelectSingleNodeAndCacheExpression("customdatadirectorynames/directoryname", token) == null)
+                    && await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("books/book", token).ConfigureAwait(false) == null
+                    && await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("customdatadirectorynames/directoryname", token).ConfigureAwait(false) == null)
                 {
                     await GlobalSettings.MostRecentlyUsedCharacters.ForEachWithBreakAsync(async (strMruCharacterFile, t) =>
                     {
@@ -4706,15 +4706,15 @@ namespace Chummer
                             return false;
                         }
 
-                        xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
-                                                                          .SelectSingleNodeAndCacheExpression(
-                                                                              "/character", t);
+                        xmlLegacyCharacterNavigator = await objXmlDocument.CreateNavigator()
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "/character", t).ConfigureAwait(false);
 
                         if (xmlLegacyCharacterNavigator == null)
                             return false;
 
-                        string strLoopSettingsFile = xmlLegacyCharacterNavigator
-                            .SelectSingleNodeAndCacheExpression("settings", t)?.Value;
+                        string strLoopSettingsFile = (await xmlLegacyCharacterNavigator
+                            .SelectSingleNodeAndCacheExpressionAsync("settings", t).ConfigureAwait(false))?.Value;
                         if (strLoopSettingsFile == _strFileName)
                             return true;
                         xmlLegacyCharacterNavigator = null;
@@ -4739,15 +4739,15 @@ namespace Chummer
                                 return false;
                             }
 
-                            xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
-                                                                              .SelectSingleNodeAndCacheExpression(
-                                                                                  "/character", t);
+                            xmlLegacyCharacterNavigator = await objXmlDocument.CreateNavigator()
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "/character", t).ConfigureAwait(false);
 
                             if (xmlLegacyCharacterNavigator == null)
                                 return false;
 
-                            string strLoopSettingsFile = xmlLegacyCharacterNavigator
-                                .SelectSingleNodeAndCacheExpression("settings", t)?.Value;
+                            string strLoopSettingsFile = (await xmlLegacyCharacterNavigator
+                                .SelectSingleNodeAndCacheExpressionAsync("settings", t).ConfigureAwait(false))?.Value;
                             if (strLoopSettingsFile == _strFileName)
                                 return true;
                             xmlLegacyCharacterNavigator = null;
@@ -4758,13 +4758,13 @@ namespace Chummer
 
                 // Load Books.
                 _setBooks.Clear();
-                foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book", token))
+                foreach (XPathNavigator xmlBook in await objXmlNode.SelectAndCacheExpressionAsync("books/book", token).ConfigureAwait(false))
                     _setBooks.Add(xmlBook.Value);
                 // Legacy sweep for sourcebooks
                 if (xmlLegacyCharacterNavigator != null)
                 {
-                    foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression(
-                                 "sources/source", token))
+                    foreach (XPathNavigator xmlBook in await xmlLegacyCharacterNavigator.SelectAndCacheExpressionAsync(
+                                 "sources/source", token).ConfigureAwait(false))
                     {
                         if (!string.IsNullOrEmpty(xmlBook.Value))
                             _setBooks.Add(xmlBook.Value);
@@ -4777,16 +4777,16 @@ namespace Chummer
                 Dictionary<int, ValueTuple<string, bool>> dicLoadingCustomDataDirectories =
                     new Dictionary<int, ValueTuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
                 bool blnNeedToProcessInfosWithoutLoadOrder = false;
-                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                             "customdatadirectorynames/customdatadirectoryname", token))
+                foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                             "customdatadirectorynames/customdatadirectoryname", token).ConfigureAwait(false))
                 {
                     string strDirectoryKey
-                        = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname", token)?.Value;
+                        = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("directoryname", token).ConfigureAwait(false))?.Value;
                     if (string.IsNullOrEmpty(strDirectoryKey))
                         continue;
                     string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                     // Only load in directories that are either present in our GlobalSettings or are enabled
-                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled", token)?.Value
+                    bool blnLoopEnabled = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("enabled", token).ConfigureAwait(false))?.Value
                                           == bool.TrueString;
                     if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                             ? GlobalSettings.CustomDataDirectoryInfos.Any(
@@ -4794,7 +4794,7 @@ namespace Chummer
                             : GlobalSettings.CustomDataDirectoryInfos.Any(
                                 x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                     {
-                        string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order", token)?.Value;
+                        string strOrder = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("order", token).ConfigureAwait(false))?.Value;
                         if (!string.IsNullOrEmpty(strOrder)
                             && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
                                             out int intOrder))
@@ -4942,26 +4942,26 @@ namespace Chummer
                     // Add in the stragglers that didn't have any load order info
                     if (blnNeedToProcessInfosWithoutLoadOrder)
                     {
-                        foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                                     "customdatadirectorynames/customdatadirectoryname", token))
+                        foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                                     "customdatadirectorynames/customdatadirectoryname", token).ConfigureAwait(false))
                         {
-                            string strDirectoryKey = objXmlDirectoryName
-                                .SelectSingleNodeAndCacheExpression(
-                                    "directoryname", token)
+                            string strDirectoryKey = (await objXmlDirectoryName
+                                .SelectSingleNodeAndCacheExpressionAsync(
+                                    "directoryname", token).ConfigureAwait(false))
                                 ?.Value;
                             if (string.IsNullOrEmpty(strDirectoryKey))
                                 continue;
                             string strLoopId
                                 = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                            string strOrder = objXmlDirectoryName
-                                .SelectSingleNodeAndCacheExpression("order", token)?.Value;
+                            string strOrder = (await objXmlDirectoryName
+                                .SelectSingleNodeAndCacheExpressionAsync("order", token).ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
                                     GlobalSettings.InvariantCultureInfo,
                                     out int _))
                                 continue;
                             // Only load in directories that are either present in our GlobalSettings or are enabled
                             bool blnLoopEnabled
-                                = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled", token)?.Value
+                                = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("enabled", token).ConfigureAwait(false))?.Value
                                   == bool.TrueString;
                             if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                                     ? GlobalSettings.CustomDataDirectoryInfos.Any(
@@ -5085,7 +5085,7 @@ namespace Chummer
                 await RecalculateBookXPathAsync(token).ConfigureAwait(false);
 
                 // Used to legacy sweep build settings.
-                XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild", token);
+                XPathNavigator xmlDefaultBuildNode = await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("defaultbuild", token).ConfigureAwait(false);
                 if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
                     && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
                     || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
@@ -6982,15 +6982,15 @@ namespace Chummer
                                                .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 XPathNavigator objXmlBook
-                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + "]", token);
+                    = await objXmlDocument.SelectSingleNodeAndCacheExpressionAsync("/chummer/books/book[code = " + strBook.CleanXPath() + "]", token).ConfigureAwait(false);
                 if (objXmlBook != null)
                 {
-                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value;
+                    string strToAppend = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strToAppend))
                         lstBooks.Add(strToAppend);
                     else
                     {
-                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                        strToAppend = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
                         if (!string.IsNullOrEmpty(strToAppend))
                             lstBooks.Add(strToAppend);
                         else
@@ -9807,11 +9807,11 @@ namespace Chummer
                 string strReturn = await GetNameAsync(token).ConfigureAwait(false);
                 if (await GetBuiltInOptionAsync(token).ConfigureAwait(false))
                 {
-                    strReturn = (await XmlManager.LoadXPathAsync("settings.xml", token: token).ConfigureAwait(false))
-                                .SelectSingleNode(
-                                    "/chummer/settings/setting[id = '"
-                                    + await GetSourceIdAsync(token).ConfigureAwait(false) + "']/translate")?.Value
-                                ?? strReturn;
+                    XPathNavigator objNode = (await XmlManager.LoadXPathAsync("settings.xml", token: token).ConfigureAwait(false))
+                                .TryGetNodeById("/chummer/settings/setting", SourceId);
+                    strReturn = objNode != null
+                        ? ((await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? strReturn)
+                        : strReturn;
                 }
                 else
                 {

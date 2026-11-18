@@ -115,7 +115,7 @@ namespace Chummer
                 string strFilterPrefix = (VehicleMountMods
                     ? "weaponmountmods/mod["
                     : "mods/mod[") + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + " and category = ";
-                foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
+                foreach (XPathNavigator objXmlCategory in await _xmlBaseVehicleDataNode.SelectAndCacheExpressionAsync("modcategories/category").ConfigureAwait(false))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if ((string.IsNullOrEmpty(_strLimitToCategories) || setValues.Contains(strInnerText))
