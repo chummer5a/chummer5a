@@ -19,6 +19,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -1377,7 +1378,7 @@ namespace Chummer.Controls.Shared
 
         private sealed class IndexComparer : IComparer<TType>
         {
-            private readonly Dictionary<TType, int> _dicIndeces = new Dictionary<TType, int>();
+            private readonly ConcurrentDictionary<TType, int> _dicIndeces = new ConcurrentDictionary<TType, int>();
 
             public int Compare(TType x, TType y)
             {
@@ -1409,7 +1410,7 @@ namespace Chummer.Controls.Shared
                 _dicIndeces.Clear();
                 for (int i = 0; i < source.Count; i++)
                 {
-                    _dicIndeces.Add(source[i], i);
+                    _dicIndeces.AddOrUpdate(source[i], i, (_, y) => i);
                 }
             }
 
@@ -1419,7 +1420,7 @@ namespace Chummer.Controls.Shared
                 _dicIndeces.Clear();
                 for (int i = 0; i < await source.GetCountAsync(token).ConfigureAwait(false); i++)
                 {
-                    _dicIndeces.Add(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i);
+                    _dicIndeces.AddOrUpdate(await source.GetValueAtAsync(i, token).ConfigureAwait(false), i, (_, y) => i);
                 }
             }
         }

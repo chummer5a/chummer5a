@@ -409,8 +409,8 @@ namespace Chummer.UI.Attributes
                                     .ConfigureAwait(false);
                             }
 
-                            _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(AttributeName,
-                                OnAttributePropertyChanged);
+                            await _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttributeAsync(AttributeName,
+                                OnAttributePropertyChanged, _objMyToken).ConfigureAwait(false);
                         }
                         finally
                         {

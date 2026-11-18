@@ -723,6 +723,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be retrieved.</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
+        public TValue GetOrAdd(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory, CancellationToken token = default)
+        {
+            using (LockObject.EnterReadLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+            }
+            TValue objReturn = addValueFactory(key, token);
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+                using (LockObject.EnterWriteLock(token))
+                    _dicData.Add(key, objReturn);
+            }
+            return objReturn;
+        }
+
+        /// <summary>
         /// Adds a key/value pair to the dictionary if the key does not already exist, or return the original value in dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be retrieved.</param>
@@ -768,6 +793,52 @@ namespace Chummer
             }
 
             TValue objReturn = addValueFactory(key);
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicData.Add(key, objReturn);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be retrieved.</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
+        public async Task<TValue> GetOrAddAsync(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            TValue objReturn = addValueFactory(key, token);
             objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -884,6 +955,52 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be retrieved.</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
+        public async Task<TValue> GetOrAddAsync(TKey key, Func<TKey, CancellationToken, Task<TValue>> addValueFactory, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            TValue objReturn = await addValueFactory(key, token).ConfigureAwait(false);
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _dicData.Add(key, objReturn);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return objReturn;
+        }
+
+        /// <summary>
         /// Adds a key/value pair to the dictionary if the key does not already exist, or return the original value in dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be retrieved.</param>
@@ -969,6 +1086,36 @@ namespace Chummer
         /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use GetOrAdd instead.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
+        public TValue GetOrCheapAdd(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory, CancellationToken token = default)
+        {
+            using (LockObject.EnterReadLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+            }
+
+            TValue objReturn;
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+                using (LockObject.EnterWriteLock(token))
+                {
+                    objReturn = addValueFactory(key, token);
+                    _dicData.Add(key, objReturn);
+                }
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
+        /// This version requests a write lock before potentially calling the function to generate the value to add. This makes it better than GetOrAdd when that function is expensive, but worse when that function is cheap.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be retrieved.</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use GetOrAdd instead.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
         public async Task<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -995,6 +1142,55 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     objReturn = addValueFactory(key);
+                    token.ThrowIfCancellationRequested();
+                    _dicData.Add(key, objReturn);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
+        /// This version requests a write lock before potentially calling the function to generate the value to add. This makes it better than GetOrAdd when that function is expensive, but worse when that function is cheap.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be retrieved.</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use GetOrAdd instead.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
+        public async Task<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            TValue objReturn;
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    objReturn = addValueFactory(key, token);
                     token.ThrowIfCancellationRequested();
                     _dicData.Add(key, objReturn);
                 }
@@ -1060,6 +1256,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
+        /// This version requests a write lock before potentially calling the function to generate the value to add. This makes it better than GetOrAdd when that function is expensive, but worse when that function is cheap.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be retrieved.</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use GetOrAdd instead.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
+        public async Task<TValue> GetOrCheapAddAsync(TKey key, Func<TKey, CancellationToken, Task<TValue>> addValueFactory, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            TValue objReturn;
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                    return objExistingValue;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    objReturn = await addValueFactory(key, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _dicData.Add(key, objReturn);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return objReturn;
+        }
+
+        /// <summary>
         /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -1096,6 +1341,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public TValue AddOrUpdate(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory,
+                                  Func<TKey, TValue, CancellationToken, TValue> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
+                    using (LockObject.EnterWriteLock(token))
+                        _dicData[key] = objReturn;
+                    return objReturn;
+                }
+            }
+            objReturn = addValueFactory(key, token);
+            using (LockObject.EnterWriteLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
+                    _dicData[key] = objReturn;
+                }
+                else
+                    _dicData.Add(key, objReturn);
+            }
+            return objReturn;
+        }
+
+        /// <summary>
         /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -1120,6 +1401,39 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
+                    _dicData[key] = objNewValue;
+                    return objNewValue;
+                }
+                _dicData.Add(key, addValue);
+            }
+            return addValue;
+        }
+
+        /// <summary>
+        /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, CancellationToken, TValue> updateValueFactory, CancellationToken token = default)
+        {
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    TValue objNewValue = updateValueFactory(key, objExistingValue, token);
+                    using (LockObject.EnterWriteLock(token))
+                        _dicData[key] = objNewValue;
+                    return objNewValue;
+                }
+            }
+            using (LockObject.EnterWriteLock(token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    TValue objNewValue = updateValueFactory(key, objExistingValue, token);
                     _dicData[key] = objNewValue;
                     return objNewValue;
                 }
@@ -1173,6 +1487,64 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, objReturn);
+                return objReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory,
+                                                        Func<TKey, TValue, CancellationToken, TValue> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objReturn = addValueFactory(key, token);
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
                     token.ThrowIfCancellationRequested();
                     _dicData[key] = objReturn;
                     return objReturn;
@@ -1242,6 +1614,61 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, CancellationToken, TValue> updateValueFactory, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    TValue objNewValue = updateValueFactory(key, objExistingValue, token);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objNewValue;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objNewValue;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    TValue objNewValue = updateValueFactory(key, objExistingValue, token);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objNewValue;
+                    return objNewValue;
+                }
+                _dicData.Add(key, addValue);
+                return addValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -1286,6 +1713,64 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, objReturn);
+                return objReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, CancellationToken, Task<TValue>> addValueFactory,
+                                                        Func<TKey, TValue, CancellationToken, TValue> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objReturn = await addValueFactory(key, token).ConfigureAwait(false);
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
                     token.ThrowIfCancellationRequested();
                     _dicData[key] = objReturn;
                     return objReturn;
@@ -1357,6 +1842,63 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, CancellationToken, TValue> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objReturn = await addValue.ConfigureAwait(false);
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue, token);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, objReturn);
+                return objReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -1415,6 +1957,64 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, CancellationToken, TValue> addValueFactory,
+                                                        Func<TKey, TValue, CancellationToken, Task<TValue>> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objReturn = addValueFactory(key, token);
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, objReturn);
+                return objReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -1457,6 +2057,62 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, addValue);
+                return addValue;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, CancellationToken, Task<TValue>> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _dicData[key] = objReturn;
                     return objReturn;
@@ -1529,6 +2185,64 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Func<TKey, CancellationToken, Task<TValue>> addValueFactory,
+                                                        Func<TKey, TValue, CancellationToken, Task<TValue>> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objReturn = await addValueFactory(key, token).ConfigureAwait(false);
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, objReturn);
+                return objReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
@@ -1573,6 +2287,64 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = await updateValueFactory(key, objExistingValue).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _dicData[key] = objReturn;
+                    return objReturn;
+                }
+                _dicData.Add(key, objReturn);
+                return objReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async Task<TValue> AddOrUpdateAsync(TKey key, Task<TValue> addValue, Func<TKey, TValue, CancellationToken, Task<TValue>> updateValueFactory, CancellationToken token = default)
+        {
+            TValue objReturn;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return objReturn;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objReturn = await addValue.ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = await updateValueFactory(key, objExistingValue, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _dicData[key] = objReturn;
                     return objReturn;

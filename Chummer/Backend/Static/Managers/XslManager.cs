@@ -32,8 +32,8 @@ namespace Chummer
     public static class XslManager
     {
         // Cache of compiled XSLTs to speed up repeated prints of the same character sheet
-        private static readonly ConcurrentDictionary<string, ValueTuple<DateTime, XslCompiledTransform>> s_dicCompiledTransforms
-            = new ConcurrentDictionary<string, ValueTuple<DateTime, XslCompiledTransform>>();
+        private static readonly LockingDictionary<string, ValueTuple<DateTime, XslCompiledTransform>> s_dicCompiledTransforms
+            = new LockingDictionary<string, ValueTuple<DateTime, XslCompiledTransform>>();
 
         /// <summary>
         /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
@@ -79,9 +79,14 @@ namespace Chummer
 
             XslCompiledTransform objReturn;
 
-            if (!s_dicCompiledTransforms.TryGetValue(strXslFilePath,
-                    out ValueTuple<DateTime, XslCompiledTransform> tupCachedData) ||
-                tupCachedData.Item1 <= datLastWriteTimeUtc)
+            bool blnSuccess;
+            ValueTuple<DateTime, XslCompiledTransform> tupCachedData;
+            if (blnSync)
+                blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData, token);
+            else
+                (blnSuccess, tupCachedData)
+                    = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath, token).ConfigureAwait(false);
+            if (!blnSuccess || tupCachedData.Item1 <= datLastWriteTimeUtc)
             {
 #if DEBUG
                 objReturn = new XslCompiledTransform(true);
@@ -99,7 +104,10 @@ namespace Chummer
 
                 ValueTuple<DateTime, XslCompiledTransform> tupNewValue =
                     new ValueTuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
-                s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (_, y) => tupNewValue);
+                if (blnSync)
+                    s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (_, y) => tupNewValue, token);
+                else
+                    await s_dicCompiledTransforms.AddOrUpdateAsync(strXslFilePath, tupNewValue, (_, y) => tupNewValue, token).ConfigureAwait(false);
             }
             else
                 objReturn = tupCachedData.Item2;
