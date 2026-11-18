@@ -460,7 +460,7 @@ namespace Chummer
             await RefreshList().ConfigureAwait(false);
         }
 
-        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        private void NumericUpDown_KeyDown(object _, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {

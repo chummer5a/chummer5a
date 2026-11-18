@@ -170,7 +170,7 @@ namespace Chummer
             }
         }
 
-        private void txtSearch_KeyUp(object sender, KeyEventArgs e)
+        private void txtSearch_KeyUp(object _, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.TextLength, 0);

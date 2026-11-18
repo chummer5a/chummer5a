@@ -2182,7 +2182,7 @@ namespace Chummer
             }
         }
 
-        private void treCharacterList_OnDefaultItemDrag(object sender, ItemDragEventArgs e)
+        private void treCharacterList_OnDefaultItemDrag(object _, ItemDragEventArgs e)
         {
             DoDragDrop(e.Item, DragDropEffects.Move);
         }

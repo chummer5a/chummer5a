@@ -3386,7 +3386,7 @@ namespace Chummer
             }
         }
 
-        private void ChummerMainForm_DpiChanged(object sender, DpiChangedEventArgs e)
+        private void ChummerMainForm_DpiChanged(object _, DpiChangedEventArgs e)
         {
             tabForms.ItemSize = new Size(
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),

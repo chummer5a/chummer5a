@@ -20746,7 +20746,7 @@ namespace Chummer
             }
         }
 
-        private void lstKarma_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void lstKarma_ColumnClick(object _, ColumnClickEventArgs e)
         {
             if (e.Column == _lvwKarmaColumnSorter.SortColumn)
             {
@@ -20763,7 +20763,7 @@ namespace Chummer
             lstKarma.Sort();
         }
 
-        private void lstNuyen_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void lstNuyen_ColumnClick(object _, ColumnClickEventArgs e)
         {
             if (e.Column == _lvwNuyenColumnSorter.SortColumn)
             {
