@@ -306,7 +306,9 @@ namespace Chummer
 
                     try
                     {
+                        t.ThrowIfCancellationRequested();
                         objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
+                        t.ThrowIfCancellationRequested();
                     }
                     finally
                     {
@@ -338,18 +340,20 @@ namespace Chummer
         public static ValueTuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return s_DicCompiledEvaluations.GetOrAdd(strExpression, x =>
+            return s_DicCompiledEvaluations.GetOrAdd(strExpression, (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
-                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(token);
+                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(t);
 
                     try
                     {
+                        t.ThrowIfCancellationRequested();
                         objReturn = objEvaluator?.Evaluate(objXPath);
+                        t.ThrowIfCancellationRequested();
                     }
                     finally
                     {
@@ -365,7 +369,7 @@ namespace Chummer
                 }
 
                 return new ValueTuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            });
+            }, token);
         }
 
         /// <summary>
