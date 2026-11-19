@@ -1223,43 +1223,71 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    if (lstFavoritesNodes.Length > 0 && objFavoriteNode != null)
+                    if (objFavoriteNode != null)
                     {
-                        foreach (TreeNode objNode in lstFavoritesNodes)
+                        if (lstFavoritesNodes.Length > 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (objNode == null)
-                                continue;
-                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
-                            if (treFavoriteNode != null)
+                            foreach (TreeNode objNode in lstFavoritesNodes)
                             {
-                                if (treFavoriteNode.IsNullOrDisposed())
+                                token.ThrowIfCancellationRequested();
+                                if (objNode == null)
                                     continue;
+                                TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                                if (treFavoriteNode != null)
+                                {
+                                    if (treFavoriteNode.IsNullOrDisposed())
+                                        continue;
+                                    await treFavoriteNode.DoThreadSafeAsync(
+                                        () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                }
+                                else
+                                    objFavoriteNode.Nodes.Add(objNode);
+                            }
+                        }
+                        else
+                        {
+                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                            if (treFavoriteNode != null && !treFavoriteNode.IsNullOrDisposed())
+                            {
                                 await treFavoriteNode.DoThreadSafeAsync(
-                                    () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                    () => objFavoriteNode.Nodes.Clear(), token).ConfigureAwait(false);
                             }
                             else
-                                objFavoriteNode.Nodes.Add(objNode);
+                                objFavoriteNode.Nodes.Clear();
                         }
                     }
 
-                    if (lstRecentsNodes.Length > 0 && objRecentNode != null)
+                    if (objRecentNode != null)
                     {
-                        foreach (TreeNode objNode in lstRecentsNodes)
+                        if (lstRecentsNodes.Length > 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (objNode == null)
-                                continue;
-                            TreeView treRecentNode = objRecentNode.TreeView;
-                            if (treRecentNode != null)
+                            foreach (TreeNode objNode in lstRecentsNodes)
                             {
-                                if (treRecentNode.IsNullOrDisposed())
+                                token.ThrowIfCancellationRequested();
+                                if (objNode == null)
                                     continue;
+                                TreeView treRecentNode = objRecentNode.TreeView;
+                                if (treRecentNode != null)
+                                {
+                                    if (treRecentNode.IsNullOrDisposed())
+                                        continue;
+                                    await treRecentNode.DoThreadSafeAsync(
+                                        () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                }
+                                else
+                                    objRecentNode.Nodes.Add(objNode);
+                            }
+                        }
+                        else
+                        {
+                            TreeView treRecentNode = objRecentNode.TreeView;
+                            if (treRecentNode != null && !treRecentNode.IsNullOrDisposed())
+                            {
                                 await treRecentNode.DoThreadSafeAsync(
-                                    () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                    () => objRecentNode.Nodes.Clear(), token).ConfigureAwait(false);
                             }
                             else
-                                objRecentNode.Nodes.Add(objNode);
+                                objRecentNode.Nodes.Clear();
                         }
                     }
                 }
