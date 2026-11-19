@@ -355,7 +355,7 @@ namespace Chummer.Backend.Equipment
                             XmlNode xmlQuality
                                 = xmlLifestyleDocument.TryGetNodeByNameOrId(
                                     "/chummer/qualities/quality", xmlNode.InnerTextViaPool(token));
-                            string strPush = (await xmlNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@select", token).ConfigureAwait(false))
+                            string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)
                                 ?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
                             {

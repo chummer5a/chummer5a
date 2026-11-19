@@ -331,8 +331,8 @@ namespace Chummer
                 return;
             }
 
-            await ParallelExtensions.ForEachAsync(await (await XmlManager.LoadXPathAsync("settings.xml", token: token)
-                    .ConfigureAwait(false)).SelectAndCacheExpressionAsync("/chummer/settings/setting", token: token).ConfigureAwait(false),
+            await ParallelExtensions.ForEachAsync((await XmlManager.LoadXPathAsync("settings.xml", token: token)
+                    .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token),
                 (xmlBuiltInSetting, t) => LoadSettings(xmlBuiltInSetting as XPathNavigator, t), token).ConfigureAwait(false);
 
             async Task LoadSettings(XPathNavigator xmlBuiltInSetting, CancellationToken innerToken)

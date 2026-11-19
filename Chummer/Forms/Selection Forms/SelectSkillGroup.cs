@@ -51,8 +51,8 @@ namespace Chummer
                 if (string.IsNullOrEmpty(_strForceValue))
                 {
                     // Build the list of Skill Groups found in the Skills file.
-                    foreach (XPathNavigator objXmlSkill in await _objXmlDocument.SelectAndCacheExpressionAsync(
-                                 "/chummer/skillgroups/name").ConfigureAwait(false))
+                    foreach (XPathNavigator objXmlSkill in _objXmlDocument.SelectAndCacheExpression(
+                                 "/chummer/skillgroups/name"))
                     {
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {

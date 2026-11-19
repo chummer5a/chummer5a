@@ -60,8 +60,8 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
-                foreach (XPathNavigator objXmlSkill in await _objXmlSkillsDocument.SelectAndCacheExpressionAsync(
-                             "skills/skill[category = \"Combat Active\"]").ConfigureAwait(false))
+                foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression(
+                             "skills/skill[category = \"Combat Active\"]"))
                 {
                     string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))

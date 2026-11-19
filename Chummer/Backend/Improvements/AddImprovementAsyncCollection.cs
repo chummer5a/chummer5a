@@ -1656,7 +1656,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
             // Check for SelectText.
             string strExtra = string.Empty;
-            XPathNavigator xmlSelectText = await node.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", token).ConfigureAwait(false);
+            XPathNavigator xmlSelectText = node.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
                 string strDescription = StringExtensions.FastFormat(
@@ -1707,7 +1707,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             XmlNode node = objXmlSpellDocument.TryGetNodeByNameOrId("/chummer/spells/spell", bonusNode.InnerTextViaPool(token)) ?? throw new AbortedException();
             // Check for SelectText.
             string strExtra = string.Empty;
-            XPathNavigator xmlSelectText = await node.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", token).ConfigureAwait(false);
+            XPathNavigator xmlSelectText = node.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
                 string strDescription = StringExtensions.FastFormat(
@@ -2056,7 +2056,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
             // Check for SelectText.
             string strExtra = string.Empty;
-            XPathNavigator xmlSelectText = await xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", token).ConfigureAwait(false);
+            XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
                 string strDescription = StringExtensions.FastFormat(
@@ -2124,7 +2124,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
             // Check for SelectText.
             string strExtra = string.Empty;
-            XPathNavigator xmlSelectText = await xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", token).ConfigureAwait(false);
+            XPathNavigator xmlSelectText = xmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
             if (xmlSelectText != null)
             {
                 string strDescription = StringExtensions.FastFormat(
@@ -2331,8 +2331,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 intAugMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
 
             string strUseUnique = _strUnique;
-            XPathNavigator xmlPrecedenceNode = await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@precedence", token).ConfigureAwait(false)
-                ?? await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@precedence", token).ConfigureAwait(false);
+            XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token) ?? bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@precedence", token);
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
@@ -3028,8 +3027,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            XPathNavigator xmlPrecedenceNode = await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@precedence", token).ConfigureAwait(false)
-                ?? await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@precedence", token).ConfigureAwait(false);
+            XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token) ?? bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@precedence", token);
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
@@ -3055,8 +3053,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            XPathNavigator xmlPrecedenceNode = await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@precedence", token).ConfigureAwait(false)
-                ?? await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@precedence", token).ConfigureAwait(false);
+            XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token) ?? bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@precedence", token);
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
@@ -5712,9 +5709,9 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
                 {
-                    bool blnIncludeUnarmed = (await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@includeunarmed", token).ConfigureAwait(false))?.Value == bool.TrueString;
-                    string strExclude = (await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@excludecategory", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                    string strWeaponDetails = (await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@weapondetails", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    bool blnIncludeUnarmed = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@includeunarmed", token)?.Value == bool.TrueString;
+                    string strExclude = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)?.Value ?? string.Empty;
+                    string strWeaponDetails = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@weapondetails", token)?.Value ?? string.Empty;
                     foreach (Weapon objWeapon in await _objCharacter.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
                         if (!string.IsNullOrEmpty(strExclude) && objWeapon.RangeType == strExclude)
@@ -6418,19 +6415,20 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         /// <summary>
         /// Improvement type that adds to the available sprite types a character can summon.
         /// </summary>
-        public async Task addsprite(XmlNode bonusNode, CancellationToken token = default)
+        public Task addsprite(XmlNode bonusNode, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool blnAddToSelected = true;
-            string strAddToSelected = (await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("addtoselected", token).ConfigureAwait(false))?.Value;
+            string strAddToSelected = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("addtoselected", token)?.Value;
             if (!string.IsNullOrEmpty(strAddToSelected))
             {
                 blnAddToSelected = Convert.ToBoolean(strAddToSelected, GlobalSettings.InvariantCultureInfo);
             }
-            await AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, blnAddToSelected, "Sprites", token).ConfigureAwait(false);
+            return AddSpiritOrSprite("streams.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSprite, blnAddToSelected, "Sprites", token);
         }
 
         /// <summary>
@@ -6445,7 +6443,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool blnAddToSelected = true;
-            string strAddToSelected = (await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("addtoselected", token).ConfigureAwait(false))?.Value;
+            string strAddToSelected = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("addtoselected", token)?.Value;
             if (!string.IsNullOrEmpty(strAddToSelected))
             {
                 blnAddToSelected = Convert.ToBoolean(strAddToSelected, GlobalSettings.InvariantCultureInfo);
@@ -6485,19 +6483,20 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         /// <summary>
         /// Improvement type that limits the spirits a character can summon to a particular category.
         /// </summary>
-        public async Task limitspiritcategory(XmlNode bonusNode, CancellationToken token = default)
+        public Task limitspiritcategory(XmlNode bonusNode, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool blnAddToSelected = true;
-            string strAddToSelected = (await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("addtoselected", token).ConfigureAwait(false))?.Value;
+            string strAddToSelected = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("addtoselected", token)?.Value;
             if (!string.IsNullOrEmpty(strAddToSelected))
             {
                 blnAddToSelected = Convert.ToBoolean(strAddToSelected, GlobalSettings.InvariantCultureInfo);
             }
-            await AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, blnAddToSelected, token: token).ConfigureAwait(false);
+            return AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, blnAddToSelected, token: token);
         }
 
         private async Task AddSpiritOrSprite(string strXmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "", CancellationToken token = default)
@@ -6623,7 +6622,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 throw new ArgumentNullException(nameof(bonusNode));
 
             string strUseUnique = _strUnique;
-            XPathNavigator xmlPrecedenceNode = await bonusNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@precedence", token).ConfigureAwait(false);
+            XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token);
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 

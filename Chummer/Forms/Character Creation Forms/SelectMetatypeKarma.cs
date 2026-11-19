@@ -151,15 +151,15 @@ namespace Chummer
                                 if (objCritterPowersDataNode != null)
                                 {
                                     lstMethods.Add(new ListItem("Possession",
-                                                                (await objCritterPowersDataNode
-                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                        "power[name = \"Possession\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Possession\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Possession"));
                                     lstMethods.Add(new ListItem("Inhabitation",
-                                                                (await objCritterPowersDataNode
-                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Inhabitation"));
                                 }
@@ -439,9 +439,9 @@ namespace Chummer
                         // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                         if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant.IsEmptyGuid())
                             strSelectedMetavariant
-                                = (await objXmlMetatype
-                                      .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                          "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken).ConfigureAwait(false))
+                                = objXmlMetatype
+                                      .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                          "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
                                   ?.Value
                                   ?? Utils.GuidEmptyString;
                         if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=

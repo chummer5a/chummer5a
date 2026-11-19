@@ -2572,7 +2572,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && Parent.WirelessOn)
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(x =>
@@ -2592,7 +2592,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(x =>
@@ -2882,8 +2882,8 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         XPathNavigator checkNode =
-                            await (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                "/character/gears/gear", token).ConfigureAwait(false);
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator(
+                                "/character/gears/gear", token);
                         if (checkNode == null)
                             return false;
                         string strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;

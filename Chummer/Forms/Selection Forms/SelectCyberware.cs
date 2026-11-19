@@ -577,7 +577,7 @@ namespace Chummer
                         if (xmlCyberware.SelectSingleNodeAndCacheExpression("bannedgrades", token) != null)
                         {
                             setDisallowedGrades = new HashSet<string>();
-                            foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token).ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in xmlCyberware.SelectAndCacheExpression("bannedgrades/grade", token))
                             {
                                 setDisallowedGrades.Add(objNode.Value);
                             }
@@ -2495,7 +2495,7 @@ namespace Chummer
             }
             else
             {
-                objXmlCategoryList = await _xmlBaseCyberwareDataNode.SelectAndCacheExpressionAsync("categories/category", token: token).ConfigureAwait(false);
+                objXmlCategoryList = _xmlBaseCyberwareDataNode.SelectAndCacheExpression("categories/category", token: token);
             }
 
             string strOldSelectedCyberware = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);

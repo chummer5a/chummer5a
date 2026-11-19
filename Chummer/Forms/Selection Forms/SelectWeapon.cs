@@ -536,8 +536,8 @@ namespace Chummer
                                     continue;
 
                                 XPathNavigator xmlTestNode =
-                                    await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/weapondetails",
-                                        token).ConfigureAwait(false);
+                                    objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails",
+                                        token);
                                 if (xmlTestNode != null
                                     && await xmlParentWeaponDataNode
                                         .ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
@@ -547,8 +547,8 @@ namespace Chummer
                                 }
 
                                 xmlTestNode =
-                                    await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/weapondetails",
-                                        token).ConfigureAwait(false);
+                                    objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails",
+                                        token);
                                 if (xmlTestNode != null
                                     && !await xmlParentWeaponDataNode
                                         .ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
@@ -698,7 +698,7 @@ namespace Chummer
                             if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                                 continue;
 
-                            XPathNavigator xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/weapondetails", token).ConfigureAwait(false);
+                            XPathNavigator xmlTestNode = objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails", token);
                             if (xmlTestNode != null
                                 && await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
@@ -706,7 +706,7 @@ namespace Chummer
                                 continue;
                             }
 
-                            xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/weapondetails", token).ConfigureAwait(false);
+                            xmlTestNode = objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails", token);
                             if (xmlTestNode != null
                                 && !await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {

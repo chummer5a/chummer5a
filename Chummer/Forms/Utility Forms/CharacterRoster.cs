@@ -1892,10 +1892,8 @@ namespace Chummer
                                     }
 
                                     token.ThrowIfCancellationRequested();
-                                    string strMetatypeText = objMetatypeNode != null
-                                        ? ((await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                            ?? strMetatype)
-                                        : strMetatype;
+                                    string strMetatypeText = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                        ?? strMetatype;
                                     string strMetavariant = await objCache.GetMetavariantAsync(token).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
                                     {
@@ -1904,10 +1902,7 @@ namespace Chummer
 
                                         strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
                                             + await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false)
-                                            + (objMetatypeNode != null
-                                                ? ((await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                                    ?? strMetavariant)
-                                                : strMetavariant)
+                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant)
                                             + await LanguageManager.GetStringAsync("String_RightPar", token: token).ConfigureAwait(false);
                                     }
 

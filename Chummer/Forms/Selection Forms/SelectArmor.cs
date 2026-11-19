@@ -131,7 +131,7 @@ namespace Chummer
                 if (_objXmlArmorDocumentChummerNode.SelectSingleNodeAndCacheExpression("/chummer/categories/category", _objGenericToken) != null)
                 {
                     string strFilterPrefix = "armors/armor[" + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + " and category = ";
-                    foreach (XPathNavigator objXmlCategory in await _objXmlArmorDocumentChummerNode.SelectAndCacheExpressionAsync("/chummer/categories/category", _objGenericToken).ConfigureAwait(false))
+                    foreach (XPathNavigator objXmlCategory in _objXmlArmorDocumentChummerNode.SelectAndCacheExpression("/chummer/categories/category", _objGenericToken))
                     {
                         string strInnerText = objXmlCategory.Value;
                         if (_objXmlArmorDocumentChummerNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)

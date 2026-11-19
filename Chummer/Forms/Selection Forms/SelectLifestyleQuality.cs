@@ -82,7 +82,7 @@ namespace Chummer
             }
 
             // Populate the Quality Category list.
-            foreach (XPathNavigator objXmlCategory in await _objXPathDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
+            foreach (XPathNavigator objXmlCategory in _objXPathDocument.SelectAndCacheExpression("/chummer/categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
                 if (await AnyItemInList(strCategory).ConfigureAwait(false))

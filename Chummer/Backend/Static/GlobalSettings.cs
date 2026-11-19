@@ -2049,12 +2049,12 @@ namespace Chummer
                 s_DicSourcebookInfos.Clear();
                 foreach (SourcebookInfo objInfo in lstInfos)
                     objInfo.Dispose();
-                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token)
+                foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", token: token)
                              .ConfigureAwait(false))
-                         .SelectAndCacheExpressionAsync(
-                             "/chummer/books/book", token: token).ConfigureAwait(false))
+                         .SelectAndCacheExpression(
+                             "/chummer/books/book", token: token))
                 {
-                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token).ConfigureAwait(false))?.Value;
+                    string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                     if (string.IsNullOrEmpty(strCode))
                         continue;
                     SourcebookInfo objSource = new SourcebookInfo
@@ -2109,12 +2109,12 @@ namespace Chummer
                              .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                 {
                     CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
-                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml",
+                    foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
                                  await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
                                      .ConfigureAwait(false), token: token).ConfigureAwait(false))
-                             .SelectAndCacheExpressionAsync("/chummer/books/book", token: token).ConfigureAwait(false))
+                             .SelectAndCacheExpression("/chummer/books/book", token: token))
                     {
-                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token).ConfigureAwait(false))?.Value;
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                         if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo
@@ -2289,12 +2289,12 @@ namespace Chummer
                                      .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
                         {
                             CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
-                            foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml",
+                            foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
                                          await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
                                              .ConfigureAwait(false), token: token).ConfigureAwait(false))
-                                     .SelectAndCacheExpressionAsync("/chummer/books/book", token: token).ConfigureAwait(false))
+                                     .SelectAndCacheExpression("/chummer/books/book", token: token))
                             {
-                                string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token).ConfigureAwait(false))
+                                string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)
                                     ?.Value;
                                 if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
                                     continue;

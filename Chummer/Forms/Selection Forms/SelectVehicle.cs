@@ -139,7 +139,7 @@ namespace Chummer
 
                 // Populate the Vehicle Category list.
                 string strFilterPrefix = "vehicles/vehicle[" + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + " and category = ";
-                foreach (XPathNavigator objXmlCategory in await _xmlBaseVehicleDataNode.SelectAndCacheExpressionAsync("categories/category", _objGenericToken).ConfigureAwait(false))
+                foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("categories/category", _objGenericToken))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)

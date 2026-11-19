@@ -450,15 +450,15 @@ namespace Chummer
                                 if (objCritterPowersDataNode != null)
                                 {
                                     lstMethods.Add(new ListItem("Possession",
-                                                                (await objCritterPowersDataNode
-                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                        "power[name = \"Possession\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Possession\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Possession"));
                                     lstMethods.Add(new ListItem("Inhabitation",
-                                                                (await objCritterPowersDataNode
-                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken)
                                                                 ?.Value
                                                                 ?? "Inhabitation"));
                                 }

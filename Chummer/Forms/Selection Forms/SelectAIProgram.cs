@@ -63,7 +63,7 @@ namespace Chummer
         private async void SelectAIProgram_Load(object _, EventArgs e)
         {
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in await _xmlBaseChummerNode.SelectAndCacheExpressionAsync("categories/category").ConfigureAwait(false))
+            foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if (string.IsNullOrEmpty(strInnerText))

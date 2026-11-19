@@ -3503,9 +3503,9 @@ namespace Chummer
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId.IsEmptyGuid())
                     strMetavariantId =
-                        (await objXmlMetatype
-                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                "metavariants/metavariant[name = \"Human\"]/id", token).ConfigureAwait(false))?.Value ??
+                        objXmlMetatype
+                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                "metavariants/metavariant[name = \"Human\"]/id", token)?.Value ??
                         string.Empty;
                 XmlNode objXmlMetavariant =
                     objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strMetavariantId);
@@ -4045,7 +4045,7 @@ namespace Chummer
 
                     // Check for SelectText.
                     string strExtra = xmlAIProgram.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
-                    if (await xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("bonus/selecttext", token).ConfigureAwait(false) !=
+                    if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token) !=
                         null && !string.IsNullOrWhiteSpace(strExtra))
                     {
                         string strDescription = StringExtensions.FastFormat(

@@ -601,9 +601,7 @@ namespace Chummer.Backend.Equipment
                                 XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", strName);
                                 if (objXmlMod != null)
                                 {
-                                    string strForcedValue = (blnSync
-                                        ? objXmlVehicleMod.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)
-                                        : await objXmlVehicleMod.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("name/@select", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                                    string strForcedValue = objXmlVehicleMod.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerTextViaPool(token), out int intRating))
                                         intRating = 0;
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
@@ -707,9 +705,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    XPathNavigator objAddSlotsNode = blnSync
-                        ? objXmlVehicle.SelectSingleNodeAndCacheExpressionAsNavigator("mods/addslots", token)
-                        : await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("mods/addslots", token).ConfigureAwait(false);
+                    XPathNavigator objAddSlotsNode = objXmlVehicle.SelectSingleNodeAndCacheExpressionAsNavigator("mods/addslots", token);
                     if (objAddSlotsNode != null && !int.TryParse(objAddSlotsNode.Value, out _intAddSlots))
                         _intAddSlots = 0;
                 }
@@ -6088,8 +6084,8 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                     {
-                        string strClipboardCategory = (await (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("category", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                        string strClipboardCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strClipboardCategory))
                         {
                             XPathNodeIterator xmlAddonCategoryList =

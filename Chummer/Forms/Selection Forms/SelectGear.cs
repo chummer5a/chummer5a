@@ -176,7 +176,7 @@ namespace Chummer
                 }
                 else
                 {
-                    objXmlCategoryList = await _xmlBaseGearDataNode.SelectAndCacheExpressionAsync("categories/category", _objGenericToken).ConfigureAwait(false);
+                    objXmlCategoryList = _xmlBaseGearDataNode.SelectAndCacheExpression("categories/category", _objGenericToken);
                 }
 
                 foreach (XPathNavigator objXmlCategory in objXmlCategoryList)

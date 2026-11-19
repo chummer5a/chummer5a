@@ -4973,7 +4973,7 @@ namespace Chummer.Backend.Equipment
                                         token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             bool blnWirelessPairReplaceModeAll =
-                                (await WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace"
+                                WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace"
                                 && lstPairableCyberwares.All((x, t) =>
                                     !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
                                     x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", t)?.Value == "replace", token);
@@ -4997,7 +4997,7 @@ namespace Chummer.Backend.Equipment
 
                             if (blnWirelessPairReplaceModeAll ? intCount > 0 : (intCount & 1) == 1)
                             {
-                                if ((await WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))
+                                if (WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
                                         ?.Value == "replace")
                                 {
                                     await ImprovementManager.DisableImprovementsAsync(_objCharacter,
@@ -5032,8 +5032,8 @@ namespace Chummer.Backend.Equipment
                                 // Go down the list and create pair bonuses for every second item
                                 if (blnWirelessPairReplaceModeAll || (intCount > 0 && (intCount & 1) == 0))
                                 {
-                                    if ((await objLoopCyberware.WirelessPairBonus
-                                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value ==
+                                    if (objLoopCyberware.WirelessPairBonus
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
                                         "replace")
                                     {
                                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
@@ -5055,8 +5055,8 @@ namespace Chummer.Backend.Equipment
                                                 .ConfigureAwait(false), token: token)
                                         .ConfigureAwait(false);
                                 }
-                                else if ((await objLoopCyberware.WirelessPairBonus
-                                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value ==
+                                else if (objLoopCyberware.WirelessPairBonus
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
                                         "replace")
                                 {
                                     await ImprovementManager.EnableImprovementsAsync(_objCharacter,
@@ -5076,7 +5076,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
                         {
-                            if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value ==
+                            if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
                                 "replace")
                             {
                                 await ImprovementManager.EnableImprovementsAsync(_objCharacter,
@@ -5113,7 +5113,7 @@ namespace Chummer.Backend.Equipment
                                         token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
                             bool blnWirelessPairReplaceModeAll =
-                                (await WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace"
+                                WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace"
                                 && lstPairableCyberwares.All((x, t) =>
                                     !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
                                     x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", t)?.Value == "replace", token);
@@ -5136,7 +5136,7 @@ namespace Chummer.Backend.Equipment
 
                             await ImprovementManager.RemoveImprovementsAsync(
                                 _objCharacter, SourceType, InternalId + "WirelessPair", token).ConfigureAwait(false);
-                            if ((await WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))
+                            if (WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
                                     ?.Value == "replace")
                             {
                                 await ImprovementManager.EnableImprovementsAsync(_objCharacter,
@@ -5161,8 +5161,8 @@ namespace Chummer.Backend.Equipment
                                 // Go down the list and create pair bonuses for every second item
                                 if (blnWirelessPairReplaceModeAll || (intCount > 0 && (intCount & 1) == 0))
                                 {
-                                    if ((await objLoopCyberware.WirelessPairBonus
-                                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value ==
+                                    if (objLoopCyberware.WirelessPairBonus
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
                                         "replace")
                                     {
                                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
@@ -5184,8 +5184,8 @@ namespace Chummer.Backend.Equipment
                                                 .ConfigureAwait(false), token: token)
                                         .ConfigureAwait(false);
                                 }
-                                else if ((await objLoopCyberware.WirelessPairBonus
-                                            .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value ==
+                                else if (objLoopCyberware.WirelessPairBonus
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
                                         "replace")
                                 {
                                     await ImprovementManager.EnableImprovementsAsync(_objCharacter,
@@ -13196,9 +13196,9 @@ namespace Chummer.Backend.Equipment
                                                                          token).ConfigureAwait(false);
                         if (objLoopCyberware.WirelessPairBonus.IsNullOrInnerTextIsEmpty())
                             continue;
-                        if ((await objLoopCyberware.WirelessPairBonus
-                                .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                    "@mode", token).ConfigureAwait(false))?.Value == "replace")
+                        if (objLoopCyberware.WirelessPairBonus
+                                .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                    "@mode", token)?.Value == "replace")
                         {
                             await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                               await _objCharacter.Improvements
@@ -13227,9 +13227,9 @@ namespace Chummer.Backend.Equipment
                                                                                  .ConfigureAwait(false),
                                                                              token: token).ConfigureAwait(false);
                         }
-                        else if ((await objLoopCyberware.WirelessPairBonus
-                                .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
-                                    "@mode", token).ConfigureAwait(false))?.Value == "replace")
+                        else if (objLoopCyberware.WirelessPairBonus
+                                .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                    "@mode", token)?.Value == "replace")
                         {
                             await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                               await _objCharacter.Improvements
@@ -15023,11 +15023,11 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         string strCategory =
-                            (await (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("/character/gear/category", token).ConfigureAwait(false))?.Value;
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category", token)?.Value;
                         string strName =
-                            (await (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("/character/gear/name", token).ConfigureAwait(false))
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name", token)
                                 ?.Value;
                         IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                         try

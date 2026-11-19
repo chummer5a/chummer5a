@@ -365,7 +365,7 @@ namespace Chummer
                 }
 
                 return new ValueTuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            }, token);
+            });
         }
 
         /// <summary>
@@ -1480,10 +1480,8 @@ namespace Chummer
             XPathNavigator xmlOriginalCode = objSettings != null
                 ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
-            xmlOriginalCode = xmlOriginalCode != null
-                ? await xmlOriginalCode.SelectSingleNodeAndCacheExpressionAsync(
-                    "/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token: token).ConfigureAwait(false)
-                : null;
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression(
+                "/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token: token);
             return xmlOriginalCode?.Value ?? strAltCode;
         }
 
@@ -1524,9 +1522,8 @@ namespace Chummer
             XPathNavigator xmlAltCode = objSettings != null
                 ? await objSettings.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
-            xmlAltCode = xmlAltCode != null
-                ? await xmlAltCode.SelectSingleNodeAndCacheExpressionAsync("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token).ConfigureAwait(false)
-                : null;
+            xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression(
+                "/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token: token);
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -1572,12 +1569,12 @@ namespace Chummer
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             if (xmlBook != null)
             {
-                xmlBook = await xmlBook.SelectSingleNodeAndCacheExpressionAsync(
-                    "/chummer/books/book[code = " + strCode.CleanXPath() + "]", token: token).ConfigureAwait(false);
+                xmlBook = xmlBook.SelectSingleNodeAndCacheExpression(
+                    "/chummer/books/book[code = " + strCode.CleanXPath() + "]", token: token);
                 if (xmlBook != null)
                 {
-                    string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                       ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                    string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                       ?? xmlBook.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
                     if (!string.IsNullOrWhiteSpace(strReturn))
                         return strReturn;
                 }

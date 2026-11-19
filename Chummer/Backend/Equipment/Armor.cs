@@ -3698,7 +3698,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped)
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(
@@ -3718,7 +3718,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(
@@ -3945,8 +3945,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strPasteCategory = (await (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("category", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.ArmorMod:

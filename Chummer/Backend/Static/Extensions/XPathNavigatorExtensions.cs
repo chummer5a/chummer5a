@@ -146,7 +146,7 @@ namespace Chummer
             foreach (XPathNavigator xmlOperationChildNode in xmlOperationNode.SelectChildren(XPathNodeType.Element))
             {
                 bool blnInvert
-                    = await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@NOT", token).ConfigureAwait(false) != null;
+                    = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@NOT", token) != null;
 
                 bool blnOperationChildNodeResult = blnInvert;
                 string strNodeName = xmlOperationChildNode.Name;
@@ -196,9 +196,7 @@ namespace Chummer
                         {
                             if (xmlParentNode != null)
                             {
-                                XPathNavigator objOperationAttribute = blnSync
-                                    ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@operation", token)
-                                    : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@operation", token).ConfigureAwait(false);
+                                XPathNavigator objOperationAttribute = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@operation", token);
                                 string strOperationType = objOperationAttribute?.Value ?? "==";
                                 XPathNodeIterator objXmlTargetNodeList = xmlParentNode.Select(strNodeName);
                                 // If we're just checking for existence of a node, no need for more processing
@@ -208,13 +206,9 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    bool blnOperationChildNodeAttributeOr = (blnSync
-                                        ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@OR", token)
-                                        : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@OR", token).ConfigureAwait(false)) != null;
+                                    bool blnOperationChildNodeAttributeOr = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@OR", token) != null;
                                     // default is "any", replace with switch() if more check modes are necessary
-                                    XPathNavigator objCheckTypeAttribute = blnSync
-                                        ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype", token)
-                                        : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@checktype", token).ConfigureAwait(false);
+                                    XPathNavigator objCheckTypeAttribute = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype", token);
                                     bool blnCheckAll = objCheckTypeAttribute?.Value == "all";
                                     blnOperationChildNodeResult = blnCheckAll;
                                     string strOperationChildNodeText = xmlOperationChildNode.Value.Trim();
@@ -670,20 +664,7 @@ namespace Chummer
         public static XPathNavigator SelectSingleNodeAndCacheExpression(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = Utils.CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile, token);
-            token.ThrowIfCancellationRequested();
-            return xmlNode.SelectSingleNode(objExpression);
-        }
-
-        /// <summary>
-        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
-        /// Only use this if there's a particular XPath expression that keeps being used over and over.
-        /// </summary>
-        public static async Task<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = await Utils.CachedXPathExpressions.GetOrAddAsync(xpath, XPathExpression.Compile, token).ConfigureAwait(false);
+            XPathExpression objExpression = Utils.CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
             token.ThrowIfCancellationRequested();
             return xmlNode.SelectSingleNode(objExpression);
         }
@@ -696,20 +677,7 @@ namespace Chummer
         public static XPathNodeIterator SelectAndCacheExpression(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = Utils.CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile, token);
-            token.ThrowIfCancellationRequested();
-            return xmlNode.Select(objExpression);
-        }
-
-        /// <summary>
-        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
-        /// Only use this if there's a particular XPath expression that keeps being used over and over.
-        /// </summary>
-        public static async Task<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = await Utils.CachedXPathExpressions.GetOrAddAsync(xpath, XPathExpression.Compile, token).ConfigureAwait(false);
+            XPathExpression objExpression = Utils.CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
             token.ThrowIfCancellationRequested();
             return xmlNode.Select(objExpression);
         }

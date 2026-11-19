@@ -120,8 +120,8 @@ namespace Chummer
                     string strTechniques;
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTechniques))
                     {
-                        foreach (XPathNavigator xmlMartialArtsTechnique in await objXmlArt.SelectAndCacheExpressionAsync(
-                                     "techniques/technique").ConfigureAwait(false))
+                        foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.SelectAndCacheExpression(
+                                     "techniques/technique"))
                         {
                             string strLoopTechniqueName
                                 = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
