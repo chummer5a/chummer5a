@@ -3004,6 +3004,25 @@ namespace Chummer
                     }
                 }
 #endif
+                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objCustomDataUpdateCheckerCancellationTokenSource, null);
+                if (objTemp?.IsCancellationRequested == false)
+                {
+                    objTemp.Cancel(false);
+                    objTemp.Dispose();
+                }
+
+                Task tskOld = Interlocked.Exchange(ref _tskCustomDataUpdateCheck, null);
+                if (tskOld != null)
+                {
+                    try
+                    {
+                        await tskOld;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
                 FormWindowState eWindowState = await this
                     .DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
                     .ConfigureAwait(false);
