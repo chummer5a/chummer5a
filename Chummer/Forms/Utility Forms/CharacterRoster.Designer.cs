@@ -731,6 +731,7 @@ namespace Chummer
             this.tsToggleFavNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsToggleFavNoClose.Tag = "Menu_ToggleFavorite";
             this.tsToggleFavNoClose.Text = "&Toggle Favorite";
+            this.tsToggleFavNoClose.Click += new System.EventHandler(this.tsToggleFav_Click);
             // 
             // tsSortNoClose
             // 
@@ -745,6 +746,7 @@ namespace Chummer
             this.tsSortNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsSortNoClose.Tag = "Menu_Sort";
             this.tsSortNoClose.Text = "&Sort this list Alphabetically";
+            this.tsSortNoClose.Click += new System.EventHandler(this.tsSort_Click);
             // 
             // tsOpenNoClose
             // 
@@ -759,6 +761,7 @@ namespace Chummer
             this.tsOpenNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsOpenNoClose.Tag = "Menu_Main_Open";
             this.tsOpenNoClose.Text = "&Open";
+            this.tsOpenNoClose.Click += new System.EventHandler(this.tsOpen_Click);
             // 
             // tsOpenForPrintingNoClose
             // 
@@ -773,6 +776,7 @@ namespace Chummer
             this.tsOpenForPrintingNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsOpenForPrintingNoClose.Tag = "Menu_Main_OpenForPrinting";
             this.tsOpenForPrintingNoClose.Text = "Open for P&rinting";
+            this.tsOpenForPrintingNoClose.Click += new System.EventHandler(this.tsOpenForPrinting_Click);
             // 
             // tsOpenForExportNoClose
             // 
@@ -787,6 +791,7 @@ namespace Chummer
             this.tsOpenForExportNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsOpenForExportNoClose.Tag = "Menu_Main_OpenForExport";
             this.tsOpenForExportNoClose.Text = "Open for E&xport";
+            this.tsOpenForExportNoClose.Click += new System.EventHandler(this.tsOpenForExport_Click);
             // 
             // tsDeleteNoClose
             // 
@@ -801,6 +806,7 @@ namespace Chummer
             this.tsDeleteNoClose.Size = new System.Drawing.Size(213, 22);
             this.tsDeleteNoClose.Tag = "Menu_Delete";
             this.tsDeleteNoClose.Text = "&Delete from this list";
+            this.tsDeleteNoClose.Click += new System.EventHandler(this.tsDelete_Click);
             // 
             // lstRosterImages20
             // 
