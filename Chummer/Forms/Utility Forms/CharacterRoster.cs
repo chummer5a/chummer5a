@@ -1244,7 +1244,7 @@ namespace Chummer
                                     objFavoriteNode.Nodes.Add(objNode);
                             }
                         }
-                        else
+                        else if (!blnAddFavoriteNode)
                         {
                             TreeView treFavoriteNode = objFavoriteNode.TreeView;
                             if (treFavoriteNode != null && !treFavoriteNode.IsNullOrDisposed())
@@ -1278,7 +1278,7 @@ namespace Chummer
                                     objRecentNode.Nodes.Add(objNode);
                             }
                         }
-                        else
+                        else if (!blnAddRecentNode)
                         {
                             TreeView treRecentNode = objRecentNode.TreeView;
                             if (treRecentNode != null && !treRecentNode.IsNullOrDisposed())
@@ -1289,6 +1289,32 @@ namespace Chummer
                             else
                                 objRecentNode.Nodes.Clear();
                         }
+                    }
+                }
+                else
+                {
+                    if (objFavoriteNode != null && !blnAddFavoriteNode)
+                    {
+                        TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                        if (treFavoriteNode != null && !treFavoriteNode.IsNullOrDisposed())
+                        {
+                            await treFavoriteNode.DoThreadSafeAsync(
+                                () => objFavoriteNode.Nodes.Clear(), token).ConfigureAwait(false);
+                        }
+                        else
+                            objFavoriteNode.Nodes.Clear();
+                    }
+
+                    if (objRecentNode != null && !blnAddRecentNode)
+                    {
+                        TreeView treRecentNode = objRecentNode.TreeView;
+                        if (treRecentNode != null && !treRecentNode.IsNullOrDisposed())
+                        {
+                            await treRecentNode.DoThreadSafeAsync(
+                                () => objRecentNode.Nodes.Clear(), token).ConfigureAwait(false);
+                        }
+                        else
+                            objRecentNode.Nodes.Clear();
                     }
                 }
 
