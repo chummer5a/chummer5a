@@ -396,19 +396,15 @@ namespace Chummer
 
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
-        private static readonly Lazy<LockingDictionary<string, XPathExpression>> s_dicCachedExpressions
-            = new Lazy<LockingDictionary<string, XPathExpression>>(() => new LockingDictionary<string, XPathExpression>());
+        private static readonly Lazy<ConcurrentDictionary<string, XPathExpression>> s_dicCachedExpressions
+            = new Lazy<ConcurrentDictionary<string, XPathExpression>>(() => new ConcurrentDictionary<string, XPathExpression>());
 
-        public static LockingDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
+        public static ConcurrentDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
         public static XPathExpression TryCacheExpression(string xpath, CancellationToken token = default)
         {
-            return CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile, token);
-        }
-
-        public static Task<XPathExpression> TryCacheExpressionAsync(string xpath, CancellationToken token = default)
-        {
-            return CachedXPathExpressions.GetOrAddAsync(xpath, XPathExpression.Compile, token);
+            token.ThrowIfCancellationRequested();
+            return CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
         }
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory

@@ -846,9 +846,7 @@ namespace Chummer
                             return Task.FromException<XPathDocument>(new InvalidOperationException());
                         }
 
-                        xmlSourceNode = blnSync
-                            ? xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token)
-                            : await xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/character", token).ConfigureAwait(false);
+                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token);
                     }
                     catch (Exception ex)
                     {
@@ -859,51 +857,26 @@ namespace Chummer
 
                 if (xmlSourceNode != null)
                 {
-                    if (blnSync)
-                    {
-                        _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
-                        _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
-                        _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
-                        _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
-                        _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
-                        _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
-                        _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
-                        _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
-                        _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
-                        _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
-                        _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
-                        _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
-                        _blnCreated = xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
-                                       == bool.TrueString;
-                        _blnIsCritter = xmlSourceNode.SelectSingleNodeAndCacheExpression("iscritter", token)?.Value
-                                       == bool.TrueString;
-                        _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
-                    }
-                    else
-                    {
-                        _strDescription = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("description", token).ConfigureAwait(false))?.Value;
-                        _strBuildMethod = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("buildmethod", token).ConfigureAwait(false))?.Value;
-                        _strBackground = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("background", token).ConfigureAwait(false))?.Value;
-                        _strCharacterNotes = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("notes", token).ConfigureAwait(false))?.Value;
-                        _strGameNotes = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("gamenotes", token).ConfigureAwait(false))?.Value;
-                        _strConcept = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("concept", token).ConfigureAwait(false))?.Value;
-                        _strKarma = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("totalkarma", token).ConfigureAwait(false))?.Value;
-                        _strMetatype = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("metatype", token).ConfigureAwait(false))?.Value;
-                        _strMetavariant = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("metavariant", token).ConfigureAwait(false))?.Value;
-                        _strPlayerName = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("playername", token).ConfigureAwait(false))?.Value;
-                        _strCharacterName = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
-                        _strCharacterAlias = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("alias", token).ConfigureAwait(false))?.Value;
-                        _blnCreated = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("created", token).ConfigureAwait(false))?.Value
-                                       == bool.TrueString;
-                        _blnIsCritter = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("iscritter", token).ConfigureAwait(false))?.Value
-                                       == bool.TrueString;
-                        _strEssence = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("totaless", token).ConfigureAwait(false))?.Value;
-                    }
+                    _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
+                    _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
+                    _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
+                    _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
+                    _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
+                    _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
+                    _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
+                    _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
+                    _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
+                    _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
+                    _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
+                    _blnCreated = xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
+                                   == bool.TrueString;
+                    _blnIsCritter = xmlSourceNode.SelectSingleNodeAndCacheExpression("iscritter", token)?.Value
+                                   == bool.TrueString;
+                    _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
 
                     string strSettings
-                        = (blnSync
-                            ? xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)
-                            : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("settings", token).ConfigureAwait(false))?.Value
+                        = xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)?.Value
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                     {
