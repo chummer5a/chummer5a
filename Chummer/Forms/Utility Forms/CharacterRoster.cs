@@ -1185,7 +1185,7 @@ namespace Chummer
             if (!blnRefreshFavorites)
                 lstFavorites.Clear();
             TreeNode objRecentNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Recent", false), token).ConfigureAwait(false);
-            if (objRecentNode == null && lstRecents.Count > 0)
+            if (objRecentNode == null)
             {
                 objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters", token: token).ConfigureAwait(false))
                 {
