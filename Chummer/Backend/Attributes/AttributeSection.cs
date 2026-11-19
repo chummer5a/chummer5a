@@ -547,7 +547,7 @@ namespace Chummer.Backend.Attributes
             _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstSpecialAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
-            _dicUIPropertyChangers = new LockingDictionary<string, UiPropertyChangerTracker>(LockObject);
+            _dicUIPropertyChangers = new LockingDictionary<string, UiPropertyChangerTracker>(); // Don't set parent because this is not supposed to be dependent on it
             AttributeList.CollectionChangedAsync += AttributeListOnCollectionChanged;
             AttributeList.BeforeClearCollectionChangedAsync += AttributeListOnBeforeClearCollectionChanged;
             SpecialAttributeList.CollectionChangedAsync += SpecialAttributeListOnCollectionChanged;
