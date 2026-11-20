@@ -3004,19 +3004,19 @@ namespace Chummer
                     }
                 }
 #endif
-                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objCustomDataUpdateCheckerCancellationTokenSource, null);
-                if (objTemp?.IsCancellationRequested == false)
+                CancellationTokenSource objTemp2 = Interlocked.Exchange(ref _objCustomDataUpdateCheckerCancellationTokenSource, null);
+                if (objTemp2?.IsCancellationRequested == false)
                 {
-                    objTemp.Cancel(false);
-                    objTemp.Dispose();
+                    objTemp2.Cancel(false);
+                    objTemp2.Dispose();
                 }
 
-                Task tskOld = Interlocked.Exchange(ref _tskCustomDataUpdateCheck, null);
-                if (tskOld != null)
+                Task tskOld2 = Interlocked.Exchange(ref _tskCustomDataUpdateCheck, null);
+                if (tskOld2 != null)
                 {
                     try
                     {
-                        await tskOld;
+                        await tskOld2;
                     }
                     catch (OperationCanceledException)
                     {
