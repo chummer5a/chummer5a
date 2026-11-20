@@ -39,6 +39,7 @@ Copy `ChummerAlmanac.dll` to `<Chummer folder>\Plugins\ChummerAlmanac\`, enable 
 
 Notes for installing on another PC:
 
+- Copy only `ChummerAlmanac.dll`, not the whole build output folder. The build output also contains Chummer's own libraries (e.g. iText) in the version of the source tree; placed in the plugin folder, they can clash with the versions of the installed Chummer and make it crash when it looks up PDFs.
 - Build against the same Chummer version the target PC runs. A plugin built for a clearly different version may fail to load.
 - Unblock the copied file (`Unblock-File`), otherwise Windows may refuse to load a DLL that came from the internet or a mail attachment.
 - Chummer only saves plugin data for active plugins. A character saved on a PC without the active plugin loses its Almanac data (optional powers, summoning times, game date, notes). Opening alone does not change the file.
