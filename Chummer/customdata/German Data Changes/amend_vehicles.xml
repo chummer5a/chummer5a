@@ -101,6 +101,12 @@
     </vehicle>
   </vehicles>
   <mods>
+    <mod> <!-- Daihatsu-Caterpillar Horseman Advanced Cargo Pod -->
+      <id>e6e9ff78-b7f4-4fe4-969b-af1cb77c5c1b</id>
+      <bonus>
+        <body>+2</body>
+      </bonus>
+    </mod>
     <mod> <!-- Gyro-Stabilization -->
       <id>f89a112e-600a-4278-8731-9b14cf3737c9</id>
       <page>162</page>
