@@ -61,15 +61,12 @@ namespace Chummer
         /// <summary>
         /// Comma-separated ForcedValue entries peeled one at a time by multi-select bonuses (e.g. addspirit).
         /// </summary>
-        private Queue<string> _queuePendingForcedValues;
+        private readonly Lazy<Queue<string>> _quePendingForcedValues = new Lazy<Queue<string>>(() => new Queue<string>());
         private string _strLastQueuedPendingForcedValue = string.Empty;
 
         private string TakeNextForcedValue()
         {
-            if (_queuePendingForcedValues == null)
-            {
-                _queuePendingForcedValues = new Queue<string>();
-            }
+            Queue<string> quePendingForcedValues = _quePendingForcedValues.Value;
             string strForcedValue = ForcedValue; // Ensures that we keep behaving properly even if ForcedValue changes between calls
             if (!string.IsNullOrEmpty(strForcedValue) && !string.Equals(_strLastQueuedPendingForcedValue, strForcedValue, StringComparison.Ordinal))
             {
@@ -77,10 +74,10 @@ namespace Chummer
                 foreach (string strPart in strForcedValue.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (!string.IsNullOrWhiteSpace(strPart))
-                        _queuePendingForcedValues.Enqueue(strPart.Trim());
+                        quePendingForcedValues.Enqueue(strPart.Trim());
                 }
             }
-            return _queuePendingForcedValues.Count > 0 ? _queuePendingForcedValues.Dequeue() : string.Empty;
+            return quePendingForcedValues.Count > 0 ? quePendingForcedValues.Dequeue() : string.Empty;
         }
 
         private readonly Improvement.ImprovementSource _objImprovementSource;
