@@ -106,20 +106,41 @@ namespace Chummer
                     // Populate the Category list.
                     string strFilterPrefix = "/chummer/weapons/weapon[" +
                                              await objSettings.BookXPathAsync(token: _objGenericToken)
-                                                 .ConfigureAwait(false) + " and category = ";
-                    using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                                                 .ConfigureAwait(false) + " and ";
+                    bool blnLimitCategories = _setLimitToCategories.Count > 0;
+                    if (blnLimitCategories)
                     {
-                        if (xmlCategoryList != null)
+                        // Allowlists are matched against SizeCategory: sizecategory when set, otherwise category.
+                        foreach (string strCategory in _setLimitToCategories)
                         {
-                            foreach (XmlNode objXmlCategory in xmlCategoryList)
+                            if (!await BuildWeaponList(
+                                    _objXmlDocument.SelectNodes(strFilterPrefix
+                                                                + BuildWeaponCategoryPredicate(strCategory) + "]"),
+                                    true, _objGenericToken).ConfigureAwait(false))
+                                continue;
+                            XmlNode xmlCategory = _objXmlDocument.SelectSingleNode(
+                                "/chummer/categories/category[. = " + strCategory.CleanXPath() + "]");
+                            _lstCategory.Add(new ListItem(strCategory,
+                                xmlCategory?.Attributes?["translate"]?.InnerTextViaPool(_objGenericToken) ?? strCategory));
+                        }
+                    }
+                    else
+                    {
+                        using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                        {
+                            if (xmlCategoryList != null)
                             {
-                                string strInnerText = objXmlCategory.InnerTextViaPool(_objGenericToken);
-                                if ((_setLimitToCategories.Count == 0 || _setLimitToCategories.Contains(strInnerText))
-                                    && await BuildWeaponList(
-                                        _objXmlDocument.SelectNodes(strFilterPrefix + strInnerText.CleanXPath() + "]"),
-                                        true, _objGenericToken).ConfigureAwait(false))
-                                    _lstCategory.Add(new ListItem(strInnerText,
-                                        objXmlCategory.Attributes?["translate"]?.InnerTextViaPool(_objGenericToken) ?? strInnerText));
+                                foreach (XmlNode objXmlCategory in xmlCategoryList)
+                                {
+                                    string strInnerText = objXmlCategory.InnerTextViaPool(_objGenericToken);
+                                    if (await BuildWeaponList(
+                                            _objXmlDocument.SelectNodes(strFilterPrefix
+                                                                        + BuildWeaponCategoryPredicate(strInnerText)
+                                                                        + "]"),
+                                            true, _objGenericToken).ConfigureAwait(false))
+                                        _lstCategory.Add(new ListItem(strInnerText,
+                                            objXmlCategory.Attributes?["translate"]?.InnerTextViaPool(_objGenericToken) ?? strInnerText));
+                                }
                             }
                         }
                     }
@@ -1073,6 +1094,13 @@ namespace Chummer
 
         #region Methods
 
+        // Matches Weapon.SizeCategory: sizecategory when it has text, otherwise category.
+        private static string BuildWeaponCategoryPredicate(string strCategory)
+        {
+            string strClean = strCategory.CleanXPath();
+            return "(sizecategory = " + strClean + " or (not(normalize-space(sizecategory)) and category = " + strClean + "))";
+        }
+
         private async Task<bool> RefreshList(CancellationToken token = default)
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
@@ -1096,20 +1124,21 @@ namespace Chummer
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
                         sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
+                        bool blnLimitCategories = _setLimitToCategories?.Count > 0;
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || txtSearch.TextLength == 0))
-                            sbdFilter.Append(" and category = ", strCategory.CleanXPath());
+                            sbdFilter.Append(" and ", BuildWeaponCategoryPredicate(strCategory));
                         else
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                        out StringBuilder sbdCategoryFilter))
                             {
-                                if (_setLimitToCategories?.Count > 0)
+                                if (blnLimitCategories)
                                 {
                                     foreach (string strLoopCategory in _setLimitToCategories)
                                     {
-                                        sbdCategoryFilter.Append("category = ", strLoopCategory.CleanXPath(), " or ");
+                                        sbdCategoryFilter.Append(BuildWeaponCategoryPredicate(strLoopCategory), " or ");
                                     }
 
                                     sbdCategoryFilter.Length -= 4;

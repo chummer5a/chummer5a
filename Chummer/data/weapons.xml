@@ -2194,7 +2194,7 @@
       <page>449</page>
       <hide />
       <range>Light Crossbows</range>
-      <sizecategory>Light Crossbows</sizecategory>
+      <sizecategory>Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
       <weapontype>grapplegun</weapontype>
     </weapon>
@@ -7275,7 +7275,7 @@
           <conceal operation="greaterthan">0</conceal>
         </weapondetails>
       </required>
-      <sizecategory>Light Crossbows</sizecategory>
+      <sizecategory>Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
       <useskill>Exotic Ranged Weapon</useskill>
       <useskillspec>Grapple Gun</useskillspec>
@@ -8166,7 +8166,7 @@
       </accessories>
       <hide />
       <range>Heavy Crossbows</range>
-      <sizecategory>Heavy Crossbows</sizecategory>
+      <sizecategory>Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
       <weapontype>grapplegun</weapontype>
     </weapon>
