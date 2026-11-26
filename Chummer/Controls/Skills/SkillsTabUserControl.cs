@@ -1294,11 +1294,8 @@ namespace Chummer.UI.Skills
                 }
                 else
                 {
-                    await cboDisplayFilter.DoThreadSafeAsync(x =>
-                    {
-                        x.DropDownStyle = ComboBoxStyle.DropDownList;
-                        _blnActiveSkillSearchMode = false;
-                    }, token: MyToken).ConfigureAwait(false);
+                    await cboDisplayFilter.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList, token: MyToken).ConfigureAwait(false);
+                    _blnActiveSkillSearchMode = false;
                     await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken)
                         .ConfigureAwait(false);
                     try
@@ -1599,11 +1596,8 @@ namespace Chummer.UI.Skills
                 }
                 else
                 {
-                    await cboDisplayFilterKnowledge.DoThreadSafeAsync(x =>
-                    {
-                        x.DropDownStyle = ComboBoxStyle.DropDownList;
-                        _blnKnowledgeSkillSearchMode = false;
-                    }, token: MyToken).ConfigureAwait(false);
+                    await cboDisplayFilterKnowledge.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList, token: MyToken).ConfigureAwait(false);
+                    _blnKnowledgeSkillSearchMode = false;
                     await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken)
                         .ConfigureAwait(false);
                     try

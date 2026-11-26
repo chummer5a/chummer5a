@@ -354,17 +354,17 @@ namespace Chummer.UI.Powers
                             return;
                         if (selectedItem.Item2 == null)
                         {
-                            _blnSearchMode = true;
                             await cboDisplayFilter.DoThreadSafeAsync(x =>
                             {
                                 x.DropDownStyle = ComboBoxStyle.DropDown;
+                                _blnSearchMode = true;
                                 x.Text = string.Empty;
                             }, objJoinedToken).ConfigureAwait(false);
                         }
                         else
                         {
-                            _blnSearchMode = false;
                             await cboDisplayFilter.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList, objJoinedToken).ConfigureAwait(false);
+                            _blnSearchMode = false;
                             await _table.SetFilterAsync(selectedItem.Item2, objJoinedToken).ConfigureAwait(false);
                         }
                     }
