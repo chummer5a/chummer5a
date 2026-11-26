@@ -2222,78 +2222,87 @@ namespace Chummer
                             Parent = tabForms
                         }, token: _objGenericToken).ConfigureAwait(false);
 
-                        switch (objMdiChild)
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token: _objGenericToken).ConfigureAwait(false);
+                        try
                         {
-                            case CharacterShared frmCharacterShared:
+                            switch (objMdiChild)
                             {
-                                await objTabPage.DoThreadSafeAsync(x => x.Text = frmCharacterShared.CharacterObject.CharacterName, token: _objGenericToken).ConfigureAwait(false);
-                                if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
-                                {
-                                    _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
-                                }
-
-                                break;
-                            }
-                            case CharacterSheetViewer frmSheetViewer:
-                            {
-                                string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false)
-                                        + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false);
-                                string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: _objGenericToken).ConfigureAwait(false);
-                                string strCharacters;
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCharacters))
-                                {
-                                    bool blnAddConjunction = false;
-                                    foreach (Character objLoop in frmSheetViewer.CharacterObjects)
+                                case CharacterShared frmCharacterShared:
                                     {
-                                        if (blnAddConjunction)
-                                            sbdCharacters.Append(strConjunction);
-                                        else
-                                            blnAddConjunction = true;
-                                        sbdCharacters.Append(await objLoop.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false));
+                                        string strTabText = await frmCharacterShared.CharacterObject.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false);
+                                        await objTabPage.DoThreadSafeAsync(x => x.Text = strTabText, token: _objGenericToken).ConfigureAwait(false);
+                                        if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
+                                        {
+                                            _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
+                                        }
+
+                                        break;
                                     }
-                                    strCharacters = sbdCharacters.ToTrimmedString();
-                                }
-                                string strText = StringExtensions.FastFormat(strSheet, strCharacters);
-                                await objTabPage.DoThreadSafeAsync(x => x.Text = strText, token: _objGenericToken).ConfigureAwait(false);
-                                if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
-                                {
-                                    _mascotChummy.CharacterObject = null;
-                                }
+                                case CharacterSheetViewer frmSheetViewer:
+                                    {
+                                        string strConjunction = await LanguageManager.GetStringAsync("String_Comma", token: _objGenericToken).ConfigureAwait(false)
+                                                + await LanguageManager.GetStringAsync("String_Space", token: _objGenericToken).ConfigureAwait(false);
+                                        string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: _objGenericToken).ConfigureAwait(false);
+                                        string strCharacters;
+                                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCharacters))
+                                        {
+                                            bool blnAddConjunction = false;
+                                            foreach (Character objLoop in frmSheetViewer.CharacterObjects)
+                                            {
+                                                if (blnAddConjunction)
+                                                    sbdCharacters.Append(strConjunction);
+                                                else
+                                                    blnAddConjunction = true;
+                                                sbdCharacters.Append(await objLoop.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false));
+                                            }
+                                            strCharacters = sbdCharacters.ToTrimmedString();
+                                        }
+                                        string strText = StringExtensions.FastFormat(strSheet, strCharacters);
+                                        await objTabPage.DoThreadSafeAsync(x => x.Text = strText, token: _objGenericToken).ConfigureAwait(false);
+                                        if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
+                                        {
+                                            _mascotChummy.CharacterObject = null;
+                                        }
 
-                                break;
-                            }
-                            case ExportCharacter frmExportCharacter:
-                            {
-                                string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken).ConfigureAwait(false);
-                                string strText = StringExtensions.FastFormat(
-                                    strExport,
-                                    (await frmExportCharacter.CharacterObject.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false)).Trim());
-                                await objTabPage.DoThreadSafeAsync(
-                                    x => x.Text = strText, token: _objGenericToken).ConfigureAwait(false);
-                                if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
-                                {
-                                    _mascotChummy.CharacterObject = null;
-                                }
+                                        break;
+                                    }
+                                case ExportCharacter frmExportCharacter:
+                                    {
+                                        string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken).ConfigureAwait(false);
+                                        string strText = StringExtensions.FastFormat(
+                                            strExport,
+                                            (await frmExportCharacter.CharacterObject.GetCharacterNameAsync(_objGenericToken).ConfigureAwait(false)).Trim());
+                                        await objTabPage.DoThreadSafeAsync(
+                                            x => x.Text = strText, token: _objGenericToken).ConfigureAwait(false);
+                                        if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
+                                        {
+                                            _mascotChummy.CharacterObject = null;
+                                        }
 
-                                break;
-                            }
-                            default:
-                            {
-                                string strKey = await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString(), token: _objGenericToken).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strKey))
-                                {
-                                    string strTagText
-                                        = await LanguageManager.GetStringAsync(strKey, GlobalSettings.Language, false, _objGenericToken).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strTagText))
-                                        await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText, token: _objGenericToken).ConfigureAwait(false);
-                                }
-                                if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
-                                {
-                                    _mascotChummy.CharacterObject = null;
-                                }
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        string strKey = await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString(), token: _objGenericToken).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strKey))
+                                        {
+                                            string strTagText
+                                                = await LanguageManager.GetStringAsync(strKey, GlobalSettings.Language, false, _objGenericToken).ConfigureAwait(false);
+                                            if (!string.IsNullOrEmpty(strTagText))
+                                                await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText, token: _objGenericToken).ConfigureAwait(false);
+                                        }
+                                        if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
+                                        {
+                                            _mascotChummy.CharacterObject = null;
+                                        }
 
-                                break;
+                                        break;
+                                    }
                             }
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
 
                         await tabForms.DoThreadSafeAsync(x =>
@@ -2995,6 +3004,25 @@ namespace Chummer
                     }
                 }
 #endif
+                CancellationTokenSource objTemp2 = Interlocked.Exchange(ref _objCustomDataUpdateCheckerCancellationTokenSource, null);
+                if (objTemp2?.IsCancellationRequested == false)
+                {
+                    objTemp2.Cancel(false);
+                    objTemp2.Dispose();
+                }
+
+                Task tskOld2 = Interlocked.Exchange(ref _tskCustomDataUpdateCheck, null);
+                if (tskOld2 != null)
+                {
+                    try
+                    {
+                        await tskOld2;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
                 FormWindowState eWindowState = await this
                     .DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
                     .ConfigureAwait(false);
@@ -3377,7 +3405,7 @@ namespace Chummer
             }
         }
 
-        private void ChummerMainForm_DpiChanged(object sender, DpiChangedEventArgs e)
+        private void ChummerMainForm_DpiChanged(object _, DpiChangedEventArgs e)
         {
             tabForms.ItemSize = new Size(
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),

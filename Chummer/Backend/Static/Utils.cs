@@ -199,7 +199,7 @@ namespace Chummer
             }
         }
 
-        private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new ConcurrentDictionary<Icon, Bitmap>();
+        private static readonly LockingDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new LockingDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
@@ -207,7 +207,7 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetCachedIconBitmap(Icon objIcon)
         {
-            return s_dicCachedIconBitmaps.GetOrAdd(objIcon, x => x.ToBitmap());
+            return s_dicCachedIconBitmaps.GetOrCheapAdd(objIcon, x => x.ToBitmap());
         }
 
         /// <summary>
@@ -216,11 +216,10 @@ namespace Chummer
         /// </summary>
         public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, (x, t) => TaskExtensions.RunWithoutEC(x.ToBitmap, t), token);
+            return s_dicCachedIconBitmaps.GetOrCheapAddAsync(objIcon, (x, t) => TaskExtensions.RunWithoutEC(x.ToBitmap, t), token);
         }
 
-        private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new ConcurrentDictionary<Icon, Bitmap>();
+        private static readonly LockingDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new LockingDictionary<Icon, Bitmap>();
 
         /// <summary>
         /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
@@ -228,7 +227,7 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetStockIconBitmapsForSystemIcon(Icon objIcon)
         {
-            return s_dicStockIconBitmapsForSystemIcons.GetOrAdd(objIcon, x =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrCheapAdd(objIcon, x =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -275,8 +274,7 @@ namespace Chummer
         /// </summary>
         public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, (x, t) => TaskExtensions.RunWithoutEC(() =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrCheapAddAsync(objIcon, (x, t) => TaskExtensions.RunWithoutEC(() =>
             {
                 if (x == SystemIcons.Application)
                 {

@@ -19,7 +19,7 @@
         <xsl:value-of select="$lang.Duration" />
       </th>
       <th width="10%" style="text-align: center">
-        <xsl:value-of select="$lang.Label_LifestyleCNS" />
+        <xsl:value-of select="$lang.LifestyleCNS" />
       </th>
       <th width="10%" />
     </tr>

@@ -164,7 +164,7 @@ namespace Chummer
                     }
                     else
                     {
-                        if (setNamesOfChangedProperties.Contains(nameof(DisplayType))
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayRole))
                             || setNamesOfChangedProperties.Contains(nameof(QuickText)))
                             UpdateTrackedNodes_TypeData();
                         if (setNamesOfChangedProperties.Contains(nameof(Location)))
@@ -330,7 +330,7 @@ namespace Chummer
                     }
                     else
                     {
-                        if (setNamesOfChangedProperties.Contains(nameof(DisplayType))
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayRole))
                             || setNamesOfChangedProperties.Contains(nameof(QuickText)))
                             await UpdateTrackedNodes_TypeDataAsync(token).ConfigureAwait(false);
                         if (setNamesOfChangedProperties.Contains(nameof(Location)))
@@ -4279,7 +4279,7 @@ namespace Chummer
             }
             else
             {
-                string strType = await GetDisplayTypeAsync(token).ConfigureAwait(false);
+                string strType = await GetDisplayRoleAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strType))
                     objNode.Nodes.Add("TypeData", await GetQuickTextAsync(token).ConfigureAwait(false));
                 else
@@ -4360,7 +4360,7 @@ namespace Chummer
                 strText = DisplayMetatype;
             else
             {
-                strText = DisplayType;
+                strText = DisplayRole;
                 if (string.IsNullOrEmpty(strText))
                     strText = QuickText;
                 else
@@ -4493,7 +4493,7 @@ namespace Chummer
                 strText = await GetDisplayMetatypeAsync(token).ConfigureAwait(false);
             else
             {
-                strText = await GetDisplayTypeAsync(token).ConfigureAwait(false);
+                strText = await GetDisplayRoleAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strText))
                     strText = await GetQuickTextAsync(token).ConfigureAwait(false);
                 else

@@ -5882,7 +5882,7 @@ namespace Chummer
                     }
                 }
                 string strForceValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select")?.Value;
-                bool blnDoesNotContributeToBP = !string.Equals(objXmlSelectedQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@contributetobp")?.Value, bool.TrueString, StringComparison.OrdinalIgnoreCase);
+                bool blnDoesNotContributeToBP = !string.Equals(objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@contributetobp")?.Value, bool.TrueString, StringComparison.OrdinalIgnoreCase);
                 bool blnForced = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@forced")?.Value == bool.TrueString;
                 string strRating = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@rating")?.Value;
                 int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);

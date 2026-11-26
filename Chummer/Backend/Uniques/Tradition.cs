@@ -1460,14 +1460,14 @@ namespace Chummer.Backend.Uniques
                         {
                             if (!value.Contains(strAttribute))
                             {
-                                _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(strAttribute,
-                                    RefreshDrainValue);
+                                await _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttributeAsync(strAttribute,
+                                    RefreshDrainValue, token).ConfigureAwait(false);
                             }
                         }
                         else if (value.Contains(strAttribute))
                         {
-                            _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(strAttribute,
-                                RefreshDrainValue);
+                            await _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttributeAsync(strAttribute,
+                                RefreshDrainValue, token).ConfigureAwait(false);
                         }
                     }
                 }

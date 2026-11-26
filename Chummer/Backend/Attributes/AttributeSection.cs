@@ -500,9 +500,8 @@ namespace Chummer.Backend.Attributes
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstSpecialAttributes;
 
         private readonly
-            ConcurrentDictionary<string, UiPropertyChangerTracker>
-            _dicUIPropertyChangers =
-                new ConcurrentDictionary<string, UiPropertyChangerTracker>();
+            LockingDictionary<string, UiPropertyChangerTracker>
+            _dicUIPropertyChangers;
 
         private readonly struct UiPropertyChangerTracker : IEquatable<UiPropertyChangerTracker>
         {
@@ -548,6 +547,7 @@ namespace Chummer.Backend.Attributes
             _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstSpecialAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
+            _dicUIPropertyChangers = new LockingDictionary<string, UiPropertyChangerTracker>(); // Don't set parent because this is not supposed to be dependent on it
             AttributeList.CollectionChangedAsync += AttributeListOnCollectionChanged;
             AttributeList.BeforeClearCollectionChangedAsync += AttributeListOnBeforeClearCollectionChanged;
             SpecialAttributeList.CollectionChangedAsync += SpecialAttributeListOnCollectionChanged;
@@ -843,6 +843,8 @@ namespace Chummer.Backend.Attributes
                         //swallow this
                     }
                 }
+                _dicUIPropertyChangers.Clear();
+                _dicUIPropertyChangers.Dispose();
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -881,6 +883,8 @@ namespace Chummer.Backend.Attributes
                         //swallow this
                     }
                 }
+                await _dicUIPropertyChangers.ClearAsync().ConfigureAwait(false);
+                await _dicUIPropertyChangers.DisposeAsync().ConfigureAwait(false);
                 // to help the GC
                 PropertyChanged = null;
                 MultiplePropertiesChanged = null;
@@ -2300,6 +2304,22 @@ namespace Chummer.Backend.Attributes
                 });
         }
 
+        public Task RegisterPropertyChangedForActiveAttribute(string strAbbrev,
+            MultiplePropertiesChangedEventHandler funcPropertyChanged, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            UiPropertyChangerTracker objNewValue = new UiPropertyChangerTracker(strAbbrev);
+            objNewValue.PropertyChangedList.Add(funcPropertyChanged);
+            return _dicUIPropertyChangers.AddOrUpdateAsync(strAbbrev,
+                objNewValue,
+                (_, y) =>
+                {
+                    y.PropertyChangedList.Add(funcPropertyChanged);
+                    return y;
+                }, token);
+        }
+
         public void RegisterAsyncPropertyChangedForActiveAttribute(string strAbbrev,
             MultiplePropertiesChangedAsyncEventHandler funcPropertyChanged)
         {
@@ -2314,6 +2334,22 @@ namespace Chummer.Backend.Attributes
                 });
         }
 
+        public Task RegisterAsyncPropertyChangedForActiveAttributeAsync(string strAbbrev,
+            MultiplePropertiesChangedAsyncEventHandler funcPropertyChanged, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            UiPropertyChangerTracker objNewValue = new UiPropertyChangerTracker(strAbbrev);
+            objNewValue.AsyncPropertyChangedList.Add(funcPropertyChanged);
+            return _dicUIPropertyChangers.AddOrUpdateAsync(strAbbrev,
+                objNewValue,
+                (_, y) =>
+                {
+                    y.AsyncPropertyChangedList.Add(funcPropertyChanged);
+                    return y;
+                }, token);
+        }
+
         public void DeregisterPropertyChangedForActiveAttribute(string strAbbrev,
             MultiplePropertiesChangedEventHandler funcPropertyChanged)
         {
@@ -2323,6 +2359,15 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public async Task DeregisterPropertyChangedForActiveAttributeAsync(string strAbbrev,
+            MultiplePropertiesChangedEventHandler funcPropertyChanged, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync(strAbbrev, token).ConfigureAwait(false);
+            if (blnSuccess)
+                objEvents.PropertyChangedList.Remove(funcPropertyChanged);
+        }
+
         public void DeregisterAsyncPropertyChangedForActiveAttribute(string strAbbrev,
             MultiplePropertiesChangedAsyncEventHandler funcPropertyChanged)
         {
@@ -2330,6 +2375,15 @@ namespace Chummer.Backend.Attributes
             {
                 objEvents.AsyncPropertyChangedList.Remove(funcPropertyChanged);
             }
+        }
+
+        public async Task DeregisterAsyncPropertyChangedForActiveAttributeAsync(string strAbbrev,
+            MultiplePropertiesChangedAsyncEventHandler funcPropertyChanged, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync(strAbbrev, token).ConfigureAwait(false);
+            if (blnSuccess)
+                objEvents.AsyncPropertyChangedList.Remove(funcPropertyChanged);
         }
 
         private MultiplePropertiesChangedEventHandler RunExtraPropertyChanged(string strAbbrev)
@@ -2529,117 +2583,103 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            Task BODVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task BODVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("BOD", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("BOD", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task AGIVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task AGIVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("AGI", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("AGI", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task REAVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task REAVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("REA", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("REA", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task STRVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task STRVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("STR", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("STR", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task CHAVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task CHAVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("CHA", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("CHA", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task INTVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task INTVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("INT", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("INT", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task LOGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task LOGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("LOG", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("LOG", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task WILVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task WILVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("WIL", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("WIL", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task EDGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task EDGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("EDG", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("EDG", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task ESSVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task ESSVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("ESS", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("ESS", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task MAGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task MAGVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("MAG", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("MAG", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task MAGAdeptVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task MAGAdeptVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("MAGAdept", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("MAGAdept", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task RESVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task RESVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("RES", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("RES", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
-            Task DEPVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+            async Task DEPVariant(object _, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
-                return _dicUIPropertyChangers.TryGetValue("DEP", out UiPropertyChangerTracker objEvents)
-                    ? CommonCode(objEvents, e, token)
-                    : Task.CompletedTask;
+                token.ThrowIfCancellationRequested();
+                (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync("DEP", token).ConfigureAwait(false);
+                if (blnSuccess)
+                    await CommonCode(objEvents, e, token).ConfigureAwait(false);
             }
         }
 
@@ -3802,7 +3842,7 @@ namespace Chummer.Backend.Attributes
                 foreach (string strAbbrev in AttributeStrings)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
+                    if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents, token))
                     {
                         token.ThrowIfCancellationRequested();
                         if (objEvents.AsyncPropertyChangedList.Count != 0)
@@ -3877,7 +3917,8 @@ namespace Chummer.Backend.Attributes
                 foreach (string strAbbrev in AttributeStrings)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
+                    (bool blnSuccess, UiPropertyChangerTracker objEvents) = await _dicUIPropertyChangers.TryGetValueAsync(strAbbrev, token).ConfigureAwait(false);
+                    if (blnSuccess)
                     {
                         token.ThrowIfCancellationRequested();
                         if (objEvents.AsyncPropertyChangedList.Count != 0)

@@ -2136,6 +2136,24 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Comforts LP is increased/reduced by this Quality.
+        /// </summary>
+        public async Task<int> GetComfortsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intComforts;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         ///     Comforts LP maximum is increased/reduced by this Quality.
         /// </summary>
         public int ComfortsMaximum
@@ -2156,20 +2174,58 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Security LP value is increased/reduced by this Quality.
+        ///     Area/Neighborhood minimum is increased/reduced by this Quality.
         /// </summary>
-        public int SecurityMaximum
+        public int Area
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _intSecurityMaximum;
+                    return _intArea;
             }
             set
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intSecurityMaximum, value) != value)
+                    if (Interlocked.Exchange(ref _intArea, value) != value)
+                        OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Area LP is increased/reduced by this Quality.
+        /// </summary>
+        public async Task<int> GetAreaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intArea;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        ///     Area/Neighborhood LP Cost/Benefit of the Quality.
+        /// </summary>
+        public int AreaMaximum
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intAreaMaximum;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intAreaMaximum, value) != value)
                         OnPropertyChanged();
                 }
             }
@@ -2190,6 +2246,44 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _intSecurity, value) != value)
+                        OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Security LP is increased/reduced by this Quality.
+        /// </summary>
+        public async Task<int> GetSecurityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSecurity;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        ///     Security LP value is increased/reduced by this Quality.
+        /// </summary>
+        public int SecurityMaximum
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intSecurityMaximum;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intSecurityMaximum, value) != value)
                         OnPropertyChanged();
                 }
             }
@@ -2392,46 +2486,6 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCategory, value) != value)
-                        OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Area/Neighborhood LP Cost/Benefit of the Quality.
-        /// </summary>
-        public int AreaMaximum
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _intAreaMaximum;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    if (Interlocked.Exchange(ref _intAreaMaximum, value) != value)
-                        OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Area/Neighborhood minimum is increased/reduced by this Quality.
-        /// </summary>
-        public int Area
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _intArea;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    if (Interlocked.Exchange(ref _intArea, value) != value)
                         OnPropertyChanged();
                 }
             }

@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -2250,7 +2251,25 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Advance Lifestyle Neighborhood Entertainment.
+        /// Base level of Comforts.
+        /// </summary>
+        public async Task<int> GetBaseComfortsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBaseComforts;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Base level of Area.
         /// </summary>
         public int BaseArea
         {
@@ -2270,7 +2289,25 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Advance Lifestyle Security Entertainment.
+        /// Base level of Area.
+        /// </summary>
+        public async Task<int> GetBaseAreaAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBaseArea;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Base level of Security.
         /// </summary>
         public int BaseSecurity
         {
@@ -2286,6 +2323,24 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _intBaseSecurity, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Base level of Security.
+        /// </summary>
+        public async Task<int> GetBaseSecurityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intBaseSecurity;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3654,8 +3709,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return BaseArea + await GetAreaAsync(token).ConfigureAwait(false)
-                                + await LifestyleQualities.SumAsync(
+                return await GetBaseAreaAsync(token).ConfigureAwait(false)
+                    + await GetAreaAsync(token).ConfigureAwait(false)
+                    + await LifestyleQualities.SumAsync(
                                     async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                     lq => lq.Area, token: token).ConfigureAwait(false);
             }
@@ -3690,8 +3746,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return BaseComforts + await GetComfortsAsync(token).ConfigureAwait(false)
-                                    + await LifestyleQualities.SumAsync(
+                return await GetBaseComfortsAsync(token).ConfigureAwait(false)
+                    + await GetComfortsAsync(token).ConfigureAwait(false)
+                    + await LifestyleQualities.SumAsync(
                                             async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                             lq => lq.Comforts, token: token)
                                         .ConfigureAwait(false);
@@ -3727,8 +3784,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return BaseSecurity + await GetSecurityAsync(token).ConfigureAwait(false)
-                                    + await LifestyleQualities.SumAsync(
+                return await GetBaseSecurityAsync(token).ConfigureAwait(false)
+                    + await GetSecurityAsync(token).ConfigureAwait(false)
+                    + await LifestyleQualities.SumAsync(
                                             async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn,
                                             lq => lq.Security, token: token)
                                         .ConfigureAwait(false);
@@ -3746,8 +3804,8 @@ namespace Chummer.Backend.Equipment
         /// <returns>A dice-pool style breakdown of the Comforts total.</returns>
         public Task<string> GetTotalComfortsTooltipAsync(CancellationToken token = default)
         {
-            return GetRatingTooltipAsync(objLifestyle => objLifestyle.BaseComforts, objLifestyle => objLifestyle.Comforts,
-                objQuality => objQuality.Comforts, token);
+            return GetRatingTooltipAsync((objLifestyle, t) => objLifestyle.GetBaseComfortsAsync(t), (objLifestyle, t) => objLifestyle.GetComfortsAsync(t),
+                (objQuality, t) => objQuality.GetComfortsAsync(t), token);
         }
 
         /// <summary>
@@ -3757,8 +3815,8 @@ namespace Chummer.Backend.Equipment
         /// <returns>A dice-pool style breakdown of the Neighborhood total.</returns>
         public Task<string> GetTotalNeighborhoodTooltipAsync(CancellationToken token = default)
         {
-            return GetRatingTooltipAsync(objLifestyle => objLifestyle.BaseArea, objLifestyle => objLifestyle.Area,
-                objQuality => objQuality.Area, token);
+            return GetRatingTooltipAsync((objLifestyle, t) => objLifestyle.GetBaseAreaAsync(t), (objLifestyle, t) => objLifestyle.GetAreaAsync(t),
+                (objQuality, t) => objQuality.GetAreaAsync(t), token);
         }
 
         /// <summary>
@@ -3768,12 +3826,12 @@ namespace Chummer.Backend.Equipment
         /// <returns>A dice-pool style breakdown of the Security total.</returns>
         public Task<string> GetTotalSecurityTooltipAsync(CancellationToken token = default)
         {
-            return GetRatingTooltipAsync(objLifestyle => objLifestyle.BaseSecurity, objLifestyle => objLifestyle.Security,
-                objQuality => objQuality.Security, token);
+            return GetRatingTooltipAsync((objLifestyle, t) => objLifestyle.GetBaseSecurityAsync(t), (objLifestyle, t) => objLifestyle.GetSecurityAsync(t),
+                (objQuality, t) => objQuality.GetSecurityAsync(t), token);
         }
 
-        private async Task<string> GetRatingTooltipAsync(Func<Lifestyle, int> funcBase, Func<Lifestyle, int> funcExtra,
-            Func<LifestyleQuality, int> funcQuality, CancellationToken token)
+        private async Task<string> GetRatingTooltipAsync(Func<Lifestyle, CancellationToken, Task<int>> funcBase, Func<Lifestyle, CancellationToken, Task<int>> funcExtra,
+            Func<LifestyleQuality, CancellationToken, Task<int>> funcQuality, CancellationToken token)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strLeftPar = await LanguageManager.GetStringAsync("String_LeftPar", token: token).ConfigureAwait(false);
@@ -3786,30 +3844,28 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<string> lstTerms = new List<string>
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    strBase + strSpace + strLeftPar + funcBase(this).ToString(GlobalSettings.CultureInfo) + strRightPar
-                };
-                int intExtra = funcExtra(this);
-                if (intExtra != 0)
-                {
-                    lstTerms.Add(strPoints + strSpace + strLeftPar + intExtra.ToString(GlobalSettings.CultureInfo) + strRightPar);
-                }
+                    sbdReturn.Append(strBase, strSpace, strLeftPar, (await funcBase(this, token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), strRightPar);
+                    int intExtra = await funcExtra(this, token).ConfigureAwait(false);
+                    if (intExtra != 0)
+                    {
+                        sbdReturn.Append(strSeparator, strPoints, strSpace, strLeftPar, intExtra.ToString(GlobalSettings.CultureInfo), strRightPar);
+                    }
 
-                List<LifestyleQuality> lstQualities = new List<LifestyleQuality>();
-                await LifestyleQualities.ForEachAsync(objQuality => lstQualities.Add(objQuality), token).ConfigureAwait(false);
-                foreach (LifestyleQuality objQuality in lstQualities)
-                {
-                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn)
-                        continue;
-                    int intValue = funcQuality(objQuality);
-                    if (intValue == 0)
-                        continue;
-                    string strName = await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                    lstTerms.Add(strName + strSpace + strLeftPar + intValue.ToString(GlobalSettings.CultureInfo) + strRightPar);
-                }
+                    await LifestyleQualities.ForEachAsync(async objQuality =>
+                    {
+                        if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn)
+                            return;
+                        int intValue = await funcQuality(objQuality, token).ConfigureAwait(false);
+                        if (intValue == 0)
+                            return;
+                        string strName = await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        sbdReturn.Append(strSeparator, strName, strSpace, strLeftPar, intValue.ToString(GlobalSettings.CultureInfo), strRightPar);
+                    }, token).ConfigureAwait(false);
 
-                return string.Join(strSeparator, lstTerms);
+                    return sbdReturn.ToTrimmedString();
+                }
             }
             finally
             {

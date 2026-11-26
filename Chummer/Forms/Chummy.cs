@@ -112,12 +112,12 @@ namespace Chummer
             ShowBalloonTip();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void panel1_Paint(object _, PaintEventArgs e)
         {
             DrawEyes(e.Graphics);
         }
 
-        private void Chummy_MouseDown(object sender, MouseEventArgs e)
+        private void Chummy_MouseDown(object _, MouseEventArgs e)
         {
             switch (e.Button)
             {

@@ -246,7 +246,7 @@ namespace Chummer.UI.Table
         private readonly TableColumnCollection<T> _columns;
         private TableLayoutEngine _layoutEngine;
         private readonly List<ColumnHolder> _lstCells = new List<ColumnHolder>();
-        private readonly ConcurrentDictionary<string, List<int>> _dicObservedProperties = new ConcurrentDictionary<string, List<int>>();
+        private readonly LockingDictionary<string, List<int>> _dicObservedProperties = new LockingDictionary<string, List<int>>();
         private readonly List<int> _lstPermutation = new List<int>();
         private readonly List<TableRow> _lstRowCells = new List<TableRow>();
         private SortOrder _eSortType = SortOrder.None;
@@ -278,7 +278,8 @@ namespace Chummer.UI.Table
                     else
                     {
                         // update cells in columns that have the column as dependency
-                        if (_dicObservedProperties.TryGetValue(strProperty, out List<int> lstColumns))
+                        (bool blnSuccess, List<int> lstColumns) = await _dicObservedProperties.TryGetValueAsync(strProperty, token).ConfigureAwait(false);
+                        if (blnSuccess)
                         {
                             foreach (int intColumnIndex in lstColumns)
                             {
@@ -595,7 +596,7 @@ namespace Chummer.UI.Table
             await CreateCellsForColumn(index, column, token).ConfigureAwait(false);
             foreach (string dependency in column.Dependencies)
             {
-                List<int> lstDependencies = _dicObservedProperties.GetOrAdd(dependency, _ => new List<int>(1));
+                List<int> lstDependencies = await _dicObservedProperties.GetOrAddAsync(dependency, _ => new List<int>(1), token).ConfigureAwait(false);
                 lstDependencies.Add(index);
             }
         }
@@ -632,6 +633,7 @@ namespace Chummer.UI.Table
             Columns.Dispose();
             foreach (TableRow objRow in _lstRowCells)
                 objRow.Dispose();
+            _dicObservedProperties.Dispose();
             // to help the GC
             _lstPermutation.Clear();
             _funcDefaultFilter = null;

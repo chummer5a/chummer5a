@@ -1730,6 +1730,62 @@ namespace Chummer
 
                                         SetupCommonCollectionDatabindings(true);
                                     }
+
+                                    if (Utils.IsUnitTestForUI)
+                                    {
+                                        // For unit tests, we want to select entries everywhere so that we can properly stress test refreshes
+                                        void SelectFirstChildInTreeView(TreeView treToProcess)
+                                        {
+                                            if (treToProcess != null)
+                                            {
+                                                foreach (TreeNode objParentNode in treToProcess.Nodes)
+                                                {
+                                                    if (objParentNode.Nodes.Count > 0)
+                                                    {
+                                                        treToProcess.SelectedNode = objParentNode.Nodes[0];
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        await this.DoThreadSafeAsync(t =>
+                                        {
+                                            SelectFirstChildInTreeView(treQualities);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treCyberware);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treArmor);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treGear);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treCustomDrugs);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treLifestyles);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treVehicles);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treWeapons);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treSpells);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treSpirits);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treSprites);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treComplexForms);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treCritterPowers);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treAIPrograms);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treMetamagic);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treMartialArts);
+                                            t.ThrowIfCancellationRequested();
+                                            SelectFirstChildInTreeView(treContacts);
+                                        }, GenericToken).ConfigureAwait(false);
+                                    }
                                 }
                                 finally
                                 {
@@ -16318,19 +16374,18 @@ namespace Chummer
                             }
 
                             await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
-                                    RefreshSelectedArmor(token),
-                                    RefreshSelectedGear(token), RefreshSelectedDrug(token),
-                                    RefreshSelectedLifestyle(token),
-                                    RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
-                                    RefreshSelectedSpell(token),
-                                    RefreshSelectedSpirit(token), RefreshSelectedSprite(token),
-                                    RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
-                                    RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
-                                    RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                                    RefreshSelectedContact(token),
-                                    UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
-                                    CalculateBPandRefreshBPDisplays(true, token), RefreshPasteStatus(token))
-                                .ConfigureAwait(false);
+                                RefreshSelectedArmor(token),
+                                RefreshSelectedGear(token), RefreshSelectedDrug(token),
+                                RefreshSelectedLifestyle(token),
+                                RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
+                                RefreshSelectedSpell(token),
+                                RefreshSelectedSpirit(token), RefreshSelectedSprite(token),
+                                RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
+                                RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
+                                RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                RefreshSelectedContact(token),
+                                UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
+                                CalculateBPandRefreshBPDisplays(true, token), RefreshPasteStatus(token)).ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }
                         finally
@@ -18918,7 +18973,7 @@ namespace Chummer
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {
-                            await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                            await frmLoadingBar.MyForm.PerformStepAsync(await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false),
                                     LoadingBar.ProgressBarTextPatterns.Saving, token)
                                 .ConfigureAwait(false);
                             Interlocked.Increment(ref _intFileUpdateQueued);
@@ -23619,7 +23674,7 @@ namespace Chummer
                                         = await Program.CreateAndShowProgressBarAsync(token: token)
                                             .ConfigureAwait(false))
                                 {
-                                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                                    await frmLoadingBar.MyForm.PerformStepAsync(await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false),
                                         LoadingBar.ProgressBarTextPatterns.Saving,
                                         token).ConfigureAwait(false);
                                     if (!await CharacterObject.SaveAsync(strNewName, token: token)

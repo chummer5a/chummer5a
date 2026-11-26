@@ -138,6 +138,7 @@
   <xsl:variable name="lang.L"        select="string('L')" />
   <xsl:variable name="lang.Level"      select="string('Level')" />
   <xsl:variable name="lang.Lifestyle"    select="string('Lifestyle')" />
+  <xsl:variable name="lang.LifestyleCNS"      select="string('C/N/S')" />
   <xsl:variable name="lang.Limit"      select="string('Limit')" />
   <xsl:variable name="lang.Limits"    select="string('Limits')" />
   <xsl:variable name="lang.Loaded"    select="string('Loaded')" />

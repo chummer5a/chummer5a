@@ -6188,7 +6188,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     }
                 }
                 string strForceValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
-                bool blnDoesNotContributeToBP = !string.Equals(objXmlSelectedQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@contributetobp", token)?.Value, bool.TrueString, StringComparison.OrdinalIgnoreCase);
+                bool blnDoesNotContributeToBP = !string.Equals(objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@contributetobp", token)?.Value, bool.TrueString, StringComparison.OrdinalIgnoreCase);
                 bool blnForced = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@forced", token)?.Value == bool.TrueString;
                 string strRating = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@rating", token)?.Value;
                 int intCount = string.IsNullOrEmpty(strRating) ? 1 : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, _intRating, token).ConfigureAwait(false);

@@ -50,8 +50,8 @@ namespace Chummer
         private static readonly ConcurrentStack<XPathNavigator> s_StkXPathNavigatorPool
             = new ConcurrentStack<XPathNavigator>();
 
-        private static readonly ConcurrentDictionary<string, ValueTuple<bool, object>> s_DicCompiledEvaluations =
-            new ConcurrentDictionary<string, ValueTuple<bool, object>>();
+        private static readonly LockingDictionary<string, ValueTuple<bool, object>> s_DicCompiledEvaluations =
+            new LockingDictionary<string, ValueTuple<bool, object>>();
 
         private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = "1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray().AsReadOnly();
 
@@ -152,29 +152,30 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<ValueTuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, bool blnIsMathExpression, CancellationToken token = default)
+        public static async Task<ValueTuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, bool blnIsMathExpression, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(false, null);
-                s_DicCompiledEvaluations.TryAdd(string.Empty, tupReturn);
-                return Task.FromResult(tupReturn);
+                await s_DicCompiledEvaluations.TryAddAsync(string.Empty, tupReturn, token).ConfigureAwait(false);
+                return tupReturn;
             }
             if (blnIsMathExpression)
                 strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStartNoAlloc('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(false, strXPath);
-                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
-                return Task.FromResult(tupReturn);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
+                return tupReturn;
             }
             if (strXPath == "-")
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(true, 0.0);
-                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
-                return Task.FromResult(tupReturn);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
+                return tupReturn;
             }
-            return s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async (x, t) =>
+            return await s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -204,7 +205,7 @@ namespace Chummer
                 }
 
                 return new ValueTuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -251,14 +252,14 @@ namespace Chummer
                 return tupReturn;
             }
             token.ThrowIfCancellationRequested();
-            return s_DicCompiledEvaluations.GetOrAdd(strXPath, x =>
+            return s_DicCompiledEvaluations.GetOrAdd(strXPath, (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
-                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(token);
+                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(t);
 
                     try
                     {
@@ -279,7 +280,7 @@ namespace Chummer
                 }
 
                 return new ValueTuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            });
+            }, token);
         }
 
         /// <summary>
@@ -305,7 +306,9 @@ namespace Chummer
 
                     try
                     {
+                        t.ThrowIfCancellationRequested();
                         objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
+                        t.ThrowIfCancellationRequested();
                     }
                     finally
                     {
@@ -337,18 +340,20 @@ namespace Chummer
         public static ValueTuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return s_DicCompiledEvaluations.GetOrAdd(strExpression, x =>
+            return s_DicCompiledEvaluations.GetOrAdd(strExpression, (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
-                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(token);
+                        objEvaluator = XPathNavigatorExtensions.GetEmptyDocumentNavigator(t);
 
                     try
                     {
+                        t.ThrowIfCancellationRequested();
                         objReturn = objEvaluator?.Evaluate(objXPath);
+                        t.ThrowIfCancellationRequested();
                     }
                     finally
                     {
@@ -364,7 +369,7 @@ namespace Chummer
                 }
 
                 return new ValueTuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            });
+            }, token);
         }
 
         /// <summary>

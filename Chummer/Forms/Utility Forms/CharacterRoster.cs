@@ -1185,7 +1185,7 @@ namespace Chummer
             if (!blnRefreshFavorites)
                 lstFavorites.Clear();
             TreeNode objRecentNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Recent", false), token).ConfigureAwait(false);
-            if (objRecentNode == null && lstRecents.Count > 0)
+            if (objRecentNode == null)
             {
                 objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters", token: token).ConfigureAwait(false))
                 {
@@ -1223,44 +1223,98 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    if (lstFavoritesNodes.Length > 0 && objFavoriteNode != null)
+                    if (objFavoriteNode != null)
                     {
-                        foreach (TreeNode objNode in lstFavoritesNodes)
+                        if (lstFavoritesNodes.Length > 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (objNode == null)
-                                continue;
-                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
-                            if (treFavoriteNode != null)
+                            foreach (TreeNode objNode in lstFavoritesNodes)
                             {
-                                if (treFavoriteNode.IsNullOrDisposed())
+                                token.ThrowIfCancellationRequested();
+                                if (objNode == null)
                                     continue;
+                                TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                                if (treFavoriteNode != null)
+                                {
+                                    if (treFavoriteNode.IsNullOrDisposed())
+                                        continue;
+                                    await treFavoriteNode.DoThreadSafeAsync(
+                                        () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                }
+                                else
+                                    objFavoriteNode.Nodes.Add(objNode);
+                            }
+                        }
+                        else if (!blnAddFavoriteNode)
+                        {
+                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                            if (treFavoriteNode != null && !treFavoriteNode.IsNullOrDisposed())
+                            {
                                 await treFavoriteNode.DoThreadSafeAsync(
-                                    () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                    () => objFavoriteNode.Nodes.Clear(), token).ConfigureAwait(false);
                             }
                             else
-                                objFavoriteNode.Nodes.Add(objNode);
+                                objFavoriteNode.Nodes.Clear();
                         }
                     }
 
-                    if (lstRecentsNodes.Length > 0 && objRecentNode != null)
+                    if (objRecentNode != null)
                     {
-                        foreach (TreeNode objNode in lstRecentsNodes)
+                        if (lstRecentsNodes.Length > 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (objNode == null)
-                                continue;
-                            TreeView treRecentNode = objRecentNode.TreeView;
-                            if (treRecentNode != null)
+                            foreach (TreeNode objNode in lstRecentsNodes)
                             {
-                                if (treRecentNode.IsNullOrDisposed())
+                                token.ThrowIfCancellationRequested();
+                                if (objNode == null)
                                     continue;
+                                TreeView treRecentNode = objRecentNode.TreeView;
+                                if (treRecentNode != null)
+                                {
+                                    if (treRecentNode.IsNullOrDisposed())
+                                        continue;
+                                    await treRecentNode.DoThreadSafeAsync(
+                                        () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                }
+                                else
+                                    objRecentNode.Nodes.Add(objNode);
+                            }
+                        }
+                        else if (!blnAddRecentNode)
+                        {
+                            TreeView treRecentNode = objRecentNode.TreeView;
+                            if (treRecentNode != null && !treRecentNode.IsNullOrDisposed())
+                            {
                                 await treRecentNode.DoThreadSafeAsync(
-                                    () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
+                                    () => objRecentNode.Nodes.Clear(), token).ConfigureAwait(false);
                             }
                             else
-                                objRecentNode.Nodes.Add(objNode);
+                                objRecentNode.Nodes.Clear();
                         }
+                    }
+                }
+                else
+                {
+                    if (objFavoriteNode != null && !blnAddFavoriteNode)
+                    {
+                        TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                        if (treFavoriteNode != null && !treFavoriteNode.IsNullOrDisposed())
+                        {
+                            await treFavoriteNode.DoThreadSafeAsync(
+                                () => objFavoriteNode.Nodes.Clear(), token).ConfigureAwait(false);
+                        }
+                        else
+                            objFavoriteNode.Nodes.Clear();
+                    }
+
+                    if (objRecentNode != null && !blnAddRecentNode)
+                    {
+                        TreeView treRecentNode = objRecentNode.TreeView;
+                        if (treRecentNode != null && !treRecentNode.IsNullOrDisposed())
+                        {
+                            await treRecentNode.DoThreadSafeAsync(
+                                () => objRecentNode.Nodes.Clear(), token).ConfigureAwait(false);
+                        }
+                        else
+                            objRecentNode.Nodes.Clear();
                     }
                 }
 
@@ -2182,7 +2236,7 @@ namespace Chummer
             }
         }
 
-        private void treCharacterList_OnDefaultItemDrag(object sender, ItemDragEventArgs e)
+        private void treCharacterList_OnDefaultItemDrag(object _, ItemDragEventArgs e)
         {
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
