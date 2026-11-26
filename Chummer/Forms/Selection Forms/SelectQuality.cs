@@ -816,22 +816,30 @@ namespace Chummer
         {
             return txtSearch.DoThreadSafeAsync(x =>
             {
-                if (_blnXPathMode)
+                x.SuspendLayout();
+                try
                 {
-                    // In XPath mode, populate with XPath queries and enable dropdown
-                    x.DataSource = _lstXPathQueries;
-                    x.DropDownStyle = ComboBoxStyle.DropDown;
-                    x.DisplayMember = "Name";
-                    x.ValueMember = "Value";
+                    if (_blnXPathMode)
+                    {
+                        // In XPath mode, populate with XPath queries and enable dropdown
+                        x.DataSource = _lstXPathQueries;
+                        x.DropDownStyle = ComboBoxStyle.DropDown;
+                        x.DisplayMember = nameof(ListItem.Name);
+                        x.ValueMember = nameof(ListItem.Value);
+                    }
+                    else
+                    {
+                        // In normal mode, clear items and make it behave like a textbox
+                        x.DataSource = null;
+                        x.Items.Clear();
+                        x.DropDownStyle = ComboBoxStyle.Simple;
+                        x.DisplayMember = string.Empty;
+                        x.ValueMember = string.Empty;
+                    }
                 }
-                else
+                finally
                 {
-                    // In normal mode, clear items and make it behave like a textbox
-                    x.DataSource = null;
-                    x.Items.Clear();
-                    x.DropDownStyle = ComboBoxStyle.DropDown;
-                    x.DisplayMember = string.Empty;
-                    x.ValueMember = string.Empty;
+                    x.ResumeLayout();
                 }
             }, token: token);
         }
