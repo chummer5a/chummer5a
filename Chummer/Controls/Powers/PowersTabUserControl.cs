@@ -349,18 +349,22 @@ namespace Chummer.UI.Powers
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false);
                     try
                     {
-                        if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
+                        if (!(await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.SelectedItem, objJoinedToken).ConfigureAwait(false)
+                            is Tuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
                             return;
                         if (selectedItem.Item2 == null)
                         {
-                            cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
                             _blnSearchMode = true;
-                            cboDisplayFilter.Text = string.Empty;
+                            await cboDisplayFilter.DoThreadSafeAsync(x =>
+                            {
+                                x.DropDownStyle = ComboBoxStyle.DropDown;
+                                x.Text = string.Empty;
+                            }, objJoinedToken).ConfigureAwait(false);
                         }
                         else
                         {
-                            cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
                             _blnSearchMode = false;
+                            await cboDisplayFilter.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList, objJoinedToken).ConfigureAwait(false);
                             await _table.SetFilterAsync(selectedItem.Item2, objJoinedToken).ConfigureAwait(false);
                         }
                     }
