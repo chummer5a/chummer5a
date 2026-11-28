@@ -310,8 +310,9 @@ namespace Chummer
                     }
                 }
 
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)));
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                 // Populate the Program list.
                 await UpdateProgramList(_xmlBaseChummerNode.Select(sbdFilter.Append(']').ToString()), token).ConfigureAwait(false);

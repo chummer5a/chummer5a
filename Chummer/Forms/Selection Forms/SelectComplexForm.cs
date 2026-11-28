@@ -337,12 +337,14 @@ namespace Chummer
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = "[" + strFilter + "]";
             // Populate the Complex Form list.
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstComplexFormItems))
             {
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
-                             "complexform[" + strFilter + "]"))
+                             "complexform" + strFilter))
                 {
                     string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))

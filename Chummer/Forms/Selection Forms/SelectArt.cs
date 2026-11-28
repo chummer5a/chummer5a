@@ -176,16 +176,18 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = _strXPathFilter;
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strSearch))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+            string strFilter = string.IsNullOrEmpty(strSearch)
+                ? _strXPathFilter
+                : _strXPathFilter + " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = "[" + strFilter + "]";
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstArts))
             {
                 bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlMetamagic in
-                         _objXmlDocument.Select(_strBaseXPath + "[" + strFilter + "]"))
+                         _objXmlDocument.Select(_strBaseXPath + strFilter))
                 {
                     string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strId)

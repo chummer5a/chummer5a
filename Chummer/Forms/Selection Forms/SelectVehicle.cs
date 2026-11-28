@@ -628,8 +628,9 @@ namespace Chummer
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(txtSearch.Text))
-                            sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                        string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strSearch))
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                         // Apply cost filtering
                         decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);

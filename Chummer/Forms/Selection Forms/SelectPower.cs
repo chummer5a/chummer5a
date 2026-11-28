@@ -224,25 +224,25 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
-            if (_lstLimitToPowers.Count > 0)
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
+                if (_lstLimitToPowers.Count > 0)
                 {
-                    sbdFilter.Append(strFilter).Append(" and (");
+                    sbdFilter.Append(" and (");
                     foreach (string strPower in _lstLimitToPowers)
                         sbdFilter.Append("name = ", strPower.CleanXPath(), " or ");
-                    if (sbdFilter.Length > 0)
-                        sbdFilter.Length -= 4;
-                    strFilter = sbdFilter.Append(')').ToString();
+                    sbdFilter.Length -= 4;
+                    sbdFilter.Append(')');
                 }
-            }
 
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strSearch))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
-            if (!string.IsNullOrEmpty(strFilter))
-                strFilter = "[" + strFilter + "]";
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
+                if (sbdFilter.Length > 0)
+                    strFilter = string.Concat('[', sbdFilter.Append(']').ToString());
+            }
 
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
