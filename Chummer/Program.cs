@@ -939,7 +939,66 @@ namespace Chummer
 
                 return frmOwnerForm.DoThreadSafeFunc(x => ScrollableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
-            MainFormOnAssignActions.Add(_ => ShowScrollableMessageBox(owner, message, caption, buttons, icon, defaultButton));
+
+            if (buttons == MessageBoxButtons.OK)
+            {
+                MainFormOnAssignActions.Add(_ =>
+                    ShowScrollableMessageBox(owner, message, caption, MessageBoxButtons.OK, icon, defaultButton));
+                return DialogResult.OK;
+            }
+
+            // We cannot properly process any messages that prompt for specific actions right now, so return the default button.
+            // Make sure we catch this in debug builds because it can be a sign of something going wrong
+            Utils.BreakIfDebug();
+
+            switch (buttons)
+            {
+                case MessageBoxButtons.OKCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.OK;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.AbortRetryIgnore:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Abort;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Ignore;
+                    }
+                case MessageBoxButtons.YesNoCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.No;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.YesNo:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        default:
+                            return DialogResult.No;
+                    }
+                case MessageBoxButtons.RetryCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+            }
+
             return DialogResult.Cancel;
         }
 
@@ -1007,8 +1066,65 @@ namespace Chummer
                             token: token), token: token).Unwrap().ConfigureAwait(false);
             }
 
-            MainFormOnAssignAsyncActions.Add(_ =>
-                ShowScrollableMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
+            if (buttons == MessageBoxButtons.OK)
+            {
+                MainFormOnAssignAsyncActions.Add(_ =>
+                    ShowScrollableMessageBoxAsync(owner, message, caption, MessageBoxButtons.OK, icon, defaultButton, token));
+                return DialogResult.OK;
+            }
+
+            // We cannot properly process any messages that prompt for specific actions right now, so return the default button.
+            // Make sure we catch this in debug builds because it can be a sign of something going wrong
+            Utils.BreakIfDebug();
+
+            switch (buttons)
+            {
+                case MessageBoxButtons.OKCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.OK;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.AbortRetryIgnore:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Abort;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Ignore;
+                    }
+                case MessageBoxButtons.YesNoCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.No;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.YesNo:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        default:
+                            return DialogResult.No;
+                    }
+                case MessageBoxButtons.RetryCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+            }
+
             return DialogResult.Cancel;
         }
 
@@ -1067,7 +1183,65 @@ namespace Chummer
 
                 return frmOwnerForm.DoThreadSafeFunc(x => CenterableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
-            MainFormOnAssignActions.Add(_ => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
+
+            if (buttons == MessageBoxButtons.OK)
+            {
+                MainFormOnAssignActions.Add(_ => ShowMessageBox(owner, message, caption, MessageBoxButtons.OK, icon, defaultButton));
+                return DialogResult.OK;
+            }
+
+            // We cannot properly process any messages that prompt for specific actions right now, so return the default button.
+            // Make sure we catch this in debug builds because it can be a sign of something going wrong
+            Utils.BreakIfDebug();
+
+            switch (buttons)
+            {
+                case MessageBoxButtons.OKCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.OK;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.AbortRetryIgnore:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Abort;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Ignore;
+                    }
+                case MessageBoxButtons.YesNoCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.No;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.YesNo:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        default:
+                            return DialogResult.No;
+                    }
+                case MessageBoxButtons.RetryCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+            }
+
             return DialogResult.Cancel;
         }
 
@@ -1134,8 +1308,65 @@ namespace Chummer
                     .ConfigureAwait(false);
             }
 
-            MainFormOnAssignAsyncActions.Add(_ =>
-                ShowMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
+            if (buttons == MessageBoxButtons.OK)
+            {
+                MainFormOnAssignAsyncActions.Add(_ =>
+                    ShowMessageBoxAsync(owner, message, caption, MessageBoxButtons.OK, icon, defaultButton, token));
+                return DialogResult.OK;
+            }
+
+            // We cannot properly process any messages that prompt for specific actions right now, so return the default button.
+            // Make sure we catch this in debug builds because it can be a sign of something going wrong
+            Utils.BreakIfDebug();
+
+            switch (buttons)
+            {
+                case MessageBoxButtons.OKCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.OK;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.AbortRetryIgnore:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Abort;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Ignore;
+                    }
+                case MessageBoxButtons.YesNoCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        case MessageBoxDefaultButton.Button2:
+                            return DialogResult.No;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+                case MessageBoxButtons.YesNo:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Yes;
+                        default:
+                            return DialogResult.No;
+                    }
+                case MessageBoxButtons.RetryCancel:
+                    switch (defaultButton)
+                    {
+                        case MessageBoxDefaultButton.Button1:
+                            return DialogResult.Retry;
+                        default:
+                            return DialogResult.Cancel;
+                    }
+            }
+
             return DialogResult.Cancel;
         }
 
