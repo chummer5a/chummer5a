@@ -6998,14 +6998,14 @@ namespace Chummer
         #region Condition Evaluation
 
         // /type/property [op value], including "contains"
-        private static readonly Regex XPathConditionRegex = new Regex(
+        private static readonly Lazy<Regex> s_RgxXPathCondition = new Lazy<Regex>(() => new Regex(
             @"^/(\w+)/(\w+)(?:\s*(!=|!&eq;|&ne;|>=|&gte;|&gt;&eq;|<=|&lte;|&lt;&eq;|=|&eq;|>|&gt;|<|&lt;|contains)\s*(.+))?$",
-            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         // @property [op value]
-        private static readonly Regex AtPropertyConditionRegex = new Regex(
+        private static readonly Lazy<Regex> s_RgxAtPropertyCondition = new Lazy<Regex>(() => new Regex(
             @"^@(\w+)(?:\s*(!=|!&eq;|&ne;|>=|&gte;|&gt;&eq;|<=|&lte;|&lt;&eq;|=|&eq;|>|&gt;|<|&lt;|contains)\s*(.+))?$",
-            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         // Both of the above need to contain those ampersand semicolon forms so that we can read those in through XML safely (XML needs to have characters like < and > escaped)
 
@@ -7241,7 +7241,7 @@ namespace Chummer
         private static async Task<bool?> EvaluateConditionLeafAsync(string condition, object targetObject, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            Match xpathMatch = XPathConditionRegex.Match(condition);
+            Match xpathMatch = s_RgxXPathCondition.Value.Match(condition);
             token.ThrowIfCancellationRequested();
             if (xpathMatch.Success)
             {
@@ -7258,7 +7258,7 @@ namespace Chummer
                 return ApplyConditionValue(value, strOperator, expectedValue);
             }
 
-            Match atMatch = AtPropertyConditionRegex.Match(condition);
+            Match atMatch = s_RgxAtPropertyCondition.Value.Match(condition);
             token.ThrowIfCancellationRequested();
             if (atMatch.Success)
             {
@@ -7284,7 +7284,7 @@ namespace Chummer
         private static bool? EvaluateConditionLeaf(string condition, object targetObject, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Match xpathMatch = XPathConditionRegex.Match(condition);
+            Match xpathMatch = s_RgxXPathCondition.Value.Match(condition);
             token.ThrowIfCancellationRequested();
             if (xpathMatch.Success)
             {
@@ -7300,7 +7300,7 @@ namespace Chummer
                 return ApplyConditionValue(value, strOperator, expectedValue);
             }
 
-            Match atMatch = AtPropertyConditionRegex.Match(condition);
+            Match atMatch = s_RgxAtPropertyCondition.Value.Match(condition);
             token.ThrowIfCancellationRequested();
             if (atMatch.Success)
             {
