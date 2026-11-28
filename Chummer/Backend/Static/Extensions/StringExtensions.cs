@@ -8776,11 +8776,11 @@ namespace Chummer
 
         private static readonly Lazy<Regex> s_RgxRtfTagStripper = new Lazy<Regex>(() => new Regex(
             @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromMinutes(1)));
 
         private static readonly Lazy<Regex> s_RgxRtfColors = new Lazy<Regex>(() => new Regex(
             @"\\red(\d+)\\green(\d+)\\blue(\d+);",
-            RegexOptions.CultureInvariant | RegexOptions.Compiled));
+            RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromMinutes(1)));
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {

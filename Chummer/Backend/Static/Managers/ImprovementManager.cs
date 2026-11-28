@@ -7000,12 +7000,12 @@ namespace Chummer
         // /type/property [op value], including "contains"
         private static readonly Lazy<Regex> s_RgxXPathCondition = new Lazy<Regex>(() => new Regex(
             @"^/(\w+)/(\w+)(?:\s*(!=|!&eq;|&ne;|>=|&gte;|&gt;&eq;|<=|&lte;|&lt;&eq;|=|&eq;|>|&gt;|<|&lt;|contains)\s*(.+))?$",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromMinutes(1)));
 
         // @property [op value]
         private static readonly Lazy<Regex> s_RgxAtPropertyCondition = new Lazy<Regex>(() => new Regex(
             @"^@(\w+)(?:\s*(!=|!&eq;|&ne;|>=|&gte;|&gt;&eq;|<=|&lte;|&lt;&eq;|=|&eq;|>|&gt;|<|&lt;|contains)\s*(.+))?$",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled, TimeSpan.FromMinutes(1)));
 
         // Both of the above need to contain those ampersand semicolon forms so that we can read those in through XML safely (XML needs to have characters like < and > escaped)
 
