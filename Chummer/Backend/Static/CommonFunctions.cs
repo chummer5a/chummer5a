@@ -1688,21 +1688,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns an XPath Expression's string that searches an item's name for a string.
+        /// Returns an XPath Expression's string that searches an item's name for a string in the program's user interface language.
         /// </summary>
         /// <param name="strNeedle">String to look for</param>
         /// <param name="strNameElement">Name of the element that corresponds to the item's untranslated name.</param>
         /// <param name="strTranslateElement">Name of the element that corresponds to the item's translated name.</param>
-        /// <returns></returns>
-        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate", CultureInfo objCulture = null)
+        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate")
         {
             if (string.IsNullOrEmpty(strNeedle))
                 return string.Empty;
-            // Use culture-aware uppercase conversion instead of culture-invariant to properly handle Cyrillic and other non-Latin scripts
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
             // Convert to uppercase first, then clean for XPath (which adds quotes)
-            string strSearchText = strNeedle.ToUpper(objCulture).CleanXPath();
+            // Use culture-aware uppercase conversion instead of culture-invariant to properly handle Cyrillic and other non-Latin scripts
+            string strSearchText = strNeedle.ToUpper(GlobalSettings.CultureInfo).CleanXPath();
             // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
             string strSearchText2 = string.Empty;
             if (GlobalSettings.Language.StartsWith("FR", StringComparison.OrdinalIgnoreCase) && strSearchText.Contains('\''))
