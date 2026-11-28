@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -34,12 +35,246 @@ namespace Chummer
         /// Syntactic sugar for enumerating through a StringBuilder's characters.
         /// </summary>
         /// <param name="sbdInput">StringBuilder whose contents should enumerated.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<char> Enumerate([NotNull] this StringBuilder sbdInput)
         {
             if (sbdInput.Length == 0)
                 yield break;
             for (int i = 0; i < sbdInput.Length; ++i)
                 yield return sbdInput[i];
+        }
+
+        /// <summary>
+        /// Syntactic sugar to see if a StringBuilder's current contents contain a character.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains([NotNull] this StringBuilder sbdInput, char chrNeedle)
+        {
+            if (sbdInput.Length > 0)
+            {
+                if (sbdInput.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                {
+                    bool blnReturn = false;
+                    Parallel.For(0, sbdInput.Length, (i, state) =>
+                    {
+                        if (state.ShouldExitCurrentIteration)
+                            return;
+                        if (sbdInput[i] == chrNeedle)
+                        {
+                            state.Stop();
+                            blnReturn = true; // bool set is atomic, so this is fine
+                        }
+                    });
+                    return blnReturn;
+                }
+                else
+                {
+                    for (int i = 0; i < sbdInput.Length; ++i)
+                    {
+                        if (sbdInput[i] == chrNeedle)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to see if a StringBuilder's current contents contain one of two characters.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyOf([NotNull] this StringBuilder sbdInput, char chrNeedle1, char chrNeedle2)
+        {
+            if (sbdInput.Length > 0)
+            {
+                if (sbdInput.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                {
+                    bool blnReturn = false;
+                    Parallel.For(0, sbdInput.Length, (i, state) =>
+                    {
+                        if (state.ShouldExitCurrentIteration)
+                            return;
+                        char chrLoop = sbdInput[i];
+                        if (chrLoop == chrNeedle1 || chrLoop == chrNeedle2)
+                        {
+                            state.Stop();
+                            blnReturn = true; // bool set is atomic, so this is fine
+                        }
+                    });
+                    return blnReturn;
+                }
+                else
+                {
+                    for (int i = 0; i < sbdInput.Length; ++i)
+                    {
+                        char chrLoop = sbdInput[i];
+                        if (chrLoop == chrNeedle1 || chrLoop == chrNeedle2)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to see if a StringBuilder's current contents contain one of three characters.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyOf([NotNull] this StringBuilder sbdInput, char chrNeedle1, char chrNeedle2, char chrNeedle3)
+        {
+            if (sbdInput.Length > 0)
+            {
+                if (sbdInput.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                {
+                    bool blnReturn = false;
+                    Parallel.For(0, sbdInput.Length, (i, state) =>
+                    {
+                        if (state.ShouldExitCurrentIteration)
+                            return;
+                        char chrLoop = sbdInput[i];
+                        if (chrLoop == chrNeedle1 || chrLoop == chrNeedle2 || chrLoop == chrNeedle3)
+                        {
+                            state.Stop();
+                            blnReturn = true; // bool set is atomic, so this is fine
+                        }
+                    });
+                    return blnReturn;
+                }
+                else
+                {
+                    for (int i = 0; i < sbdInput.Length; ++i)
+                    {
+                        char chrLoop = sbdInput[i];
+                        if (chrLoop == chrNeedle1 || chrLoop == chrNeedle2 || chrLoop == chrNeedle3)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to see if a StringBuilder's current contents contain one of four characters.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyOf([NotNull] this StringBuilder sbdInput, char chrNeedle1, char chrNeedle2, char chrNeedle3, char chrNeedle4)
+        {
+            if (sbdInput.Length > 0)
+            {
+                if (sbdInput.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                {
+                    bool blnReturn = false;
+                    Parallel.For(0, sbdInput.Length, (i, state) =>
+                    {
+                        if (state.ShouldExitCurrentIteration)
+                            return;
+                        char chrLoop = sbdInput[i];
+                        if (chrLoop == chrNeedle1 || chrLoop == chrNeedle2 || chrLoop == chrNeedle3 || chrLoop == chrNeedle4)
+                        {
+                            state.Stop();
+                            blnReturn = true; // bool set is atomic, so this is fine
+                        }
+                    });
+                    return blnReturn;
+                }
+                else
+                {
+                    for (int i = 0; i < sbdInput.Length; ++i)
+                    {
+                        char chrLoop = sbdInput[i];
+                        if (chrLoop == chrNeedle1 || chrLoop == chrNeedle2 || chrLoop == chrNeedle3 || chrLoop == chrNeedle4)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to see if a StringBuilder's current contents contain one of a collection of characters.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyOf([NotNull] this StringBuilder sbdInput, params char[] achrNeedles)
+        {
+            if (sbdInput.Length > 0)
+            {
+                if (sbdInput.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                {
+                    bool blnReturn = false;
+                    if (achrNeedles.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                    {
+                        HashSet<char> setNeedles = new HashSet<char>(achrNeedles);
+                        Parallel.For(0, sbdInput.Length, (i, state) =>
+                        {
+                            if (state.ShouldExitCurrentIteration)
+                                return;
+                            if (setNeedles.Contains(sbdInput[i]))
+                            {
+                                state.Stop();
+                                blnReturn = true; // bool set is atomic, so this is fine
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Parallel.For(0, sbdInput.Length, (i, state) =>
+                        {
+                            if (state.ShouldExitCurrentIteration)
+                                return;
+                            if (achrNeedles.Contains(sbdInput[i]))
+                            {
+                                state.Stop();
+                                blnReturn = true; // bool set is atomic, so this is fine
+                            }
+                        });
+                    }
+                    return blnReturn;
+                }
+                else
+                {
+                    for (int i = 0; i < sbdInput.Length; ++i)
+                    {
+                        if (achrNeedles.Contains(sbdInput[i]))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to see if a StringBuilder's current contents contain one of a collection of characters.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyOf([NotNull] this StringBuilder sbdInput, ICollection<char> lstNeedles)
+        {
+            if (sbdInput.Length > 0)
+            {
+                if (sbdInput.Length > Utils.ThresholdToParallelizeForSmartMethods)
+                {
+                    bool blnReturn = false;
+                    Parallel.For(0, sbdInput.Length, (i, state) =>
+                    {
+                        if (state.ShouldExitCurrentIteration)
+                            return;
+                        if (lstNeedles.Contains(sbdInput[i]))
+                        {
+                            state.Stop();
+                            blnReturn = true; // bool set is atomic, so this is fine
+                        }
+                    });
+                    return blnReturn;
+                }
+                else
+                {
+                    for (int i = 0; i < sbdInput.Length; ++i)
+                    {
+                        if (lstNeedles.Contains(sbdInput[i]))
+                            return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /// <summary>

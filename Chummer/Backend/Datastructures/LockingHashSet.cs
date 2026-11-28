@@ -132,9 +132,9 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        async Task IAsyncCollection<T>.AddAsync(T item, CancellationToken token)
+        Task IAsyncCollection<T>.AddAsync(T item, CancellationToken token)
         {
-            await AddAsync(item, token).ConfigureAwait(false);
+            return AddAsync(item, token);
         }
 
         /// <inheritdoc />

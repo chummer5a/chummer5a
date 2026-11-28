@@ -4169,7 +4169,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return MathExtensions.CeilingLog2(intHaystackLength) * intNumNeedles > Utils.ThresholdToParallelizeForSmartMethods
+            return intHaystackLength.CeilingLog2() * intNumNeedles > Utils.ThresholdToParallelizeForSmartMethods
                 ? astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison))
                 : astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison));
         }
@@ -4192,7 +4192,7 @@ namespace Chummer
             return astrNeedles != null &&
                    // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
                    // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-                   (MathExtensions.CeilingLog2(intHaystackLength) * 2 > Utils.ThresholdToParallelizeForSmartMethods
+                   (intHaystackLength.CeilingLog2() * 2 > Utils.ThresholdToParallelizeForSmartMethods
                     ? astrNeedles.AsParallel().Any(strNeedle => strHaystack.Contains(strNeedle, eComparison))
                     : astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison)));
         }
@@ -7725,7 +7725,7 @@ namespace Chummer
             string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
             if (string.IsNullOrEmpty(strInputColorTable))
                 return strInput;
-            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            MatchCollection lstColorMatches = s_RgxRtfColors.Value.Matches(strInputColorTable);
             if (lstColorMatches.Count == 0)
                 return strInput;
             string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
@@ -7781,7 +7781,7 @@ namespace Chummer
             string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
             if (string.IsNullOrEmpty(strInputColorTable))
                 return strInput;
-            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            MatchCollection lstColorMatches = s_RgxRtfColors.Value.Matches(strInputColorTable);
             if (lstColorMatches.Count == 0)
                 return strInput;
             string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
@@ -7827,7 +7827,7 @@ namespace Chummer
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                return s_RtfStripperRegex.Value.IsMatch(strInputTrimmed);
+                return s_RgxRtfTagStripper.Value.IsMatch(strInputTrimmed);
             }
 
             return false;
@@ -8617,7 +8617,7 @@ namespace Chummer
                 return string.Empty;
             }
 
-            Match objMatch = s_RtfStripperRegex.Value.Match(inputRtf);
+            Match objMatch = s_RgxRtfTagStripper.Value.Match(inputRtf);
 
             if (!objMatch.Success)
             {
@@ -8774,11 +8774,11 @@ namespace Chummer
             }
         }
 
-        private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
+        private static readonly Lazy<Regex> s_RgxRtfTagStripper = new Lazy<Regex>(() => new Regex(
             @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
             RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
-        private static readonly Lazy<Regex> s_RtfColorsRegex = new Lazy<Regex>(() => new Regex(
+        private static readonly Lazy<Regex> s_RgxRtfColors = new Lazy<Regex>(() => new Regex(
             @"\\red(\d+)\\green(\d+)\\blue(\d+);",
             RegexOptions.CultureInvariant | RegexOptions.Compiled));
 

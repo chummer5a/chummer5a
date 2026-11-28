@@ -91,8 +91,6 @@ namespace Chummer
 
         private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
 
-        private static readonly int s_intXPathProcessingParallelizationThreshold = Utils.ThresholdToParallelizeForSmartMethods.DivAwayFromZero(s_setUppercaseLatinCharsAndOpenCurlyBracket.Count);
-
         /// <summary>
         /// Checks if a string that is meant to hold an expression that is to be processed by an invariant XPath processor has any values that need substitution.
         /// Useful as a sort of initial check to see if we can jump straight to the evaluator or not.
@@ -123,13 +121,9 @@ namespace Chummer
             if (blnIncludeLetters)
             {
                 // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
-                return intLength > s_intXPathProcessingParallelizationThreshold
-                    ? sbdExpression.Enumerate().AsParallel().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x))
-                    : sbdExpression.Enumerate().Any(x => s_setUppercaseLatinCharsAndOpenCurlyBracket.Contains(x));
+                return sbdExpression.ContainsAnyOf(s_setUppercaseLatinCharsAndOpenCurlyBracket);
             }
-            return intLength > s_intXPathProcessingParallelizationThreshold
-                ? sbdExpression.Enumerate().AsParallel().Contains('{')
-                : sbdExpression.Enumerate().Contains('{');
+            return sbdExpression.Contains('{');
         }
 
         /// <summary>

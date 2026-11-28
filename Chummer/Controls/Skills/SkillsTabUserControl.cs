@@ -430,7 +430,7 @@ namespace Chummer.UI.Skills
                 finally
                 {
                     sw.Stop();
-                    Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+                    Debug.WriteLine("RealLoad() in " + sw.Elapsed.TotalMilliseconds.ToString(GlobalSettings.InvariantCultureInfo) + " ms");
                     Utils.StopwatchPool.Return(ref sw);
                 }
 #endif
